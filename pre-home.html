@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BConnect — Your Complete Marketplace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --blue-900: #0f2c72;
+    --blue-700: #1d4ed8;
+    --blue-500: #3b82f6;
+    --blue-200: #dbeafe;
+    --orange: #f97316;
+    --orange-dark: #ea6c0a;
+    --purple: #8b5cf6;
+    --green: #10b981;
+    --grey-900: #0f172a;
+    --grey-700: #334155;
+    --grey-600: #475569;
+    --grey-400: #94a3b8;
+    --grey-100: #f1f5f9;
+    --white: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: var(--grey-900);
+    background: #f8fbff;
+    overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  /* ── NAV ── */
+  .nav-outer {
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    border-bottom: 1px solid rgba(226,232,240,0.6);
+    box-shadow: 0 2px 24px rgba(15,44,114,0.06);
+  }
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 28px;
+    height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .brand img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+  }
+  .brand-name {
+    font-size: 1.3rem;
+    font-weight: 900;
+    letter-spacing: -.5px;
+    background: linear-gradient(135deg, var(--blue-700), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    font-size: .88rem;
+    font-weight: 600;
+    color: var(--grey-600);
+  }
+  .nav-links a:hover { color: var(--blue-700); }
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  .btn-ghost {
+    padding: 9px 18px;
+    border-radius: 999px;
+    border: 1.5px solid rgba(29,78,216,.2);
+    color: var(--blue-700);
+    font-weight: 700;
+    font-size: .875rem;
+    background: transparent;
+    transition: all .2s;
+  }
+  .btn-ghost:hover { background: var(--blue-200); border-color: transparent; }
+  .btn-cta {
+    padding: 10px 22px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--orange) 0%, #f43f5e 100%);
+    color: #fff;
+    font-weight: 800;
+    font-size: .875rem;
+    box-shadow: 0 8px 24px rgba(249,115,22,.3);
+    transition: all .2s;
+  }
+  .btn-cta:hover { transform: translateY(-1px); box-shadow: 0 12px 32px rgba(249,115,22,.4); }
+  .burger {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 10px;
+    color: var(--blue-700);
+    transition: background .2s;
+  }
+  .burger:hover { background: var(--blue-200); }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(150deg, #0a1628 0%, #0f2c72 45%, #1e40af 100%);
+    padding: 48px 28px 0;
+    min-height: 520px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .hero-bg-blur {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+  }
+  .hero-bg-1 { top: -80px; left: -80px; width: 420px; height: 420px; background: rgba(139,92,246,.25); }
+  .hero-bg-2 { top: 60px; right: -60px; width: 320px; height: 320px; background: rgba(249,115,22,.18); }
+  .hero-bg-3 { bottom: 0; left: 40%; width: 500px; height: 300px; background: rgba(59,130,246,.15); }
+  .hero-content-wrap {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: flex-end;
+  }
+  .hero-text {
+    padding-bottom: 36px;
+    color: #fff;
+  }
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: .78rem;
+    font-weight: 700;
+    color: #c7d2fe;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .hero-eyebrow span { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); display: inline-block; }
+  .hero-title {
+    font-size: clamp(2rem, 3.8vw, 3rem);
+    font-weight: 900;
+    line-height: 1.06;
+    letter-spacing: -.02em;
+    margin-bottom: 16px;
+    color: #fff;
+  }
+  .hero-title .accent {
+    background: linear-gradient(90deg, #fb923c, #f472b6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-sub {
+    font-size: .97rem;
+    color: rgba(255,255,255,.75);
+    line-height: 1.7;
+    max-width: 480px;
+    margin-bottom: 24px;
+  }
+  .hero-btns {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .hero-btn-primary {
+    padding: 14px 28px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--orange), #f43f5e);
+    color: #fff;
+    font-weight: 800;
+    font-size: .95rem;
+    box-shadow: 0 12px 36px rgba(249,115,22,.4);
+    transition: all .2s;
+  }
+  .hero-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 18px 48px rgba(249,115,22,.5); }
+  .hero-btn-secondary {
+    padding: 14px 28px;
+    border-radius: 999px;
+    border: 1.5px solid rgba(255,255,255,.3);
+    color: #fff;
+    font-weight: 700;
+    font-size: .95rem;
+    background: rgba(255,255,255,.08);
+    transition: all .2s;
+    backdrop-filter: blur(8px);
+  }
+  .hero-btn-secondary:hover { background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.5); }
+  .hero-stats {
+    display: flex;
+    gap: 28px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .hero-stat { display: flex; flex-direction: column; gap: 2px; }
+  .hero-stat-num { font-size: 1.5rem; font-weight: 900; color: #fff; letter-spacing: -.03em; }
+  .hero-stat-label { font-size: .75rem; color: rgba(255,255,255,.55); font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+  .hero-images {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding-bottom: 0;
+  }
+  .hero-phone-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+  .hero-main-img {
+    width: 100%;
+    border-radius: 28px 28px 0 0;
+    box-shadow: 0 -20px 80px rgba(0,0,0,.5);
+    display: block;
+    object-fit: cover;
+    height: 320px;
+  }
+  .hero-badge-card {
+    position: absolute;
+    bottom: 20px;
+    left: -24px;
+    background: rgba(255,255,255,.95);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.18);
+    animation: floatUp 3.5s ease-in-out infinite;
+  }
+  .hero-badge-card img { width: 38px; height: 38px; object-fit: contain; }
+  .hero-badge-text { font-size: .78rem; font-weight: 700; color: var(--grey-900); line-height: 1.3; }
+  .hero-badge-text span { color: var(--blue-700); display: block; font-size: .7rem; font-weight: 600; }
+  .hero-floating-card {
+    position: absolute;
+    top: 30px;
+    right: -20px;
+    background: rgba(255,255,255,.95);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.18);
+    animation: floatDown 4s ease-in-out infinite;
+    min-width: 160px;
+  }
+  .hero-floating-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); flex-shrink: 0; box-shadow: 0 0 0 3px rgba(16,185,129,.2); }
+  .hero-floating-text { font-size: .75rem; font-weight: 700; color: var(--grey-900); }
+  .hero-floating-text span { color: var(--grey-600); font-weight: 500; display: block; font-size: .7rem; }
+  @keyframes floatUp {
+    0%,100% { transform: translateY(0) rotate(-1.5deg); }
+    50%      { transform: translateY(-14px) rotate(0deg); }
+  }
+  @keyframes floatDown {
+    0%,100% { transform: translateY(0) rotate(1.5deg); }
+    50%      { transform: translateY(14px) rotate(0deg); }
+  }
+
+  /* ── PAGE LOAD ── */
+  @keyframes bcPageIn { from { opacity: 0 } to { opacity: 1 } }
+  body { animation: bcPageIn .4s ease forwards; }
+
+  /* ── HERO ENTRANCE (staggered) ── */
+  @keyframes heroUp {
+    from { opacity: 0; transform: translateY(36px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes heroRight {
+    from { opacity: 0; transform: translateX(48px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  .hero-eyebrow { animation: heroUp .65s cubic-bezier(.22,1,.36,1) .05s both; }
+  .hero-title   { animation: heroUp .75s cubic-bezier(.22,1,.36,1) .18s both; }
+  .hero-sub     { animation: heroUp .65s cubic-bezier(.22,1,.36,1) .32s both; }
+  .hero-btns    { animation: heroUp .6s  cubic-bezier(.22,1,.36,1) .46s both; }
+  .hero-stats   { animation: heroUp .6s  cubic-bezier(.22,1,.36,1) .58s both; }
+  .hero-images  { animation: heroRight .85s cubic-bezier(.22,1,.36,1) .28s both; }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity .65s cubic-bezier(.22,1,.36,1), transform .65s cubic-bezier(.22,1,.36,1);
+    will-change: opacity, transform;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  .reveal-left {
+    opacity: 0;
+    transform: translateX(-36px);
+    transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1);
+    will-change: opacity, transform;
+  }
+  .reveal-left.visible { opacity: 1; transform: translateX(0); }
+
+  .reveal-right {
+    opacity: 0;
+    transform: translateX(36px);
+    transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1);
+    will-change: opacity, transform;
+  }
+  .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+  .reveal-scale {
+    opacity: 0;
+    transform: scale(.93);
+    transition: opacity .6s cubic-bezier(.22,1,.36,1), transform .6s cubic-bezier(.22,1,.36,1);
+    will-change: opacity, transform;
+  }
+  .reveal-scale.visible { opacity: 1; transform: scale(1); }
+
+  .d1 { transition-delay: .08s !important; }
+  .d2 { transition-delay: .16s !important; }
+  .d3 { transition-delay: .24s !important; }
+  .d4 { transition-delay: .32s !important; }
+  .d5 { transition-delay: .40s !important; }
+
+  /* ── NAV SCROLL EFFECT ── */
+  .nav-outer { transition: box-shadow .35s ease, background .35s ease, backdrop-filter .35s ease; }
+  .nav-outer.bc-scrolled {
+    box-shadow: 0 6px 40px rgba(15,44,114,.13);
+    background: rgba(255,255,255,0.98);
+  }
+
+  /* ── POLISHED CARD HOVER ── */
+  .pillar-card {
+    transition: transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s ease !important;
+  }
+  .pillar-card:hover {
+    transform: translateY(-10px) scale(1.015) !important;
+    box-shadow: 0 28px 64px rgba(15,44,114,.16) !important;
+  }
+  .why-feature {
+    transition: transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s ease !important;
+  }
+  .why-feature:hover {
+    transform: translateX(6px) !important;
+    box-shadow: 0 8px 32px rgba(15,44,114,.1) !important;
+  }
+
+  /* ── BUTTON MICRO-INTERACTIONS ── */
+  .hero-btn-primary {
+    transition: transform .25s cubic-bezier(.22,1,.36,1), box-shadow .25s ease !important;
+  }
+  .hero-btn-primary:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 22px 52px rgba(249,115,22,.52) !important;
+  }
+  .hero-btn-secondary {
+    transition: all .25s cubic-bezier(.22,1,.36,1) !important;
+  }
+  .hero-btn-secondary:hover { transform: translateY(-2px) !important; }
+  .btn-cta { transition: transform .25s cubic-bezier(.22,1,.36,1), box-shadow .25s ease !important; }
+  .btn-cta:hover { transform: translateY(-2px) !important; box-shadow: 0 14px 36px rgba(249,115,22,.45) !important; }
+
+  /* ── GALLERY HOVER ── */
+  .gallery-item img { transition: transform .5s cubic-bezier(.22,1,.36,1) !important; }
+  .gallery-item:hover img { transform: scale(1.07) !important; }
+  .gallery-item { transition: box-shadow .35s ease; }
+  .gallery-item:hover { box-shadow: 0 12px 40px rgba(0,0,0,.2); }
+
+  /* ── TRUST BAR ── */
+  .trust-bar {
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 18px 28px;
+  }
+  .trust-bar-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: .82rem;
+    font-weight: 700;
+    color: var(--grey-600);
+  }
+  .trust-item svg { color: var(--green); }
+  .trust-divider { width: 1px; height: 20px; background: #e2e8f0; }
+
+  /* ── SECTIONS ── */
+  .section { max-width: 1200px; margin: 0 auto; padding: 72px 28px; }
+  .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: .75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: var(--blue-700);
+    margin-bottom: 12px;
+  }
+  .section-label::before { content: ''; display: block; width: 20px; height: 2px; background: var(--blue-700); border-radius: 2px; }
+  .section-title {
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 900;
+    letter-spacing: -.02em;
+    line-height: 1.1;
+    color: var(--grey-900);
+    max-width: 640px;
+  }
+  .section-sub {
+    font-size: 1rem;
+    color: var(--grey-600);
+    line-height: 1.75;
+    max-width: 560px;
+    margin-top: 12px;
+  }
+
+  /* ── PILLARS (3 cards) ── */
+  .pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 40px;
+  }
+  .pillar-card {
+    border-radius: 24px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 4px 24px rgba(15,44,114,.07);
+    transition: transform .25s, box-shadow .25s;
+    position: relative;
+  }
+  .pillar-card:hover { transform: translateY(-6px); box-shadow: 0 16px 48px rgba(15,44,114,.12); }
+  .pillar-img {
+    width: 100%;
+    height: 210px;
+    object-fit: cover;
+    display: block;
+  }
+  .pillar-body { padding: 24px; }
+  .pillar-icon-wrap {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    margin-top: -36px;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 4px 16px rgba(0,0,0,.15);
+  }
+  .pillar-title { font-size: 1.1rem; font-weight: 800; color: var(--grey-900); margin-bottom: 8px; }
+  .pillar-text { font-size: .88rem; color: var(--grey-600); line-height: 1.7; }
+  .pillar-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 14px;
+    font-size: .82rem;
+    font-weight: 700;
+    color: var(--blue-700);
+    transition: gap .2s;
+  }
+  .pillar-link:hover { gap: 8px; }
+
+  /* ── WHY SECTION ── */
+  .why-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .why-img-col { position: relative; }
+  .why-main-img {
+    width: 100%;
+    border-radius: 28px;
+    object-fit: cover;
+    height: 480px;
+    box-shadow: 0 20px 60px rgba(15,44,114,.14);
+    display: block;
+  }
+  .why-badge {
+    position: absolute;
+    bottom: -20px;
+    right: -20px;
+    background: #fff;
+    border-radius: 20px;
+    padding: 18px 22px;
+    box-shadow: 0 12px 48px rgba(15,44,114,.14);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 200px;
+  }
+  .why-badge img { width: 52px; height: 52px; object-fit: contain; }
+  .why-badge-text strong { display: block; font-size: .95rem; font-weight: 800; color: var(--grey-900); }
+  .why-badge-text span { font-size: .78rem; color: var(--grey-600); }
+  .why-features { display: flex; flex-direction: column; gap: 18px; margin-top: 28px; }
+  .why-feature {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 18px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(15,44,114,.05);
+    border: 1px solid #f1f5f9;
+    transition: box-shadow .2s;
+  }
+  .why-feature:hover { box-shadow: 0 6px 24px rgba(15,44,114,.1); }
+  .why-feature-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .why-feature-title { font-size: .9rem; font-weight: 700; color: var(--grey-900); margin-bottom: 3px; }
+  .why-feature-text { font-size: .82rem; color: var(--grey-600); line-height: 1.6; }
+
+  /* ── GALLERY STRIP ── */
+  .gallery-strip {
+    padding: 0 28px 72px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 16px;
+  }
+  .gallery-item {
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+  }
+  .gallery-item.tall { grid-row: span 2; }
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    min-height: 180px;
+    object-fit: cover;
+    display: block;
+    transition: transform .4s;
+  }
+  .gallery-item:hover img { transform: scale(1.05); }
+  .gallery-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px 18px 14px;
+    background: linear-gradient(to top, rgba(0,0,0,.7) 0%, transparent 100%);
+    color: #fff;
+    font-size: .8rem;
+    font-weight: 700;
+  }
+
+  /* ── TESTIMONIAL ── */
+  .testimonial-section {
+    background: linear-gradient(150deg, var(--blue-900) 0%, #1e40af 60%, #3730a3 100%);
+    padding: 72px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .testimonial-bg-circle {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .t-circle-1 { top: -80px; right: -80px; width: 300px; height: 300px; background: rgba(249,115,22,.12); filter: blur(50px); }
+  .t-circle-2 { bottom: -60px; left: -60px; width: 250px; height: 250px; background: rgba(139,92,246,.15); filter: blur(50px); }
+  .testimonial-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .testimonial-img {
+    width: 100%;
+    border-radius: 24px;
+    object-fit: cover;
+    height: 380px;
+    box-shadow: 0 24px 72px rgba(0,0,0,.35);
+    display: block;
+  }
+  .testimonial-text .section-label { color: #93c5fd; }
+  .testimonial-text .section-label::before { background: #93c5fd; }
+  .testimonial-quote {
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.3;
+    margin: 14px 0 18px;
+    letter-spacing: -.02em;
+  }
+  .testimonial-quote::before { content: '\201C'; color: var(--orange); }
+  .testimonial-quote::after { content: '\201D'; color: var(--orange); }
+  .testimonial-body { font-size: .95rem; color: rgba(255,255,255,.8); line-height: 1.75; margin-bottom: 20px; }
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .testimonial-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--orange), var(--purple));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: #fff;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .testimonial-name { font-weight: 700; color: #fff; font-size: .9rem; }
+  .testimonial-role { color: rgba(255,255,255,.6); font-size: .78rem; margin-top: 1px; }
+
+  /* ── CTA ── */
+  .cta-section {
+    max-width: 1200px;
+    margin: 0 auto 72px;
+    padding: 0 28px;
+  }
+  .cta-card {
+    background: linear-gradient(135deg, #f0f7ff 0%, #f5f0ff 100%);
+    border: 1px solid #e0e8ff;
+    border-radius: 32px;
+    padding: 60px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-bg { position: absolute; top: -40px; right: -40px; width: 220px; height: 220px; border-radius: 50%; background: rgba(139,92,246,.08); pointer-events: none; }
+  .cta-badge-wrap {
+    position: absolute;
+    bottom: 20px;
+    right: 48px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: .4;
+  }
+  .cta-badge-wrap img { width: 56px; height: 56px; object-fit: contain; }
+  .cta-text .section-label { color: var(--purple); }
+  .cta-text .section-label::before { background: var(--purple); }
+  .cta-title { font-size: clamp(1.6rem, 2.5vw, 2.2rem); font-weight: 900; color: var(--grey-900); letter-spacing: -.02em; line-height: 1.15; margin: 12px 0 10px; }
+  .cta-sub { font-size: .95rem; color: var(--grey-600); line-height: 1.7; max-width: 480px; }
+  .cta-actions { display: flex; gap: 14px; flex-wrap: wrap; flex-shrink: 0; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--grey-900);
+    color: rgba(255,255,255,.7);
+    padding: 48px 28px 32px;
+  }
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+  .footer-brand-col .brand-name { background: linear-gradient(135deg, #93c5fd, #c4b5fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .footer-brand-desc { font-size: .85rem; line-height: 1.7; margin-top: 12px; color: rgba(255,255,255,.5); max-width: 260px; }
+  .footer-contact { margin-top: 16px; font-size: .82rem; color: rgba(255,255,255,.55); line-height: 1.9; }
+  .footer-col-title { font-size: .78rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; color: rgba(255,255,255,.4); margin-bottom: 14px; }
+  .footer-links { display: flex; flex-direction: column; gap: 8px; }
+  .footer-links a { font-size: .85rem; color: rgba(255,255,255,.6); transition: color .15s; }
+  .footer-links a:hover { color: #fff; }
+  .footer-bottom {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-bottom p { font-size: .8rem; color: rgba(255,255,255,.35); }
+
+  /* ── MOBILE NAV ── */
+  .mob-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    background: rgba(10,24,70,.5);
+    backdrop-filter: blur(3px);
+  }
+  .mob-overlay.open { display: block; }
+  .mob-panel {
+    position: absolute;
+    top: 0; right: 0;
+    width: min(82vw, 300px);
+    height: 100%;
+    background: #fff;
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: -8px 0 40px rgba(15,44,114,.18);
+    transform: translateX(100%);
+    transition: transform .28s cubic-bezier(.4,0,.2,1);
+  }
+  .mob-overlay.open .mob-panel { transform: translateX(0); }
+  .mob-close { align-self: flex-end; background: none; border: none; cursor: pointer; font-size: 1.4rem; color: #94a3b8; padding: 4px 8px; border-radius: 6px; margin-bottom: 8px; }
+  .mob-panel a { display: block; padding: 12px 14px; border-radius: 10px; font-weight: 600; font-size: .95rem; color: var(--grey-900); transition: background .15s; }
+  .mob-panel a:hover { background: #eff6ff; color: var(--blue-700); }
+  .mob-divider { height: 1px; background: #e2e8f0; margin: 8px 0; }
+  .mob-cta { background: linear-gradient(135deg, var(--orange), #f43f5e) !important; color: #fff !important; text-align: center; border-radius: 999px !important; font-weight: 800 !important; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1024px) {
+    .hero-content-wrap { grid-template-columns: 1fr; gap: 32px; }
+    .hero-text { padding-bottom: 0; }
+    .hero-images { align-items: center; }
+    .hero-main-img { height: 320px; }
+    .pillars-grid { grid-template-columns: 1fr 1fr; }
+    .why-wrap { grid-template-columns: 1fr; }
+    .why-main-img { height: 340px; }
+    .why-badge { right: 20px; bottom: -16px; }
+    .testimonial-inner { grid-template-columns: 1fr; }
+    .testimonial-img { height: 280px; }
+    .footer-inner { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 768px) {
+    .nav-links, .nav-actions { display: none; }
+    .burger { display: flex; align-items: center; justify-content: center; }
+    .hero { padding: 48px 20px 0; min-height: auto; }
+    .hero-title { font-size: clamp(2rem, 7vw, 2.6rem); }
+    .hero-stats { gap: 20px; }
+    .pillars-grid { grid-template-columns: 1fr; }
+    .gallery-grid { grid-template-columns: 1fr 1fr; }
+    .gallery-item.tall { grid-row: span 1; }
+    .cta-card { flex-direction: column; padding: 36px 28px; text-align: center; }
+    .cta-badge-wrap { display: none; }
+    .footer-inner { grid-template-columns: 1fr; gap: 28px; }
+    .section { padding: 48px 20px; }
+    .gallery-strip { padding: 0 20px 48px; }
+    .testimonial-section { padding: 48px 20px; }
+    .hero-badge-card { left: -8px; }
+    .hero-floating-card { right: -8px; }
+  }
+  @media (max-width: 480px) {
+    .hero-btns { flex-direction: column; }
+    .hero-btn-primary, .hero-btn-secondary { text-align: center; }
+    .gallery-grid { grid-template-columns: 1fr; }
+    .gallery-item { min-height: 200px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<div class="nav-outer">
+  <div class="nav-inner">
+    <a href="/" class="brand">
+      <img src="/bconnect-badge-nobg.png" alt="BConnect badge" />
+      <span class="brand-name">BConnect</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#pillars">Solutions</a>
+      <a href="#why">Features</a>
+      <a href="#gallery">Gallery</a>
+      <a href="about.html">About</a>
+      <a href="support.html">Support</a>
+      <a href="landlord.html">Landlord</a>
+      <a href="tenant-portal.html">Tenant</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn-ghost" href="login.html">Log In</a>
+      <a class="btn-cta" href="login.html#signup">Sign Up Free</a>
+    </div>
+    <button class="burger" id="burgerBtn" aria-label="Open menu">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</div>
+
+<div class="mob-overlay" id="mobOverlay">
+  <nav class="mob-panel">
+    <button class="mob-close" id="mobClose">&#10005;</button>
+    <a href="#pillars">Solutions</a>
+    <a href="#why">Features</a>
+    <a href="about.html">About</a>
+    <a href="support.html">Support</a>
+    <a href="landlord.html">Landlord</a>
+    <a href="tenant-portal.html">Tenant</a>
+    <a href="login.html">Log In</a>
+    <div class="mob-divider"></div>
+    <a href="login.html#signup" class="mob-cta">Get Started Free</a>
+  </nav>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-blur hero-bg-1"></div>
+  <div class="hero-bg-blur hero-bg-2"></div>
+  <div class="hero-bg-blur hero-bg-3"></div>
+  <div class="hero-content-wrap">
+    <div class="hero-text">
+      <div class="hero-eyebrow">
+        <span></span> Products · Services · Rentals
+      </div>
+      <h1 class="hero-title">
+        Kenya's <span class="accent">All-in-One</span><br>Marketplace Platform
+      </h1>
+      <p class="hero-sub">Discover products, book professional services, and find your perfect rental property — all in one trusted place built for Kenya.</p>
+      <div class="hero-btns">
+        <a href="login.html#signup" class="hero-btn-primary">Get Started Free</a>
+        <a href="#why" class="hero-btn-secondary">See How It Works</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="hero-stat-num" data-count="10" data-suffix="K+">0K+</span>
+          <span class="hero-stat-label">Active Users</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-num" data-count="500" data-suffix="+">0+</span>
+          <span class="hero-stat-label">Listings</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-num">3-in-1</span>
+          <span class="hero-stat-label">Platform</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-images">
+      <div class="hero-phone-wrap">
+        <img class="hero-main-img"
+          src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=840&q=80"
+          alt="Modern Nairobi apartment" fetchpriority="high" decoding="async" />
+        <div class="hero-badge-card">
+          <img src="/bconnect-badge-nobg.png" alt="BConnect" />
+          <div class="hero-badge-text">
+            Trusted Platform
+            <span>Verified by BConnect</span>
+          </div>
+        </div>
+        <div class="hero-floating-card">
+          <div class="hero-floating-dot"></div>
+          <div class="hero-floating-text">
+            Live Listings
+            <span>Updated in real time</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-bar-inner">
+    <div class="trust-item reveal d1">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Secure Payments
+    </div>
+    <div class="trust-divider"></div>
+    <div class="trust-item reveal d2">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      Verified Sellers
+    </div>
+    <div class="trust-divider"></div>
+    <div class="trust-item reveal d3">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      24/7 Support
+    </div>
+    <div class="trust-divider"></div>
+    <div class="trust-item reveal d4">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+      M-Pesa Ready
+    </div>
+    <div class="trust-divider"></div>
+    <div class="trust-item reveal d5">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Kenya-First Platform
+    </div>
+  </div>
+</div>
+
+<!-- PILLARS -->
+<div class="section" id="pillars">
+  <div class="section-label reveal">What We Offer</div>
+  <h2 class="section-title reveal d1">Everything you need, all in one place</h2>
+  <p class="section-sub reveal d2">From browsing products to booking services and renting property — BConnect is your one trusted destination in Kenya.</p>
+  <div class="pillars-grid">
+    <div class="pillar-card reveal d1">
+      <img class="pillar-img"
+        src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=600&q=80"
+        alt="Kenyan marketplace" loading="lazy" decoding="async" />
+      <div class="pillar-body">
+        <div class="pillar-icon-wrap" style="background:linear-gradient(135deg,#3b82f6,#6366f1)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        </div>
+        <div class="pillar-title">Product Marketplace</div>
+        <p class="pillar-text">Browse thousands of products — furniture, electronics, fashion, and more from verified local sellers.</p>
+        <a href="login.html#signup" class="pillar-link">
+          Shop Now
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="pillar-card reveal d2">
+      <img class="pillar-img"
+        src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&q=80"
+        alt="Kenyan professional services" loading="lazy" decoding="async" />
+      <div class="pillar-body">
+        <div class="pillar-icon-wrap" style="background:linear-gradient(135deg,#f97316,#f43f5e)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        <div class="pillar-title">Professional Services</div>
+        <p class="pillar-text">Connect with vetted plumbers, cleaners, electricians, and service professionals near you.</p>
+        <a href="login.html#signup" class="pillar-link">
+          Find Services
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="pillar-card reveal d3">
+      <img class="pillar-img"
+        src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600&q=80"
+        alt="Nairobi apartment interior" loading="lazy" decoding="async" />
+      <div class="pillar-body">
+        <div class="pillar-icon-wrap" style="background:linear-gradient(135deg,#10b981,#0ea5e9)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <div class="pillar-title">Property Rentals</div>
+        <p class="pillar-text">Find and manage rental homes, bedsitters, and apartments with direct landlord communication.</p>
+        <a href="login.html#signup" class="pillar-link">
+          Browse Rentals
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WHY SECTION -->
+<div class="section" id="why" style="padding-top:0">
+  <div class="why-wrap">
+    <div class="why-img-col reveal-left">
+      <img class="why-main-img"
+        src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80"
+        alt="Kenyan professional using BConnect" loading="lazy" decoding="async" />
+      <div class="why-badge">
+        <img src="/bconnect-badge.png" alt="BConnect badge" />
+        <div class="why-badge-text">
+          <strong>BConnect Certified</strong>
+          <span>Kenya's trusted platform</span>
+        </div>
+      </div>
+    </div>
+    <div class="reveal-right">
+      <div class="section-label">Why BConnect</div>
+      <h2 class="section-title">Built different. Built for Kenya.</h2>
+      <p class="section-sub">We understand local needs and built a platform that works for Kenyan buyers, sellers, tenants, and landlords.</p>
+      <div class="why-features">
+        <div class="why-feature reveal d1">
+          <div class="why-feature-icon" style="background:#eff6ff">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+          </div>
+          <div>
+            <div class="why-feature-title">M-Pesa Integrated Payments</div>
+            <p class="why-feature-text">Pay securely with M-Pesa for any product, service, or rent — no bank account needed.</p>
+          </div>
+        </div>
+        <div class="why-feature reveal d2">
+          <div class="why-feature-icon" style="background:#f0fdf4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div>
+            <div class="why-feature-title">Verified Listings Only</div>
+            <p class="why-feature-text">Every seller, service provider, and landlord goes through a verification process before listing.</p>
+          </div>
+        </div>
+        <div class="why-feature reveal d3">
+          <div class="why-feature-icon" style="background:#fff7ed">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div>
+            <div class="why-feature-title">Direct Communication</div>
+            <p class="why-feature-text">Message sellers, providers, and landlords directly — no middlemen, no delays.</p>
+          </div>
+        </div>
+        <div class="why-feature reveal d4">
+          <div class="why-feature-icon" style="background:#faf5ff">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div>
+            <div class="why-feature-title">Secure &amp; Reliable</div>
+            <p class="why-feature-text">Your data and transactions are protected with enterprise-grade security and 2FA.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GALLERY -->
+<div class="gallery-strip" id="gallery">
+  <div class="section-label reveal" style="padding: 0 0 16px">Platform in Action</div>
+  <div class="gallery-grid">
+    <div class="gallery-item tall reveal-scale d1">
+      <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80" alt="Kenyan team collaboration" loading="lazy" decoding="async" />
+      <div class="gallery-overlay">Sellers & Buyers Connect</div>
+    </div>
+    <div class="gallery-item reveal-scale d2">
+      <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&q=80" alt="Kenyan marketplace shopping" loading="lazy" decoding="async" />
+      <div class="gallery-overlay">Product Marketplace</div>
+    </div>
+    <div class="gallery-item reveal-scale d3">
+      <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&q=80" alt="Nairobi residential property" loading="lazy" decoding="async" />
+      <div class="gallery-overlay">Property Listings</div>
+    </div>
+    <div class="gallery-item reveal-scale d3">
+      <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&q=80" alt="Kenyan business professionals" loading="lazy" decoding="async" />
+      <div class="gallery-overlay">Verified Professionals</div>
+    </div>
+    <div class="gallery-item reveal-scale d4">
+      <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&q=80" alt="M-Pesa mobile payment Kenya" loading="lazy" decoding="async" />
+      <div class="gallery-overlay">M-Pesa Payments</div>
+    </div>
+  </div>
+</div>
+
+<!-- TESTIMONIAL -->
+<div class="testimonial-section" id="about">
+  <div class="testimonial-bg-circle t-circle-1"></div>
+  <div class="testimonial-bg-circle t-circle-2"></div>
+  <div class="testimonial-inner">
+    <img class="testimonial-img reveal-left"
+      src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80"
+      alt="Happy BConnect user" loading="lazy" decoding="async" />
+    <div class="testimonial-text reveal-right">
+      <div class="section-label">What Users Say</div>
+      <p class="testimonial-quote">BConnect has everything I need in one place!</p>
+      <p class="testimonial-body">I found great furniture for my apartment, hired a plumber through the services directory, and even found my current rental — all through BConnect. Brayan's platform is exactly what Kenya needed.</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">JN</div>
+        <div>
+          <div class="testimonial-name">James Njoroge</div>
+          <div class="testimonial-role">BConnect user since 2024 — Nairobi</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-card reveal-scale">
+    <div class="cta-bg"></div>
+    <div class="cta-text">
+      <div class="section-label">Get Started Today</div>
+      <h2 class="cta-title">Join thousands of Kenyans already on BConnect</h2>
+      <p class="cta-sub">Sign up for free and access Kenya's most complete marketplace, service directory, and rental platform in minutes.</p>
+    </div>
+    <div class="cta-actions">
+      <a class="btn-cta" href="login.html#signup">Create Free Account</a>
+      <a class="btn-ghost" href="about.html">Learn More</a>
+    </div>
+    <div class="cta-badge-wrap">
+      <img src="/bconnect-badge-nobg.png" alt="BConnect" />
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer id="contact">
+  <div class="footer-inner">
+    <div class="footer-brand-col">
+      <div class="brand">
+        <img src="/bconnect-badge-nobg.png" alt="BConnect badge" style="width:36px;height:36px" />
+        <span class="brand-name">BConnect</span>
+      </div>
+      <p class="footer-brand-desc">Kenya's complete marketplace platform for products, professional services, and property rentals. Built by Brayan.</p>
+      <div class="footer-contact">
+        <div>📱 WhatsApp: +254118234849</div>
+        <div>✉️ Email: brayan@bconnect.com</div>
+        <div>📍 Nairobi, Kenya</div>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Platform</div>
+      <div class="footer-links">
+        <a href="#pillars">Marketplace</a>
+        <a href="#pillars">Services</a>
+        <a href="#pillars">Rentals</a>
+        <a href="landlord.html">For Landlords</a>
+        <a href="tenant-portal.html">For Tenants</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Company</div>
+      <div class="footer-links">
+        <a href="about.html">About</a>
+        <a href="features.html">Features</a>
+        <a href="support.html">Support</a>
+        <a href="login.html">Login</a>
+        <a href="login.html#signup">Sign Up</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Legal</div>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Cookie Policy</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 BConnect. All rights reserved.</p>
+    <p>Built with ❤️ in Kenya</p>
+  </div>
+</footer>
+
+<script>
+(function() {
+  /* ── Mobile menu ── */
+  var burger = document.getElementById('burgerBtn');
+  var overlay = document.getElementById('mobOverlay');
+  var close = document.getElementById('mobClose');
+  function openMenu() { overlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeMenu() { overlay.classList.remove('open'); document.body.style.overflow = ''; }
+  if (burger) burger.addEventListener('click', openMenu);
+  if (close) close.addEventListener('click', closeMenu);
+  if (overlay) overlay.addEventListener('click', function(e) { if (e.target === overlay) closeMenu(); });
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeMenu(); });
+
+  /* ── Nav scroll effect ── */
+  var navOuter = document.querySelector('.nav-outer');
+  if (navOuter) {
+    window.addEventListener('scroll', function() {
+      navOuter.classList.toggle('bc-scrolled', window.scrollY > 24);
+    }, { passive: true });
+  }
+
+  /* ── Stat counters ── */
+  function runCounter(el) {
+    var target  = parseInt(el.getAttribute('data-count'), 10);
+    var suffix  = el.getAttribute('data-suffix') || '';
+    var duration = 1600;
+    var startTs = null;
+    function easeOutExpo(t) { return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); }
+    function step(ts) {
+      if (!startTs) startTs = ts;
+      var progress = Math.min((ts - startTs) / duration, 1);
+      var value = Math.floor(easeOutExpo(progress) * target);
+      el.textContent = value + suffix;
+      if (progress < 1) requestAnimationFrame(step);
+      else el.textContent = target + suffix;
+    }
+    requestAnimationFrame(step);
+  }
+
+  var statsEl = document.querySelector('.hero-stats');
+  if (statsEl) {
+    var statsObs = new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting) {
+        document.querySelectorAll('[data-count]').forEach(runCounter);
+        statsObs.disconnect();
+      }
+    }, { threshold: 0.5 });
+    statsObs.observe(statsEl);
+  }
+
+  /* ── Scroll reveal via IntersectionObserver ── */
+  if ('IntersectionObserver' in window) {
+    var revealObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -48px 0px' });
+
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(function(el) {
+      revealObs.observe(el);
+    });
+  } else {
+    /* Fallback: just show everything */
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(function(el) {
+      el.classList.add('visible');
+    });
+  }
+
+  /* ── Click-guard (non-nav links redirect to login) ── */
+  var NAV_LINKS = ['about.html','support.html','landlord.html','tenant-portal.html','login.html','features.html','solutions.html'];
+  document.body.addEventListener('click', function(e) {
+    var el = e.target.closest('a,button');
+    if (!el) return;
+    if (el.tagName === 'A') {
+      var href = el.getAttribute('href') || '';
+      if (href.startsWith('#') || href === '' || href === '/') return;
+      var isNav = NAV_LINKS.some(function(p) { return href.indexOf(p) !== -1; });
+      if (isNav) return;
+    }
+    var isNavArea = el.closest('.nav-inner, .mob-panel, .footer-links, footer');
+    if (isNavArea) return;
+    e.preventDefault();
+    e.stopPropagation();
+    window.location.href = 'login.html';
+  }, true);
+})();
+</script>
+</body>
+</html>

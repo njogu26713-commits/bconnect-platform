@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>bConnect — My Payments</title>
+<style>
+:root {
+  --primary:#4f46e5; --primary-light:#eef2ff; --primary-dark:#3730a3;
+  --green:#10b981; --green-light:#d1fae5; --green-dark:#059669;
+  --amber:#f59e0b; --amber-light:#fef3c7; --amber-dark:#b45309;
+  --red:#ef4444; --red-light:#fee2e2; --red-dark:#b91c1c;
+  --blue:#3b82f6; --blue-light:#eff6ff; --blue-dark:#1d4ed8;
+  --purple:#8b5cf6; --purple-light:#ede9fe;
+  --pink:#ec4899; --pink-light:#fce7f3;
+  --teal:#14b8a6; --teal-light:#ccfbf1;
+  --orange:#f97316; --orange-light:#ffedd5;
+  --gray-50:#f9fafb; --gray-100:#f3f4f6; --gray-200:#e5e7eb;
+  --gray-300:#d1d5db; --gray-400:#9ca3af; --gray-500:#6b7280;
+  --gray-700:#374151; --gray-800:#1f2937; --gray-900:#111827;
+  --white:#ffffff;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.08);
+  --shadow-md:0 4px 12px rgba(0,0,0,.10);
+  --radius:.875rem;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:var(--gray-50);color:var(--gray-900);overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+
+/* PAGE SHELL */
+.page-wrap{max-width:920px;margin:0 auto;padding:2rem 1.5rem 6rem}
+
+/* PAGE HEADER */
+.page-header{margin-bottom:1.75rem}
+.page-header h1{font-size:1.75rem;font-weight:800;color:var(--gray-900);display:flex;align-items:center;gap:.6rem}
+.page-header p{color:var(--gray-500);font-size:.92rem;margin-top:.3rem}
+
+/* SUMMARY STRIP */
+.summary-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1.75rem}
+.sum-card{background:var(--white);border-radius:var(--radius);padding:.9rem 1rem;text-align:center;box-shadow:var(--shadow-sm);border:1px solid var(--gray-100)}
+.sum-card .sum-num{font-size:1.5rem;font-weight:800}
+.sum-card .sum-label{font-size:.75rem;font-weight:600;color:var(--gray-500);margin-top:.15rem}
+.sum-total .sum-num{color:var(--primary)}
+.sum-spent .sum-num{color:var(--green)}
+.sum-pending .sum-num{color:var(--amber)}
+
+/* PAYMENT LIST */
+.pay-list{display:flex;flex-direction:column;gap:1rem}
+
+/* PAYMENT CARD */
+.pay-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow-sm);border:1px solid var(--gray-100);overflow:hidden;transition:box-shadow .2s,transform .2s}
+.pay-card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+
+/* CARD TOP BAR  (colored accent per category) */
+.pay-card-bar{height:4px}
+.bar-product{background:linear-gradient(90deg,var(--primary),var(--blue))}
+.bar-service{background:linear-gradient(90deg,var(--teal),var(--green))}
+.bar-rent{background:linear-gradient(90deg,var(--orange),var(--amber))}
+.bar-viewing{background:linear-gradient(90deg,var(--blue),var(--purple))}
+.bar-ticket{background:linear-gradient(90deg,var(--pink),var(--purple))}
+.bar-promotion{background:linear-gradient(90deg,var(--amber),var(--orange))}
+.bar-premium_listing{background:linear-gradient(90deg,var(--purple),var(--primary))}
+
+/* CARD BODY */
+.pay-card-body{display:grid;grid-template-columns:auto 1fr auto;align-items:flex-start;gap:1rem;padding:1.1rem 1.25rem}
+
+/* ICON */
+.pay-icon{width:48px;height:48px;border-radius:.75rem;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0}
+.icon-product{background:var(--primary-light);color:var(--primary)}
+.icon-service{background:var(--teal-light);color:var(--teal)}
+.icon-rent{background:var(--orange-light);color:var(--orange)}
+.icon-viewing{background:var(--blue-light);color:var(--blue)}
+.icon-ticket{background:var(--pink-light);color:var(--pink)}
+.icon-promotion{background:var(--amber-light);color:var(--amber-dark)}
+.icon-premium_listing{background:var(--purple-light);color:var(--purple)}
+
+/* META */
+.pay-meta{min-width:0}
+.pay-type-label{font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.2rem}
+.lbl-product{color:var(--primary)}
+.lbl-service{color:var(--teal)}
+.lbl-rent{color:var(--orange)}
+.lbl-viewing{color:var(--blue)}
+.lbl-ticket{color:var(--pink)}
+.lbl-promotion{color:var(--amber-dark)}
+.lbl-premium_listing{color:var(--purple)}
+.pay-title{font-size:1rem;font-weight:700;color:var(--gray-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pay-details{margin-top:.45rem;display:flex;flex-direction:column;gap:.22rem}
+.pay-detail-row{display:flex;align-items:center;gap:.35rem;font-size:.8rem;color:var(--gray-600,#4b5563)}
+.pay-detail-row .dk{color:var(--gray-400);font-size:.72rem;min-width:56px}
+
+/* STATUS BADGE */
+.status-badge{padding:.25rem .7rem;border-radius:2rem;font-size:.72rem;font-weight:700;flex-shrink:0;white-space:nowrap}
+.badge-completed,.badge-confirmed,.badge-active,.badge-delivered{background:var(--green-light);color:var(--green-dark)}
+.badge-pending{background:var(--amber-light);color:var(--amber-dark)}
+.badge-failed,.badge-cancelled,.badge-expired{background:var(--red-light);color:var(--red-dark)}
+.badge-processing{background:var(--blue-light);color:var(--blue-dark)}
+
+/* CARD FOOTER */
+.pay-card-footer{display:flex;align-items:center;justify-content:space-between;padding:.7rem 1.25rem;background:var(--gray-50);border-top:1px solid var(--gray-100);gap:.75rem;flex-wrap:wrap}
+.pay-amount{font-size:1.05rem;font-weight:800;color:var(--gray-900)}
+.pay-date{font-size:.78rem;color:var(--gray-400);flex:1;text-align:right}
+.pay-actions{display:flex;gap:.5rem}
+.pbtn{padding:.38rem .9rem;font-size:.8rem;font-weight:700;border:none;border-radius:.5rem;cursor:pointer;transition:all .18s}
+.pbtn-ghost{background:var(--gray-100);color:var(--gray-700);border:1px solid var(--gray-200)}
+.pbtn-ghost:hover{background:var(--gray-200)}
+.pbtn-dl{background:#16a34a;color:#fff;border:1px solid #15803d}
+.pbtn-dl:hover{background:#15803d;transform:translateY(-1px)}
+
+/* REMAINING DAYS PILL */
+.days-pill{display:inline-flex;align-items:center;gap:.3rem;background:var(--purple-light);color:var(--purple);font-size:.75rem;font-weight:700;border-radius:2rem;padding:.2rem .65rem;margin-top:.3rem}
+.days-pill.expired{background:var(--red-light);color:var(--red-dark)}
+
+/* TICKET CODE */
+.ticket-code{display:inline-flex;align-items:center;gap:.3rem;background:var(--pink-light);color:var(--pink);font-size:.72rem;font-weight:700;font-family:monospace;border-radius:.4rem;padding:.18rem .6rem;margin-top:.3rem;letter-spacing:.06em}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:4rem 1rem}
+.empty-icon{font-size:4rem;margin-bottom:1rem}
+.empty-state h3{font-size:1.3rem;font-weight:700;color:var(--gray-800);margin-bottom:.5rem}
+.empty-state p{color:var(--gray-500);margin-bottom:1.75rem;font-size:.95rem}
+.btn-shop{display:inline-block;padding:.7rem 1.75rem;background:var(--primary);color:#fff;border-radius:.75rem;font-weight:700;font-size:.95rem;cursor:pointer;transition:background .18s;border:none}
+.btn-shop:hover{background:var(--primary-dark)}
+
+/* SKELETON */
+.skeleton{background:linear-gradient(90deg,var(--gray-100) 25%,var(--gray-200) 50%,var(--gray-100) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:.5rem}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skel-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--gray-100);padding:1.1rem 1.25rem;display:flex;gap:1rem;align-items:flex-start}
+.skel-icon{width:48px;height:48px;border-radius:.75rem;flex-shrink:0}
+.skel-body{flex:1;display:flex;flex-direction:column;gap:.5rem;padding-top:.25rem}
+.skel-line{height:.75rem}
+
+/* PENDING ORDERS SECTION */
+.pending-section{background:#fff;border-radius:var(--radius);border:2px solid #fef08a;box-shadow:0 2px 12px rgba(245,158,11,.12);padding:1.25rem 1.25rem 1rem;margin-bottom:1.5rem}
+.pending-section-hdr{display:flex;align-items:center;gap:.6rem;margin-bottom:1rem}
+.pending-section-hdr h2{font-size:1rem;font-weight:800;color:#92400e}
+.pending-section-hdr .ps-badge{background:#fef08a;color:#78350f;font-size:.7rem;font-weight:800;border-radius:2rem;padding:.15rem .55rem}
+.porder-card{background:var(--gray-50);border-radius:.75rem;border:1px solid #fde68a;padding:1rem;margin-bottom:.75rem;display:flex;gap:1rem;align-items:flex-start}
+.porder-card:last-child{margin-bottom:0}
+.porder-card--paid{border-color:#bbf7d0;background:#f0fdf4;opacity:.9}
+.porder-paid-badge{display:inline-flex;align-items:center;gap:.3rem;padding:.4rem .9rem;font-size:.82rem;font-weight:800;color:#15803d;background:#dcfce7;border:1px solid #86efac;border-radius:.5rem;white-space:nowrap;align-self:flex-start;margin-top:.25rem}
+.porder-icon{width:44px;height:44px;border-radius:.65rem;background:#fef3c7;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.porder-body{flex:1;min-width:0}
+.porder-title{font-size:.95rem;font-weight:700;color:var(--gray-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.porder-meta{font-size:.75rem;color:var(--gray-400);margin-top:.18rem}
+.porder-items{margin-top:.4rem;font-size:.78rem;color:var(--gray-500);line-height:1.8}
+.porder-variant{display:inline-flex;align-items:center;margin-top:.25rem;font-size:.72rem;font-weight:700;color:#4f46e5;background:#eef2ff;border:1.5px solid #c7d2fe;border-radius:9999px;padding:.15rem .65rem;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.porder-item-variant{display:inline-flex;align-items:center;font-size:.68rem;font-weight:700;color:#4f46e5;background:#eef2ff;border:1px solid #c7d2fe;border-radius:9999px;padding:.08rem .5rem;margin-left:.25rem;vertical-align:middle}
+.porder-amount{font-size:1.1rem;font-weight:800;color:#d97706;margin-top:.35rem}
+.porder-actions{display:flex;flex-direction:column;gap:.4rem;align-items:flex-end;flex-shrink:0}
+.pbtn-pay{padding:.45rem 1rem;font-size:.82rem;font-weight:800;background:linear-gradient(135deg,#16a34a,#4ade80);color:#fff;border:none;border-radius:.5rem;cursor:pointer;white-space:nowrap;transition:opacity .18s}
+.pbtn-pay:hover{opacity:.88}
+.pbtn-del{padding:.38rem .75rem;font-size:.78rem;font-weight:700;background:var(--red-light);color:var(--red-dark);border:1px solid #fecaca;border-radius:.5rem;cursor:pointer;transition:background .18s}
+.pbtn-del:hover{background:#fee2e2}
+.free-del-note{display:inline-flex;align-items:center;gap:4px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:.4rem;padding:2px 8px;font-size:.7rem;font-weight:700;color:#15803d;margin-top:.3rem}
+
+/* MOBILE BOTTOM NAV */
+.mob-nav-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--gray-200);z-index:200;padding:6px 0 env(safe-area-inset-bottom,0)}
+.mob-nav-bar-inner{display:flex;justify-content:space-around}
+.mob-nav-a{display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--gray-500);font-size:10px;font-weight:600;text-decoration:none;padding:6px 8px;flex:1}
+.mob-nav-a.active{color:var(--primary)}
+.mob-nav-a .mob-icon{font-size:20px;line-height:1}
+.mob-nav-a.sell-btn .mob-icon{background:var(--primary);border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 14px rgba(79,70,229,.4);margin-top:-16px}
+.mob-nav-a.sell-btn{color:var(--primary);font-weight:700}
+
+@media(max-width:640px){
+  .page-wrap{padding:1rem 1rem 6rem}
+  .page-header h1{font-size:1.4rem}
+  .summary-strip{grid-template-columns:repeat(3,1fr)}
+  .pay-card-body{grid-template-columns:auto 1fr;gap:.75rem}
+  .pay-card-body .status-badge{display:none}
+  .pay-icon{width:40px;height:40px;font-size:1.2rem}
+  .pay-card-footer .status-badge{display:inline-block}
+  .mob-nav-bar{display:block}
+}
+@media(max-width:380px){
+  .summary-strip{grid-template-columns:1fr 1fr}
+  .sum-card:last-child{display:none}
+}
+</style>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+
+<div class="page-wrap">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <h1>💳 My Payments</h1>
+    <p>All your payment history — products, rent, tickets, bookings and more</p>
+  </div>
+
+  <!-- SUMMARY STRIP -->
+  <div class="summary-strip">
+    <div class="sum-card sum-total"><div class="sum-num" id="sum-total">—</div><div class="sum-label">Total Payments</div></div>
+    <div class="sum-card sum-spent"><div class="sum-num" id="sum-spent">—</div><div class="sum-label">Total Spent</div></div>
+    <div class="sum-card sum-pending"><div class="sum-num" id="sum-pending">—</div><div class="sum-label">Pending</div></div>
+  </div>
+
+  <!-- PENDING ORDERS (from localStorage) -->
+  <div id="pending-orders-section" style="display:none">
+    <div class="pending-section">
+      <div class="pending-section-hdr">
+        <span style="font-size:1.3rem" id="ps-icon">📦</span>
+        <h2 id="ps-title">My Orders</h2>
+        <span class="ps-badge" id="ps-count" style="display:none">0</span>
+      </div>
+      <div id="pending-orders-list"></div>
+    </div>
+  </div>
+
+  <!-- PAYMENTS LIST -->
+  <div class="pay-list" id="pay-list">
+    <div class="skel-card"><div class="skeleton skel-icon"></div><div class="skel-body"><div class="skeleton skel-line" style="width:60%"></div><div class="skeleton skel-line" style="width:40%"></div><div class="skeleton skel-line" style="width:30%"></div></div></div>
+    <div class="skel-card"><div class="skeleton skel-icon"></div><div class="skel-body"><div class="skeleton skel-line" style="width:70%"></div><div class="skeleton skel-line" style="width:45%"></div><div class="skeleton skel-line" style="width:25%"></div></div></div>
+    <div class="skel-card"><div class="skeleton skel-icon"></div><div class="skel-body"><div class="skeleton skel-line" style="width:55%"></div><div class="skeleton skel-line" style="width:35%"></div></div></div>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div class="empty-state" id="empty-state" style="display:none">
+    <div class="empty-icon">💳</div>
+    <h3>No payments found</h3>
+    <p>Your payment history will appear here once you make a purchase or payment.</p>
+    <button class="btn-shop" onclick="window.location.href='products.html'">Browse Products</button>
+  </div>
+
+</div>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="mob-nav-bar">
+  <div class="mob-nav-bar-inner">
+    <a class="mob-nav-a" href="website.html"><span class="mob-icon">🏠</span>Home</a>
+    <a class="mob-nav-a" href="products.html"><span class="mob-icon">🛍️</span>Browse</a>
+    <a class="mob-nav-a sell-btn" href="seller-dashboard.html"><span class="mob-icon">➕</span>Sell</a>
+    <a class="mob-nav-a active" href="orders.html"><span class="mob-icon">💳</span>Payments</a>
+    <a class="mob-nav-a" href="login.html"><span class="mob-icon">👤</span>Account</a>
+  </div>
+</nav>
+
+<script>
+/* ─────────────── pending orders (localStorage) ─────────────── */
+function loadPendingOrders() {
+  try { return JSON.parse(localStorage.getItem('bc_pending_orders') || '[]'); } catch(e) { return []; }
+}
+function savePendingOrders(orders) { localStorage.setItem('bc_pending_orders', JSON.stringify(orders)); }
+
+function fmtKes(n) { return 'KES ' + Number(n).toLocaleString('en-KE'); }
+
+function renderPendingOrders() {
+  var orders = loadPendingOrders();
+  var section = document.getElementById('pending-orders-section');
+  var list    = document.getElementById('pending-orders-list');
+  var badge   = document.getElementById('ps-count');
+  var title   = document.getElementById('ps-title');
+  var icon    = document.getElementById('ps-icon');
+  if (!orders.length) { if (section) section.style.display = 'none'; return; }
+  if (section) section.style.display = 'block';
+
+  var unpaidCount = orders.filter(function(o){ return o.status !== 'paid'; }).length;
+  var allPaid = unpaidCount === 0;
+
+  // Update header to reflect actual state
+  if (title) title.textContent = allPaid ? 'My Orders — All Paid' : 'My Orders — Payment Pending';
+  if (icon)  icon.textContent  = allPaid ? '✅' : '📦';
+
+  // Only show badge when there are genuinely unpaid orders
+  if (badge) {
+    if (unpaidCount > 0) {
+      badge.textContent = unpaidCount;
+      badge.style.display = '';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  list.innerHTML = orders.map(function(o, idx) {
+    var isPaid = o.status === 'paid';
+    var freeDelivery = o.totalAmount >= 4000;
+    var itemsHtml = '';
+    if (o.items && o.items.length === 1 && o.items[0].options) {
+      // Single-item order with a variant — show variant pill under title
+      itemsHtml = '<div class="porder-variant">' + esc(o.items[0].options) + '</div>';
+    } else if (o.items && o.items.length > 1) {
+      // Multi-item cart order — list each line with variant if present
+      itemsHtml = '<div class="porder-items">' + o.items.map(function(it) {
+        var varTag = it.options ? ' <span class="porder-item-variant">' + esc(it.options) + '</span>' : '';
+        return it.qty + '× ' + esc(it.title) + varTag + ' &nbsp;—&nbsp; ' + fmtKes(it.price * it.qty);
+      }).join('<br>') + '</div>';
+    }
+    var dateStr = o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-KE', {day:'numeric',month:'short',year:'numeric'}) : '';
+    var sourceLabel = o.source === 'cart' ? '🛒 Cart order' : '🛍️ Direct order';
+    var oEncoded = encodeURIComponent(JSON.stringify(o));
+    var actionsHtml = isPaid
+      ? '<div class="porder-actions">' +
+          '<div class="porder-paid-badge">✓ Paid</div>' +
+          '<button class="pbtn-pay" style="background:linear-gradient(135deg,#16a34a,#4ade80);font-size:.78rem;" onclick="downloadPendingReceipt(\'' + oEncoded + '\')">&#11015; Receipt</button>' +
+        '</div>'
+      : '<div class="porder-actions">' +
+          '<button class="pbtn-pay" onclick="payPendingOrder(' + idx + ')">Pay Now</button>' +
+          '<button class="pbtn-del" onclick="deletePendingOrder(' + idx + ')">Remove</button>' +
+        '</div>';
+    return '<div class="porder-card' + (isPaid ? ' porder-card--paid' : '') + '" id="porder-' + idx + '">' +
+      '<div class="porder-icon">' + (isPaid ? '✅' : '📦') + '</div>' +
+      '<div class="porder-body">' +
+        '<div class="porder-title">' + esc(o.title) + '</div>' +
+        '<div class="porder-meta">' + sourceLabel + ' &nbsp;·&nbsp; ' + dateStr + '</div>' +
+        itemsHtml +
+        '<div class="porder-amount">' + fmtKes(o.totalAmount) + '</div>' +
+        (freeDelivery ? '<div class="free-del-note">🚚 Free Delivery</div>' : '') +
+      '</div>' +
+      actionsHtml +
+    '</div>';
+  }).join('');
+}
+
+function payPendingOrder(idx) {
+  var orders = loadPendingOrders();
+  var o = orders[idx];
+  if (!o) return;
+  // Remember which pending order is being paid so payment.html can mark it
+  localStorage.setItem('bc_paying_order_idx', String(idx));
+  if (o.source === 'cart' && o.items && o.items.length > 1) {
+    // Cart order — restore to cartItems and go to payment
+    var cartItems = o.items.map(function(it) {
+      return { _id: it.productId, title: it.title, unitPrice: it.price, price: it.price * it.qty, qty: it.qty, seller_id: it.sellerId };
+    });
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    window.location.href = 'payment.html?type=cart';
+  } else {
+    // Single product order
+    var it = o.items[0] || {};
+    var params = 'item=' + encodeURIComponent(o.title) + '&price=' + (o.totalAmount || 0);
+    if (it.sellerId)  params += '&seller_id='  + encodeURIComponent(it.sellerId);
+    if (it.productId) params += '&product_id=' + encodeURIComponent(it.productId);
+    window.location.href = 'payment.html?' + params;
+  }
+}
+
+function deletePendingOrder(idx) {
+  var orders = loadPendingOrders();
+  orders.splice(idx, 1);
+  savePendingOrders(orders);
+  renderPendingOrders();
+  updateCounts(_all);
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ─────────────── config ─────────────── */
+// Lookup store so onclick handlers never embed raw JSON in HTML attributes
+var _cardStore = [];
+
+var CATEGORIES = ['product','service','rent','viewing','ticket','promotion','premium_listing'];
+
+var CAT_META = {
+  product:         { label:'Product Bought',         icon:'🛍️', bar:'bar-product',         ic:'icon-product',         lbl:'lbl-product' },
+  service:         { label:'Service Paid',            icon:'🔧', bar:'bar-service',          ic:'icon-service',         lbl:'lbl-service' },
+  rent:            { label:'Rent Paid',               icon:'🏠', bar:'bar-rent',             ic:'icon-rent',            lbl:'lbl-rent' },
+  viewing:         { label:'Viewing / Booking Fee',   icon:'👁️', bar:'bar-viewing',          ic:'icon-viewing',         lbl:'lbl-viewing' },
+  ticket:          { label:'Ticket Purchased',        icon:'🎟️', bar:'bar-ticket',           ic:'icon-ticket',          lbl:'lbl-ticket' },
+  promotion:       { label:'Promotion Paid',          icon:'📢', bar:'bar-promotion',        ic:'icon-promotion',       lbl:'lbl-promotion' },
+  premium_listing: { label:'Premium Listing Paid',    icon:'⭐', bar:'bar-premium_listing',  ic:'icon-premium_listing', lbl:'lbl-premium_listing' }
+};
+
+var _all = [];
+var _active = 'all';
+
+/* ─────────────── utils ─────────────── */
+function fmt(n) {
+  if (!n && n !== 0) return '';
+  var num = parseFloat(String(n).replace(/[^0-9.]/g,''));
+  if (isNaN(num)) return String(n);
+  return 'Ksh ' + num.toLocaleString('en-KE');
+}
+
+function fmtDate(d) {
+  if (!d) return '';
+  var dt = new Date(d);
+  if (isNaN(dt)) return '';
+  return dt.toLocaleDateString('en-KE', { day:'numeric', month:'short', year:'numeric' });
+}
+
+function fmtDateTime(d) {
+  if (!d) return '';
+  var dt = new Date(d);
+  if (isNaN(dt)) return '';
+  return dt.toLocaleDateString('en-KE', { day:'numeric', month:'short', year:'numeric' }) +
+         ' · ' + dt.toLocaleTimeString('en-KE', { hour:'2-digit', minute:'2-digit' });
+}
+
+function daysLeft(d) {
+  if (!d) return null;
+  var diff = new Date(d) - new Date();
+  return Math.ceil(diff / 86400000);
+}
+
+function statusBadge(status) {
+  var s = (status || 'pending').toLowerCase();
+  return '<span class="status-badge badge-' + s + '">' + s.charAt(0).toUpperCase() + s.slice(1) + '</span>';
+}
+
+function row(label, value, extra) {
+  if (!value && value !== 0) return '';
+  return '<div class="pay-detail-row"><span class="dk">' + label + '</span><span>' + value + (extra ? ' ' + extra : '') + '</span></div>';
+}
+
+/* ─────────────── card builders ─────────────── */
+function buildCard(p) {
+  var idx = _cardStore.length;
+  _cardStore.push(p);
+
+  var m = CAT_META[p.category] || CAT_META.product;
+  var details = buildDetails(p);
+  var footerRight = p.date ? '<span class="pay-date">' + fmtDate(p.date) + '</span>' : '';
+  var viewBtn     = '<button class="pbtn pbtn-ghost" onclick="viewReceipt(' + idx + ')">View Receipt</button>';
+  var downloadBtn = '<button class="pbtn pbtn-dl" onclick="downloadOrderReceipt(' + idx + ')">&#11015; Download</button>';
+
+  return '<div class="pay-card">' +
+    '<div class="pay-card-bar ' + m.bar + '"></div>' +
+    '<div class="pay-card-body">' +
+      '<div class="pay-icon ' + m.ic + '">' + m.icon + '</div>' +
+      '<div class="pay-meta">' +
+        '<div class="pay-type-label ' + m.lbl + '">' + m.label + '</div>' +
+        '<div class="pay-title">' + (p.title || 'Payment') + '</div>' +
+        '<div class="pay-details">' + details + '</div>' +
+      '</div>' +
+      statusBadge(p.status) +
+    '</div>' +
+    '<div class="pay-card-footer">' +
+      '<div class="pay-amount">' + (p.amount ? fmt(p.amount) : (p.category === 'viewing' ? 'Free Booking' : '')) + '</div>' +
+      footerRight +
+      '<div class="pay-actions">' + viewBtn + downloadBtn + '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+function buildDetails(p) {
+  switch (p.category) {
+
+    case 'product':
+      return row('Seller', p.sellerName || '—') +
+             row('Ref', p.id ? p.id.slice(-10) : '');
+
+    case 'service':
+      return row('Provider', p.sellerName || '—') +
+             row('Ref', p.id ? p.id.slice(-10) : '');
+
+    case 'rent':
+      var rentType = p.paymentType ? (p.paymentType === 'full' ? 'Full Month' : p.paymentType === 'partial' ? 'Partial' : p.paymentType) : '';
+      return row('Landlord', p.landlordName || '—') +
+             row('Property', p.title || '—') +
+             (p.location ? row('Location', p.location) : '') +
+             (rentType ? row('Type', rentType) : '') +
+             row('Ref', p.id ? p.id.slice(-10) : '');
+
+    case 'viewing':
+      return row('Property', p.title || '—') +
+             (p.location ? row('Location', p.location) : '') +
+             (p.viewingDate ? row('Date', p.viewingDate + (p.viewingTime ? ' · ' + p.viewingTime : '')) : '') +
+             row('Status', p.status ? p.status.charAt(0).toUpperCase() + p.status.slice(1) : '');
+
+    case 'ticket':
+      var dl = daysLeft(p.eventDate);
+      var evtDateStr = p.eventDate ? fmtDate(p.eventDate) : '';
+      var evtStatus = dl !== null ? (dl > 0 ? 'In ' + dl + ' day' + (dl !== 1 ? 's' : '') : (dl === 0 ? 'Today!' : 'Past event')) : '';
+      return row('Event', p.title || '—') +
+             row('Organizer', p.organizer || '—') +
+             (p.venue ? row('Venue', p.venue) : '') +
+             (evtDateStr ? row('Event Date', evtDateStr + (evtStatus ? '  <span style="color:var(--green);font-weight:700;font-size:.72rem">(' + evtStatus + ')</span>' : '')) : '') +
+             row('Qty', p.quantity ? p.quantity + ' ticket' + (p.quantity > 1 ? 's' : '') : '1 ticket') +
+             (p.ticketCode ? '<div class="ticket-code">🎟️ ' + p.ticketCode + '</div>' : '');
+
+    case 'promotion':
+      var expDate = p.expiresAt ? fmtDateTime(p.expiresAt) : null;
+      var promoLeft = p.expiresAt ? daysLeft(p.expiresAt) : null;
+      var promoPill = promoLeft !== null
+        ? '<div class="days-pill' + (promoLeft <= 0 ? ' expired' : '') + '">📅 ' + (promoLeft > 0 ? promoLeft + ' day' + (promoLeft !== 1 ? 's' : '') + ' remaining' : 'Expired') + '</div>'
+        : '';
+      return row('Item Promoted', p.title || '—') +
+             row('Seller', p.sellerName || '—') +
+             (expDate ? row('Expires', expDate) : '') +
+             promoPill;
+
+    case 'premium_listing':
+      var dl2 = p.daysLeft !== undefined ? p.daysLeft : (p.expiresAt ? daysLeft(p.expiresAt) : null);
+      var activatedStr = p.activatedAt ? fmtDateTime(p.activatedAt) : (p.date ? fmtDateTime(p.date) : null);
+      var expStr = p.expiresAt ? fmtDateTime(p.expiresAt) : null;
+      var pill2 = dl2 !== null
+        ? '<div class="days-pill' + (dl2 <= 0 ? ' expired' : '') + '">⭐ ' + (dl2 > 0 ? dl2 + ' day' + (dl2 !== 1 ? 's' : '') + ' remaining' : 'Expired') + '</div>'
+        : '';
+      return row('Seller', p.sellerName || '—') +
+             (activatedStr ? row('Activated', activatedStr) : '') +
+             (expStr ? row('Expires', expStr) : '') +
+             pill2;
+
+    default:
+      return row('Ref', p.id ? p.id.slice(-10) : '');
+  }
+}
+
+/* ─────────────── render ─────────────── */
+function render(payments) {
+  _cardStore = []; // reset so indices always match current render
+  var list = document.getElementById('pay-list');
+  var empty = document.getElementById('empty-state');
+  if (!payments || payments.length === 0) {
+    list.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  list.innerHTML = payments.map(buildCard).join('');
+}
+
+function updateCounts(all) {
+  // Merge in paid localStorage pending orders so the strip reflects local payments too
+  var localOrders = loadPendingOrders();
+  var localPaid    = localOrders.filter(function(o){ return o.status === 'paid'; });
+  var localUnpaid  = localOrders.filter(function(o){ return o.status !== 'paid'; });
+
+  var totalCount = all.length + localPaid.length;
+  var totalSpent = all.reduce(function(s,p){ return s + (parseFloat(p.amount) || 0); }, 0)
+                 + localPaid.reduce(function(s,o){ return s + (parseFloat(o.totalAmount) || 0); }, 0);
+  var pendingCount = all.filter(function(p){ return (p.status||'').toLowerCase() === 'pending'; }).length
+                   + localUnpaid.length;
+
+  // Animate the numbers in
+  animateCount('sum-total', totalCount, false);
+  animateCount('sum-spent', totalSpent, true);
+  animateCount('sum-pending', pendingCount, false);
+}
+
+function animateCount(id, value, isMoney) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  var start = 0;
+  var duration = 600;
+  var startTime = null;
+  function step(ts) {
+    if (!startTime) startTime = ts;
+    var progress = Math.min((ts - startTime) / duration, 1);
+    var eased = 1 - Math.pow(1 - progress, 3);
+    var current = Math.round(start + (value - start) * eased);
+    if (isMoney) {
+      el.textContent = current > 0 ? 'Ksh\u00a0' + current.toLocaleString('en-KE') : '0';
+    } else {
+      el.textContent = current;
+    }
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+/* ─────────────── receipt ─────────────── */
+function buildReceiptParams(p) {
+  return new URLSearchParams({
+    type:   p.category || 'payment',
+    amount: String(p.amount || '0').replace(/[^0-9.]/g,''),
+    ref:    p.id || p.reference || '',
+    desc:   p.title || 'Payment',
+    date:   p.date || new Date().toISOString(),
+    name:   p.buyerName || p.tenantName || '',
+    phone:  p.phone || ''
+  });
+}
+
+function viewReceipt(idx) {
+  var p = _cardStore[idx];
+  if (!p) return;
+  window.open('receipt.html?' + buildReceiptParams(p).toString(), '_blank');
+}
+
+function downloadOrderReceipt(idx) {
+  var p = _cardStore[idx];
+  if (!p) return;
+  var params = buildReceiptParams(p);
+  params.set('autoDownload', '1');
+  window.open('receipt.html?' + params.toString(), '_blank');
+}
+
+function downloadPendingReceipt(oEncoded) {
+  try {
+    var o = JSON.parse(decodeURIComponent(oEncoded));
+    var params = new URLSearchParams({
+      type:   'order',
+      amount: String(o.totalAmount || 0),
+      ref:    o.paidAt ? ('BC' + new Date(o.paidAt).getTime().toString(36).toUpperCase()) : ('BC' + Date.now().toString(36).toUpperCase()),
+      desc:   o.title || 'Order',
+      date:   o.paidAt || o.createdAt || new Date().toISOString(),
+      autoDownload: '1'
+    });
+    window.open('receipt.html?' + params.toString(), '_blank');
+  } catch(e) {}
+}
+
+/* ─────────────── load ─────────────── */
+function loadPayments() {
+  var token = localStorage.getItem('token') || localStorage.getItem('auth_token') || sessionStorage.getItem('token');
+  if (!token) {
+    document.getElementById('pay-list').innerHTML = '';
+    document.getElementById('empty-state').style.display = 'block';
+    document.getElementById('empty-state').querySelector('p').textContent = 'Please log in to see your payment history.';
+    document.getElementById('empty-state').querySelector('.btn-shop').textContent = 'Login';
+    document.getElementById('empty-state').querySelector('.btn-shop').onclick = function(){ window.location.href = 'login.html'; };
+    return;
+  }
+
+  fetch('/api/my-payments', { headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' } })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      _all = (data.success && Array.isArray(data.payments)) ? data.payments : [];
+      updateCounts(_all);
+      render(_all);
+    })
+    .catch(function(err) {
+      console.error('Payments load error:', err);
+      _all = [];
+      updateCounts(_all); // still show local paid orders in summary even if API fails
+      document.getElementById('pay-list').innerHTML = '';
+      document.getElementById('empty-state').style.display = 'block';
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  renderPendingOrders();
+  updateCounts(_all); // show local pending order data immediately, before API responds
+  loadPayments();
+  if (window.lucide) lucide.createIcons();
+
+  // Scroll to pending section if arriving from order flow
+  if (window.location.hash === '#pending') {
+    var sec = document.getElementById('pending-orders-section');
+    if (sec) setTimeout(function(){ sec.scrollIntoView({behavior:'smooth',block:'start'}); }, 300);
+  }
+
+  // Auto-refresh every 30 seconds so completed payments appear without a manual reload
+  setInterval(function() {
+    try { loadPayments(); } catch (_) {}
+  }, 30000);
+
+  // If arriving fresh from a payment (within 10 s), do an extra refresh after 4 s
+  var nav = performance.getEntriesByType('navigation')[0];
+  var fromPayment = document.referrer && document.referrer.includes('payment');
+  if (fromPayment || (nav && nav.type === 'navigate')) {
+    setTimeout(loadPayments, 4000);
+  }
+});
+</script>
+
+<script src="/shared-layout.js?v=7"></script>
+<script>document.addEventListener("DOMContentLoaded",function(){if(window.lucide)lucide.createIcons();});</script>
+</body>
+</html>

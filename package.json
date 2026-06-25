@@ -1,0 +1,36 @@
+{
+  "name": "bconnect-payment-backend",
+  "version": "1.0.0",
+  "description": "Backend service for BConnect STK push payments and Supabase order storage.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "setup-db": "echo 'Run database-setup.sql in your Supabase SQL editor'",
+    "test-api": "node test-api.js"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@supabase/supabase-js": "^2.103.3",
+    "@whiskeysockets/baileys": "^7.0.0-rc13",
+    "async-mutex": "^0.5.0",
+    "axios": "^1.17.0",
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.10.0",
+    "compression": "^1.8.1",
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.2",
+    "express-rate-limit": "^8.5.2",
+    "jsonwebtoken": "^9.0.3",
+    "mongodb": "^7.2.0",
+    "multer": "^2.1.1",
+    "nodemailer": "^8.0.10",
+    "openai": "^6.42.0",
+    "pdfkit": "^0.18.0",
+    "pg": "^8.20.0",
+    "pino": "^10.3.1",
+    "qrcode": "^1.5.4",
+    "sharp": "^0.34.5"
+  }
+}

@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BConnect Login</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  display: flex;
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, #eef4ff, transparent 45%),
+              radial-gradient(circle at bottom right, #dde8ff, transparent 35%),
+              linear-gradient(180deg, #f3f7ff 0%, #e7eefc 100%);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatSlide {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulseSoft {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255,255,255,0);
+  }
+  50% {
+    box-shadow: 0 0 0 20px rgba(255,255,255,0.05);
+  }
+}
+
+/* LEFT SIDE */
+.left {
+  flex: 1;
+  position: relative;
+  background: linear-gradient(145deg, #1e3fbe 0%, #3b67f5 45%, #6f42f5 100%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px 56px;
+  overflow: hidden;
+  animation: fadeInUp 0.9s ease-out both;
+}
+
+/* Decorative blobs */
+.left::before {
+  content: "";
+  position: absolute;
+  top: -140px; right: -140px;
+  width: 520px; height: 520px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 50%;
+}
+.left::after {
+  content: "";
+  position: absolute;
+  bottom: -160px; left: -100px;
+  width: 480px; height: 480px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 50%;
+}
+
+/* LEFT brand mark */
+.left-brand {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 44px; position: relative; z-index: 1;
+}
+.left-brand-mark {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: linear-gradient(135deg,#f97316,#a855f7);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 1.25rem; color: #fff;
+  box-shadow: 0 4px 16px rgba(168,85,247,.4);
+}
+.left-brand-name {
+  font-size: 1.35rem; font-weight: 900; color: #fff; letter-spacing: -.5px;
+}
+.left-brand-name span { opacity: .85; }
+
+/* TEXT */
+.left-headline {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.04em;
+  margin-bottom: 14px;
+  position: relative; z-index: 1;
+}
+.left-sub {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.8);
+  max-width: 380px;
+  line-height: 1.6;
+  margin-bottom: 40px;
+  position: relative; z-index: 1;
+}
+
+/* Feature chips */
+.left-features {
+  display: flex; flex-direction: column; gap: 14px;
+  position: relative; z-index: 1;
+}
+.left-feature {
+  display: flex; align-items: center; gap: 14px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 14px; padding: 14px 18px;
+  backdrop-filter: blur(6px);
+}
+.left-feature-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: rgba(255,255,255,0.18);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; flex-shrink: 0;
+}
+.left-feature-text strong {
+  display: block; font-size: .92rem; font-weight: 700; color: #fff;
+}
+.left-feature-text span {
+  font-size: .8rem; color: rgba(255,255,255,.68);
+}
+
+/* RIGHT SIDE */
+.right {
+  flex: 1;
+  background: linear-gradient(135deg, #eef2f7, #dfe6f3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* LOGIN CARD */
+.card {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  padding: 40px 36px 32px;
+  border-radius: 28px;
+  box-shadow: 0 30px 70px rgba(20,40,90,0.13);
+  border: 1px solid rgba(220,228,255,0.6);
+  animation: fadeInUp 0.9s ease-out both;
+}
+
+/* Card brand header */
+.card-brand {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 28px;
+}
+.card-brand-mark {
+  width: 40px; height: 40px; border-radius: 11px;
+  background: linear-gradient(135deg, #f97316, #a855f7);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 1.15rem; color: #fff;
+  box-shadow: 0 4px 12px rgba(168,85,247,.35);
+}
+.card-brand-name {
+  font-size: 1.25rem; font-weight: 900; letter-spacing: -.4px;
+}
+.card-brand-name .bn-b { background: linear-gradient(135deg,#f97316,#a855f7); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.card-brand-name .bn-rest { color: #1f2937; }
+.card-headline {
+  font-size: 1.5rem; font-weight: 800; color: #111827;
+  letter-spacing: -.03em; margin-bottom: 6px;
+}
+.card-sub {
+  font-size: .875rem; color: #6b7280; margin-bottom: 28px;
+}
+
+/* INPUT — reuse register modal field style for login card too */
+.login-field {
+  position: relative; margin-bottom: 14px;
+}
+.login-field-icon {
+  position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+  font-size: 1rem; color: #9ca3af; pointer-events: none;
+}
+.login-field input {
+  width: 100%; padding: 13px 14px 13px 38px;
+  border: 1.5px solid #e5e7eb; border-radius: 11px;
+  font-size: .9rem; font-family: inherit; color: #111827;
+  background: #f9fafb; transition: border-color .2s, box-shadow .2s;
+  outline: none;
+}
+.login-field input:focus {
+  border-color: #3b67f5; background: #fff;
+  box-shadow: 0 0 0 3px rgba(59,103,245,.12);
+}
+.login-field input::placeholder { color: #9ca3af; }
+.login-field .eye {
+  position: absolute; right: 13px; top: 50%; transform: translateY(-50%);
+  cursor: pointer; font-size: 1rem; color: #9ca3af; user-select: none;
+}
+
+/* Forgot inline */
+.forgot-inline {
+  text-align: right; margin-top: -6px; margin-bottom: 18px;
+}
+.forgot-inline a {
+  font-size: .82rem; color: #3b67f5; text-decoration: none; font-weight: 600;
+}
+.forgot-inline a:hover { text-decoration: underline; }
+
+/* LOGIN BUTTON */
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #3b67f5, #6f42f5);
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(59,103,245,0.28);
+  transition: opacity 0.2s ease, transform 0.15s ease;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+
+.login-btn:hover {
+  opacity: .92;
+  transform: translateY(-1px);
+}
+.login-btn:active { transform: none; }
+
+/* Sign up row */
+.signup-row {
+  text-align: center;
+  margin-top: 20px;
+  font-size: .875rem;
+  color: #6b7280;
+}
+.signup-row a {
+  color: #3b67f5; font-weight: 700; text-decoration: none;
+}
+.signup-row a:hover { text-decoration: underline; }
+
+/* DIVIDER */
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 22px 0 0;
+}
+.divider span {
+  flex: 1; height: 1px; background: #e5e7eb;
+}
+.divider p {
+  margin: 0 12px; font-size: .8rem; color: #9ca3af;
+}
+
+/* SOCIAL BUTTONS */
+.social { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+.social button {
+  width: 100%; padding: 13px;
+  border-radius: 11px;
+  border: 1.5px solid #e5e7eb;
+  cursor: pointer;
+  font-size: .875rem; font-weight: 600; font-family: inherit;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: background .15s, border-color .15s;
+}
+.google { background: #fff; color: #111; }
+.google:hover { background: #f9fafb; border-color: #d1d5db; }
+.apple { background: #111; color: #fff; border-color: #111; }
+.apple:hover { background: #222; }
+
+/* legacy .links (not used on main card but kept for safety) */
+.links { display: none; }
+
+/* MODAL STYLES */
+.modal {
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.52);
+  backdrop-filter: blur(5px);
+  animation: fadeIn 0.3s ease-out;
+  /* flex-center the card, clear the sticky nav */
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 88px 16px 24px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.modal-content {
+  background: #fff;
+  margin: 0;
+  padding: 0;
+  border-radius: 28px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 24px 60px rgba(20,40,90,0.18);
+  border: 1px solid rgba(220,228,255,0.5);
+  animation: slideIn 0.3s ease-out;
+  flex-shrink: 0;
+}
+
+.modal-header {
+  padding: 30px 30px 20px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 24px;
+  color: #1f2937;
+}
+
+.close {
+  color: #6b7280;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.close:hover {
+  color: #374151;
+}
+
+.modal-footer {
+  padding: 20px 30px 30px;
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+}
+
+.modal-footer p {
+  margin: 0;
+  color: #6b7280;
+}
+
+.modal-footer a {
+  color: #2c5edc;
+  text-decoration: none;
+}
+
+.modal-footer a:hover {
+  text-decoration: underline;
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ERROR/SUCCESS MESSAGES */
+.message {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  display: none;
+}
+
+.message.error {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.message.success {
+  background: #f0fdf4;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+}
+
+/*  REGISTER MODAL REDESIGN  */
+#registerModal .modal-content {
+  max-width: 480px;
+  border-radius: 24px;
+  overflow: hidden;
+  padding: 0;
+  /* sticky hero + scrollable body */
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 112px);
+}
+
+.reg-hero {
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #2c5edc 100%);
+  padding: 24px 28px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.reg-hero::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 200px; height: 200px;
+  background: rgba(255,255,255,.08);
+  border-radius: 50%;
+}
+.reg-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -40px; left: -40px;
+  width: 150px; height: 150px;
+  background: rgba(255,255,255,.06);
+  border-radius: 50%;
+}
+.reg-brand {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 18px; position: relative; z-index: 1;
+}
+.reg-brand-mark {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: rgba(255,255,255,.25); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 1.1rem; color: #fff;
+}
+.reg-brand-name { font-size: 1.15rem; font-weight: 800; color: #fff; letter-spacing: -.3px; }
+.reg-hero h2 {
+  font-size: 1.55rem; font-weight: 800; color: #fff;
+  margin: 0 0 6px; position: relative; z-index: 1;
+}
+.reg-hero p {
+  font-size: .875rem; color: rgba(255,255,255,.78);
+  margin: 0; position: relative; z-index: 1;
+}
+.reg-close {
+  position: absolute; top: 16px; right: 20px;
+  font-size: 1.6rem; color: rgba(255,255,255,.7);
+  cursor: pointer; line-height: 1; z-index: 2;
+  transition: color .2s;
+}
+.reg-close:hover { color: #fff; }
+
+/* scrollable zone inside the modal */
+.reg-scroll {
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  overscroll-behavior: contain;
+}
+.reg-body {
+  padding: 20px 28px 6px;
+}
+
+/* Role cards */
+.reg-role-label {
+  font-size: .8rem; font-weight: 700; color: #6b7280;
+  text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px;
+}
+.reg-role-grid {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; margin-bottom: 14px;
+}
+.reg-role-card {
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  padding: 10px 6px; border: 2px solid #e5e7eb; border-radius: 12px;
+  cursor: pointer; transition: all .2s; background: #fafafa;
+}
+.reg-role-card:hover { border-color: #4f46e5; background: #eef2ff; }
+.reg-role-card input[type="radio"] { display: none; }
+.reg-role-card:has(input:checked) {
+  border-color: #4f46e5; background: #eef2ff;
+  box-shadow: 0 0 0 3px rgba(79,70,229,.15);
+}
+.reg-role-card:has(input:checked) .role-icon-wrap {
+  background: #4f46e5; color: #fff;
+}
+.role-icon-wrap {
+  width: 34px; height: 34px; border-radius: 8px;
+  background: #e5e7eb; display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; transition: all .2s;
+}
+.reg-role-card span.role-name {
+  font-size: .78rem; font-weight: 700; color: #374151; transition: color .2s;
+}
+.reg-role-card:has(input:checked) span.role-name { color: #4f46e5; }
+
+/* Floating inputs */
+.reg-field {
+  position: relative; margin-bottom: 10px;
+}
+.reg-field-icon {
+  position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+  font-size: 1rem; color: #9ca3af; pointer-events: none;
+}
+.reg-field input {
+  width: 100%; padding: 12px 14px 12px 38px;
+  border: 1.5px solid #e5e7eb; border-radius: 11px;
+  font-size: .9rem; font-family: inherit; color: #111827;
+  background: #f9fafb; transition: border-color .2s, box-shadow .2s;
+  outline: none;
+}
+.reg-field input:focus {
+  border-color: #4f46e5; background: #fff;
+  box-shadow: 0 0 0 3px rgba(79,70,229,.12);
+}
+.reg-field input::placeholder { color: #9ca3af; }
+.reg-eye {
+  position: absolute; right: 13px; top: 50%; transform: translateY(-50%);
+  cursor: pointer; font-size: 1rem; color: #9ca3af; user-select: none;
+}
+
+/* Submit btn */
+.reg-submit {
+  width: 100%; padding: 13px; margin-top: 4px;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: #fff; border: none; border-radius: 12px;
+  font-size: 1rem; font-weight: 700; cursor: pointer;
+  transition: opacity .2s, transform .15s; letter-spacing: .01em;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.reg-submit:hover { opacity: .92; transform: translateY(-1px); }
+.reg-submit:active { transform: none; }
+
+.reg-footer {
+  text-align: center; padding: 14px 28px 20px;
+  font-size: .875rem; color: #6b7280;
+  border-top: 1px solid #f3f4f6;
+}
+.reg-footer a { color: #4f46e5; font-weight: 600; text-decoration: none; }
+.reg-footer a:hover { text-decoration: underline; }
+
+.reg-msg {
+  padding: 10px 14px; border-radius: 9px; margin-bottom: 12px;
+  font-size: .85rem; font-weight: 500; display: none;
+}
+.reg-msg.error { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+.reg-msg.success { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+
+@media(max-width: 576px) {
+  #registerModal .modal-content { border-radius: 20px; }
+  .reg-hero { padding: 24px 20px 20px; }
+  .reg-body { padding: 20px 20px 6px; }
+  .reg-footer { padding: 14px 20px 20px; }
+  .reg-role-grid { gap: 8px; }
+}
+
+/* Role Selector Styles (kept for forgot-password modal) */
+.role-selector {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 8px;
+}
+.role-option {
+  display: flex; align-items: center; justify-content: center;
+  padding: 12px; border: 2px solid #e5e7eb; border-radius: 12px;
+  cursor: pointer; transition: all 0.3s ease; background: #ffffff;
+}
+.role-option input[type="radio"] { display: none; }
+.role-option:hover { border-color: #3b82f6; background: #f0f9ff; }
+.role-option:has(input[type="radio"]:checked) {
+  border-color: #3b82f6; background: #dbeafe; font-weight: 600; color: #3b82f6;
+}
+.role-label {
+  font-size: 14px; font-weight: 500; display: flex; align-items: center;
+  gap: 6px; width: 100%; justify-content: center; color: #374151; transition: color 0.3s ease;
+}
+
+/* MOBILE */
+@media (max-width: 992px) {
+  body { display: block; min-height: auto; }
+  .left { display: none; }
+  .right { min-height: 100vh; padding: 30px 20px; }
+  .card { max-width: 460px; margin: 0 auto; padding: 28px 24px; border-radius: 24px; }
+  .modal-content { width: 95%; margin: 10% auto; max-width: none; }
+  .modal-header { padding: 24px 24px 16px; }
+  .modal-header h2 { font-size: 20px; }
+  .modal-footer { padding: 16px 24px 24px; }
+}
+
+@media (max-width: 576px) {
+  .card { padding: 22px 18px; border-radius: 20px; }
+  .modal-content { width: 98%; margin: 5% auto; }
+  .modal-header { padding: 20px 20px 12px; }
+  .modal-header h2 { font-size: 18px; }
+  .modal-footer { padding: 12px 20px 20px; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LEFT PANEL -->
+<div class="left">
+  <div class="left-brand">
+    <div class="left-brand-mark"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="6" cy="6" r="2.5" fill="#fff"/><circle cx="6" cy="18" r="2.5" fill="#fff"/><circle cx="18" cy="12" r="2.5" fill="#fff"/><circle cx="6" cy="12" r="1.8" fill="rgba(255,255,255,0.6)"/><line x1="6" y1="6" x2="6" y2="18" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/><line x1="6" y1="6" x2="18" y2="12" stroke="rgba(255,255,255,0.9)" stroke-width="1.5"/><line x1="6" y1="18" x2="18" y2="12" stroke="rgba(255,255,255,0.9)" stroke-width="1.5"/></svg></div>
+    <span class="left-brand-name">BConnect</span>
+  </div>
+
+  <h1 class="left-headline">Kenya's All-in-One<br>Property &amp; Marketplace</h1>
+  <p class="left-sub">Buy products, find rental homes, and hire services — all in one trusted platform built for Kenyans.</p>
+
+  <div class="left-features">
+    <div class="left-feature">
+      <div class="left-feature-icon"></div>
+      <div class="left-feature-text">
+        <strong>Marketplace</strong>
+        <span>Browse thousands of products from local sellers</span>
+      </div>
+    </div>
+    <div class="left-feature">
+      <div class="left-feature-icon"></div>
+      <div class="left-feature-text">
+        <strong>Property Rentals</strong>
+        <span>Find verified apartments, bedsitters &amp; houses</span>
+      </div>
+    </div>
+    <div class="left-feature">
+      <div class="left-feature-icon"></div>
+      <div class="left-feature-text">
+        <strong>Local Services</strong>
+        <span>Connect with plumbers, cleaners, electricians &amp; more</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT PANEL — LOGIN CARD -->
+<div class="right">
+  <div class="card">
+
+    <!-- Brand mark -->
+    <div class="card-brand">
+      <div class="card-brand-mark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="6" cy="6" r="2.5" fill="#fff"/><circle cx="6" cy="18" r="2.5" fill="#fff"/><circle cx="18" cy="12" r="2.5" fill="#fff"/><circle cx="6" cy="12" r="1.8" fill="rgba(255,255,255,0.6)"/><line x1="6" y1="6" x2="6" y2="18" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/><line x1="6" y1="6" x2="18" y2="12" stroke="rgba(255,255,255,0.9)" stroke-width="1.5"/><line x1="6" y1="18" x2="18" y2="12" stroke="rgba(255,255,255,0.9)" stroke-width="1.5"/></svg></div>
+      <span class="card-brand-name"><span class="bn-b">B</span><span class="bn-rest">Connect</span></span>
+    </div>
+
+    <h2 class="card-headline">Welcome back</h2>
+    <p class="card-sub">Sign in to your account to continue</p>
+
+    <form id="loginForm">
+      <div class="login-field">
+        <span class="login-field-icon"></span>
+        <input type="email" id="email" placeholder="Email address" required autocomplete="email">
+      </div>
+
+      <div class="login-field">
+        <span class="login-field-icon"></span>
+        <input type="password" id="password" placeholder="Password" required autocomplete="current-password">
+        <span class="eye" onclick="togglePassword()"></span>
+      </div>
+
+      <div class="forgot-inline">
+        <a href="#" onclick="showForgotPassword(); return false;">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="login-btn" id="loginBtn">
+        <span id="loginText">Sign In</span>
+        <div id="loginSpinner" style="display:none;width:20px;height:20px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin 1s linear infinite;"></div>
+      </button>
+    </form>
+
+    <div class="signup-row">
+      Don't have an account? <a href="#" onclick="showRegister(); return false;">Create one</a>
+    </div>
+
+    <!-- 2FA Step — hidden until required -->
+    <div id="twoFaStep" style="display:none;margin-top:8px">
+      <div style="text-align:center;margin-bottom:18px">
+        <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#4f46e5,#7c3aed);display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div style="font-weight:800;font-size:1.05rem;color:#111827;margin-bottom:4px">Two-Factor Verification</div>
+        <div style="font-size:.82rem;color:#6b7280;line-height:1.5">Enter the 6-digit code shown below to continue.</div>
+      </div>
+      <div id="twoFaCodeHintLogin" style="display:none;background:#f0f9ff;border:1.5px dashed #3b82f6;border-radius:10px;padding:12px 14px;text-align:center;margin-bottom:14px">
+        <div style="font-size:.75rem;color:#1d4ed8;font-weight:700;margin-bottom:3px">Your verification code</div>
+        <div id="twoFaCodeValueLogin" style="font-size:1.9rem;font-weight:900;letter-spacing:.18em;color:#1e40af"></div>
+        <div style="font-size:.7rem;color:#64748b;margin-top:4px">Expires in 10 minutes</div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-bottom:14px" id="otpInputsWrap">
+        <input class="otp-login-digit" maxlength="1" style="width:42px;height:50px;text-align:center;font-size:1.35rem;font-weight:700;border:2px solid #e5e7eb;border-radius:10px;outline:none;background:#f9fafb;color:#111827;font-family:inherit;transition:border-color .15s" />
+        <input class="otp-login-digit" maxlength="1" style="width:42px;height:50px;text-align:center;font-size:1.35rem;font-weight:700;border:2px solid #e5e7eb;border-radius:10px;outline:none;background:#f9fafb;color:#111827;font-family:inherit;transition:border-color .15s" />
+        <input class="otp-login-digit" maxlength="1" style="width:42px;height:50px;text-align:center;font-size:1.35rem;font-weight:700;border:2px solid #e5e7eb;border-radius:10px;outline:none;background:#f9fafb;color:#111827;font-family:inherit;transition:border-color .15s" />
+        <input class="otp-login-digit" maxlength="1" style="width:42px;height:50px;text-align:center;font-size:1.35rem;font-weight:700;border:2px solid #e5e7eb;border-radius:10px;outline:none;background:#f9fafb;color:#111827;font-family:inherit;transition:border-color .15s" />
+        <input class="otp-login-digit" maxlength="1" style="width:42px;height:50px;text-align:center;font-size:1.35rem;font-weight:700;border:2px solid #e5e7eb;border-radius:10px;outline:none;background:#f9fafb;color:#111827;font-family:inherit;transition:border-color .15s" />
+        <input class="otp-login-digit" maxlength="1" style="width:42px;height:50px;text-align:center;font-size:1.35rem;font-weight:700;border:2px solid #e5e7eb;border-radius:10px;outline:none;background:#f9fafb;color:#111827;font-family:inherit;transition:border-color .15s" />
+      </div>
+      <button id="verify2FaBtn" style="width:100%;padding:13px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;border:none;border-radius:12px;font-size:.95rem;font-weight:800;cursor:pointer;font-family:inherit;transition:opacity .2s">
+        Verify &amp; Sign In
+      </button>
+      <div style="text-align:center;margin-top:10px">
+        <a href="#" id="back2FaBtn" style="font-size:.8rem;color:#6b7280;font-weight:600">← Back to login</a>
+      </div>
+    </div>
+
+    <div class="signup-row" style="margin-top:10px;font-size:.8rem;">
+      Need to verify your email? <a href="#" onclick="showResendVerify(); return false;">Resend link</a>
+    </div>
+
+    <div class="divider">
+      <span></span>
+      <p>or</p>
+      <span></span>
+    </div>
+
+    <div class="social">
+      <button class="google">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615Z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18Z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332Z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58Z" fill="#EA4335"/></svg>
+        Continue with Google
+      </button>
+      <button class="apple">
+        <svg width="16" height="18" viewBox="0 0 16 18" fill="white"><path d="M13.173 9.545c-.02-2.17 1.773-3.222 1.853-3.27-1.01-1.475-2.578-1.677-3.136-1.698-1.335-.135-2.607.788-3.283.788-.675 0-1.714-.77-2.818-.748-1.448.021-2.785.843-3.528 2.135C.79 9.3 1.872 13.637 3.382 15.892c.739 1.106 1.624 2.344 2.774 2.3 1.116-.045 1.535-.716 2.882-.716 1.347 0 1.727.716 2.905.694 1.198-.021 1.96-1.116 2.69-2.229.857-1.276 1.203-2.527 1.222-2.59-.027-.011-2.337-.894-2.36-3.355l-.322-.451Z"/><path d="M11.024 3.018c.606-.745 1.016-1.77.904-2.8-.875.037-1.94.588-2.57 1.316-.557.647-1.052 1.69-.922 2.687.979.075 1.979-.504 2.588-1.203Z"/></svg>
+        Continue with Apple
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- REGISTRATION MODAL -->
+<div id="registerModal" class="modal" style="display: none;">
+  <div class="modal-content">
+
+    <!-- Gradient hero header -->
+    <div class="reg-hero">
+      <span class="reg-close" onclick="closeModal()">&times;</span>
+      <div class="reg-brand">
+        <div class="reg-brand-mark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="6" cy="6" r="2.5" fill="#fff"/><circle cx="6" cy="18" r="2.5" fill="#fff"/><circle cx="18" cy="12" r="2.5" fill="#fff"/><circle cx="6" cy="12" r="1.8" fill="rgba(255,255,255,0.6)"/><line x1="6" y1="6" x2="6" y2="18" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/><line x1="6" y1="6" x2="18" y2="12" stroke="rgba(255,255,255,0.9)" stroke-width="1.5"/><line x1="6" y1="18" x2="18" y2="12" stroke="rgba(255,255,255,0.9)" stroke-width="1.5"/></svg></div>
+        <span class="reg-brand-name">BConnect</span>
+      </div>
+      <h2>Create your account</h2>
+      <p>Join thousands of Kenyans buying, selling &amp; renting</p>
+    </div>
+
+    <div class="reg-scroll">
+      <div class="reg-body">
+        <div id="regMsg" class="reg-msg"></div>
+
+        <form id="registerForm">
+          <!-- Name -->
+          <div class="reg-field">
+            <span class="reg-field-icon"></span>
+            <input type="text" id="regFullName" placeholder="Full name" required autocomplete="name">
+          </div>
+
+          <!-- Email -->
+          <div class="reg-field">
+            <span class="reg-field-icon"></span>
+            <input type="email" id="regEmail" placeholder="Email address" required autocomplete="email">
+          </div>
+
+          <!-- Password -->
+          <div class="reg-field">
+            <span class="reg-field-icon"></span>
+            <input type="password" id="regPassword" placeholder="Password (min 6 chars)" required autocomplete="new-password">
+            <span class="reg-eye" onclick="toggleRegPassword()"></span>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="reg-field">
+            <span class="reg-field-icon"></span>
+            <input type="password" id="regConfirmPassword" placeholder="Confirm password" required autocomplete="new-password">
+          </div>
+
+          <!-- Phone -->
+          <div class="reg-field">
+            <span class="reg-field-icon"></span>
+            <input type="tel" id="regPhone" placeholder="Phone number (e.g. 0712345678)" required autocomplete="tel">
+          </div>
+
+          <button type="submit" class="reg-submit" id="registerBtn">
+            <span id="registerText">Create Account</span>
+            <div id="registerSpinner" style="display:none;width:20px;height:20px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin 1s linear infinite;"></div>
+          </button>
+        </form>
+      </div>
+
+      <div class="reg-footer">
+        Already have an account? <a href="#" onclick="switchToLogin()">Sign in</a>
+      </div>
+    </div>
+
+    <!-- SUCCESS SCREEN (shown after account creation) -->
+    <div id="regSuccessScreen" style="display:none;flex-direction:column;align-items:center;padding:40px 28px 36px;text-align:center;">
+      <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#4f46e5,#7c3aed);display:flex;align-items:center;justify-content:center;margin-bottom:20px;box-shadow:0 8px 24px rgba(79,70,229,.35);">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h3 style="font-size:1.4rem;font-weight:800;color:#111827;margin-bottom:6px;">Check Your Inbox!</h3>
+      <p id="regSuccessName" style="font-size:1rem;font-weight:600;color:#4f46e5;margin-bottom:12px;"></p>
+      <p style="font-size:.875rem;color:#6b7280;line-height:1.6;margin-bottom:6px;">We sent a verification link to your email address. Click it to activate your account before signing in.</p>
+      <p id="regSuccessEmail" style="font-size:.82rem;color:#9ca3af;margin-bottom:20px;line-height:1.5;"></p>
+      <button onclick="switchToLoginFromSuccess()" style="width:100%;padding:13px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(79,70,229,.3);margin-bottom:10px;">
+        Go to Sign In
+      </button>
+      <p style="font-size:.8rem;color:#9ca3af;">Didn't receive it? Check your spam folder or <a href="#" id="resendFromSuccess" style="color:#4f46e5;font-weight:600;">resend the email</a>.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- FORGOT PASSWORD MODAL -->
+<div id="forgotModal" class="modal" style="display: none;">
+  <div class="modal-content" style="max-width:420px;border-radius:24px;overflow:hidden;padding:0;display:flex;flex-direction:column;">
+
+    <!-- Gradient hero header -->
+    <div class="reg-hero" style="background:linear-gradient(135deg,#1e3fbe 0%,#3b67f5 55%,#6f42f5 100%);">
+      <span class="reg-close" onclick="closeModal()">&times;</span>
+      <div class="reg-brand">
+        <div class="reg-brand-mark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="6" cy="6" r="2.5" fill="#fff"/><circle cx="6" cy="18" r="2.5" fill="#fff"/><circle cx="18" cy="12" r="2.5" fill="#fff"/><circle cx="6" cy="12" r="1.8" fill="rgba(255,255,255,0.6)"/><line x1="6" y1="6" x2="6" y2="18" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/><line x1="6" y1="6" x2="18" y2="12" stroke="rgba(255,255,255,0.9)" stroke-width="1.5"/><line x1="6" y1="18" x2="18" y2="12" stroke="rgba(255,255,255,0.9)" stroke-width="1.5"/></svg></div>
+        <span class="reg-brand-name">BConnect</span>
+      </div>
+      <h2>Forgot Password?</h2>
+      <p>Enter your email and we'll send a reset link valid for 15 minutes.</p>
+    </div>
+
+    <!-- Body: request form -->
+    <div id="forgotStep1" style="padding:24px 28px 8px;">
+      <div id="forgotMsg" class="reg-msg"></div>
+      <form id="forgotForm">
+        <div class="reg-field">
+          <span class="reg-field-icon"></span>
+          <input type="email" id="forgotEmail" placeholder="Your email address" required autocomplete="email">
+        </div>
+        <button type="submit" class="reg-submit" id="forgotBtn" style="margin-top:8px;">
+          <span id="forgotText">Send Reset Link</span>
+          <div id="forgotSpinner" style="display:none;width:20px;height:20px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin 1s linear infinite;"></div>
+        </button>
+      </form>
+    </div>
+
+    <!-- Success state -->
+    <div id="forgotStep2" style="display:none;padding:28px;text-align:center;">
+      <div style="width:64px;height:64px;border-radius:50%;background:#dcfce7;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:2rem;"></div>
+      <h3 style="font-size:1.15rem;font-weight:800;color:#111827;margin-bottom:8px;">Check your inbox!</h3>
+      <p style="font-size:.875rem;color:#6b7280;line-height:1.6;margin-bottom:20px;">A reset link has been sent to <strong id="forgotSentTo"></strong>. It expires in 15 minutes — check your spam folder too.</p>
+      <button onclick="closeModal()" class="reg-submit" style="width:auto;padding:12px 32px;">Back to Login</button>
+    </div>
+
+    <div class="reg-footer">
+      Remember your password? <a href="#" onclick="switchToLogin()">Sign in</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- RESEND VERIFICATION MODAL -->
+<div id="resendVerifyModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width:420px;border-radius:24px;overflow:hidden;padding:0;display:flex;flex-direction:column;">
+
+    <div class="reg-hero" style="background:linear-gradient(135deg,#0d9488 0%,#0891b2 55%,#4f46e5 100%);">
+      <span class="reg-close" onclick="closeResendVerifyModal()">&times;</span>
+      <div class="reg-brand">
+        <div class="reg-brand-mark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="6" cy="6" r="2.5" fill="#fff"/><circle cx="6" cy="18" r="2.5" fill="#fff"/><circle cx="18" cy="12" r="2.5" fill="#fff"/><circle cx="6" cy="12" r="1.8" fill="rgba(255,255,255,0.6)"/><line x1="6" y1="6" x2="6" y2="18" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/><line x1="6" y1="6" x2="18" y2="12" stroke="rgba(255,255,255,0.9)" stroke-width="1.5"/><line x1="6" y1="18" x2="18" y2="12" stroke="rgba(255,255,255,0.9)" stroke-width="1.5"/></svg></div>
+        <span class="reg-brand-name">BConnect</span>
+      </div>
+      <h2>Verify Your Email</h2>
+      <p>Enter your email and we'll send a new verification link.</p>
+    </div>
+
+    <div id="resendStep1" style="padding:24px 28px 8px;">
+      <div id="resendMsg" class="reg-msg"></div>
+      <form id="resendVerifyForm">
+        <div class="reg-field">
+          <span class="reg-field-icon">✉️</span>
+          <input type="email" id="resendEmail" placeholder="Your email address" required autocomplete="email">
+        </div>
+        <button type="submit" class="reg-submit" id="resendBtn" style="margin-top:8px;background:linear-gradient(135deg,#0d9488,#0891b2);">
+          <span id="resendText">Send Verification Link</span>
+          <div id="resendSpinner" style="display:none;width:20px;height:20px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin 1s linear infinite;"></div>
+        </button>
+      </form>
+    </div>
+
+    <div id="resendStep2" style="display:none;padding:28px;text-align:center;">
+      <div style="width:64px;height:64px;border-radius:50%;background:#ccfbf1;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:2rem;">✉️</div>
+      <h3 style="font-size:1.15rem;font-weight:800;color:#111827;margin-bottom:8px;">Check your inbox!</h3>
+      <p style="font-size:.875rem;color:#6b7280;line-height:1.6;margin-bottom:20px;">A verification link has been sent to <strong id="resendSentTo"></strong>. Check your spam folder too.</p>
+      <button onclick="closeResendVerifyModal()" class="reg-submit" style="width:auto;padding:12px 32px;background:linear-gradient(135deg,#0d9488,#0891b2);">Back to Login</button>
+    </div>
+
+    <div class="reg-footer">
+      Already verified? <a href="#" onclick="closeResendVerifyModal()">Sign in</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const API_BASE_URL = window.location.protocol === 'file:' ? 'http://localhost:3000' : `${window.location.protocol}//${window.location.host}`;
+
+// Utility functions
+function togglePassword() {
+  const password = document.getElementById('password');
+  password.type = password.type === 'password' ? 'text' : 'password';
+}
+
+function toggleRegPassword() {
+  const password = document.getElementById('regPassword');
+  password.type = password.type === 'password' ? 'text' : 'password';
+}
+
+function showMessage(message, type = 'error') {
+  // Remove existing messages
+  const existingMessages = document.querySelectorAll('.message');
+  existingMessages.forEach(msg => msg.remove());
+
+  const messageDiv = document.createElement('div');
+  messageDiv.className = `message ${type}`;
+  messageDiv.textContent = message;
+  messageDiv.style.display = 'block';
+
+  // Insert before the form
+  const form = document.getElementById('loginForm');
+  form.parentNode.insertBefore(messageDiv, form);
+
+  // Auto-hide after 5 seconds
+  setTimeout(() => {
+    messageDiv.style.display = 'none';
+  }, 5000);
+}
+
+function setLoading(buttonId, textId, spinnerId, loading) {
+  const button = document.getElementById(buttonId);
+  const text = document.getElementById(textId);
+  const spinner = document.getElementById(spinnerId);
+
+  if (loading) {
+    button.disabled = true;
+    text.style.display = 'none';
+    spinner.style.display = 'block';
+  } else {
+    button.disabled = false;
+    text.style.display = 'inline';
+    spinner.style.display = 'none';
+  }
+}
+
+// Modal functions
+
+// Auto-switch to signup if URL has #signup hash
+(function() {
+  function checkHash() {
+    if (window.location.hash === '#signup' || window.location.search.includes('signup')) {
+      setTimeout(function() {
+        if (typeof showRegister === 'function') showRegister();
+      }, 100);
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', checkHash);
+  } else {
+    checkHash();
+  }
+})();
+
+function showRegister() {
+  document.getElementById('registerModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function showForgotPassword() {
+  document.getElementById('forgotModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('registerModal').style.display = 'none';
+  document.getElementById('forgotModal').style.display = 'none';
+  document.body.style.overflow = 'auto';
+  // Reset forgot modal to step 1
+  document.getElementById('forgotStep1').style.display = 'block';
+  document.getElementById('forgotStep2').style.display = 'none';
+  document.getElementById('forgotMsg').style.display = 'none';
+  document.getElementById('forgotEmail').value = '';
+  // Reset register modal success screen
+  document.getElementById('regSuccessScreen').style.display = 'none';
+  document.querySelector('#registerModal .reg-scroll').style.display = '';
+  document.querySelector('#registerModal .reg-hero').style.display = '';
+  document.getElementById('registerForm').reset();
+  document.getElementById('regMsg').style.display = 'none';
+}
+
+function switchToLogin() {
+  closeModal();
+}
+
+function switchToLoginFromSuccess() {
+  closeModal();
+  document.getElementById('password').focus();
+}
+
+function showResendVerify() {
+  const emailVal = document.getElementById('email').value.trim();
+  if (emailVal) document.getElementById('resendEmail').value = emailVal;
+  document.getElementById('resendVerifyModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeResendVerifyModal() {
+  document.getElementById('resendVerifyModal').style.display = 'none';
+  document.body.style.overflow = 'auto';
+  document.getElementById('resendStep1').style.display = 'block';
+  document.getElementById('resendStep2').style.display = 'none';
+  document.getElementById('resendMsg').style.display = 'none';
+  document.getElementById('resendEmail').value = '';
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+  const registerModal = document.getElementById('registerModal');
+  const forgotModal = document.getElementById('forgotModal');
+  const resendVerifyModal = document.getElementById('resendVerifyModal');
+
+  if (event.target === registerModal) {
+    closeModal();
+  }
+  if (event.target === forgotModal) {
+    closeModal();
+  }
+  if (event.target === resendVerifyModal) {
+    closeResendVerifyModal();
+  }
+}
+
+// Login functionality
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+
+  if (!email || !password) {
+    showMessage('Please fill in all fields');
+    return;
+  }
+
+  setLoading('loginBtn', 'loginText', 'loginSpinner', true);
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok && data.requires2FA) {
+      // 2FA required — show verification step
+      window._2faPendingUserId = data.pendingUserId;
+      document.getElementById('loginForm').style.display = 'none';
+      document.querySelectorAll('.signup-row').forEach(function(el) { el.style.display = 'none'; });
+      const twoFaStep = document.getElementById('twoFaStep');
+      twoFaStep.style.display = 'block';
+      if (data.code) {
+        document.getElementById('twoFaCodeValueLogin').textContent = data.code;
+        document.getElementById('twoFaCodeHintLogin').style.display = 'block';
+      }
+      document.querySelectorAll('.otp-login-digit')[0].focus();
+      return;
+    }
+
+    if (response.ok && data.success) {
+      // Store core auth data
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('userId', data.user.id);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('userProfile', JSON.stringify({ name: data.user.name, email: data.user.email, role: data.user.role }));
+
+      // Also set role-specific keys so dashboards recognise the session
+      const role = data.user.role;
+      if (role === 'landlord') {
+        localStorage.setItem('landlordToken', data.token);
+        localStorage.setItem('landlordId', data.landlordId || data.user.id);
+        localStorage.setItem('landlordName', data.user.name);
+        localStorage.setItem('landlordEmail', data.user.email);
+      } else if (role === 'tenant') {
+        localStorage.setItem('tenantToken', data.token);
+        localStorage.setItem('tenantId', data.tenantId || data.user.id);
+        localStorage.setItem('tenantName', data.user.name);
+      }
+
+      showMessage('Login successful! Redirecting...', 'success');
+
+      // Redirect to original page if user was sent here by auth guard
+      const redirectTo = sessionStorage.getItem('bc_redirect');
+      sessionStorage.removeItem('bc_redirect');
+      setTimeout(() => {
+        window.location.href = redirectTo || `${API_BASE_URL}/website.html`;
+      }, 1000);
+    } else {
+      if (data.requiresVerification) {
+        showMessage(data.error || 'Please verify your email before signing in.');
+        // Show resend option below the error
+        const msgEl = document.getElementById('loginMsg');
+        if (msgEl && data.email) {
+          const resendEl = document.createElement('div');
+          resendEl.style.cssText = 'margin-top:8px;font-size:.82rem;';
+          resendEl.innerHTML = `Didn't get it? <a href="#" onclick="resendVerification('${data.email}');return false;" style="color:#4f46e5;font-weight:600;">Resend verification email</a>`;
+          msgEl.parentNode && msgEl.after ? msgEl.after(resendEl) : msgEl.insertAdjacentElement('afterend', resendEl);
+          setTimeout(() => resendEl.remove(), 12000);
+        }
+      } else {
+        showMessage(data.error || 'Login failed');
+      }
+    }
+  } catch (error) {
+    console.error('Login error:', error);
+    showMessage('Network error. Please try again.');
+  } finally {
+    setLoading('loginBtn', 'loginText', 'loginSpinner', false);
+  }
+});
+
+// Show message inside register modal
+function showRegMsg(msg, type = 'error') {
+  const el = document.getElementById('regMsg');
+  if (!el) return;
+  el.textContent = msg;
+  el.className = 'reg-msg ' + type;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 5000);
+}
+
+// 2FA login step — OTP digit wiring
+(function() {
+  var digits = document.querySelectorAll('.otp-login-digit');
+  digits.forEach(function(input, idx) {
+    input.addEventListener('input', function() {
+      this.value = this.value.replace(/\D/g, '');
+      if (this.value && idx < digits.length - 1) digits[idx + 1].focus();
+    });
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Backspace' && !this.value && idx > 0) digits[idx - 1].focus();
+    });
+    input.addEventListener('paste', function(e) {
+      e.preventDefault();
+      var pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
+      pasted.split('').forEach(function(ch, i) { if (digits[i]) digits[i].value = ch; });
+      if (digits[pasted.length]) digits[pasted.length].focus();
+    });
+  });
+
+  var verifyBtn = document.getElementById('verify2FaBtn');
+  if (verifyBtn) {
+    verifyBtn.addEventListener('click', async function() {
+      var code = Array.from(digits).map(function(i) { return i.value; }).join('');
+      if (code.length < 6) { showMessage('Please enter the full 6-digit code.'); return; }
+      verifyBtn.disabled = true;
+      verifyBtn.textContent = 'Verifying...';
+      try {
+        var res = await fetch(API_BASE_URL + '/api/auth/login/2fa', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pendingUserId: window._2faPendingUserId, code: code })
+        });
+        var data = await res.json();
+        if (data.success) {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('authToken', data.token);
+          localStorage.setItem('userId', data.user.id);
+          localStorage.setItem('user', JSON.stringify(data.user));
+          localStorage.setItem('userProfile', JSON.stringify({ name: data.user.name, email: data.user.email, role: data.user.role }));
+          var role = data.user.role;
+          if (role === 'landlord') {
+            localStorage.setItem('landlordToken', data.token);
+            localStorage.setItem('landlordId', data.landlordId || data.user.id);
+            localStorage.setItem('landlordName', data.user.name);
+            localStorage.setItem('landlordEmail', data.user.email);
+          } else if (role === 'tenant') {
+            localStorage.setItem('tenantToken', data.token);
+            localStorage.setItem('tenantId', data.tenantId || data.user.id);
+            localStorage.setItem('tenantName', data.user.name);
+          }
+          showMessage('Verified! Redirecting...', 'success');
+          var redirectTo = sessionStorage.getItem('bc_redirect');
+          sessionStorage.removeItem('bc_redirect');
+          setTimeout(function() { window.location.href = redirectTo || (API_BASE_URL + '/website.html'); }, 900);
+        } else {
+          showMessage(data.error || 'Invalid code. Please try again.');
+          verifyBtn.disabled = false;
+          verifyBtn.textContent = 'Verify & Sign In';
+        }
+      } catch (err) {
+        showMessage('Network error. Please try again.');
+        verifyBtn.disabled = false;
+        verifyBtn.textContent = 'Verify & Sign In';
+      }
+    });
+  }
+
+  var backBtn = document.getElementById('back2FaBtn');
+  if (backBtn) {
+    backBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('twoFaStep').style.display = 'none';
+      document.getElementById('loginForm').style.display = 'block';
+      document.querySelectorAll('.signup-row').forEach(function(el) { el.style.display = ''; });
+      digits.forEach(function(i) { i.value = ''; });
+    });
+  }
+})();
+
+// Registration functionality
+document.getElementById('registerForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const fullName = document.getElementById('regFullName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value;
+  const confirmPassword = document.getElementById('regConfirmPassword').value;
+  const phone = document.getElementById('regPhone').value.trim();
+
+  if (!fullName || !email || !password || !confirmPassword || !phone) {
+    showRegMsg('Please fill in all fields');
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    showRegMsg('Passwords do not match');
+    return;
+  }
+
+  if (password.length < 6) {
+    showRegMsg('Password must be at least 6 characters');
+    return;
+  }
+
+  const hasLower = /[a-z]/.test(password);
+  const hasUpper = /[A-Z]/.test(password);
+  const hasNumber = /\d/.test(password);
+  const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/.test(password);
+
+  if (!hasLower || !hasUpper || !hasNumber || !hasSpecial) {
+    showRegMsg('Password needs uppercase, lowercase, number and special character');
+    return;
+  }
+
+  setLoading('registerBtn', 'registerText', 'registerSpinner', true);
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, fullName, phone }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok && data.success) {
+      // Show success screen
+      document.getElementById('regSuccessName').textContent = fullName;
+      document.getElementById('regSuccessEmail').textContent = `Verification link sent to ${email}`;
+      document.querySelector('#registerModal .reg-scroll').style.display = 'none';
+      document.querySelector('#registerModal .reg-hero').style.display = 'none';
+      document.getElementById('regSuccessScreen').style.display = 'flex';
+      // Pre-fill login email for convenience
+      document.getElementById('email').value = email;
+      // Wire up resend link on success screen
+      const resendSuccessLink = document.getElementById('resendFromSuccess');
+      if (resendSuccessLink) {
+        resendSuccessLink.onclick = function(e) { e.preventDefault(); resendVerification(email, resendSuccessLink); };
+      }
+    } else {
+      showRegMsg(data.error || 'Registration failed. Please try again.');
+    }
+  } catch (error) {
+    console.error('Registration error:', error);
+    showRegMsg('Network error. Please try again.');
+  } finally {
+    setLoading('registerBtn', 'registerText', 'registerSpinner', false);
+  }
+});
+
+// Forgot password functionality
+function showForgotMsg(msg, type = 'error') {
+  const el = document.getElementById('forgotMsg');
+  if (!el) return;
+  el.textContent = msg;
+  el.className = 'reg-msg ' + type;
+  el.style.display = 'block';
+  if (type !== 'error') setTimeout(() => { el.style.display = 'none'; }, 6000);
+}
+
+document.getElementById('forgotForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const email = document.getElementById('forgotEmail').value.trim();
+  if (!email) { showForgotMsg('Please enter your email address.'); return; }
+
+  setLoading('forgotBtn', 'forgotText', 'forgotSpinner', true);
+  document.getElementById('forgotMsg').style.display = 'none';
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/auth/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      // Show success step
+      document.getElementById('forgotSentTo').textContent = email;
+      document.getElementById('forgotStep1').style.display = 'none';
+      document.getElementById('forgotStep2').style.display = 'block';
+    } else {
+      showForgotMsg(data.error || 'Something went wrong. Please try again.');
+    }
+  } catch (error) {
+    console.error('Forgot password error:', error);
+    showForgotMsg('Network error. Please check your connection and try again.');
+  } finally {
+    setLoading('forgotBtn', 'forgotText', 'forgotSpinner', false);
+  }
+});
+
+// Resend verification email form
+document.getElementById('resendVerifyForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const email = document.getElementById('resendEmail').value.trim();
+  if (!email) {
+    const el = document.getElementById('resendMsg');
+    el.textContent = 'Please enter your email address.';
+    el.className = 'reg-msg error';
+    el.style.display = 'block';
+    return;
+  }
+
+  setLoading('resendBtn', 'resendText', 'resendSpinner', true);
+  document.getElementById('resendMsg').style.display = 'none';
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/auth/resend-verification`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      document.getElementById('resendSentTo').textContent = email;
+      document.getElementById('resendStep1').style.display = 'none';
+      document.getElementById('resendStep2').style.display = 'block';
+    } else {
+      const el = document.getElementById('resendMsg');
+      el.textContent = data.error || 'Something went wrong. Please try again.';
+      el.className = 'reg-msg error';
+      el.style.display = 'block';
+    }
+  } catch (error) {
+    console.error('Resend verification error:', error);
+    const el = document.getElementById('resendMsg');
+    el.textContent = 'Network error. Please check your connection and try again.';
+    el.className = 'reg-msg error';
+    el.style.display = 'block';
+  } finally {
+    setLoading('resendBtn', 'resendText', 'resendSpinner', false);
+  }
+});
+
+// Check if user is already logged in
+document.addEventListener('DOMContentLoaded', function() {
+  const token = localStorage.getItem('token');
+  const user = localStorage.getItem('user');
+
+  if (token && user) {
+    // Already logged in — send everyone to the homepage
+    window.location.href = `${API_BASE_URL}/website.html`;
+  }
+
+  // Add click feedback to buttons
+  addClickFeedback();
+});
+
+function addClickFeedback() {
+  const clickables = document.querySelectorAll('.login-btn, .social button, .links a, .eye, .close');
+  clickables.forEach(el => {
+    el.addEventListener('mousedown', () => {
+      el.classList.add('clicked');
+    });
+    el.addEventListener('mouseup', () => {
+      el.classList.remove('clicked');
+    });
+    el.addEventListener('mouseleave', () => {
+      el.classList.remove('clicked');
+    });
+    el.addEventListener('touchstart', () => {
+      el.classList.add('clicked');
+    }, { passive: true });
+    el.addEventListener('touchend', () => {
+      el.classList.remove('clicked');
+    });
+  });
+}
+
+async function resendVerification(email, linkEl) {
+  if (linkEl) { linkEl.textContent = 'Sending...'; linkEl.style.pointerEvents = 'none'; }
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/auth/resend-verification`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    if (linkEl) {
+      linkEl.textContent = data.success ? 'Sent! Check your inbox.' : 'Failed — try again';
+      linkEl.style.color = data.success ? '#15803d' : '#dc2626';
+      setTimeout(() => { linkEl.textContent = 'resend the email'; linkEl.style.color = '#4f46e5'; linkEl.style.pointerEvents = ''; }, 6000);
+    }
+  } catch(e) {
+    if (linkEl) { linkEl.textContent = 'Network error — try again'; linkEl.style.pointerEvents = ''; }
+  }
+}
+
+// Show success toast if redirected back after email verification
+(function() {
+  if (window.location.search.includes('verified=1')) {
+    window.addEventListener('DOMContentLoaded', function() {
+      const toast = document.createElement('div');
+      toast.textContent = 'Email verified! You can now sign in.';
+      toast.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#15803d;color:#fff;padding:13px 28px;border-radius:10px;font-weight:700;font-size:.95rem;box-shadow:0 4px 18px rgba(0,0,0,.18);z-index:9999;transition:opacity .5s';
+      document.body.appendChild(toast);
+      setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 600); }, 5000);
+      // Clean URL
+      history.replaceState(null, '', window.location.pathname);
+    });
+  }
+})();
+</script>
+
+  <script src="shared-layout.js?v=7"></script>
+</body>
+</html>

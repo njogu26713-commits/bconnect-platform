@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - BConnect</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #1e40af;
+      --primary-light: #dbeafe;
+      --secondary: #8b5cf6;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --white: #ffffff;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, var(--gray-50) 0%, #f5f7fa 100%);
+      min-height: 100vh;
+      color: var(--gray-900);
+    }
+    .settings-wrapper {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+    }
+    .settings-header {
+      margin-bottom: 28px;
+    }
+    .settings-header h1 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--gray-900);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .settings-header p {
+      color: var(--gray-500);
+      margin-top: 4px;
+      font-size: .93rem;
+    }
+    .tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 14px;
+      padding: 6px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.05);
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 10px 16px;
+      background: transparent;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: .88rem;
+      font-weight: 600;
+      color: var(--gray-500);
+      transition: all .18s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+    .tab-btn.active {
+      background: var(--primary);
+      color: var(--white);
+      box-shadow: 0 2px 8px rgba(59,130,246,.3);
+    }
+    .tab-btn:not(.active):hover {
+      background: var(--gray-100);
+      color: var(--gray-700);
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 6px rgba(0,0,0,.05);
+    }
+    .card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .card-title svg { color: var(--primary); }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-grid.single { grid-template-columns: 1fr; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label {
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--gray-600);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 10px 14px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 10px;
+      font-size: .9rem;
+      color: var(--gray-800);
+      background: var(--gray-50);
+      transition: border-color .15s, box-shadow .15s;
+      font-family: inherit;
+      outline: none;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: var(--primary);
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(59,130,246,.1);
+    }
+    .form-group input[readonly] {
+      color: var(--gray-400);
+      cursor: not-allowed;
+    }
+    .avatar-row {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+    .avatar-preview {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--gray-200);
+      background: var(--gray-100);
+      flex-shrink: 0;
+    }
+    .avatar-placeholder {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--white);
+      flex-shrink: 0;
+    }
+    .avatar-info { flex: 1; }
+    .avatar-info p { font-size: .85rem; color: var(--gray-500); margin-top: 3px; }
+    .btn {
+      padding: 10px 22px;
+      border-radius: 10px;
+      font-size: .88rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: all .18s;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-family: inherit;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: var(--white);
+      box-shadow: 0 2px 8px rgba(59,130,246,.25);
+    }
+    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+    .btn-danger {
+      background: #fee2e2;
+      color: var(--danger);
+      border: 1.5px solid #fecaca;
+    }
+    .btn-danger:hover { background: var(--danger); color: var(--white); }
+    .btn-outline {
+      background: transparent;
+      color: var(--gray-600);
+      border: 1.5px solid var(--gray-200);
+    }
+    .btn-outline:hover { background: var(--gray-100); }
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid var(--gray-100);
+    }
+    .alert {
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: .875rem;
+      font-weight: 500;
+      margin-bottom: 16px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+    .alert.success { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+    .alert.error { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+    .alert.show { display: flex; }
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .toggle-row:last-child { border-bottom: none; }
+    .toggle-info h4 { font-size: .9rem; font-weight: 600; color: var(--gray-800); }
+    .toggle-info p { font-size: .8rem; color: var(--gray-500); margin-top: 2px; }
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: var(--gray-300);
+      border-radius: 99px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .toggle-slider:before {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      left: 3px;
+      top: 3px;
+      background: var(--white);
+      border-radius: 50%;
+      transition: transform .2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,.2);
+    }
+    .toggle input:checked + .toggle-slider { background: var(--primary); }
+    .toggle input:checked + .toggle-slider:before { transform: translateX(20px); }
+    .danger-zone {
+      border: 1.5px solid #fecaca;
+      background: #fff5f5;
+    }
+    .danger-zone .card-title { color: var(--danger); }
+    .danger-zone .card-title svg { color: var(--danger); }
+    .danger-text { font-size: .88rem; color: var(--gray-600); margin-bottom: 16px; line-height: 1.55; }
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,.6);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    .loading-overlay.show { display: flex; }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--gray-200);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .redirect-msg {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .redirect-msg h2 { font-size: 1.2rem; color: var(--gray-700); margin-bottom: 8px; }
+    .redirect-msg p { color: var(--gray-400); font-size: .9rem; }
+    .twofa-status {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .twofa-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .twofa-icon--off { background: var(--gray-100); color: var(--gray-400); }
+    .twofa-icon--on { background: #d1fae5; color: #065f46; }
+    .twofa-info { flex: 1; }
+    .twofa-info h4 { font-size: .9rem; font-weight: 700; color: var(--gray-800); margin-bottom: 3px; }
+    .twofa-info p { font-size: .82rem; color: var(--gray-500); line-height: 1.5; margin: 0; }
+    .otp-digit:focus { border-color: var(--primary) !important; background: var(--white) !important; box-shadow: 0 0 0 3px rgba(59,130,246,.12); }
+    @media (max-width: 600px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .tabs { flex-direction: column; }
+      .tab-btn { justify-content: flex-start; }
+      .twofa-status { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+</div>
+
+<div class="settings-wrapper" id="settingsContent" style="display:none">
+  <div class="settings-header">
+    <h1>
+      <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Settings
+    </h1>
+    <p>Manage your profile, preferences, and account security.</p>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button class="tab-btn active" data-tab="profile" role="tab">
+      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Profile
+    </button>
+    <button class="tab-btn" data-tab="notifications" role="tab">
+      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      Notifications
+    </button>
+    <button class="tab-btn" data-tab="security" role="tab">
+      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Security
+    </button>
+  </div>
+
+  <!-- PROFILE TAB -->
+  <div class="tab-panel active" id="tab-profile">
+    <div class="card">
+      <div class="card-title">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Personal Information
+      </div>
+      <div class="alert" id="profileAlert"></div>
+      <div class="avatar-row">
+        <div id="avatarDisplay" class="avatar-placeholder">?</div>
+        <div class="avatar-info">
+          <strong id="displayName" style="font-size:.95rem">Loading...</strong>
+          <p id="displayEmail" style="font-size:.82rem;color:#6b7280;margin-top:2px"></p>
+          <p>Your avatar is shown across the platform.</p>
+        </div>
+      </div>
+      <form id="profileForm" autocomplete="off">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="profileName" placeholder="Your full name" required>
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="profileEmail" readonly placeholder="email@example.com">
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" id="profilePhone" placeholder="+254 7XX XXX XXX">
+          </div>
+          <div class="form-group">
+            <label>Location</label>
+            <input type="text" id="profileLocation" placeholder="e.g. Nairobi, Kenya">
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:16px">
+          <label>Avatar URL</label>
+          <input type="url" id="profileAvatar" placeholder="https://example.com/photo.jpg">
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="saveProfileBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- NOTIFICATIONS TAB -->
+  <div class="tab-panel" id="tab-notifications">
+    <div class="card">
+      <div class="card-title">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        Notification Preferences
+      </div>
+      <div class="alert" id="notifAlert"></div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <h4>Order Updates</h4>
+          <p>Get notified when your orders change status.</p>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="notifOrders" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <h4>New Messages</h4>
+          <p>Receive alerts when someone messages you.</p>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="notifMessages" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <h4>Promotions & Deals</h4>
+          <p>Stay updated on offers and platform promotions.</p>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="notifPromos">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <h4>Property Alerts</h4>
+          <p>Be notified of new listings matching your preferences.</p>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="notifProperty" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <h4>Payment Confirmations</h4>
+          <p>Get receipts and payment status updates.</p>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="notifPayments" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" id="saveNotifsBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Save Preferences
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECURITY TAB -->
+  <div class="tab-panel" id="tab-security">
+    <div class="card">
+      <div class="card-title">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Change Password
+      </div>
+      <div class="alert" id="passwordAlert"></div>
+      <form id="passwordForm" autocomplete="off">
+        <div class="form-grid single">
+          <div class="form-group">
+            <label>Current Password</label>
+            <input type="password" id="currentPassword" placeholder="Enter current password" required autocomplete="current-password">
+          </div>
+          <div class="form-group">
+            <label>New Password</label>
+            <input type="password" id="newPassword" placeholder="At least 8 characters" required autocomplete="new-password">
+          </div>
+          <div class="form-group">
+            <label>Confirm New Password</label>
+            <input type="password" id="confirmPassword" placeholder="Repeat new password" required autocomplete="new-password">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="changePasswordBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Update Password
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Two-Factor Authentication
+      </div>
+      <div class="alert" id="twoFaAlert"></div>
+      <div class="twofa-status" id="twoFaStatus">
+        <div class="twofa-icon twofa-icon--off" id="twoFaIcon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="twofa-info">
+          <h4 id="twoFaTitle">2FA is Disabled</h4>
+          <p id="twoFaDesc">Enable two-factor authentication to add an extra layer of security to your account. A verification code will be required at each login.</p>
+        </div>
+        <button class="btn btn-primary" id="twoFaToggleBtn" style="flex-shrink:0">
+          Enable 2FA
+        </button>
+      </div>
+    </div>
+
+    <div class="card danger-zone">
+      <div class="card-title">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Danger Zone
+      </div>
+      <p class="danger-text">Logging out will end your current session. You will need to sign in again to access your account.</p>
+      <button class="btn btn-danger" id="logoutBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Log Out
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 2FA Modal -->
+<div id="twoFaModal" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:20px;padding:36px 32px;max-width:420px;width:90%;box-shadow:0 24px 80px rgba(0,0,0,.22);position:relative;font-family:Inter,system-ui,sans-serif">
+    <button id="twoFaModalClose" style="position:absolute;top:14px;right:16px;background:none;border:none;cursor:pointer;font-size:1.3rem;color:#9ca3af;line-height:1">&#10005;</button>
+    <div style="text-align:center;margin-bottom:22px">
+      <div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#8b5cf6);display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
+        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <h3 id="twoFaModalTitle" style="font-size:1.15rem;font-weight:800;color:#111827;margin:0 0 6px">Verify your identity</h3>
+      <p id="twoFaModalDesc" style="font-size:.85rem;color:#6b7280;line-height:1.6">A 6-digit code has been generated for your account. Enter it below to confirm.</p>
+    </div>
+    <div id="twoFaCodeHint" style="display:none;background:#f0f9ff;border:1.5px dashed #3b82f6;border-radius:12px;padding:14px 16px;text-align:center;margin-bottom:18px">
+      <p style="font-size:.78rem;color:#1d4ed8;font-weight:600;margin:0 0 4px">Your verification code</p>
+      <p id="twoFaCodeValue" style="font-size:2rem;font-weight:900;letter-spacing:.18em;color:#1e40af;margin:0"></p>
+      <p style="font-size:.72rem;color:#64748b;margin:6px 0 0">Expires in 10 minutes</p>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:center;margin-bottom:18px" id="twoFaCodeInputs">
+      <input class="otp-digit" maxlength="1" style="width:44px;height:52px;text-align:center;font-size:1.4rem;font-weight:700;border:2px solid #e5e7eb;border-radius:10px;outline:none;background:#f9fafb;color:#111827;font-family:inherit;transition:border-color .15s" />
+      <input class="otp-digit" maxlength="1" style="width:44px;height:52px;text-align:center;font-size:1.4rem;font-weight:700;border:2px solid #e5e7eb;border-radius:10px;outline:none;background:#f9fafb;color:#111827;font-family:inherit;transition:border-color .15s" />
+      <input class="otp-digit" maxlength="1" style="width:44px;height:52px;text-align:center;font-size:1.4rem;font-weight:700;border:2px solid #e5e7eb;border-radius:10px;outline:none;background:#f9fafb;color:#111827;font-family:inherit;transition:border-color .15s" />
+      <input class="otp-digit" maxlength="1" style="width:44px;height:52px;text-align:center;font-size:1.4rem;font-weight:700;border:2px solid #e5e7eb;border-radius:10px;outline:none;background:#f9fafb;color:#111827;font-family:inherit;transition:border-color .15s" />
+      <input class="otp-digit" maxlength="1" style="width:44px;height:52px;text-align:center;font-size:1.4rem;font-weight:700;border:2px solid #e5e7eb;border-radius:10px;outline:none;background:#f9fafb;color:#111827;font-family:inherit;transition:border-color .15s" />
+      <input class="otp-digit" maxlength="1" style="width:44px;height:52px;text-align:center;font-size:1.4rem;font-weight:700;border:2px solid #e5e7eb;border-radius:10px;outline:none;background:#f9fafb;color:#111827;font-family:inherit;transition:border-color .15s" />
+    </div>
+    <div id="twoFaModalAlert" style="display:none;background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;border-radius:8px;padding:10px 14px;font-size:.83rem;font-weight:500;margin-bottom:14px;text-align:center"></div>
+    <button id="twoFaConfirmBtn" class="btn btn-primary" style="width:100%;justify-content:center">
+      Confirm &amp; Enable
+    </button>
+    <button id="twoFaResendBtn" style="display:block;margin:12px auto 0;background:none;border:none;cursor:pointer;color:#3b82f6;font-size:.82rem;font-weight:600;font-family:inherit">Regenerate code</button>
+  </div>
+</div>
+
+<div class="settings-wrapper redirect-msg" id="redirectMsg" style="display:none">
+  <h2>You need to be logged in to access Settings.</h2>
+  <p>Redirecting to login...</p>
+</div>
+
+<script src="/shared-layout.js" defer></script>
+<script>
+(function() {
+  var token = localStorage.getItem('token') || localStorage.getItem('authToken') || localStorage.getItem('auth_token') || localStorage.getItem('tenantToken') || localStorage.getItem('landlordToken');
+
+  if (!token) {
+    document.getElementById('redirectMsg').style.display = 'block';
+    setTimeout(function() { window.location.href = '/login.html'; }, 2000);
+    return;
+  }
+
+  document.getElementById('loadingOverlay').classList.add('show');
+
+  var headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+
+  function showAlert(id, type, msg) {
+    var el = document.getElementById(id);
+    el.className = 'alert ' + type + ' show';
+    el.textContent = msg;
+    setTimeout(function() { el.className = 'alert'; }, 4000);
+  }
+
+  function updateAvatarDisplay(profile) {
+    var el = document.getElementById('avatarDisplay');
+    if (profile.avatar_url) {
+      el.outerHTML = '<img id="avatarDisplay" class="avatar-preview" src="' + profile.avatar_url + '" onerror="this.style.display=\'none\'" alt="avatar">';
+    } else {
+      var initials = (profile.name || profile.full_name || 'U').split(' ').map(function(w) { return w[0]; }).join('').slice(0,2).toUpperCase();
+      el.textContent = initials;
+    }
+    document.getElementById('displayName').textContent = profile.name || 'User';
+    document.getElementById('displayEmail').textContent = profile.email || '';
+  }
+
+  fetch('/api/profile', { headers: headers })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      document.getElementById('loadingOverlay').classList.remove('show');
+      document.getElementById('settingsContent').style.display = 'block';
+
+      if (!data.profile) return;
+      var p = data.profile;
+      p.name = p.name || p.full_name || '';
+      document.getElementById('profileName').value = p.name;
+      document.getElementById('profileEmail').value = p.email || '';
+      document.getElementById('profilePhone').value = p.phone || '';
+      document.getElementById('profileLocation').value = p.location || '';
+      document.getElementById('profileAvatar').value = p.avatar_url || '';
+      updateAvatarDisplay(p);
+
+      var prefs = p.notification_prefs || {};
+      if (prefs.orders !== undefined) document.getElementById('notifOrders').checked = prefs.orders;
+      if (prefs.messages !== undefined) document.getElementById('notifMessages').checked = prefs.messages;
+      if (prefs.promos !== undefined) document.getElementById('notifPromos').checked = prefs.promos;
+      if (prefs.property !== undefined) document.getElementById('notifProperty').checked = prefs.property;
+      if (prefs.payments !== undefined) document.getElementById('notifPayments').checked = prefs.payments;
+    })
+    .catch(function() {
+      document.getElementById('loadingOverlay').classList.remove('show');
+      document.getElementById('settingsContent').style.display = 'block';
+    });
+
+  document.getElementById('profileForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var btn = document.getElementById('saveProfileBtn');
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+
+    var body = {
+      name: document.getElementById('profileName').value,
+      phone: document.getElementById('profilePhone').value,
+      location: document.getElementById('profileLocation').value,
+      avatar_url: document.getElementById('profileAvatar').value
+    };
+
+    fetch('/api/profile', { method: 'PUT', headers: headers, body: JSON.stringify(body) })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.success) {
+          showAlert('profileAlert', 'success', 'Profile updated successfully!');
+          if (data.profile) {
+            updateAvatarDisplay(data.profile);
+            // Sync updated profile to localStorage so all pages pick it up without re-login
+            var p = data.profile;
+            try {
+              var existing = {};
+              try { existing = JSON.parse(localStorage.getItem('user') || '{}'); } catch(_) {}
+              var updated = Object.assign({}, existing, {
+                name:       p.name       || existing.name,
+                email:      p.email      || existing.email,
+                phone:      p.phone      || existing.phone,
+                avatar_url: p.avatar_url !== undefined ? p.avatar_url : existing.avatar_url,
+                role:       p.role       || existing.role
+              });
+              localStorage.setItem('user', JSON.stringify(updated));
+              localStorage.setItem('userProfile', JSON.stringify({
+                name:  updated.name,
+                email: updated.email,
+                role:  updated.role || ''
+              }));
+              // Sync name used by tenant & landlord pages
+              if (p.name) {
+                localStorage.setItem('tenantName',   p.name);
+                localStorage.setItem('landlordName', p.name);
+              }
+              // Sync tenant_data used by tenant.html
+              var td = {};
+              try { td = JSON.parse(localStorage.getItem('tenant_data') || '{}'); } catch(_) {}
+              td.fullName = p.name || td.fullName;
+              td.email    = p.email || td.email;
+              localStorage.setItem('tenant_data', JSON.stringify(td));
+              // Refresh shared-header avatar if loaded
+              if (window.bConnectRefreshAvatar) window.bConnectRefreshAvatar();
+            } catch(_) {}
+          }
+        } else {
+          showAlert('profileAlert', 'error', data.error || 'Failed to save profile.');
+        }
+      })
+      .catch(function() { showAlert('profileAlert', 'error', 'Network error. Please try again.'); })
+      .finally(function() { btn.disabled = false; btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save Changes'; });
+  });
+
+  document.getElementById('saveNotifsBtn').addEventListener('click', function() {
+    var btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+
+    var prefs = {
+      orders: document.getElementById('notifOrders').checked,
+      messages: document.getElementById('notifMessages').checked,
+      promos: document.getElementById('notifPromos').checked,
+      property: document.getElementById('notifProperty').checked,
+      payments: document.getElementById('notifPayments').checked
+    };
+
+    fetch('/api/settings/notifications', { method: 'PUT', headers: headers, body: JSON.stringify({ notification_prefs: prefs }) })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.success) {
+          showAlert('notifAlert', 'success', 'Notification preferences saved!');
+        } else {
+          showAlert('notifAlert', 'error', data.error || 'Failed to save preferences.');
+        }
+      })
+      .catch(function() { showAlert('notifAlert', 'error', 'Network error. Please try again.'); })
+      .finally(function() { btn.disabled = false; btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save Preferences'; });
+  });
+
+  document.getElementById('passwordForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var newPwd = document.getElementById('newPassword').value;
+    var confirmPwd = document.getElementById('confirmPassword').value;
+    if (newPwd !== confirmPwd) {
+      showAlert('passwordAlert', 'error', 'New passwords do not match.');
+      return;
+    }
+    if (newPwd.length < 8) {
+      showAlert('passwordAlert', 'error', 'Password must be at least 8 characters.');
+      return;
+    }
+    var btn = document.getElementById('changePasswordBtn');
+    btn.disabled = true;
+    btn.textContent = 'Updating...';
+
+    fetch('/api/auth/change-password', {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({ currentPassword: document.getElementById('currentPassword').value, newPassword: newPwd })
+    })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.success) {
+          showAlert('passwordAlert', 'success', 'Password changed successfully!');
+          document.getElementById('passwordForm').reset();
+        } else {
+          showAlert('passwordAlert', 'error', data.error || 'Failed to change password.');
+        }
+      })
+      .catch(function() { showAlert('passwordAlert', 'error', 'Network error. Please try again.'); })
+      .finally(function() { btn.disabled = false; btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Update Password'; });
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', function() {
+    ['token','authToken','auth_token','userId','user','userProfile',
+     'landlordToken','landlordId','landlordName','landlordEmail',
+     'tenantToken','tenant_token','tenantId','tenantName','tenant_data'].forEach(function(k) { localStorage.removeItem(k); });
+    window.location.href = '/';
+  });
+
+  document.querySelectorAll('.tab-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+      document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  var twoFaEnabled = false;
+
+  function update2FAUI(enabled) {
+    twoFaEnabled = enabled;
+    var icon = document.getElementById('twoFaIcon');
+    var title = document.getElementById('twoFaTitle');
+    var desc = document.getElementById('twoFaDesc');
+    var btn = document.getElementById('twoFaToggleBtn');
+    if (enabled) {
+      icon.className = 'twofa-icon twofa-icon--on';
+      title.textContent = '2FA is Enabled';
+      desc.textContent = 'Your account is protected with two-factor authentication. A code is required each time you log in.';
+      btn.textContent = 'Disable 2FA';
+      btn.className = 'btn btn-outline';
+    } else {
+      icon.className = 'twofa-icon twofa-icon--off';
+      title.textContent = '2FA is Disabled';
+      desc.textContent = 'Enable two-factor authentication to add an extra layer of security to your account. A verification code will be required at each login.';
+      btn.textContent = 'Enable 2FA';
+      btn.className = 'btn btn-primary';
+    }
+  }
+
+  fetch('/api/profile', { headers: headers })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.profile && data.profile.twofa_enabled) {
+        update2FAUI(true);
+      }
+    }).catch(function(){});
+
+  function openTwoFaModal(enabling) {
+    var modal = document.getElementById('twoFaModal');
+    var title = document.getElementById('twoFaModalTitle');
+    var desc = document.getElementById('twoFaModalDesc');
+    var confirmBtn = document.getElementById('twoFaConfirmBtn');
+    var hint = document.getElementById('twoFaCodeHint');
+    var modalAlert = document.getElementById('twoFaModalAlert');
+
+    modalAlert.style.display = 'none';
+    hint.style.display = 'none';
+    document.querySelectorAll('.otp-digit').forEach(function(i) { i.value = ''; });
+
+    if (enabling) {
+      title.textContent = 'Enable Two-Factor Auth';
+      desc.textContent = 'A 6-digit code has been generated for your account. Enter it below to activate 2FA.';
+      confirmBtn.textContent = 'Confirm & Enable';
+    } else {
+      title.textContent = 'Disable Two-Factor Auth';
+      desc.textContent = 'Enter your verification code to confirm disabling 2FA on your account.';
+      confirmBtn.textContent = 'Confirm & Disable';
+    }
+
+    modal.style.display = 'flex';
+
+    fetch('/api/auth/2fa/setup', { method: 'POST', headers: headers, body: JSON.stringify({ action: enabling ? 'enable' : 'disable' }) })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.code) {
+          document.getElementById('twoFaCodeValue').textContent = data.code;
+          hint.style.display = 'block';
+        }
+      }).catch(function(){});
+
+    document.querySelectorAll('.otp-digit')[0].focus();
+  }
+
+  document.getElementById('twoFaToggleBtn').addEventListener('click', function() {
+    openTwoFaModal(!twoFaEnabled);
+  });
+
+  document.getElementById('twoFaModalClose').addEventListener('click', function() {
+    document.getElementById('twoFaModal').style.display = 'none';
+  });
+  document.getElementById('twoFaModal').addEventListener('click', function(e) {
+    if (e.target === this) this.style.display = 'none';
+  });
+
+  document.getElementById('twoFaResendBtn').addEventListener('click', function() {
+    openTwoFaModal(!twoFaEnabled);
+  });
+
+  var digits = document.querySelectorAll('.otp-digit');
+  digits.forEach(function(input, idx) {
+    input.addEventListener('input', function() {
+      this.value = this.value.replace(/\D/g, '');
+      if (this.value && idx < digits.length - 1) digits[idx + 1].focus();
+    });
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Backspace' && !this.value && idx > 0) digits[idx - 1].focus();
+    });
+    input.addEventListener('paste', function(e) {
+      e.preventDefault();
+      var pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0,6);
+      pasted.split('').forEach(function(ch, i) { if (digits[i]) digits[i].value = ch; });
+      if (digits[pasted.length]) digits[pasted.length].focus();
+    });
+  });
+
+  document.getElementById('twoFaConfirmBtn').addEventListener('click', function() {
+    var code = Array.from(digits).map(function(i) { return i.value; }).join('');
+    if (code.length < 6) {
+      var modalAlert = document.getElementById('twoFaModalAlert');
+      modalAlert.textContent = 'Please enter the full 6-digit code.';
+      modalAlert.style.display = 'block';
+      return;
+    }
+    var btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Verifying...';
+    var enabling = !twoFaEnabled;
+
+    fetch('/api/auth/2fa/verify', { method: 'POST', headers: headers, body: JSON.stringify({ code: code, action: enabling ? 'enable' : 'disable' }) })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.success) {
+          document.getElementById('twoFaModal').style.display = 'none';
+          update2FAUI(enabling);
+          showAlert('twoFaAlert', 'success', enabling ? '2FA enabled — your account is now more secure!' : '2FA has been disabled.');
+        } else {
+          var modalAlert = document.getElementById('twoFaModalAlert');
+          modalAlert.textContent = data.error || 'Invalid code. Please try again.';
+          modalAlert.style.display = 'block';
+        }
+      })
+      .catch(function() {
+        var modalAlert = document.getElementById('twoFaModalAlert');
+        modalAlert.textContent = 'Network error. Please try again.';
+        modalAlert.style.display = 'block';
+      })
+      .finally(function() {
+        btn.disabled = false;
+        btn.textContent = enabling ? 'Confirm & Enable' : 'Confirm & Disable';
+      });
+  });
+})();
+</script>
+</body>
+</html>

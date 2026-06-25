@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>bConnect – Housing & Rentals</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --primary:#4338ca;
+  --primary-light:#4f46e5;
+  --secondary:#7c3aed;
+  --teal:#0891b2;
+  --amber:#f59e0b;
+  --amber-dark:#92400e;
+  --red:#dc2626;
+  --white:#fff;
+  --gray-50:#fffbeb;
+  --gray-100:#fef3c7;
+  --gray-200:#fde68a;
+  --gray-400:#b45309;
+  --gray-500:#92400e;
+  --gray-700:#78350f;
+  --gray-900:#451a03;
+  --shadow-sm:0 1px 4px rgba(245,158,11,.14);
+  --shadow-md:0 4px 16px rgba(245,158,11,.18);
+  --shadow-lg:0 12px 32px rgba(245,158,11,.25);
+}
+
+body { font-family:'Inter',-apple-system,sans-serif; background:var(--gray-50); min-height:100vh; color:var(--gray-900); }
+
+.navbar {
+  position:sticky; top:0; z-index:100;
+  display:flex; align-items:center; gap:1rem;
+  padding:.85rem 1.5rem;
+  background:var(--white); border-bottom:1px solid var(--gray-200);
+  box-shadow:var(--shadow-sm);
+}
+.nav-logo {
+  font-size:1.25rem; font-weight:800; color:var(--primary);
+  text-decoration:none; white-space:nowrap;
+  display:flex; align-items:center; gap:.4rem;
+}
+.nav-search { flex:1; position:relative; max-width:520px; }
+.nav-search input {
+  width:100%; padding:.6rem 1rem .6rem 2.5rem;
+  border:1.5px solid var(--gray-200); border-radius:10px;
+  font-size:.9rem; background:var(--gray-50); transition:border-color .2s; font-family:inherit;
+}
+.nav-search input:focus { outline:none; border-color:var(--amber); background:var(--white); }
+.nav-search .search-icon { position:absolute; left:.75rem; top:50%; transform:translateY(-50%); font-size:1rem; color:var(--gray-400); pointer-events:none; }
+.nav-icons { display:flex; align-items:center; gap:.5rem; margin-left:auto; }
+.icon-btn { background:none; border:none; cursor:pointer; font-size:1.25rem; padding:.4rem; border-radius:8px; transition:background .2s; }
+.icon-btn:hover { background:var(--gray-100); }
+.ai-btn { background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff; border-radius:10px; padding:.4rem .6rem; font-size:1.1rem; box-shadow:0 2px 8px rgba(99,102,241,.3); }
+.ai-btn:hover { background:linear-gradient(135deg,#4f46e5,#7c3aed); }
+.ai-nav-item { background:linear-gradient(135deg,#eef2ff,#ede9fe); color:#4f46e5 !important; font-weight:700; border-radius:10px; margin-top:.25rem; }
+.ai-nav-item:hover { background:linear-gradient(135deg,#e0e7ff,#ddd6fe) !important; }
+
+.page-layout { display:flex; min-height:calc(100vh - 57px); }
+
+.sidebar {
+  width:220px; flex-shrink:0;
+  background:linear-gradient(180deg,#fde68a 0%,#fcd34d 100%);
+  border-right:1px solid rgba(245,158,11,.38);
+  box-shadow:2px 0 20px rgba(245,158,11,.22);
+  padding:1.25rem .75rem;
+  position:sticky; top:57px; height:calc(100vh - 57px); overflow-y:auto;
+}
+.sidebar-title { font-size:.68rem; font-weight:800; color:#92400e; text-transform:uppercase; letter-spacing:.1em; padding:.5rem .75rem 1rem; }
+.sidebar-menu { list-style:none; }
+.sidebar-item {
+  display:flex; align-items:center; gap:.75rem;
+  padding:.7rem .9rem; border-radius:.85rem;
+  font-size:.87rem; font-weight:600; color:#78350f;
+  cursor:pointer; transition:all .18s cubic-bezier(.34,1.56,.64,1); margin-bottom:.2rem;
+  border:1px solid transparent;
+}
+.sidebar-item:hover { background:linear-gradient(135deg,#fbbf24,#fcd34d); color:#451a03; border-color:rgba(245,158,11,.35); transform:translateX(3px); }
+.sidebar-item.active { background:linear-gradient(135deg,#d97706,#b45309); color:#fff; box-shadow:0 4px 18px rgba(217,119,6,.50); border-color:transparent; }
+.sidebar-item.active i { stroke:#fff!important; }
+.sidebar-item span.icon { font-size:1.1rem; }
+.sidebar-contact-item {
+  display:flex; align-items:center; gap:.75rem;
+  padding:.7rem .9rem; border-radius:.85rem;
+  font-size:.87rem; font-weight:700; color:#fff;
+  cursor:pointer; transition:all .18s; margin-bottom:.2rem; margin-top:.3rem;
+  background:linear-gradient(135deg,#10b981,#059669);
+  box-shadow:0 4px 14px rgba(16,185,129,.3); border:none; text-decoration:none;
+}
+.sidebar-contact-item:hover { transform:translateX(3px) scale(1.01); box-shadow:0 6px 20px rgba(16,185,129,.4); }
+.sidebar-divider { border:none; border-top:1px solid rgba(245,158,11,.12); margin:.75rem .5rem; }
+
+.main { flex:1; padding:1.75rem 2rem; min-width:0; }
+
+.page-tabs {
+  display:flex; gap:.5rem; margin-bottom:1.5rem;
+  border-bottom:2px solid var(--gray-200); padding-bottom:0;
+}
+.page-tab {
+  padding:.6rem 1.25rem; font-size:.9rem; font-weight:700;
+  color:var(--gray-500); background:none; border:none; cursor:pointer;
+  border-bottom:3px solid transparent; margin-bottom:-2px;
+  transition:all .2s; border-radius:.5rem .5rem 0 0;
+}
+.page-tab:hover { color:var(--gray-900); background:var(--gray-50); }
+.page-tab.active { color:var(--amber-dark); border-bottom-color:var(--amber); }
+
+.filter-bar { display:flex; gap:.5rem; flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:.4rem; margin-bottom:1.5rem; scrollbar-width:none; }
+.filter-bar::-webkit-scrollbar { display:none; }
+.filter-btn {
+  padding:.5rem 1.1rem; border-radius:9999px;
+  border:1.5px solid var(--gray-200); background:var(--white);
+  font-size:.82rem; font-weight:600; color:var(--gray-700);
+  cursor:pointer; transition:all .2s; white-space:nowrap; flex-shrink:0;
+}
+.filter-btn:hover { border-color:var(--amber); color:var(--amber-dark); }
+.filter-btn.active { background:var(--amber); border-color:var(--amber); color:var(--white); }
+
+.sec-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; }
+.sec-title { font-size:1.3rem; font-weight:800; color:var(--gray-900); }
+.count-pill {
+  background:linear-gradient(135deg,var(--amber),#ef4444);
+  color:var(--white); padding:.35rem .9rem; border-radius:9999px;
+  font-size:.78rem; font-weight:700;
+}
+
+.housing-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(330px,1fr)); gap:1.5rem; }
+.housing-grid.is-grouped { display:block; }
+.subcat-section { margin-bottom:2rem; }
+.subcat-header { display:flex; align-items:center; gap:.6rem; margin-bottom:.85rem; }
+.subcat-label { font-size:.88rem; font-weight:800; color:var(--gray-900); text-transform:capitalize; letter-spacing:.01em; }
+.subcat-count { background:var(--gray-100); color:var(--gray-500); padding:.2rem .6rem; border-radius:9999px; font-size:.72rem; font-weight:700; }
+.subcat-divider { flex:1; height:1px; background:var(--gray-200); }
+.subcat-scroll-row { display:flex; gap:1rem; overflow-x:auto; padding-bottom:.75rem; scroll-snap-type:x mandatory; }
+.subcat-scroll-row::-webkit-scrollbar { height:4px; }
+.subcat-scroll-row::-webkit-scrollbar-track { background:var(--gray-100); border-radius:9999px; }
+.subcat-scroll-row::-webkit-scrollbar-thumb { background:var(--gray-300); border-radius:9999px; }
+.subcat-scroll-row > * { flex:0 0 330px; scroll-snap-align:start; }
+.subcat-see-all {
+  flex:0 0 90px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:.4rem; background:var(--gray-50); border:1.5px dashed var(--gray-200);
+  border-radius:1.25rem; cursor:pointer; color:var(--gray-400);
+  font-size:.75rem; font-weight:700; transition:all .2s; scroll-snap-align:start;
+}
+.subcat-see-all:hover { background:var(--gray-100); color:var(--amber); border-color:var(--amber); }
+
+.h-card {
+  background:var(--white); border-radius:1.25rem;
+  box-shadow:var(--shadow-sm); overflow:hidden; cursor:pointer;
+  border:1.5px solid transparent;
+  transition:transform .25s,box-shadow .25s,border-color .25s;
+  position:relative;
+}
+.h-card:hover { transform:translateY(-6px); box-shadow:var(--shadow-lg); border-color:var(--amber); }
+.h-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:4px; z-index:2;
+  background:linear-gradient(90deg,var(--amber),#ef4444);
+}
+
+.h-card-img-wrap { position:relative; overflow:hidden; background:#eef0f3; min-height:200px; }
+.h-card-img-wrap img { width:100%; height:auto; display:block; object-fit:contain; transition:transform .4s; }
+.h-card:hover .h-card-img-wrap img { transform:scale(1.05); }
+.h-card-brand-badge {
+  position:absolute;
+  top:6px;
+  right:6px;
+  width:48px;
+  height:48px;
+  z-index:10;
+  object-fit:contain;
+  pointer-events:none;
+}
+
+.h-card-badge {
+  position:absolute; top:.7rem; left:.7rem; z-index:3;
+  background:linear-gradient(135deg,var(--amber),#ef4444);
+  color:var(--white); font-size:.62rem; font-weight:700;
+  padding:.22rem .6rem; border-radius:9999px;
+  text-transform:uppercase; letter-spacing:.04em;
+  box-shadow:0 2px 8px rgba(0,0,0,.3);
+}
+.h-card-fav {
+  position:absolute; top:.65rem; right:.65rem; z-index:4;
+  background:rgba(255,255,255,.92); border:1px solid rgba(0,0,0,.08); border-radius:50%;
+  width:2rem; height:2rem; display:flex; align-items:center; justify-content:center;
+  cursor:pointer; font-size:1rem; transition:background .2s,transform .15s;
+  box-shadow:0 1px 4px rgba(0,0,0,.12);
+}
+.h-card-fav:hover { background:var(--red); transform:scale(1.15); }
+.h-card-fav.liked { background:var(--red); }
+
+/* white text panel below image */
+.h-card-body {
+  position:relative;
+  padding:.5rem .75rem .6rem;
+  background:#fff;
+  border-top:1px solid var(--gray-100);
+}
+.h-card-title {
+  font-size:.88rem; font-weight:800; color:var(--gray-900);
+  margin-bottom:.1rem;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.h-card-location { font-size:.72rem; color:var(--gray-500); margin-bottom:.25rem; }
+.h-card-features { display:flex; gap:.5rem; font-size:.7rem; color:var(--gray-500); margin-bottom:.3rem; flex-wrap:wrap; }
+.h-card-row { display:flex; justify-content:space-between; align-items:center; }
+.h-card-price { font-size:.95rem; font-weight:800; color:var(--primary); }
+.h-card-price small { font-size:.65rem; font-weight:500; color:var(--gray-400); }
+.h-card-cta {
+  background:linear-gradient(135deg,var(--amber),#ef4444);
+  color:var(--white); border:none; padding:.3rem .7rem;
+  border-radius:.5rem; font-size:.72rem; font-weight:700;
+  cursor:pointer; transition:all .2s;
+}
+.h-card-cta:hover { transform:scale(1.06); box-shadow:0 4px 12px rgba(245,158,11,.5); }
+
+.skeleton-card { background:var(--white); border-radius:1.25rem; height:300px; animation:pulse 1.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.45} }
+
+/* ===== AVAILABILITY BADGE ===== */
+.avail-badge {
+  display:inline-flex; align-items:center; gap:.3rem;
+  padding:.18rem .55rem; border-radius:9999px;
+  font-size:.65rem; font-weight:700; letter-spacing:.03em;
+  text-transform:uppercase; line-height:1;
+  transition:opacity .4s;
+}
+.avail-badge::before {
+  content:''; width:.45rem; height:.45rem; border-radius:50%; flex-shrink:0;
+}
+.avail-badge.ab-available {
+  background:#dcfce7; color:#15803d;
+}
+.avail-badge.ab-available::before {
+  background:#22c55e;
+  animation:ab-pulse 1.8s ease-in-out infinite;
+}
+.avail-badge.ab-limited {
+  background:#fef9c3; color:#92400e;
+}
+.avail-badge.ab-limited::before { background:#f59e0b; }
+.avail-badge.ab-full {
+  background:#fee2e2; color:#b91c1c;
+}
+.avail-badge.ab-full::before { background:#ef4444; }
+@keyframes ab-pulse {
+  0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}
+  50%{box-shadow:0 0 0 4px rgba(34,197,94,0)}
+}
+
+.empty-state { text-align:center; padding:4rem 2rem; color:var(--gray-400); }
+.empty-state .empty-icon { font-size:3.5rem; margin-bottom:1rem; }
+.empty-state h3 { font-size:1.1rem; font-weight:700; color:var(--gray-700); margin-bottom:.5rem; }
+
+.features-strip {
+  display:flex; justify-content:center; flex-wrap:wrap; gap:1rem;
+  padding:1.5rem 2rem; background:var(--white); border-top:1px solid var(--gray-200); margin-top:1rem;
+}
+.feat {
+  display:flex; align-items:center; gap:.5rem;
+  font-size:.85rem; font-weight:700; color:var(--gray-700);
+  padding:.6rem 1.2rem; background:var(--gray-50);
+  border-radius:.75rem; border:1px solid var(--gray-200);
+}
+
+/* ===== HOUSING DETAIL MODAL ===== */
+.modal-overlay {
+  display:none; position:fixed; inset:0; z-index:10000;
+  background:rgba(0,0,0,.55); backdrop-filter:blur(3px);
+  align-items:center; justify-content:center; padding:1rem;
+}
+.modal-overlay.open { display:flex; }
+.modal-box {
+  background:#f8fafc; border-radius:1.5rem;
+  width:100%; max-width:860px; max-height:90vh; overflow-y:auto;
+  box-shadow:0 24px 60px rgba(0,0,0,.28);
+  position:relative; animation:modalIn .3s cubic-bezier(.34,1.56,.64,1);
+  display:flex; flex-direction:column;
+}
+@keyframes modalIn { from{transform:scale(.93);opacity:0} to{transform:scale(1);opacity:1} }
+
+/* Desktop: side-by-side layout */
+@media(min-width:640px){
+  .modal-box { flex-direction:row; align-items:stretch; max-height:88vh; }
+  .modal-left-col { width:42%; flex-shrink:0; display:flex; flex-direction:column; }
+  .modal-hero { flex:1; height:auto; min-height:260px; border-radius:1.5rem 0 0 0; }
+  .modal-thumbs { border-bottom:none; border-top:1px solid #f1f5f9; padding:.55rem .85rem; }
+  .modal-right-col { flex:1; overflow-y:auto; display:flex; flex-direction:column; border-radius:0 1.5rem 1.5rem 0; }
+  .modal-content { flex:1; padding:1.25rem 1.4rem 1rem; }
+  .modal-footer-bar { border-radius:0 0 1.5rem 0; }
+}
+
+/* Mobile: stacked bottom sheet */
+@media(max-width:639px){
+  .modal-overlay { align-items:flex-end; padding:0; }
+  .modal-box { border-radius:1.5rem 1.5rem 0 0; max-height:92vh; animation:modalSlideUp .32s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes modalSlideUp { from{transform:translateY(60px);opacity:0} to{transform:translateY(0);opacity:1} }
+  .modal-hero { border-radius:1.5rem 1.5rem 0 0; height:220px; }
+}
+
+.modal-hero { position:relative; height:240px; overflow:hidden; background:#e5e7eb; flex-shrink:0; }
+.modal-hero img { width:100%; height:100%; object-fit:cover; display:block; }
+.modal-back {
+  position:absolute; top:.85rem; left:.85rem; z-index:10;
+  background:rgba(255,255,255,.92); border:none; border-radius:50%;
+  width:2.2rem; height:2.2rem; display:flex; align-items:center; justify-content:center;
+  font-size:1.1rem; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,.15); transition:background .2s;
+}
+.modal-back:hover { background:#fff; }
+.modal-hero-fav {
+  position:absolute; top:.85rem; right:.85rem; z-index:10;
+  background:rgba(255,255,255,.92); border:none; border-radius:50%;
+  width:2.2rem; height:2.2rem; display:flex; align-items:center; justify-content:center;
+  font-size:1rem; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,.15);
+  transition:all .2s; color:#9ca3af;
+}
+.modal-hero-fav.liked { color:#ef4444; }
+.modal-zoom-hint {
+  position:absolute; bottom:.7rem; left:50%; transform:translateX(-50%);
+  background:rgba(0,0,0,.42); color:#fff; font-size:.67rem; font-weight:600;
+  padding:.22rem .65rem; border-radius:9999px; pointer-events:none; letter-spacing:.03em; white-space:nowrap;
+}
+.modal-thumbs { display:flex; gap:.5rem; padding:.6rem .9rem; background:#fff; border-bottom:1px solid #f1f5f9; }
+.modal-thumb { width:54px; height:54px; border-radius:.6rem; object-fit:cover; cursor:pointer; border:2px solid transparent; flex-shrink:0; transition:border-color .2s; }
+.modal-thumb.active,.modal-thumb:hover { border-color:#f59e0b; }
+
+.modal-content { padding:1.3rem 1.5rem 1.2rem; }
+.modal-rent-tag {
+  display:inline-block; background:linear-gradient(135deg,#f59e0b,#ef4444);
+  color:#fff; font-size:.62rem; font-weight:800; padding:.22rem .7rem;
+  border-radius:9999px; text-transform:uppercase; letter-spacing:.08em; margin-bottom:.55rem;
+}
+.modal-title { font-size:1.4rem; font-weight:800; color:#0f172a; margin-bottom:.22rem; line-height:1.25; letter-spacing:-.02em; }
+.modal-location { font-size:.83rem; color:#64748b; margin-bottom:.7rem; display:flex; align-items:center; gap:.3rem; }
+.modal-pills { display:flex; gap:.4rem; flex-wrap:wrap; margin-bottom:1rem; }
+.modal-pill {
+  background:#f1f5f9; color:#334155; font-size:.73rem; font-weight:600;
+  padding:.3rem .75rem; border-radius:9999px; border:1px solid #e2e8f0;
+}
+
+.modal-price-row { display:flex; gap:.8rem; align-items:stretch; margin-bottom:1rem; padding:.85rem; background:#fff; border-radius:1rem; border:1px solid #f1f5f9; box-shadow:0 1px 4px rgba(0,0,0,.05); }
+.modal-price-block { flex:1; }
+.modal-price-label { font-size:.68rem; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:.07em; margin-bottom:.2rem; }
+.modal-price-amount { font-size:1.65rem; font-weight:900; color:#b45309; line-height:1; letter-spacing:-.02em; }
+.modal-price-unit { font-size:.75rem; color:#94a3b8; font-weight:500; margin-top:.15rem; }
+.modal-avail-card {
+  background:linear-gradient(135deg,#ecfdf5,#d1fae5); border:1.5px solid #a7f3d0; border-radius:.875rem;
+  padding:.6rem .85rem; text-align:center; flex-shrink:0; min-width:110px;
+  display:flex; flex-direction:column; justify-content:center;
+}
+.modal-avail-num { font-size:1.05rem; font-weight:800; color:#047857; line-height:1; }
+.modal-avail-label { font-size:.66rem; color:#6b7280; font-weight:500; line-height:1.35; margin-top:.18rem; }
+
+.modal-deposit-card {
+  background:#fff; border-left:4px solid #f59e0b;
+  border-radius:0 .875rem .875rem 0; border-top:1px solid #fef3c7;
+  border-right:1px solid #fef3c7; border-bottom:1px solid #fef3c7;
+  padding:.85rem 1rem; margin-bottom:1rem;
+  box-shadow:0 2px 8px rgba(245,158,11,.08);
+}
+.modal-deposit-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:.3rem; }
+.modal-deposit-title { font-size:.8rem; font-weight:700; color:#92400e; }
+.modal-deposit-secure { font-size:.7rem; font-weight:700; color:#16a34a; background:#dcfce7; padding:.15rem .5rem; border-radius:9999px; }
+.modal-deposit-amount { font-size:1.1rem; font-weight:800; color:#d97706; margin-bottom:.18rem; }
+.modal-deposit-note { font-size:.75rem; color:#78716c; line-height:1.45; }
+
+.modal-divider { height:1px; background:#f1f5f9; margin:.9rem 0; }
+.modal-section-label { font-size:.7rem; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.1em; margin-bottom:.55rem; }
+.modal-desc-text { font-family:Inter,system-ui,-apple-system,sans-serif; font-size:.92rem; font-weight:600; color:#475569; line-height:1.8; margin-bottom:1rem; white-space:pre-wrap; word-break:break-word; }
+
+.modal-features { display:grid; grid-template-columns:1fr 1fr; gap:.5rem; margin-bottom:1.2rem; }
+.modal-feature-item {
+  display:flex; align-items:center; gap:.5rem; font-size:.82rem; color:#334155; font-weight:500;
+  background:#fff; padding:.5rem .7rem; border-radius:.625rem; border:1px solid #f1f5f9;
+}
+.modal-feature-icon { font-size:.95rem; flex-shrink:0; }
+
+.modal-cta-group { display:flex; flex-direction:column; gap:.55rem; }
+.modal-btn-primary {
+  width:100%; padding:.9rem;
+  background:linear-gradient(135deg,#f59e0b 0%,#ef4444 100%);
+  color:#fff; border:none; border-radius:.875rem;
+  font-size:.95rem; font-weight:800; cursor:pointer; letter-spacing:-.01em;
+  box-shadow:0 4px 18px rgba(245,158,11,.35); transition:all .2s;
+}
+.modal-btn-primary:hover { transform:translateY(-1px); box-shadow:0 7px 24px rgba(245,158,11,.45); }
+.modal-btn-secondary {
+  width:100%; padding:.85rem;
+  background:#fff; color:#b45309;
+  border:1.5px solid #fcd34d; border-radius:.875rem;
+  font-size:.9rem; font-weight:700; cursor:pointer; transition:all .2s;
+}
+.modal-btn-secondary:hover { background:#fffbeb; border-color:#f59e0b; }
+
+.modal-footer-bar {
+  display:flex; justify-content:center; gap:2.5rem;
+  padding:.75rem 1rem; background:#fff;
+  border-top:1px solid #f1f5f9; font-size:.78rem; color:#64748b; font-weight:600;
+}
+.modal-footer-bar span { display:flex; align-items:center; gap:.35rem; }
+
+/*  MOBILE BOTTOM NAV  */
+.mob-nav-bar { display:none; position:fixed; bottom:0; left:0; right:0; background:#fff; border-top:1px solid var(--gray-200); z-index:200; padding:6px 0 env(safe-area-inset-bottom,0); }
+.mob-nav-bar-inner { display:flex; justify-content:space-around; }
+.mob-nav-a { display:flex; flex-direction:column; align-items:center; gap:2px; color:var(--gray-500); font-size:10px; font-weight:600; text-decoration:none; padding:6px 8px; flex:1; }
+.mob-nav-a.active { color:#f97316; }
+.mob-nav-a.active .mob-icon svg { stroke: #f97316; }
+.mob-nav-a .mob-icon { font-size:20px; line-height:1; }
+.mob-nav-a.sell-btn .mob-icon { background:var(--amber); border-radius:50%; width:44px; height:44px; display:flex; align-items:center; justify-content:center; font-size:22px; box-shadow:0 4px 14px rgba(245,158,11,.45); margin-top:-16px; }
+.mob-nav-a.sell-btn { color:var(--amber-dark); font-weight:700; }
+/*  MOBILE SEARCH STRIP  */
+.mob-search-strip { display:none; padding:8px 12px; background:#fff; border-bottom:1px solid var(--gray-200); }
+.mob-search-strip input { width:100%; padding:.55rem 1rem .55rem 2.2rem; border:1.5px solid var(--gray-200); border-radius:10px; font-size:.9rem; background:var(--gray-50); font-family:inherit; outline:none; }
+.mob-search-strip .s-icon { position:absolute; left:.75rem; top:50%; transform:translateY(-50%); color:var(--gray-400); }
+.mob-search-wrap { position:relative; }
+
+@media(min-width:901px) and (max-width:1200px){
+  .sidebar { width:175px; padding:1rem .6rem; }
+  .sidebar-item { padding:.6rem .75rem; font-size:.82rem; }
+  .main { padding:1.25rem 1.25rem; }
+  .housing-grid { grid-template-columns:repeat(2,1fr); gap:1.1rem; }
+  .modal-box { max-width:740px; }
+}
+@media(max-width:900px){ .sidebar{display:none} .main{padding:1.25rem} .housing-grid{grid-template-columns:repeat(2,1fr);gap:1rem} .modal-inner{flex-direction:column} .modal-images{width:100%} .subcat-scroll-row>*{flex:0 0 220px} }
+@media(max-width:640px){
+  .nav-search { display:none !important; }
+  .mob-search-strip { display:block; }
+  .mob-nav-bar { display:block; }
+  .page-tabs { display:none; }
+  .main { padding:.75rem .75rem 80px; }
+  .housing-grid { grid-template-columns:1fr; gap:.75rem; }
+  .modal-box { border-radius:1.25rem 1.25rem 0 0; margin-bottom:0; position:fixed; bottom:0; width:100%; max-height:92vh; }
+  .modal-overlay { align-items:flex-end; padding:0; }
+  .navbar { padding:.65rem 1rem; }
+  .subcat-scroll-row > * { flex:0 0 175px; }
+  .subcat-see-all { min-height:90px; min-width:80px; font-size:.78rem; }
+  .sec-title { font-size:1.05rem; }
+  .sec-header { margin-bottom:.75rem; }
+  .modal-hero { height:190px; }
+  .modal-main-img { max-height:220px; object-fit:contain; aspect-ratio:unset; background:var(--gray-100); }
+  .modal-inner { padding:1rem; gap:1rem; }
+}
+@media(max-width:480px){
+  .housing-grid { grid-template-columns:1fr; gap:.6rem; }
+  .subcat-scroll-row > * { flex:0 0 200px; }
+}
+@media(max-width:380px){ .housing-grid { grid-template-columns:1fr; } }
+
+/* ══ BConnect Branded Skeleton — Housing Cards ══ */
+@keyframes bc-shimmer { 0%{left:-100%} 100%{left:200%} }
+.bc-sk { background:#eef0f3; border-radius:6px; }
+.bc-skel {
+  background:#fff; border-radius:1.25rem; overflow:hidden;
+  position:relative; border:1.5px solid #f1f5f9;
+  box-shadow:0 1px 8px rgba(0,0,0,.05);
+}
+.bc-skel::after {
+  content:''; position:absolute; top:0; left:-100%;
+  width:55%; height:100%;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.62) 50%,transparent 100%);
+  animation:bc-shimmer 1.7s ease-in-out infinite;
+  z-index:9; pointer-events:none;
+}
+.bc-skel::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:4px; z-index:10;
+  background:linear-gradient(90deg,#f59e0b,#ef4444);
+}
+.bc-skel-img-wrap { position:relative; width:100%; min-height:150px; overflow:hidden; }
+.bc-skel-img-fill { position:absolute; inset:0; border-radius:0; }
+.bc-skel-logo {
+  position:absolute; top:6px; right:6px; width:48px; height:48px;
+  object-fit:contain; z-index:12; pointer-events:none;
+  opacity:.2; filter:grayscale(1);
+}
+.bc-skel-pill  { position:absolute; top:8px; left:8px; width:60px; height:18px; border-radius:999px; z-index:11; }
+.bc-skel-body  { padding:.5rem .75rem .6rem; border-top:1px solid #f1f5f9; }
+.bc-skel-title { height:13px; border-radius:5px; margin-bottom:.15rem; }
+.bc-skel-loc   { width:58%; height:10px; border-radius:4px; margin-bottom:.28rem; }
+.bc-skel-feats { display:flex; gap:6px; margin-bottom:.28rem; }
+.bc-skel-feat  { width:42px; height:12px; border-radius:4px; }
+.bc-skel-price-row {
+  display:flex; justify-content:space-between; align-items:center; margin-top:.3rem;
+}
+.bc-skel-price { width:90px; height:16px; border-radius:5px; }
+.bc-skel-cta   { height:27px; border-radius:7px; width:88px; }
+</style>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="website.html" class="nav-logo">
+    <span style="background:linear-gradient(135deg,#f97316,#a855f7);color:#fff;width:2rem;height:2rem;border-radius:.5rem;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(168,85,247,.4);flex-shrink:0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="6" cy="6" r="2.5" fill="#fff"/><circle cx="6" cy="18" r="2.5" fill="#fff"/><circle cx="18" cy="12" r="2.5" fill="#fff"/><circle cx="6" cy="12" r="1.8" fill="rgba(255,255,255,0.6)"/><line x1="6" y1="6" x2="6" y2="18" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/><line x1="6" y1="6" x2="18" y2="12" stroke="rgba(255,255,255,0.9)" stroke-width="1.5"/><line x1="6" y1="18" x2="18" y2="12" stroke="rgba(255,255,255,0.9)" stroke-width="1.5"/></svg></span>
+    <span style="display:flex;align-items:baseline;gap:0"><span style="font-size:1.15rem;font-weight:900;background:linear-gradient(135deg,#f97316,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-.5px">B</span><span style="font-size:1.15rem;font-weight:900;color:#111827;letter-spacing:-.5px">Connect</span></span>
+  </a>
+  <div class="nav-search">
+    <span class="search-icon"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+    <input type="text" id="search-input" placeholder="Search housing, apartments, rentals..." oninput="handleSearch(this.value)">
+  </div>
+  <div class="nav-icons">
+    <button class="icon-btn ai-btn" title="AI Assistant" onclick="window.location.href='ai-assistant.html'"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg></button>
+    <button class="icon-btn" title="Orders" onclick="window.location.href='orders.html'"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg></button>
+    <button class="icon-btn" title="Account" onclick="window.location.href='login.html'"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+  </div>
+</nav>
+
+<!-- MOBILE SEARCH STRIP -->
+<div class="mob-search-strip">
+  <div class="mob-search-wrap">
+    <span class="s-icon"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+    <input type="text" placeholder="Search housing, rentals..." oninput="handleSearch(this.value)">
+  </div>
+</div>
+
+<div class="page-layout">
+
+  <aside class="sidebar">
+    <p class="sidebar-title">Menu</p>
+    <ul class="sidebar-menu">
+      <li class="sidebar-item" onclick="window.location.href='website.html'"><i data-lucide="home" style="width:16px;height:16px;flex-shrink:0"></i> Home</li>
+      <li class="sidebar-item" onclick="window.location.href='products.html'"><i data-lucide="shopping-bag" style="width:16px;height:16px;flex-shrink:0"></i> Products</li>
+      <li class="sidebar-item" onclick="window.location.href='services.html'"><i data-lucide="wrench" style="width:16px;height:16px;flex-shrink:0"></i> Services</li>
+      <li class="sidebar-item active"><i data-lucide="building-2" style="width:16px;height:16px;flex-shrink:0"></i> Housing</li>
+      <hr class="sidebar-divider">
+      <li class="sidebar-item" onclick="window.location.href='landlord.html'"><i data-lucide="building" style="width:16px;height:16px;flex-shrink:0"></i> Landlord</li>
+      <li class="sidebar-item" onclick="window.location.href='tenant.html'"><i data-lucide="key" style="width:16px;height:16px;flex-shrink:0"></i> Tenant</li>
+      <li class="sidebar-item" onclick="window.location.href='orders.html'"><i data-lucide="clipboard-list" style="width:16px;height:16px;flex-shrink:0"></i> Orders</li>
+      <li class="sidebar-item"><i data-lucide="heart" style="width:16px;height:16px;flex-shrink:0"></i> Favorites</li>
+      <hr class="sidebar-divider">
+      <li class="sidebar-item" onclick="window.location.href='support.html'"><i data-lucide="settings" style="width:16px;height:16px;flex-shrink:0"></i> Settings</li>
+      <hr class="sidebar-divider">
+      <li class="sidebar-item ai-nav-item" onclick="window.location.href='ai-assistant.html'"><i data-lucide="bot" style="width:16px;height:16px;flex-shrink:0"></i> AI Assistant</li>
+      <li class="sidebar-contact-item" onclick="window.location.href='contact.html'"><i data-lucide="phone" style="width:16px;height:16px;flex-shrink:0;stroke:#fff"></i> Contact Us</li>
+    </ul>
+  </aside>
+
+  <main class="main">
+
+    <div class="page-tabs">
+      <button class="page-tab" onclick="window.location.href='products.html'"><i data-lucide="shopping-bag" style="width:13px;height:13px;vertical-align:-2px;margin-right:5px"></i> Products</button>
+      <button class="page-tab" onclick="window.location.href='services.html'"><i data-lucide="wrench" style="width:13px;height:13px;vertical-align:-2px;margin-right:5px"></i> Services</button>
+      <button class="page-tab active"><i data-lucide="building-2" style="width:13px;height:13px;vertical-align:-2px;margin-right:5px"></i> Housing</button>
+    </div>
+
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="setFilter('', this)">All</button>
+      <button class="filter-btn" onclick="setFilter('Single Room', this)"><i data-lucide="door-open" style="width:13px;height:13px;vertical-align:-2px;margin-right:4px"></i> Single Room</button>
+      <button class="filter-btn" onclick="setFilter('Studio', this)"><i data-lucide="layout" style="width:13px;height:13px;vertical-align:-2px;margin-right:4px"></i> Studio</button>
+      <button class="filter-btn" onclick="setFilter('Bedsitter', this)"><i data-lucide="bed-single" style="width:13px;height:13px;vertical-align:-2px;margin-right:4px"></i> Bedsitter</button>
+      <button class="filter-btn" onclick="setFilter('1 Bedroom', this)"><i data-lucide="bed-double" style="width:13px;height:13px;vertical-align:-2px;margin-right:4px"></i> 1 Bedroom</button>
+      <button class="filter-btn" onclick="setFilter('2 Bedroom', this)"><i data-lucide="bed-double" style="width:13px;height:13px;vertical-align:-2px;margin-right:4px"></i> 2 Bedroom</button>
+      <button class="filter-btn" onclick="setFilter('3 Bedroom+', this)"><i data-lucide="home" style="width:13px;height:13px;vertical-align:-2px;margin-right:4px"></i> 3 BR+</button>
+      <button class="filter-btn" onclick="setFilter('Apartment', this)"><i data-lucide="building-2" style="width:13px;height:13px;vertical-align:-2px;margin-right:4px"></i> Apartments</button>
+      <button class="filter-btn" onclick="setFilter('House', this)"><i data-lucide="home" style="width:13px;height:13px;vertical-align:-2px;margin-right:4px"></i> Houses</button>
+    </div>
+
+    <div class="sec-header">
+      <h2 class="sec-title"> Housing & Rentals</h2>
+      <span class="count-pill" id="housing-count">Loading…</span>
+    </div>
+
+    <div class="housing-grid" id="housing-grid">
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+    </div>
+
+  </main>
+</div>
+
+<div class="features-strip">
+  <div class="feat"> Verified Listings</div>
+  <div class="feat"> Nairobi & Kenya-wide</div>
+  <div class="feat"> Easy Move-In</div>
+  <div class="feat"> Direct Landlord Chat</div>
+</div>
+
+<div class="modal-overlay" id="housing-modal" onclick="closeModalOutside(event)">
+  <div class="modal-box">
+    <div class="modal-left-col">
+      <div class="modal-hero">
+        <img id="modal-img" src="" alt="">
+        <button class="modal-back" onclick="closeHousingModal()">&#8592;</button>
+        <button class="modal-hero-fav" id="modal-fav-btn" onclick="event.stopPropagation();toggleModalFav(this)"></button>
+        <span class="modal-zoom-hint"> Tap to zoom</span>
+      </div>
+      <div class="modal-thumbs" id="modal-thumbs"></div>
+      <div id="modal-video-wrap" style="display:none;margin-top:10px;padding:0 4px;">
+        <video id="modal-video" controls style="width:100%;border-radius:10px;max-height:200px;background:#000;"></video>
+      </div>
+    </div>
+    <div class="modal-right-col">
+    <div class="modal-content">
+      <span class="modal-rent-tag">For Rent</span>
+      <h2 class="modal-title" id="modal-title">Property</h2>
+      <div class="modal-location" id="modal-location"> Nairobi, Kenya</div>
+      <div class="modal-pills" id="modal-pills"></div>
+      <div class="modal-price-row">
+        <div class="modal-price-block">
+          <div class="modal-price-label">Monthly Rent</div>
+          <div class="modal-price-amount" id="modal-price">Ksh 0</div>
+          <div class="modal-price-unit">per month · recurring</div>
+        </div>
+        <div class="modal-avail-card">
+          <div class="modal-avail-num" id="modal-avail-num">5 Rooms</div>
+          <div class="modal-avail-label">Available<br>out of <span id="modal-total-rooms">20</span></div>
+        </div>
+      </div>
+      <div class="modal-deposit-card">
+        <div class="modal-deposit-header">
+          <div class="modal-deposit-title"> Security Deposit</div>
+          <span class="modal-deposit-secure"> Refundable</span>
+        </div>
+        <div class="modal-deposit-amount" id="modal-deposit">Ksh 0</div>
+        <div class="modal-deposit-note" id="modal-deposit-note">Paid <b>once</b> before moving in — <b>not</b> part of monthly rent. Refundable when you vacate.</div>
+      </div>
+      <div class="modal-divider"></div>
+      <div class="modal-section-label">About this property</div>
+      <div class="modal-desc-text" id="modal-desc"></div>
+      <div class="modal-section-label"> Features</div>
+      <div class="modal-features" id="modal-features"></div>
+      <div class="modal-cta-group">
+        <button class="modal-btn-primary" id="modal-deposit-btn"> Pay Deposit — Secure your room now</button>
+        <button class="modal-btn-secondary" id="modal-view-btn"> Book Viewing</button>
+      </div>
+    </div>
+    <div class="modal-footer-bar">
+      <span> Verified Listing</span>
+      <span> Available Now</span>
+    </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function requireAuth() {
+  const token = localStorage.getItem('token') || localStorage.getItem('authToken') || localStorage.getItem('tenantToken') || localStorage.getItem('landlordToken');
+  if (!token) {
+    sessionStorage.setItem('bc_redirect', window.location.href);
+    window.location.href = 'login.html';
+    return false;
+  }
+  return true;
+}
+
+const FALLBACK_IMG = 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80';
+const FALLBACK_IMGS = [
+  'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80',
+  'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&q=80',
+  'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&q=80',
+];
+
+let allItems = [];
+let activeFilter = '';
+
+function fmtPrice(n) { return 'Ksh ' + parseInt(n || 0).toLocaleString(); }
+
+function descToList(text) {
+  if (!text) return '<li>No description available.</li>';
+  const sentences = text.split(/[.\n;]+/).map(s => s.trim()).filter(s => s.length > 2);
+  if (!sentences.length) return `<li>${text}</li>`;
+  return sentences.map(s => `<li>${s}</li>`).join('');
+}
+
+function isHousing(p) {
+  const c = (p.category || '').toLowerCase();
+  return c.includes('hous') || c.includes('rent') || c.includes('apart') || c.includes('studio') || c.includes('bedsit') || c.includes('sale') || !p.service_type;
+}
+
+function skelCards(n) {
+  return Array.from({length:n}, (_,i) => `
+    <div class="bc-skel" style="animation-delay:${i*0.1}s">
+      <div class="bc-skel-img-wrap">
+        <div class="bc-skel-img-fill bc-sk"></div>
+        <div class="bc-skel-pill bc-sk"></div>
+        <img src="/bconnect-badge-nobg.png" class="bc-skel-logo" alt="">
+      </div>
+      <div class="bc-skel-body">
+        <div class="bc-skel-title bc-sk" style="width:75%"></div>
+        <div class="bc-skel-loc bc-sk"></div>
+        <div class="bc-skel-feats">
+          <div class="bc-skel-feat bc-sk"></div>
+          <div class="bc-skel-feat bc-sk"></div>
+          <div class="bc-skel-feat bc-sk"></div>
+        </div>
+        <div class="bc-skel-price-row">
+          <div class="bc-skel-price bc-sk"></div>
+          <div class="bc-skel-cta bc-sk"></div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+async function loadHousing() {
+  document.getElementById('housing-grid').innerHTML = skelCards(6);
+  try {
+    const resp = await fetch('/api/housing');
+    const data = await resp.json();
+    allItems = (data && data.properties) ? data.properties : [];
+    renderHousing(allItems);
+  } catch(e) {
+    document.getElementById('housing-count').textContent = 'Error';
+    document.getElementById('housing-grid').innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon"></div><h3>Failed to load</h3><p>Please try again later.</p></div>';
+  }
+}
+
+// ---- Real-time availability polling (every 30 s) ----
+async function refreshAvailability() {
+  try {
+    const res = await fetch('/api/housing/availability');
+    const data = await res.json();
+    if (!data.success || !data.availability) return;
+    const map = data.availability;
+    document.querySelectorAll('.h-card[data-prop-id]').forEach(card => {
+      const id = card.dataset.propId;
+      if (!map[id]) return;
+      const { rooms_remaining: r, units: u } = map[id];
+      const wrap = card.querySelector('.h-card-avail-wrap');
+      if (!wrap) return;
+      const newHtml = availBadgeHtml(r || 0, u || 0);
+      if (wrap.innerHTML !== newHtml) {
+        wrap.style.opacity = '0';
+        setTimeout(() => { wrap.innerHTML = newHtml; wrap.style.opacity = '1'; }, 300);
+      }
+    });
+  } catch (_) {}
+}
+let _availInterval = null;
+function startAvailPolling() {
+  refreshAvailability();
+  if (!_availInterval) _availInterval = setInterval(refreshAvailability, 30000);
+}
+
+function setFilter(val, btn) {
+  activeFilter = val;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const filtered = val
+    ? allItems.filter(p => (p.subcategory || '').toLowerCase() === val.toLowerCase())
+    : allItems;
+  renderHousing(filtered);
+}
+
+let _searchTimer = null;
+function handleSearch(q) {
+  const query = q.toLowerCase().trim();
+  if (!query) { renderHousing(allItems); return; }
+  const filtered = allItems.filter(p => {
+    const text = ((p.title||p.name||'')+' '+(p.location||'')+' '+(p.category||'')+' '+(p.description||'')).toLowerCase();
+    return text.includes(query);
+  });
+  renderHousing(filtered);
+  clearTimeout(_searchTimer);
+  if (query.length >= 3) {
+    _searchTimer = setTimeout(async () => {
+      try {
+        const res = await fetch('/api/ai/smart-search', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query, type: 'housing' })
+        });
+        const data = await res.json();
+        if (data.success && data.aiRanked && data.results.length) {
+          renderHousing(data.results);
+          const cnt = document.getElementById('housing-count');
+          if (cnt) cnt.textContent = data.results.length + ' listings (AI ranked)';
+        }
+      } catch (_) {}
+    }, 600);
+  }
+}
+
+function applyFilter(val) {
+  const btn = [...document.querySelectorAll('.filter-btn')].find(b => {
+    const oc = b.getAttribute('onclick') || '';
+    return oc.includes(`'${val}'`) || oc.includes(`"${val}"`);
+  });
+  if (btn) { btn.click(); btn.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'}); }
+}
+function makeSeeAll(sub) {
+  const el = document.createElement('button');
+  el.className = 'subcat-see-all';
+  el.innerHTML = '<i data-lucide="chevrons-right" style="width:22px;height:22px"></i><span>See All</span>';
+  el.onclick = () => applyFilter(sub);
+  return el;
+}
+
+function renderHousing(items) {
+  const container = document.getElementById('housing-grid');
+  document.getElementById('housing-count').textContent = items.length + ' listings';
+
+  if (!items.length) {
+    container.classList.remove('is-grouped');
+    container.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon"></div><h3>No listings found</h3><p>Check back soon or adjust your filter.</p></div>';
+    return;
+  }
+
+  container.innerHTML = '';
+
+  if (!activeFilter) {
+    container.classList.add('is-grouped');
+    const groups = {}, ungrouped = [];
+    items.forEach(p => {
+      const sub = (p.subcategory || '').trim();
+      if (sub) { if (!groups[sub]) groups[sub] = []; groups[sub].push(p); }
+      else ungrouped.push(p);
+    });
+    [...Object.keys(groups).sort(), ...(ungrouped.length ? ['__other__'] : [])].forEach(key => {
+      const list = key === '__other__' ? ungrouped : groups[key];
+      const label = key === '__other__' ? 'Other' : key;
+      const section = document.createElement('div');
+      section.className = 'subcat-section';
+      section.innerHTML = `<div class="subcat-header"><span class="subcat-label">${label}</span><span class="subcat-count">${list.length}</span><span class="subcat-divider"></span></div>`;
+      const row = document.createElement('div');
+      row.className = 'subcat-scroll-row';
+      list.forEach((p, idx) => row.appendChild(buildCard(p, idx)));
+      if (key !== '__other__') row.appendChild(makeSeeAll(key));
+      section.appendChild(row);
+      container.appendChild(section);
+    });
+  } else {
+    container.classList.remove('is-grouped');
+    items.forEach((p, idx) => container.appendChild(buildCard(p, idx)));
+  }
+
+  if (window.lucide) lucide.createIcons();
+}
+
+function availBadgeHtml(rooms, units) {
+  const r = rooms || 0;
+  const u = units || 0;
+  if (r === 0 && u === 0) return '';
+  let cls, label;
+  if (r === 0)       { cls = 'ab-full';      label = 'Full'; }
+  else if (r <= 2)   { cls = 'ab-limited';   label = r + ' Left'; }
+  else               { cls = 'ab-available'; label = r + ' Available'; }
+  return `<span class="avail-badge ${cls}">${label}</span>`;
+}
+
+function buildCard(p, idx) {
+  const img   = p.image_url || (p.images && p.images[0]) || FALLBACK_IMG;
+  const title = p.title || p.name || 'Property';
+  const price = p.price || p.rent || 0;
+  const loc   = p.location || 'Nairobi, Kenya';
+  const beds  = p.bedrooms ? p.bedrooms + ' Bed' : '';
+  const baths = p.bathrooms ? p.bathrooms + ' Bath' : '';
+  const sub   = p.subcategory || '';
+  const rooms = p.rooms_remaining || 0;
+  const units = p.units || p.total_rooms || 0;
+  const propId = String(p._id || p.id || '');
+
+  const card = document.createElement('div');
+  card.className = 'h-card';
+  if (propId) card.dataset.propId = propId;
+  card.innerHTML = `
+    <div class="h-card-img-wrap">
+      <img src="${img}" alt="${title}" onerror="this.src='${FALLBACK_IMG}'">
+      <span class="h-card-badge">${sub || 'For Rent'}</span>
+      <button class="h-card-fav" onclick="event.stopPropagation();toggleFav(this)"></button>
+    </div>
+    <img src="/bconnect-badge-nobg.png" class="h-card-brand-badge" alt="BConnect" onerror="this.onerror=null;this.style.display='none'">
+    <div class="h-card-body">
+      <div class="h-card-title">${title}</div>
+      <div class="h-card-features">
+        ${beds ? '<span> ' + beds + '</span>' : ''}
+        ${baths ? '<span> ' + baths + '</span>' : ''}
+        <span class="h-card-avail-wrap">${availBadgeHtml(rooms, units)}</span>
+      </div>
+      <div class="h-card-row">
+        <span class="h-card-price">${fmtPrice(price)} <small>/ mo</small></span>
+        <button class="h-card-cta"> Pay Deposit</button>
+      </div>
+    </div>`;
+
+  card.querySelector('.h-card-cta').addEventListener('click', e => {
+    e.stopPropagation();
+    const deposit = p.deposit || p.security_deposit || 0;
+    const loc     = p.location || p.address || '';
+    const pCode   = p.code || '';
+    const pId     = String(p._id || p.id || '');
+    window.location.href = 'payment.html?type=deposit'
+      + '&item='    + encodeURIComponent(title)
+      + '&price='   + deposit
+      + '&rent='    + price
+      + '&location='+ encodeURIComponent(loc)
+      + (pCode ? '&code=' + encodeURIComponent(pCode) : '')
+      + (pId   ? '&property_id=' + encodeURIComponent(pId) : '');
+  });
+  card.addEventListener('click', () => openModal(p));
+  return card;
+}
+
+function toggleFav(btn) {
+  btn.classList.toggle('liked');
+  btn.textContent = btn.classList.contains('liked') ? '' : '';
+}
+
+function checkDeepLink(items, openFn) {
+  const id = new URLSearchParams(window.location.search).get('id');
+  if (!id || !items.length) return;
+  const item = items.find(p => String(p._id || p.id || '') === String(id));
+  if (item) openFn(item);
+}
+
+function openModal(p) {
+  const id = p._id || p.id || '';
+  if (id) {
+    const currId = new URLSearchParams(window.location.search).get('id');
+    if (String(currId) === String(id)) history.replaceState({id}, '', '?id=' + encodeURIComponent(id));
+    else history.pushState({id}, '', '?id=' + encodeURIComponent(id));
+  }
+  const img    = p.image_url || (p.images && p.images[0]) || FALLBACK_IMG;
+  const title  = p.title || p.name || 'Property';
+  const price  = p.price || p.rent || 0;
+  const loc    = p.location || 'Nairobi, Kenya';
+  const desc   = p.description || p.details || 'A budget-friendly, clean and secure property ideal for students and young professionals. Well-maintained with easy access to essential amenities.';
+  const avail  = p.rooms_remaining || p.units_available || p.rooms_available || 5;
+  const total  = p.total_units || p.total_rooms || 20;
+
+  document.getElementById('modal-img').src = img;
+  const houVidWrap = document.getElementById('modal-video-wrap');
+  const houVidEl   = document.getElementById('modal-video');
+  if (p.video_url && houVidWrap && houVidEl) {
+    houVidEl.src = p.video_url; houVidWrap.style.display = 'block';
+  } else if (houVidWrap) { houVidWrap.style.display = 'none'; if (houVidEl) houVidEl.src = ''; }
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-location').textContent = ' ' + loc;
+  const hasDeposit = p.deposit && !isNaN(p.deposit) && p.deposit > 0;
+  const deposit = hasDeposit ? p.deposit : price * 2;
+  document.getElementById('modal-price').textContent = fmtPrice(price);
+  document.getElementById('modal-deposit').textContent = fmtPrice(deposit);
+  document.getElementById('modal-deposit-note').innerHTML = hasDeposit
+    ? 'Paid <b>once</b> before moving in — <b>not</b> part of monthly rent. Refundable when you vacate.'
+    : 'Estimated deposit (2 months rent). Confirm with landlord. Paid <b>once</b> — <b>not</b> monthly rent.';
+  document.getElementById('modal-desc').textContent = desc;
+  document.getElementById('modal-avail-num').textContent = avail + ' Room' + (avail !== 1 ? 's' : '');
+  document.getElementById('modal-total-rooms').textContent = total + ' Rooms';
+
+  // Pills
+  const pillsEl = document.getElementById('modal-pills');
+  const pillData = [];
+  if (p.bedrooms) pillData.push(' ' + p.bedrooms + ' Bed' + (p.bedrooms > 1 ? 's' : ''));
+  if (p.bathrooms) pillData.push(' ' + p.bathrooms + ' Bath' + (p.bathrooms > 1 ? 's' : ''));
+  if (p.size) pillData.push(' ' + p.size);
+  if (p.property_type) pillData.push(' ' + p.property_type);
+  pillData.push(' Verified');
+  pillsEl.innerHTML = pillData.map(t => `<span class="modal-pill">${t}</span>`).join('');
+
+  // Features — built from property data, no hardcoded duplicates
+  const featsEl = document.getElementById('modal-features');
+  const featureMap = [
+    { key: 'wifi',      icon: '', label: 'Free Wi-Fi' },
+    { key: 'water',     icon: '', label: 'Water Included' },
+    { key: 'security',  icon: '', label: 'Secure Environment' },
+    { key: 'parking',   icon: '', label: 'Parking Available' },
+    { key: 'furnished', icon: '', label: 'Furnished' },
+    { key: 'electricity',icon: '', label: 'Electricity Included' },
+    { key: 'transport', icon: '', label: 'Near Transport' },
+    { key: 'school',    icon: '', label: 'Near Schools' },
+  ];
+  const descLower = desc.toLowerCase();
+  let activeFeats = featureMap.filter(f => {
+    const d = p[f.key] || p.amenities;
+    if (d) return true;
+    return descLower.includes(f.key) || (f.key === 'transport' && descLower.includes('transport'))
+        || (f.key === 'wifi' && (descLower.includes('wifi') || descLower.includes('wi-fi')))
+        || (f.key === 'water' && descLower.includes('water'))
+        || (f.key === 'security' && (descLower.includes('secur') || descLower.includes('gated')))
+        || (f.key === 'school' && (descLower.includes('school') || descLower.includes('college')))
+        || (f.key === 'parking' && descLower.includes('park'))
+        || (f.key === 'furnished' && descLower.includes('furnish'))
+        || (f.key === 'electricity' && (descLower.includes('electric') || descLower.includes('power')));
+  });
+  if (activeFeats.length < 3) {
+    activeFeats = [
+      { icon: '', label: 'Free Wi-Fi & Water' },
+      { icon: '', label: 'Secure Environment' },
+      { icon: '', label: 'Near Transport & Schools' },
+    ];
+  }
+  featsEl.innerHTML = activeFeats.map(f =>
+    `<div class="modal-feature-item"><span class="modal-feature-icon">${f.icon}</span>${f.label}</div>`
+  ).join('');
+
+  // Build real images array from listing data (up to 3), no fake placeholders
+  const rawImgs2 = Array.isArray(p.images) ? p.images : [];
+  const imgSet2 = [];
+  [p.image_url, p.imageUrl, ...rawImgs2].forEach(u => {
+    if (u && !imgSet2.includes(u)) imgSet2.push(u);
+  });
+  if (!imgSet2.length) imgSet2.push(FALLBACK_IMG);
+  const galleryImgs2 = imgSet2.slice(0, 3);
+  window._currentGalleryImages = galleryImgs2;
+  window._currentGalleryIdx = 0;
+
+  const thumbsEl = document.getElementById('modal-thumbs');
+  if (galleryImgs2.length > 1) {
+    thumbsEl.innerHTML = galleryImgs2.map((u, i) =>
+      `<img class="modal-thumb${i===0?' active':''}" src="${u}" onerror="this.style.display='none'" onclick="switchThumb(this,'${u}',${i})">`
+    ).join('');
+    thumbsEl.style.display = '';
+  } else {
+    thumbsEl.innerHTML = '';
+    thumbsEl.style.display = 'none';
+  }
+
+  // Reset fav
+  const favBtn = document.getElementById('modal-fav-btn');
+  favBtn.textContent = '';
+  favBtn.classList.remove('liked');
+
+  // Buttons
+  const propCode = p.code || '';
+  const propId   = String(p._id || p.id || '');
+  document.getElementById('modal-deposit-btn').onclick = () => {
+    if (!requireAuth()) return;
+    window.location.href = 'payment.html?type=deposit'
+      + '&item='    + encodeURIComponent(title)
+      + '&price='   + deposit
+      + '&rent='    + price
+      + '&location='+ encodeURIComponent(loc)
+      + (propCode ? '&code=' + encodeURIComponent(propCode) : '')
+      + (propId   ? '&property_id=' + encodeURIComponent(propId) : '');
+  };
+  document.getElementById('modal-view-btn').onclick = () => {
+    if (!requireAuth()) return;
+    window.location.href = 'payment.html?item=' + encodeURIComponent('Viewing – ' + title) + '&price=500';
+  };
+
+  document.getElementById('housing-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function toggleModalFav(btn) {
+  btn.classList.toggle('liked');
+  btn.textContent = btn.classList.contains('liked') ? '' : '';
+}
+
+function switchThumb(el, url, idx) {
+  document.getElementById('modal-img').src = url;
+  document.querySelectorAll('.modal-thumb').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  window._currentGalleryIdx = idx || 0;
+}
+
+function closeHousingModal() {
+  document.getElementById('housing-modal').classList.remove('open');
+  document.body.style.overflow = '';
+  if (window.location.search) history.pushState({}, '', window.location.pathname);
+}
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('housing-modal')) closeHousingModal();
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeHousingModal(); });
+
+loadHousing().then(() => { checkDeepLink(allItems, openModal); startAvailPolling(); });
+</script>
+
+<script src="bc-lightbox.js"></script>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="mob-nav-bar">
+  <div class="mob-nav-bar-inner">
+    <a class="mob-nav-a" href="website.html"><span class="mob-icon"><i data-lucide="home" style="width:20px;height:20px"></i></span>Home</a>
+    <a class="mob-nav-a" href="products.html"><span class="mob-icon"><i data-lucide="shopping-bag" style="width:20px;height:20px"></i></span>Shop</a>
+    <a class="mob-nav-a active" href="housing.html"><span class="mob-icon"><i data-lucide="building-2" style="width:20px;height:20px"></i></span>Housing</a>
+    <a class="mob-nav-a" href="events.html"><span class="mob-icon"><i data-lucide="ticket" style="width:20px;height:20px"></i></span>Events</a>
+    <a class="mob-nav-a" href="login.html"><span class="mob-icon"><i data-lucide="user" style="width:20px;height:20px"></i></span>Account</a>
+  </div>
+</nav>
+
+
+<script>document.addEventListener("DOMContentLoaded",function(){if(window.lucide)lucide.createIcons();});</script>
+<script src="shared-layout.js?v=7"></script>
+<script src="profile-widget.js"></script>
+</body>
+</html>

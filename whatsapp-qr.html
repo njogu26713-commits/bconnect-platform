@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BConnect WhatsApp Bot — Connect</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:#0a0f1e;min-height:100vh;display:flex;align-items:center;justify-content:center;color:#fff}
+.card{background:#111827;border:1px solid #1e2d40;border-radius:1.5rem;padding:2.5rem 2rem;max-width:480px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.logo{font-size:1.5rem;font-weight:800;color:#6366f1;margin-bottom:.3rem;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.logo img{width:36px;height:36px;border-radius:50%}
+.subtitle{color:#6b7280;font-size:.85rem;margin-bottom:2rem}
+.status-chip{display:inline-flex;align-items:center;gap:.4rem;padding:.35rem 1rem;border-radius:9999px;font-size:.78rem;font-weight:700;margin-bottom:1.5rem}
+.status-chip.waiting{background:#1e2d40;color:#60a5fa}
+.status-chip.connected{background:#052e16;color:#4ade80}
+.status-chip.error{background:#450a0a;color:#f87171}
+.dot{width:.55rem;height:.55rem;border-radius:50%;background:currentColor}
+.dot.pulse{animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* QR mode */
+#qr-wrap{background:#fff;border-radius:1rem;padding:1rem;display:inline-block;margin-bottom:1.5rem}
+#qr-wrap img{display:block;max-width:260px;width:100%}
+
+/* Phone number entry */
+.phone-box{background:#0d1117;border:1.5px solid #1e2d40;border-radius:1rem;padding:1.75rem 1.5rem;margin-bottom:1.5rem;text-align:left}
+.phone-label{font-size:.75rem;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;display:block}
+.phone-row{display:flex;gap:.5rem;align-items:stretch}
+.phone-prefix{background:#1e2d40;border:1px solid #374151;color:#9ca3af;padding:.6rem .75rem;border-radius:.6rem;font-size:.9rem;width:80px;text-align:center;outline:none;flex-shrink:0}
+.phone-prefix:focus{border-color:#6366f1;color:#fff}
+.phone-input{flex:1;background:#1e2d40;border:1px solid #374151;color:#fff;padding:.6rem .9rem;border-radius:.6rem;font-size:.95rem;outline:none;min-width:0}
+.phone-input:focus{border-color:#6366f1}
+.phone-input::placeholder{color:#4b5563}
+.phone-hint{font-size:.72rem;color:#4b5563;margin-top:.5rem}
+.phone-err{font-size:.75rem;color:#f87171;margin-top:.5rem;display:none}
+
+/* Pairing code mode */
+.pairing-box{background:#0d1117;border:1.5px solid #1e2d40;border-radius:1rem;padding:1.75rem 1.5rem;margin-bottom:1.5rem}
+.pairing-label{font-size:.75rem;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.85rem}
+.pairing-code{font-size:2.6rem;font-weight:900;letter-spacing:.18em;color:#fff;font-family:'Courier New',monospace;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.pairing-code-wrap{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:1rem}
+.copy-btn{background:#1e2d40;border:1px solid #374151;color:#9ca3af;padding:.35rem .75rem;border-radius:.5rem;font-size:.75rem;cursor:pointer;transition:all .2s}
+.copy-btn:hover{background:#374151;color:#fff}
+.pairing-exp{font-size:.75rem;color:#4b5563}
+.pairing-number{font-size:.78rem;color:#6b7280;margin-top:.4rem}
+.phone-alert{background:#1a1200;border:1.5px solid #854d0e;border-radius:.75rem;padding:.85rem 1rem;margin-bottom:1rem;text-align:left}
+.phone-alert-title{font-size:.7rem;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.25rem}
+.phone-alert-num{font-size:1.05rem;font-weight:800;color:#fbbf24;font-family:'Courier New',monospace;letter-spacing:.04em}
+.phone-alert-note{font-size:.72rem;color:#d97706;margin-top:.3rem;line-height:1.5}
+
+.instructions{background:#0d1117;border:1px solid #1e2d40;border-radius:.75rem;padding:1.25rem;text-align:left;margin-bottom:1.5rem;font-size:.83rem;line-height:1.7;color:#9ca3af}
+.instructions strong{color:#e5e7eb}
+.instructions ol{padding-left:1.2rem}
+.instructions li{margin-bottom:.25rem}
+.instructions li span{color:#818cf8;font-weight:700}
+
+.refresh-btn{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;padding:.7rem 2rem;border-radius:.75rem;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;width:100%}
+.refresh-btn:hover{transform:scale(1.04);box-shadow:0 4px 16px rgba(99,102,241,.4)}
+.refresh-btn:disabled{opacity:.6;transform:none;cursor:not-allowed}
+.secondary-btn{background:transparent;border:1px solid #374151;color:#6b7280;padding:.5rem 1.25rem;border-radius:.6rem;font-size:.8rem;cursor:pointer;margin-top:.75rem;transition:all .2s}
+.secondary-btn:hover{border-color:#6366f1;color:#fff}
+.connected-box{background:#052e16;border:1px solid #166534;border-radius:1rem;padding:1.5rem;color:#4ade80;margin-bottom:1rem}
+.connected-box h2{font-size:1.5rem;margin-bottom:.5rem}
+.connected-box p{color:#86efac;font-size:.88rem}
+.disconnect-btn{background:transparent;border:1.5px solid #374151;color:#6b7280;padding:.6rem 1.5rem;border-radius:.75rem;font-size:.82rem;font-weight:600;cursor:pointer;width:100%;transition:all .2s;margin-top:.25rem}
+.disconnect-btn:hover{border-color:#ef4444;color:#ef4444;background:#1a0000}
+.reconnect-btn{background:transparent;border:1.5px solid #1e40af;color:#60a5fa;padding:.6rem 1.5rem;border-radius:.75rem;font-size:.86rem;font-weight:700;cursor:pointer;width:100%;transition:all .2s;margin-bottom:.5rem}
+.reconnect-btn:hover{background:#1e3a5f;color:#93c5fd;border-color:#3b82f6}
+.reconnect-btn:disabled{opacity:.5;cursor:not-allowed}
+.unlink-btn{background:transparent;border:1.5px solid #7f1d1d;color:#f87171;padding:.6rem 1.5rem;border-radius:.75rem;font-size:.82rem;font-weight:600;cursor:pointer;width:100%;transition:all .2s;margin-top:.25rem}
+.unlink-btn:hover{background:#2d0000;border-color:#ef4444;color:#fca5a5}
+.unlink-btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-row{display:flex;gap:.5rem;margin-top:.5rem}
+.btn-row button{flex:1;font-size:.8rem;padding:.55rem .5rem}
+.timer{font-size:.75rem;color:#4b5563;margin-top:.75rem}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">
+    <img src="/bconnect-badge-nobg.png" alt="BConnect" onerror="this.style.display='none'">
+    BConnect
+  </div>
+  <div class="subtitle">WhatsApp Bot — Admin Panel</div>
+
+  <div id="status-chip" class="status-chip waiting">
+    <span class="dot pulse"></span>
+    <span id="status-text">Checking status…</span>
+  </div>
+
+  <!-- Phone number entry section -->
+  <div id="phone-section" style="display:none">
+    <div class="phone-box">
+      <span class="phone-label">Enter the WhatsApp number to link</span>
+      <div class="phone-row">
+        <input class="phone-prefix" id="phone-prefix" type="text" value="+254" maxlength="5" placeholder="+254">
+        <input class="phone-input" id="phone-number" type="tel" placeholder="712 345 678" inputmode="numeric">
+      </div>
+      <div class="phone-hint">Include country code — e.g. +254 for Kenya</div>
+      <div class="phone-err" id="phone-err">Please enter a valid phone number</div>
+    </div>
+    <button class="refresh-btn" id="get-code-btn" onclick="getCode()">📲 Get Pairing Code</button>
+  </div>
+
+  <!-- Pairing code section -->
+  <div id="pairing-section" style="display:none">
+    <!-- ⚠️ Phone alert — which phone to use -->
+    <div class="phone-alert" id="phone-alert" style="display:none">
+      <div class="phone-alert-title">⚠️ Enter this code on this phone only</div>
+      <div class="phone-alert-num" id="phone-alert-num"></div>
+      <div class="phone-alert-note">Open WhatsApp on that phone. The code only works on the account matching this number.</div>
+    </div>
+    <div class="pairing-box">
+      <div class="pairing-label">Enter this code on WhatsApp</div>
+      <div class="pairing-code-wrap">
+        <div class="pairing-code" id="pairing-code">····-····</div>
+        <button class="copy-btn" onclick="copyCode()">Copy</button>
+      </div>
+      <div class="pairing-exp" id="pairing-exp">Generating code…</div>
+    </div>
+    <div class="instructions">
+      <strong>How to link with a code:</strong>
+      <ol>
+        <li>Open <strong>WhatsApp</strong> on the phone shown above</li>
+        <li>Tap <strong>⋮ menu</strong> → <strong>Linked Devices</strong></li>
+        <li>Tap <strong>"Link a Device"</strong></li>
+        <li>Tap <strong>"Link with phone number instead"</strong></li>
+        <li>Enter the code: <span id="code-inline">····-····</span></li>
+      </ol>
+    </div>
+    <button class="refresh-btn" id="refresh-code-btn" onclick="refreshCode()">🔑 Generate New Pairing Code</button>
+    <button class="secondary-btn" onclick="changeNumber()">✏️ Use a different number</button>
+    <div class="timer" id="timer"></div>
+  </div>
+
+  <!-- QR section (fallback) -->
+  <div id="qr-section" style="display:none">
+    <div id="qr-wrap">
+      <img id="qr-img" src="" alt="QR Code">
+    </div>
+    <div class="instructions">
+      <strong>How to connect via QR:</strong>
+      <ol>
+        <li>Open <strong>WhatsApp</strong> on your phone</li>
+        <li>Tap <strong>⋮ menu</strong> → <strong>Linked Devices</strong></li>
+        <li>Tap <strong>"Link a Device"</strong></li>
+        <li>Point your camera at the QR code above</li>
+      </ol>
+    </div>
+    <button class="refresh-btn" onclick="poll()">🔄 Refresh QR</button>
+    <button class="secondary-btn" onclick="switchToPairingMode()">🔢 Use pairing code instead</button>
+    <div class="timer" id="timer-qr"></div>
+  </div>
+
+  <!-- Connected -->
+  <div id="connected-section" style="display:none">
+    <div class="connected-box">
+      <h2>✅ Connected!</h2>
+      <p>Your WhatsApp bot is live and ready to receive messages.</p>
+      <p style="margin-top:.75rem">Share your WhatsApp number with users so they can start chatting.</p>
+    </div>
+    <button class="refresh-btn" style="margin-bottom:.5rem" onclick="generateNewCode()">🔑 Generate New Pairing Code</button>
+    <button class="unlink-btn" id="unlink-btn" onclick="unlinkBot()">🗑️ Unlink Bot</button>
+  </div>
+
+  <!-- Loading -->
+  <div id="loading-section">
+    <p style="color:#6b7280;font-size:.85rem">Loading…</p>
+  </div>
+
+  <!-- Persistent action bar — always visible once bot is enabled -->
+  <div id="action-bar" style="display:none;border-top:1px solid #1e2d40;margin-top:1.25rem;padding-top:1.1rem">
+    <div class="btn-row">
+      <button class="reconnect-btn" id="global-reconnect-btn" style="margin:0" onclick="reconnectBot()">🔄 Reconnect</button>
+      <button class="secondary-btn" id="change-number-btn" style="margin:0;flex:1;font-size:.82rem" onclick="changeNumber()">📱 Change Number</button>
+    </div>
+    <p id="action-status" style="font-size:.75rem;color:#6b7280;margin-top:.5rem;min-height:1em;text-align:center"></p>
+  </div>
+</div>
+
+<script>
+let countdown = 30;
+let timer;
+let lastCode = '';
+let activePhone = '';
+
+function hideAll() {
+  ['phone-section','pairing-section','qr-section','connected-section'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+}
+
+function copyCode() {
+  const code = document.getElementById('pairing-code').textContent.replace(/-/g, '').replace(/·/g, '');
+  navigator.clipboard.writeText(code).catch(() => {});
+  const btn = document.querySelector('.copy-btn');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 2000);
+}
+
+function startCountdown(el) {
+  clearInterval(timer);
+  countdown = 60;
+  timer = setInterval(() => {
+    countdown--;
+    if (el) el.textContent = 'Code expires in ' + countdown + 's — click Refresh if expired';
+    if (countdown <= 0) { clearInterval(timer); }
+  }, 1000);
+}
+
+function showPhoneSection() {
+  hideAll();
+  document.getElementById('phone-section').style.display = 'block';
+  const chip = document.getElementById('status-chip');
+  chip.className = 'status-chip waiting';
+  chip.innerHTML = '<span class="dot pulse"></span><span>Enter your number to link</span>';
+}
+
+function changeNumber() {
+  clearInterval(timer);
+  lastCode = '';
+  activePhone = '';
+  showPhoneSection();
+}
+
+function switchToPairingMode() {
+  hideAll();
+  document.getElementById('phone-section').style.display = 'block';
+  const chip = document.getElementById('status-chip');
+  chip.className = 'status-chip waiting';
+  chip.innerHTML = '<span class="dot pulse"></span><span>Enter your number</span>';
+}
+
+async function getCode() {
+  const prefix = document.getElementById('phone-prefix').value.replace(/\D/g, '');
+  const number = document.getElementById('phone-number').value.replace(/\D/g, '');
+  const fullNumber = prefix + number;
+  const errEl = document.getElementById('phone-err');
+  if (fullNumber.length < 9) {
+    errEl.style.display = 'block';
+    return;
+  }
+  errEl.style.display = 'none';
+  activePhone = '+' + fullNumber;
+
+  const btn = document.getElementById('get-code-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Requesting code…';
+
+  try {
+    const res = await fetch('/api/admin/whatsapp-refresh-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phoneNumber: fullNumber })
+    });
+    const data = await res.json();
+    btn.disabled = false;
+    btn.textContent = '📲 Get Pairing Code';
+
+    if (data.success && data.pairingCode) {
+      showCode(data.pairingCode, data.pairingPhone || fullNumber);
+    } else if (data.success && data.restarting) {
+      hideAll();
+      document.getElementById('pairing-section').style.display = 'block';
+      document.getElementById('pairing-exp').textContent = 'Restarting bot, please wait…';
+      document.getElementById('pairing-code').textContent = '····-····';
+      document.getElementById('code-inline').textContent = '····-····';
+      waitForNewCode(null, fullNumber);
+    } else {
+      document.getElementById('phone-err').textContent = data.error || 'Could not get code — try again';
+      document.getElementById('phone-err').style.display = 'block';
+    }
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = '📲 Get Pairing Code';
+    document.getElementById('phone-err').textContent = 'Network error — try again';
+    document.getElementById('phone-err').style.display = 'block';
+  }
+}
+
+function formatCode(code) {
+  // WhatsApp expects XXXX-XXXX format
+  const c = (code || '').replace(/[^A-Z0-9]/gi, '').toUpperCase();
+  return c.length === 8 ? c.slice(0, 4) + '-' + c.slice(4) : c;
+}
+
+function showCode(code, phone) {
+  hideAll();
+  const display = formatCode(code);
+  // phone can come from API or from activePhone
+  if (phone) activePhone = '+' + phone.replace(/\D/g, '');
+  document.getElementById('pairing-section').style.display = 'block';
+  document.getElementById('pairing-code').textContent = display;
+  document.getElementById('code-inline').textContent = display;
+  lastCode = code;
+  // Show which phone to use — prominent amber alert
+  const alertEl = document.getElementById('phone-alert');
+  const alertNum = document.getElementById('phone-alert-num');
+  if (activePhone) {
+    alertNum.textContent = activePhone;
+    alertEl.style.display = 'block';
+  } else {
+    alertEl.style.display = 'none';
+  }
+  startCountdown(document.getElementById('pairing-exp'));
+  const chip = document.getElementById('status-chip');
+  chip.className = 'status-chip waiting';
+  chip.innerHTML = '<span class="dot pulse"></span><span>Enter code on WhatsApp</span>';
+}
+
+async function refreshCode() {
+  const btn = document.getElementById('refresh-code-btn');
+  const expEl = document.getElementById('pairing-exp');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Requesting…'; }
+  if (expEl) expEl.textContent = 'Requesting new code…';
+
+  const phoneNumber = activePhone ? activePhone.replace(/\D/g, '') : '';
+
+  try {
+    const res = await fetch('/api/admin/whatsapp-refresh-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phoneNumber })
+    });
+    const data = await res.json();
+    if (data.success && data.pairingCode) {
+      showCode(data.pairingCode, data.pairingPhone || phoneNumber);
+      if (btn) { btn.disabled = false; btn.textContent = '🔄 Refresh Code'; }
+    } else if (data.success && data.restarting) {
+      if (expEl) expEl.textContent = 'Restarting bot, please wait…';
+      waitForNewCode(btn, phoneNumber);
+    } else {
+      if (expEl) expEl.textContent = 'Error: ' + (data.error || 'Could not get code');
+      if (btn) { btn.disabled = false; btn.textContent = '🔄 Refresh Code'; }
+    }
+  } catch (e) {
+    if (expEl) expEl.textContent = 'Error: ' + e.message;
+    if (btn) { btn.disabled = false; btn.textContent = '🔄 Refresh Code'; }
+  }
+}
+
+async function waitForNewCode(btn, phoneNumber) {
+  const expEl = document.getElementById('pairing-exp');
+  let attempts = 0;
+  const maxAttempts = 25;
+  const interval = setInterval(async () => {
+    attempts++;
+    try {
+      const res = await fetch('/api/admin/whatsapp-qr');
+      const data = await res.json();
+      if (data.pairingCode && data.pairingCode !== lastCode) {
+        clearInterval(interval);
+        showCode(data.pairingCode, data.pairingPhone || phoneNumber);
+        if (btn) { btn.disabled = false; btn.textContent = '🔄 Refresh Code'; }
+      } else if (attempts >= maxAttempts) {
+        clearInterval(interval);
+        if (expEl) expEl.textContent = 'Timed out — click Refresh Code to try again';
+        if (btn) { btn.disabled = false; btn.textContent = '🔄 Refresh Code'; }
+      } else {
+        if (expEl) expEl.textContent = 'Restarting bot… (' + attempts + 's)';
+      }
+    } catch (_) {}
+  }, 1000);
+}
+
+async function poll() {
+  try {
+    const res = await fetch('/api/admin/whatsapp-qr');
+    const data = await res.json();
+    document.getElementById('loading-section').style.display = 'none';
+    const chip = document.getElementById('status-chip');
+
+    if (data.botEnabled === false) {
+      chip.className = 'status-chip error';
+      chip.innerHTML = '<span class="dot"></span><span>Bot not enabled</span>';
+      document.getElementById('connected-section').innerHTML =
+        '<div style="color:#9ca3af;font-size:.85rem;padding:1rem;background:#0d1117;border-radius:.75rem">' +
+        'Set <code style="background:#1e2d40;padding:.1rem .3rem;border-radius:.25rem">WHATSAPP_BOT_ENABLED=true</code> in Secrets to activate the bot.</div>';
+      document.getElementById('connected-section').style.display = 'block';
+      return;
+    }
+
+    // Show the persistent action bar now that we know the bot is enabled
+    document.getElementById('action-bar').style.display = 'block';
+
+    if (data.connected) {
+      hideAll();
+      document.getElementById('connected-section').style.display = 'block';
+      chip.className = 'status-chip connected';
+      chip.innerHTML = '<span class="dot"></span><span>✅ Connected</span>';
+      clearInterval(timer);
+      return;
+    }
+
+    // If a pairing code is already showing, don't overwrite UI — let user interact
+    if (document.getElementById('pairing-section').style.display !== 'none' && lastCode) return;
+
+    if (data.mode === 'pairing' && data.pairingCode) {
+      showCode(data.pairingCode, data.pairingPhone);
+    } else if (data.mode === 'pairing' && !data.pairingCode) {
+      showPhoneSection();
+    } else if (data.dataUrl) {
+      hideAll();
+      document.getElementById('qr-section').style.display = 'block';
+      document.getElementById('qr-img').src = data.dataUrl;
+      chip.className = 'status-chip waiting';
+      chip.innerHTML = '<span class="dot pulse"></span><span>Scan QR to connect</span>';
+      startCountdown(document.getElementById('timer-qr'));
+    } else {
+      if (document.getElementById('phone-section').style.display === 'none' &&
+          document.getElementById('pairing-section').style.display === 'none') {
+        showPhoneSection();
+      }
+    }
+  } catch (e) {
+    setTimeout(poll, 5000);
+  }
+}
+
+function generateNewCode() {
+  clearInterval(timer);
+  lastCode = '';
+  activePhone = '';
+  showPhoneSection();
+}
+
+function setActionStatus(msg, isError) {
+  const el = document.getElementById('action-status');
+  if (el) { el.textContent = msg; el.style.color = isError ? '#f87171' : '#6b7280'; }
+}
+
+async function reconnectBot() {
+  const btn = document.getElementById('global-reconnect-btn');
+  const unlinkBtn = document.getElementById('unlink-btn');
+  const changeBtn = document.getElementById('change-number-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Reconnecting…'; }
+  if (unlinkBtn) unlinkBtn.disabled = true;
+  if (changeBtn) changeBtn.disabled = true;
+  setActionStatus('Restarting connection…');
+  try {
+    const res = await fetch('/api/admin/whatsapp-reconnect', { method: 'POST' });
+    const data = await res.json();
+    if (data.success) {
+      setActionStatus('Reconnecting — checking status…');
+      setTimeout(() => {
+        if (btn) { btn.disabled = false; btn.textContent = '🔄 Reconnect'; }
+        if (unlinkBtn) unlinkBtn.disabled = false;
+        if (changeBtn) changeBtn.disabled = false;
+        setActionStatus('');
+        poll();
+      }, 4000);
+    } else {
+      setActionStatus(data.error || 'Reconnect failed', true);
+      if (btn) { btn.disabled = false; btn.textContent = '🔄 Reconnect'; }
+      if (unlinkBtn) unlinkBtn.disabled = false;
+      if (changeBtn) changeBtn.disabled = false;
+    }
+  } catch (e) {
+    setActionStatus('Network error — try again', true);
+    if (btn) { btn.disabled = false; btn.textContent = '🔄 Reconnect'; }
+    if (unlinkBtn) unlinkBtn.disabled = false;
+    if (changeBtn) changeBtn.disabled = false;
+  }
+}
+
+async function unlinkBot() {
+  if (!confirm('This will fully unlink the bot from WhatsApp and clear the session. Continue?')) return;
+  const btn = document.getElementById('unlink-btn');
+  const reconnectBtn = document.getElementById('global-reconnect-btn');
+  const changeBtn = document.getElementById('change-number-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Unlinking…'; }
+  if (reconnectBtn) reconnectBtn.disabled = true;
+  if (changeBtn) changeBtn.disabled = true;
+  setActionStatus('Unlinking bot…');
+  try {
+    await fetch('/api/admin/whatsapp-disconnect', { method: 'POST' });
+  } catch (_) {}
+  lastCode = '';
+  activePhone = '';
+  clearInterval(timer);
+  if (btn) { btn.disabled = false; btn.textContent = '🗑️ Unlink Bot'; }
+  if (reconnectBtn) reconnectBtn.disabled = false;
+  if (changeBtn) changeBtn.disabled = false;
+  showPhoneSection();
+  setActionStatus('');
+  const chip = document.getElementById('status-chip');
+  chip.className = 'status-chip waiting';
+  chip.innerHTML = '<span class="dot pulse"></span><span>Bot unlinked — enter number to re-link</span>';
+}
+
+poll();
+setInterval(poll, 15000);
+</script>
+</body>
+</html>

@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Organizer Dashboard — bConnect</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#7c3aed;--primary-light:#8b5cf6;--success:#059669;--warning:#d97706;--danger:#dc2626;--gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-400:#9ca3af;--gray-500:#6b7280;--gray-700:#374151;--gray-900:#111827;--white:#fff}
+body{font-family:'Inter',-apple-system,sans-serif;background:linear-gradient(135deg,#ede9fe 0%,#f0fdf4 60%,#fef3c7 100%);min-height:100vh;color:var(--gray-900)}
+.navbar{background:var(--white);border-bottom:1px solid var(--gray-200);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.nav-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.15rem;color:#1d4ed8;text-decoration:none}
+.nav-brand-mark{width:34px;height:34px;background:linear-gradient(135deg,var(--primary),#4f46e5);border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--white);font-weight:900;font-size:.95rem}
+.nav-title{font-size:.85rem;font-weight:600;color:var(--gray-500);margin-top:1px}
+.nav-right{display:flex;align-items:center;gap:10px}
+.btn-logout{background:none;border:1.5px solid var(--gray-200);padding:7px 14px;border-radius:9px;font-size:.82rem;font-weight:700;cursor:pointer;color:var(--gray-700);transition:all .2s;font-family:inherit}
+.btn-logout:hover{border-color:var(--danger);color:var(--danger)}
+
+.page{max-width:1000px;margin:0 auto;padding:28px 16px 80px}
+
+/*  Login  */
+.login-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 70px);padding:20px}
+.login-card{background:var(--white);border-radius:20px;padding:40px 36px;width:100%;max-width:420px;box-shadow:0 8px 40px rgba(0,0,0,.1)}
+.login-icon{font-size:2.8rem;text-align:center;margin-bottom:12px}
+.login-title{font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:6px;color:var(--gray-900)}
+.login-sub{font-size:.88rem;color:var(--gray-500);text-align:center;margin-bottom:28px;line-height:1.6}
+.field-label{font-size:.8rem;font-weight:700;color:var(--gray-700);margin-bottom:6px;display:block}
+.field{width:100%;padding:13px 16px;border:2px solid var(--gray-200);border-radius:12px;font-size:.95rem;font-family:inherit;outline:none;transition:border-color .2s;margin-bottom:14px}
+.field:focus{border-color:var(--primary)}
+.btn-primary{width:100%;padding:14px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:var(--white);border:none;border-radius:12px;font-size:1rem;font-weight:800;cursor:pointer;transition:all .2s;font-family:inherit}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,58,237,.4)}
+.btn-primary:disabled{background:var(--gray-400);cursor:not-allowed;transform:none;box-shadow:none}
+.login-note{font-size:.8rem;color:var(--gray-400);text-align:center;margin-top:16px;line-height:1.5}
+
+/*  Stats  */
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:24px}
+.stat-card{background:var(--white);border-radius:14px;padding:16px 18px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.stat-label{font-size:.72rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.stat-value{font-size:1.7rem;font-weight:800;color:var(--gray-900)}
+.stat-sub{font-size:.75rem;color:var(--gray-500);margin-top:2px}
+
+/*  Section header  */
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.sec-head h2{font-size:1.1rem;font-weight:800}
+.btn-sm{padding:8px 14px;border-radius:8px;font-size:.78rem;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .2s}
+.btn-back{background:var(--gray-100);color:var(--gray-700)}
+.btn-back:hover{background:var(--gray-200)}
+.btn-scan-btn{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:var(--white);padding:10px 18px;border-radius:10px;font-size:.85rem;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;gap:7px}
+.btn-scan-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(124,58,237,.4)}
+
+/*  Event cards  */
+.events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.ev-card{background:var(--white);border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.07);overflow:hidden;cursor:pointer;border:2px solid transparent;transition:all .25s}
+.ev-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.12);border-color:var(--primary)}
+.ev-img{height:140px;object-fit:cover;width:100%;display:block;background:linear-gradient(135deg,#ede9fe,#dbeafe)}
+.ev-body{padding:14px 16px 16px}
+.ev-date-tag{font-size:.72rem;font-weight:700;color:var(--primary);background:#ede9fe;padding:3px 8px;border-radius:6px;display:inline-block;margin-bottom:8px}
+.ev-title{font-size:.95rem;font-weight:800;color:var(--gray-900);margin-bottom:6px;line-height:1.3}
+.ev-venue{font-size:.78rem;color:var(--gray-500);margin-bottom:10px}
+.ev-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.ev-stat{text-align:center;background:var(--gray-50);border-radius:8px;padding:8px 4px}
+.ev-stat-v{font-size:1.05rem;font-weight:800;color:var(--gray-900)}
+.ev-stat-l{font-size:.65rem;color:var(--gray-400);font-weight:600;margin-top:2px}
+.ev-actions{display:flex;gap:8px;margin-top:12px}
+.btn-ev-tickets{flex:1;padding:9px;background:var(--primary);color:var(--white);border:none;border-radius:9px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s}
+.btn-ev-tickets:hover{background:var(--primary-light)}
+.btn-ev-scan{flex:1;padding:9px;background:var(--success);color:var(--white);border:none;border-radius:9px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s}
+.btn-ev-scan:hover{background:#047857}
+.empty-state{text-align:center;padding:60px 20px;color:var(--gray-400)}
+.empty-icon{font-size:3rem;margin-bottom:12px}
+.empty-title{font-size:1rem;font-weight:700;color:var(--gray-600);margin-bottom:6px}
+
+/*  Tickets view  */
+.tickets-table-wrap{background:var(--white);border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.06);overflow:hidden}
+.tickets-table{width:100%;border-collapse:collapse}
+.tickets-table th{background:var(--gray-50);padding:12px 14px;font-size:.75rem;font-weight:700;color:var(--gray-500);text-align:left;border-bottom:1px solid var(--gray-200);text-transform:uppercase;letter-spacing:.04em}
+.tickets-table td{padding:12px 14px;font-size:.85rem;border-bottom:1px solid var(--gray-100);vertical-align:middle}
+.tickets-table tr:last-child td{border-bottom:none}
+.tickets-table tr:hover td{background:var(--gray-50)}
+.badge{display:inline-block;padding:3px 9px;border-radius:9999px;font-size:.7rem;font-weight:700}
+.badge-confirmed{background:#dcfce7;color:#15803d}
+.badge-used{background:#fef3c7;color:#92400e}
+.ticket-code{font-family:monospace;font-size:.82rem;color:#6d28d9;font-weight:700;background:#ede9fe;padding:2px 8px;border-radius:6px;white-space:nowrap}
+
+/*  QR Scanner  */
+.scanner-wrap{background:var(--white);border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.06);padding:24px;max-width:500px;margin:0 auto}
+.scanner-title{font-size:1.05rem;font-weight:800;margin-bottom:4px}
+.scanner-sub{font-size:.83rem;color:var(--gray-500);margin-bottom:20px}
+.code-input-row{display:flex;gap:10px;margin-bottom:14px}
+.code-input-row input{flex:1;padding:12px 16px;border:2px solid var(--gray-200);border-radius:11px;font-size:.95rem;font-family:monospace;font-weight:700;outline:none;text-transform:uppercase;transition:border-color .2s}
+.code-input-row input:focus{border-color:var(--primary)}
+.btn-verify2{padding:12px 18px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:var(--white);border:none;border-radius:11px;font-size:.88rem;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .2s}
+.btn-verify2:disabled{background:var(--gray-400);cursor:not-allowed}
+.or-div{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--gray-400);font-size:.8rem;font-weight:600}
+.or-div::before,.or-div::after{content:'';flex:1;height:1px;background:var(--gray-200)}
+.btn-cam{width:100%;padding:12px;background:var(--gray-50);color:var(--gray-700);border:2px dashed var(--gray-300);border-radius:11px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
+.btn-cam:hover{border-color:var(--primary);color:var(--primary);background:#faf5ff}
+#org-cam-wrap{display:none;margin-top:14px;border-radius:12px;overflow:hidden;position:relative;background:#000}
+#org-cam-wrap video{width:100%;display:block;max-height:240px;object-fit:cover}
+#org-scan-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+#org-scan-box{width:160px;height:160px;border:3px solid var(--primary);border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,.45)}
+.scan-result{margin-top:16px;border-radius:14px;padding:20px;display:none}
+.scan-valid{background:linear-gradient(135deg,#dcfce7,#f0fdf4);border:2px solid #86efac}
+.scan-used{background:linear-gradient(135deg,#fef3c7,#fffbeb);border:2px solid #fbbf24}
+.scan-invalid{background:linear-gradient(135deg,#fee2e2,#fff5f5);border:2px solid #fca5a5}
+.scan-result-icon{font-size:2rem;text-align:center;margin-bottom:8px}
+.scan-result-status{font-weight:800;font-size:1rem;text-align:center;margin-bottom:14px}
+.scan-detail-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(0,0,0,.06);font-size:.83rem}
+.scan-detail-row:last-child{border-bottom:none}
+.scan-detail-label{color:var(--gray-500);font-weight:600}
+.scan-detail-value{font-weight:700;text-align:right}
+.btn-mark{width:100%;margin-top:10px;padding:11px;background:linear-gradient(135deg,var(--primary),var(--primary-light));border:none;color:var(--white);border-radius:10px;font-weight:800;cursor:pointer;font-size:.88rem;font-family:inherit;transition:all .2s}
+.btn-mark:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(124,58,237,.4)}
+.btn-mark-again{width:100%;margin-top:8px;padding:10px;background:var(--white);border:2px solid #86efac;color:#15803d;border-radius:10px;font-weight:700;cursor:pointer;font-size:.83rem;font-family:inherit}
+
+/*  Tabs  */
+.tab-bar{display:flex;gap:6px;background:var(--gray-100);padding:5px;border-radius:12px;margin-bottom:20px}
+.tab-btn{flex:1;padding:9px 12px;border:none;border-radius:9px;font-size:.83rem;font-weight:700;cursor:pointer;font-family:inherit;background:none;color:var(--gray-500);transition:all .2s}
+.tab-btn.active{background:var(--white);color:var(--primary);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+
+@media(max-width:600px){
+  .login-card{padding:28px 20px}
+  .events-grid{grid-template-columns:1fr}
+  .tickets-table th:nth-child(3),.tickets-table td:nth-child(3){display:none}
+  .tickets-table th:nth-child(4),.tickets-table td:nth-child(4){display:none}
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="nav-brand" href="website.html">
+    <div class="nav-brand-mark" style="background:linear-gradient(135deg,#f97316,#a855f7);box-shadow:0 3px 10px rgba(168,85,247,.35)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="6" cy="6" r="2.5" fill="#fff"/><circle cx="6" cy="18" r="2.5" fill="#fff"/><circle cx="18" cy="12" r="2.5" fill="#fff"/><circle cx="6" cy="12" r="1.8" fill="rgba(255,255,255,0.6)"/><line x1="6" y1="6" x2="6" y2="18" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/><line x1="6" y1="6" x2="18" y2="12" stroke="rgba(255,255,255,0.9)" stroke-width="1.5"/><line x1="6" y1="18" x2="18" y2="12" stroke="rgba(255,255,255,0.9)" stroke-width="1.5"/></svg></div>
+    <div>
+      <div>bConnect</div>
+      <div class="nav-title">Organizer Portal</div>
+    </div>
+  </a>
+  <div class="nav-right" id="nav-right" style="display:none">
+    <span id="nav-organizer-name" style="font-size:.85rem;font-weight:700;color:#6d28d9"></span>
+    <button class="btn-logout" onclick="logout()">Logout</button>
+  </div>
+</nav>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="login-section">
+  <div class="login-card">
+    <div class="login-icon"></div>
+    <div class="login-title">Organizer Portal</div>
+    <div class="login-sub">Enter your organizer name exactly as you used when creating your events on bConnect.</div>
+    <label class="field-label">Your Organizer Name</label>
+    <input class="field" id="org-name-input" type="text" placeholder="e.g. John Events Kenya" autocomplete="off"
+      onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn-primary" id="login-btn" onclick="doLogin()"> Access My Events</button>
+    <div class="login-note">Your name must match the organizer field on your events.<br>Contact bConnect admin if you need help.</div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="page" id="dash-section" style="display:none">
+
+  <!-- Stats -->
+  <div class="stats-bar" id="stats-bar">
+    <div class="stat-card"><div class="stat-label">My Events</div><div class="stat-value" id="st-events">0</div><div class="stat-sub">total events</div></div>
+    <div class="stat-card"><div class="stat-label">Tickets Sold</div><div class="stat-value" id="st-tickets">0</div><div class="stat-sub">all events</div></div>
+    <div class="stat-card"><div class="stat-label">Revenue</div><div class="stat-value" id="st-revenue">—</div><div class="stat-sub">est. from tickets</div></div>
+    <div class="stat-card"><div class="stat-label">Upcoming</div><div class="stat-value" id="st-upcoming">0</div><div class="stat-sub">events ahead</div></div>
+  </div>
+
+  <!-- Tab bar -->
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tab-events-btn" onclick="showTab('events')"> My Events</button>
+    <button class="tab-btn" id="tab-scanner-btn" onclick="showTab('scanner')"> QR Scanner</button>
+    <button class="tab-btn" id="tab-profile-btn" onclick="showTab('profile')"> Profile</button>
+  </div>
+
+  <!-- Events tab -->
+  <div id="tab-events">
+    <div class="sec-head">
+      <h2 id="events-tab-title">My Events</h2>
+    </div>
+    <div class="events-grid" id="events-grid">
+      <div class="empty-state"><div class="empty-icon">⏳</div><div class="empty-title">Loading events…</div></div>
+    </div>
+  </div>
+
+  <!-- Tickets tab (per-event) -->
+  <div id="tab-tickets" style="display:none">
+    <div class="sec-head">
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="btn-sm btn-back" onclick="backToEvents()">← Back</button>
+        <h2 id="tickets-event-title">Tickets</h2>
+      </div>
+      <button class="btn-scan-btn" onclick="showTab('scanner')"> Scan QR</button>
+    </div>
+    <div style="margin-bottom:16px">
+      <input type="text" placeholder=" Search buyer name, phone, ticket code…" oninput="filterTickets(this.value)"
+        style="width:100%;padding:11px 16px;border:2px solid #e5e7eb;border-radius:12px;font-size:.88rem;font-family:inherit;outline:none">
+    </div>
+    <div class="tickets-table-wrap">
+      <table class="tickets-table">
+        <thead><tr><th>Ticket Code</th><th>Buyer</th><th>Phone</th><th>Date Booked</th><th>Qty</th><th>Amount</th><th>Status</th></tr></thead>
+        <tbody id="tickets-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Scanner tab -->
+  <div id="tab-scanner" style="display:none">
+    <div class="scanner-wrap">
+      <div class="scanner-title"> Ticket Scanner</div>
+      <div class="scanner-sub">Scan a ticket QR code or type the ticket code to verify and grant entry.</div>
+      <div class="code-input-row">
+        <input id="scan-code-input" type="text" placeholder="TKT-XXXXXXXX" autocomplete="off" spellcheck="false"
+          onkeydown="if(event.key==='Enter')verifyScanCode()">
+        <button class="btn-verify2" id="scan-verify-btn" onclick="verifyScanCode()"> Verify</button>
+      </div>
+      <div class="or-div">or</div>
+      <button class="btn-cam" id="org-cam-btn" onclick="toggleOrgCamera()"> Scan with Camera</button>
+      <div id="org-cam-wrap">
+        <video id="org-cam-video" autoplay playsinline muted></video>
+        <div id="org-scan-overlay"><div id="org-scan-box"></div></div>
+      </div>
+      <div class="scan-result" id="scan-result"></div>
+    </div>
+  </div>
+
+  <!-- Profile tab -->
+  <div id="tab-profile" style="display:none">
+    <div class="sec-head" style="padding:24px 0 12px;">
+      <h2>My Profile</h2>
+    </div>
+    <div style="max-width:460px;margin:0 auto;">
+      <div style="display:flex;align-items:center;gap:18px;background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:20px 22px;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,.06)">
+        <div id="orgProfAvatar" style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#f97316,#a855f7);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;flex-shrink:0">O</div>
+        <div>
+          <div id="orgProfName" style="font-size:17px;font-weight:800;color:#111">—</div>
+          <div style="font-size:12px;color:#9ca3af;margin-top:3px;font-weight:600;letter-spacing:.04em;text-transform:uppercase">Event Organizer · BConnect</div>
+        </div>
+      </div>
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid #f3f4f6">
+          <span style="font-size:13px;color:#6b7280"> Total Events</span>
+          <span id="orgProfEvents" style="font-size:14px;font-weight:700;color:#111">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid #f3f4f6">
+          <span style="font-size:13px;color:#6b7280"> Tickets Sold</span>
+          <span id="orgProfTickets" style="font-size:14px;font-weight:700;color:#111">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid #f3f4f6">
+          <span style="font-size:13px;color:#6b7280"> Upcoming Events</span>
+          <span id="orgProfUpcoming" style="font-size:14px;font-weight:700;color:#111">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;">
+          <span style="font-size:13px;color:#6b7280"> Est. Revenue</span>
+          <span id="orgProfRevenue" style="font-size:14px;font-weight:700;color:#059669">—</span>
+        </div>
+      </div>
+      <button onclick="logout()" style="margin-top:16px;width:100%;padding:13px;background:none;border:1.5px solid #e5e7eb;border-radius:12px;font-size:14px;font-weight:700;color:#dc2626;cursor:pointer;transition:background .2s" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='none'"> Sign Out</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+<script>
+let orgName = '';
+let orgEvents = [];
+let allTickets = [];
+let currentViewEvent = null;
+let orgCamActive = false, orgCamStream = null, orgScanInterval = null;
+
+function showToast(msg, type) {
+  let t = document.getElementById('org-toast');
+  if (!t) { t = document.createElement('div'); t.id = 'org-toast'; t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);padding:13px 24px;border-radius:14px;font-size:.9rem;font-weight:700;z-index:99999;transition:transform .35s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.2);max-width:90vw;text-align:center;pointer-events:none;font-family:inherit'; document.body.appendChild(t); }
+  const bg = { error:'#dc2626', success:'#059669', warning:'#d97706', info:'#2563eb' };
+  t.style.background = bg[type] || bg.success; t.style.color = '#fff';
+  t.textContent = msg; t.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(t._tmr); t._tmr = setTimeout(() => { t.style.transform = 'translateX(-50%) translateY(120px)'; }, 4000);
+}
+
+async function doLogin() {
+  const name = (document.getElementById('org-name-input').value || '').trim();
+  if (!name) { showToast('Please enter your organizer name', 'warning'); document.getElementById('org-name-input').focus(); return; }
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true; btn.textContent = '⏳ Loading…';
+  try {
+    const res = await fetch('/api/organizer/events?name=' + encodeURIComponent(name));
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || 'Failed to load');
+    if (!data.events || !data.events.length) {
+      showToast('No events found for "' + name + '". Check your name spelling.', 'warning');
+      btn.disabled = false; btn.textContent = ' Access My Events';
+      return;
+    }
+    orgName = name;
+    orgEvents = data.events;
+    sessionStorage.setItem('org_name', name);
+    document.getElementById('login-section').style.display = 'none';
+    document.getElementById('dash-section').style.display = '';
+    document.getElementById('nav-right').style.display = '';
+    document.getElementById('nav-organizer-name').textContent = ' ' + name;
+    renderDashboard();
+  } catch(e) {
+    showToast(e.message || 'Login failed', 'error');
+    btn.disabled = false; btn.textContent = ' Access My Events';
+  }
+}
+
+function logout() {
+  orgName = ''; orgEvents = []; allTickets = []; currentViewEvent = null;
+  sessionStorage.removeItem('org_name');
+  document.getElementById('login-section').style.display = '';
+  document.getElementById('dash-section').style.display = 'none';
+  document.getElementById('nav-right').style.display = 'none';
+  document.getElementById('org-name-input').value = '';
+}
+
+function renderDashboard() {
+  const total = orgEvents.length;
+  const sold = orgEvents.reduce((s, e) => s + (e.tickets_sold || 0), 0);
+  const revenue = orgEvents.reduce((s, e) => s + ((e.tickets_sold || 0) * (e.ticket_price || 0)), 0);
+  const upcoming = orgEvents.filter(e => new Date(e.event_date) >= new Date()).length;
+  document.getElementById('st-events').textContent = total;
+  document.getElementById('st-tickets').textContent = sold;
+  document.getElementById('st-revenue').textContent = 'Ksh ' + Number(revenue).toLocaleString();
+  document.getElementById('st-upcoming').textContent = upcoming;
+  renderEventsGrid();
+}
+
+function fmtEvDate(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleDateString('en-KE', { weekday:'short', day:'numeric', month:'short', year:'numeric' });
+}
+
+function renderEventsGrid() {
+  const grid = document.getElementById('events-grid');
+  if (!orgEvents.length) {
+    grid.innerHTML = '<div class="empty-state"><div class="empty-icon"></div><div class="empty-title">No events found</div></div>';
+    return;
+  }
+  grid.innerHTML = orgEvents.map((ev, i) => {
+    const img = ev.imageUrl || ev.image_url || (ev.images && ev.images[0]) || '';
+    const sold = ev.tickets_sold || 0;
+    const avail = ev.tickets_available;
+    const revenue = sold * (ev.ticket_price || 0);
+    const daysLeft = Math.ceil((new Date(ev.event_date) - new Date()) / (1000*60*60*24));
+    const daysTag = daysLeft > 0 ? daysLeft + ' days left' : 'Ended';
+    return `
+      <div class="ev-card">
+        ${img ? `<img class="ev-img" src="${img}" alt="${ev.title}" onerror="this.style.display='none'">` : `<div class="ev-img" style="display:flex;align-items:center;justify-content:center;font-size:2.5rem"></div>`}
+        <div class="ev-body">
+          <div class="ev-date-tag">${fmtEvDate(ev.event_date)} · ${daysTag}</div>
+          <div class="ev-title">${ev.title || 'Untitled Event'}</div>
+          <div class="ev-venue"> ${ev.venue || ev.location || 'TBA'}</div>
+          <div class="ev-stats">
+            <div class="ev-stat"><div class="ev-stat-v">${sold}</div><div class="ev-stat-l">Sold</div></div>
+            <div class="ev-stat"><div class="ev-stat-v">${avail !== null && avail !== undefined ? (avail - sold) : '∞'}</div><div class="ev-stat-l">Left</div></div>
+            <div class="ev-stat"><div class="ev-stat-v" style="font-size:.8rem">Ksh ${Number(revenue).toLocaleString()}</div><div class="ev-stat-l">Revenue</div></div>
+          </div>
+          <div class="ev-actions">
+            <button class="btn-ev-tickets" onclick="viewTickets(${i})"> Tickets</button>
+            <button class="btn-ev-scan" onclick="goScanForEvent(${i})"> Scan</button>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+async function viewTickets(idx) {
+  const ev = orgEvents[idx];
+  currentViewEvent = ev;
+  document.getElementById('tab-events').style.display = 'none';
+  document.getElementById('tab-tickets').style.display = '';
+  document.getElementById('tab-scanner').style.display = 'none';
+  document.getElementById('tickets-event-title').textContent = ev.title || 'Tickets';
+  const tbody = document.getElementById('tickets-tbody');
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:#9ca3af">Loading tickets…</td></tr>';
+  try {
+    const res = await fetch('/api/organizer/events/' + (ev._id || ev.id) + '/tickets');
+    const data = await res.json();
+    allTickets = data.tickets || [];
+    renderTickets(allTickets);
+  } catch(e) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:#dc2626">Failed to load tickets.</td></tr>';
+  }
+}
+
+function renderTickets(list) {
+  const tbody = document.getElementById('tickets-tbody');
+  if (!list.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:#9ca3af">No tickets sold yet for this event.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = list.map(t => {
+    const d = t.created_at ? new Date(t.created_at).toLocaleDateString('en-KE', {day:'numeric',month:'short',year:'numeric'}) : '—';
+    const st = t.status || 'confirmed';
+    const badge = st === 'used' ? 'badge-used' : 'badge-confirmed';
+    return `<tr>
+      <td><span class="ticket-code">${t.ticket_code || '—'}</span></td>
+      <td style="font-weight:600">${t.buyer_name || 'Guest'}</td>
+      <td style="color:#6b7280">${t.buyer_phone || '—'}</td>
+      <td style="color:#6b7280">${d}</td>
+      <td style="text-align:center;font-weight:700">${t.quantity || 1}</td>
+      <td style="font-weight:700;color:#059669">${t.total_amount ? 'Ksh ' + Number(t.total_amount).toLocaleString() : 'FREE'}</td>
+      <td><span class="badge ${badge}">${st}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function filterTickets(q) {
+  const filtered = allTickets.filter(t =>
+    (t.buyer_name||'').toLowerCase().includes(q.toLowerCase()) ||
+    (t.buyer_phone||'').includes(q) ||
+    (t.ticket_code||'').toUpperCase().includes(q.toUpperCase())
+  );
+  renderTickets(filtered);
+}
+
+function backToEvents() {
+  document.getElementById('tab-events').style.display = '';
+  document.getElementById('tab-tickets').style.display = 'none';
+  document.getElementById('tab-scanner').style.display = 'none';
+  document.querySelector('.tab-btn.active')?.classList.remove('active');
+  document.getElementById('tab-events-btn').classList.add('active');
+}
+
+function goScanForEvent(idx) {
+  currentViewEvent = orgEvents[idx];
+  showTab('scanner');
+}
+
+function showTab(tab) {
+  ['events','tickets','scanner','profile'].forEach(t => {
+    const el = document.getElementById('tab-' + t);
+    if (el) el.style.display = t === tab ? '' : 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const activeBtn = document.getElementById('tab-' + tab + '-btn');
+  if (activeBtn) activeBtn.classList.add('active');
+  if (tab !== 'scanner') stopOrgCamera();
+  if (tab === 'profile') renderOrgProfile();
+}
+
+function renderOrgProfile() {
+  document.getElementById('orgProfName').textContent = orgName || '—';
+  const av = document.getElementById('orgProfAvatar');
+  av.textContent = (orgName || 'O').charAt(0).toUpperCase();
+  const total    = orgEvents.length;
+  const sold     = orgEvents.reduce((s, e) => s + (e.tickets_sold || 0), 0);
+  const revenue  = orgEvents.reduce((s, e) => s + ((e.tickets_sold || 0) * (e.ticket_price || 0)), 0);
+  const upcoming = orgEvents.filter(e => new Date(e.event_date) >= new Date()).length;
+  document.getElementById('orgProfEvents').textContent   = total;
+  document.getElementById('orgProfTickets').textContent  = sold;
+  document.getElementById('orgProfUpcoming').textContent = upcoming;
+  document.getElementById('orgProfRevenue').textContent  = revenue > 0 ? 'KES ' + revenue.toLocaleString() : '—';
+}
+
+//  QR Scanner 
+async function verifyScanCode() {
+  const raw = (document.getElementById('scan-code-input').value || '').trim().toUpperCase().replace(/\s+/g,'');
+  if (!raw) { document.getElementById('scan-code-input').focus(); return; }
+  const btn = document.getElementById('scan-verify-btn');
+  btn.disabled = true; btn.textContent = '⏳';
+  try {
+    const res = await fetch('/api/tickets/verify/' + encodeURIComponent(raw));
+    const data = await res.json();
+    showScanResult(raw, data);
+  } catch(e) {
+    showScanResult(raw, { valid: false, error: 'Network error. Check connection.' });
+  }
+  btn.disabled = false; btn.textContent = ' Verify';
+}
+
+function showScanResult(code, data) {
+  const el = document.getElementById('scan-result');
+  el.style.display = 'block';
+  if (data.valid && data.ticket) {
+    const t = data.ticket;
+    const alreadyUsed = t.status === 'used';
+    const cls = alreadyUsed ? 'scan-used' : 'scan-valid';
+    const icon = alreadyUsed ? '' : '';
+    const statusText = alreadyUsed ? '<span style="color:#92400e">Already Scanned — Entry Was Used</span>' : '<span style="color:#15803d">Valid Ticket — Entry Granted</span>';
+    const fmtDate = d => d ? new Date(d).toLocaleDateString('en-KE',{day:'numeric',month:'short',year:'numeric'}) : '—';
+    const markBtn = alreadyUsed
+      ? `<div style="background:#fef3c7;border:1.5px solid #fbbf24;border-radius:10px;padding:10px;text-align:center;font-size:.82rem;font-weight:700;color:#78350f;margin-top:10px"> Already scanned.</div>`
+      : `<button class="btn-mark" id="org-mark-btn" onclick="orgMarkAsUsed('${t.ticket_code}')"> Mark as Used (Grant Entry)</button>`;
+    el.className = 'scan-result ' + cls;
+    el.innerHTML = `
+      <div class="scan-result-icon">${icon}</div>
+      <div class="scan-result-status">${statusText}</div>
+      <div class="scan-detail-row"><span class="scan-detail-label">Ticket</span><span class="scan-detail-value" style="font-family:monospace;color:#6d28d9">${t.ticket_code}</span></div>
+      <div class="scan-detail-row"><span class="scan-detail-label">Event</span><span class="scan-detail-value">${t.event_title}</span></div>
+      <div class="scan-detail-row"><span class="scan-detail-label">Date</span><span class="scan-detail-value">${fmtDate(t.event_date)}</span></div>
+      <div class="scan-detail-row"><span class="scan-detail-label">Buyer</span><span class="scan-detail-value">${t.buyer_name}</span></div>
+      <div class="scan-detail-row"><span class="scan-detail-label">Phone</span><span class="scan-detail-value">${t.buyer_phone || '—'}</span></div>
+      <div class="scan-detail-row"><span class="scan-detail-label">Qty</span><span class="scan-detail-value">${t.quantity} ticket${t.quantity > 1 ? 's' : ''}</span></div>
+      <div class="scan-detail-row"><span class="scan-detail-label">Status</span><span class="scan-detail-value" style="text-transform:capitalize;color:${alreadyUsed ? '#d97706' : '#15803d'}">${t.status}</span></div>
+      ${markBtn}
+      <button class="btn-mark-again" onclick="resetScan()"> Scan Another Ticket</button>`;
+  } else {
+    el.className = 'scan-result scan-invalid';
+    el.innerHTML = `
+      <div class="scan-result-icon"></div>
+      <div class="scan-result-status" style="color:#dc2626">Invalid Ticket</div>
+      <p style="text-align:center;font-size:.85rem;color:#dc2626;margin-bottom:12px">${data.error || 'Ticket code not found.'}</p>
+      <button class="btn-mark-again" style="border-color:#fca5a5;color:#dc2626" onclick="resetScan()"> Try Again</button>`;
+  }
+  el.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+async function orgMarkAsUsed(code) {
+  const btn = document.getElementById('org-mark-btn');
+  if (!btn) return;
+  btn.style.background = '#dc2626';
+  btn.textContent = ' Tap again to confirm entry';
+  btn.onclick = async () => {
+    btn.disabled = true; btn.textContent = 'Marking…'; btn.style.background = '';
+    try {
+      const res = await fetch('/api/tickets/mark-used/' + encodeURIComponent(code), { method:'PUT' });
+      const data = await res.json();
+      if (data.success) {
+        btn.style.cssText = 'width:100%;margin-top:10px;padding:11px;background:#059669;border:none;color:#fff;border-radius:10px;font-weight:800;font-size:.88rem;cursor:default;font-family:inherit';
+        btn.textContent = ' Entry Granted';
+        showToast(' Ticket verified & entry granted!', 'success');
+        if (orgName) refreshEvents();
+      } else if (data.alreadyUsed) {
+        btn.style.cssText = 'width:100%;margin-top:10px;padding:11px;background:#d97706;border:none;color:#fff;border-radius:10px;font-weight:800;font-size:.88rem;cursor:default;font-family:inherit';
+        btn.textContent = ' Already scanned before';
+        showToast(' Ticket already used', 'warning');
+      } else {
+        btn.disabled = false; btn.textContent = ' Mark as Used (Grant Entry)';
+        showToast('Error: ' + (data.error || 'Failed'), 'error');
+      }
+    } catch(e) {
+      btn.disabled = false; btn.textContent = ' Mark as Used (Grant Entry)';
+      showToast('Network error. Try again.', 'error');
+    }
+  };
+}
+
+function resetScan() {
+  document.getElementById('scan-code-input').value = '';
+  document.getElementById('scan-result').style.display = 'none';
+  document.getElementById('scan-code-input').focus();
+}
+
+async function refreshEvents() {
+  try {
+    const res = await fetch('/api/organizer/events?name=' + encodeURIComponent(orgName));
+    const data = await res.json();
+    if (data.success && data.events) { orgEvents = data.events; renderDashboard(); }
+  } catch(e) {}
+}
+
+//  Camera 
+async function toggleOrgCamera() {
+  if (orgCamActive) { stopOrgCamera(); return; }
+  const btn = document.getElementById('org-cam-btn');
+  const wrap = document.getElementById('org-cam-wrap');
+  try {
+    orgCamStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode:'environment' } });
+    document.getElementById('org-cam-video').srcObject = orgCamStream;
+    wrap.style.display = 'block';
+    btn.textContent = ' Stop Camera';
+    orgCamActive = true;
+    orgScanInterval = setInterval(() => orgScanFrame(), 350);
+  } catch(e) {
+    showToast('Camera access denied or not available on this device.', 'error');
+  }
+}
+
+function stopOrgCamera() {
+  if (orgCamStream) { orgCamStream.getTracks().forEach(t => t.stop()); orgCamStream = null; }
+  if (orgScanInterval) { clearInterval(orgScanInterval); orgScanInterval = null; }
+  document.getElementById('org-cam-wrap').style.display = 'none';
+  const btn = document.getElementById('org-cam-btn');
+  if (btn) btn.textContent = ' Scan with Camera';
+  orgCamActive = false;
+}
+
+function orgScanFrame() {
+  const video = document.getElementById('org-cam-video');
+  if (!video || video.readyState !== video.HAVE_ENOUGH_DATA) return;
+  const canvas = document.createElement('canvas');
+  canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0);
+  const imageData = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
+  if (!window.jsQR) return;
+  const code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts:'dontInvert' });
+  if (code && code.data) {
+    const raw = code.data.trim().toUpperCase();
+    document.getElementById('scan-code-input').value = raw;
+    stopOrgCamera();
+    verifyScanCode();
+  }
+}
+
+//  Init 
+(function() {
+  const saved = sessionStorage.getItem('org_name');
+  if (saved) {
+    document.getElementById('org-name-input').value = saved;
+    doLogin();
+  }
+})();
+</script>
+<script src="shared-layout.js?v=7"></script>
+</body>
+</html>

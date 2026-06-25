@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BConnect – Contact Us</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    :root {
+      --primary:#4f46e5;
+      --primary-light:#6366f1;
+      --secondary:#7c3aed;
+      --teal:#0d9488;
+      --green:#10b981;
+      --wa:#25d366;
+      --white:#fff;
+      --gray-50:#f9fafb;
+      --gray-100:#f3f4f6;
+      --gray-200:#e5e7eb;
+      --gray-400:#9ca3af;
+      --gray-500:#6b7280;
+      --gray-700:#374151;
+      --gray-900:#111827;
+    }
+
+    body {
+      font-family:'Inter',-apple-system,sans-serif;
+      background:linear-gradient(135deg,#f0f4ff 0%,#fafbff 45%,#f5f0ff 100%);
+      background-attachment:fixed;
+      min-height:100vh;
+      color:var(--gray-900);
+    }
+
+    /* ── HERO ── */
+    .contact-hero {
+      background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 55%,#06b6d4 100%);
+      padding:3.5rem 2rem 4.5rem;
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .contact-hero::before {
+      content:'';
+      position:absolute; top:-60px; right:-60px;
+      width:280px; height:280px; border-radius:50%;
+      background:rgba(255,255,255,.06); pointer-events:none;
+    }
+    .contact-hero::after {
+      content:'';
+      position:absolute; bottom:-80px; left:10%;
+      width:220px; height:220px; border-radius:50%;
+      background:rgba(255,255,255,.04); pointer-events:none;
+    }
+    .contact-hero-eyebrow {
+      display:inline-flex; align-items:center; gap:.45rem;
+      background:rgba(255,255,255,.15); backdrop-filter:blur(8px);
+      border:1px solid rgba(255,255,255,.25);
+      color:#fff; font-size:.75rem; font-weight:700;
+      letter-spacing:.06em; text-transform:uppercase;
+      padding:.35rem .9rem; border-radius:9999px;
+      margin-bottom:1rem;
+    }
+    .contact-hero h1 {
+      font-size:clamp(2rem,5vw,3rem); font-weight:900;
+      color:#fff; letter-spacing:-.04em; line-height:1.1;
+      margin-bottom:.65rem;
+    }
+    .contact-hero p {
+      font-size:1.05rem; color:rgba(255,255,255,.78);
+      max-width:500px; margin:0 auto 2rem; line-height:1.6;
+    }
+    .hero-quick-btns {
+      display:flex; gap:.75rem; justify-content:center; flex-wrap:wrap;
+    }
+    .hero-quick-btn {
+      display:inline-flex; align-items:center; gap:.5rem;
+      padding:.65rem 1.4rem; border-radius:.875rem; font-size:.88rem; font-weight:700;
+      cursor:pointer; border:none; text-decoration:none; transition:all .2s;
+    }
+    .hero-quick-btn.whatsapp {
+      background:#25d366; color:#fff;
+      box-shadow:0 6px 20px rgba(37,211,102,.4);
+    }
+    .hero-quick-btn.whatsapp:hover { background:#1ebe5d; transform:translateY(-2px); }
+    .hero-quick-btn.call {
+      background:rgba(255,255,255,.18); backdrop-filter:blur(8px);
+      color:#fff; border:1.5px solid rgba(255,255,255,.3);
+    }
+    .hero-quick-btn.call:hover { background:rgba(255,255,255,.28); transform:translateY(-2px); }
+
+    /* ── WAVE divider ── */
+    .hero-wave {
+      display:block; width:100%; line-height:0; margin-top:-1px;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .contact-wrap {
+      max-width:1000px; margin:0 auto;
+      padding:2.5rem 1.5rem 4rem;
+    }
+
+    /* ── CONTACT GRID ── */
+    .contact-grid {
+      display:grid;
+      grid-template-columns:1fr 1.4fr;
+      gap:1.75rem;
+      align-items:start;
+    }
+    @media(max-width:768px) {
+      .contact-grid { grid-template-columns:1fr; }
+    }
+
+    /* ── INFO PANEL ── */
+    .info-panel {
+      display:flex; flex-direction:column; gap:1rem;
+    }
+
+    .info-card {
+      background:rgba(255,255,255,.85); backdrop-filter:blur(12px);
+      border:1.5px solid rgba(255,255,255,.8);
+      border-radius:1.25rem;
+      padding:1.35rem 1.4rem;
+      box-shadow:0 4px 20px rgba(99,102,241,.08);
+      display:flex; align-items:flex-start; gap:1rem;
+      transition:transform .2s, box-shadow .2s;
+    }
+    .info-card:hover {
+      transform:translateY(-3px);
+      box-shadow:0 10px 32px rgba(99,102,241,.14);
+    }
+    .info-icon {
+      width:2.6rem; height:2.6rem; border-radius:.85rem; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.2rem;
+    }
+    .info-icon.blue  { background:linear-gradient(135deg,#6366f1,#4f46e5); }
+    .info-icon.teal  { background:linear-gradient(135deg,#06b6d4,#0d9488); }
+    .info-icon.amber { background:linear-gradient(135deg,#f59e0b,#d97706); }
+    .info-icon.green { background:linear-gradient(135deg,#10b981,#059669); }
+    .info-body { flex:1; min-width:0; }
+    .info-label {
+      font-size:.68rem; font-weight:700; color:#6366f1;
+      text-transform:uppercase; letter-spacing:.06em; margin-bottom:.2rem;
+    }
+    .info-value {
+      font-size:.92rem; font-weight:700; color:var(--gray-900); line-height:1.4;
+    }
+    .info-value a {
+      color:inherit; text-decoration:none;
+    }
+    .info-value a:hover { color:#4f46e5; }
+    .info-sub {
+      font-size:.78rem; color:var(--gray-500); margin-top:.15rem;
+    }
+
+    /* WhatsApp banner */
+    .wa-banner {
+      background:linear-gradient(135deg,#25d366,#1ebe5d);
+      border-radius:1.25rem; padding:1.25rem 1.4rem;
+      display:flex; align-items:center; gap:1rem;
+      box-shadow:0 6px 24px rgba(37,211,102,.3);
+      cursor:pointer; border:none; width:100%;
+      text-align:left; transition:all .2s;
+    }
+    .wa-banner:hover { transform:translateY(-3px); box-shadow:0 10px 32px rgba(37,211,102,.4); }
+    .wa-banner-icon {
+      width:3rem; height:3rem; border-radius:50%;
+      background:rgba(255,255,255,.2); backdrop-filter:blur(6px);
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.5rem; flex-shrink:0;
+    }
+    .wa-banner-body { flex:1; }
+    .wa-banner-title { font-size:.95rem; font-weight:800; color:#fff; }
+    .wa-banner-sub { font-size:.78rem; color:rgba(255,255,255,.8); margin-top:.1rem; }
+    .wa-banner-arrow { color:rgba(255,255,255,.7); font-size:1.3rem; flex-shrink:0; }
+
+    /* ── FORM PANEL ── */
+    .form-panel {
+      background:rgba(255,255,255,.9); backdrop-filter:blur(14px);
+      border:1.5px solid rgba(255,255,255,.85);
+      border-radius:1.5rem;
+      padding:2rem 2rem 1.75rem;
+      box-shadow:0 8px 40px rgba(99,102,241,.12);
+    }
+    .form-panel-header {
+      margin-bottom:1.5rem;
+    }
+    .form-panel-title {
+      font-size:1.3rem; font-weight:900; color:var(--gray-900);
+      letter-spacing:-.03em; margin-bottom:.3rem;
+    }
+    .form-panel-sub {
+      font-size:.84rem; color:var(--gray-500);
+    }
+
+    .form-group {
+      display:flex; flex-direction:column; gap:.35rem;
+      margin-bottom:1rem;
+    }
+    .form-group:last-of-type { margin-bottom:1.35rem; }
+    .form-label {
+      font-size:.74rem; font-weight:700; color:#4f46e5;
+      text-transform:uppercase; letter-spacing:.05em;
+    }
+    .form-input, .form-textarea {
+      padding:.72rem 1rem;
+      border:1.5px solid rgba(99,102,241,.18);
+      border-radius:.85rem;
+      font-size:.9rem; font-family:inherit; color:var(--gray-900);
+      background:rgba(255,255,255,.8);
+      transition:border-color .2s, box-shadow .2s, background .2s;
+      outline:none;
+    }
+    .form-input:focus, .form-textarea:focus {
+      border-color:#6366f1;
+      background:#fff;
+      box-shadow:0 0 0 3px rgba(99,102,241,.12);
+    }
+    .form-input::placeholder, .form-textarea::placeholder {
+      color:#b0b7c3;
+    }
+    .form-textarea {
+      resize:vertical; min-height:130px; line-height:1.6;
+    }
+
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    @media(max-width:500px) { .form-row { grid-template-columns:1fr; } }
+
+    .btn-submit {
+      width:100%; padding:.85rem 1.5rem;
+      background:linear-gradient(135deg,#6366f1,#4f46e5);
+      color:#fff; border:none; border-radius:.875rem;
+      font-size:.95rem; font-weight:800; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; gap:.5rem;
+      box-shadow:0 6px 20px rgba(99,102,241,.35);
+      transition:all .22s cubic-bezier(.34,1.3,.64,1);
+      letter-spacing:.01em;
+    }
+    .btn-submit:hover {
+      transform:translateY(-2px);
+      box-shadow:0 10px 28px rgba(99,102,241,.45);
+    }
+    .btn-submit:active { transform:translateY(0); }
+
+    .form-note {
+      text-align:center; margin-top:.85rem;
+      font-size:.76rem; color:var(--gray-400);
+      display:flex; align-items:center; justify-content:center; gap:.35rem;
+    }
+
+    /* ── FAQ / QUICK LINKS STRIP ── */
+    .quick-strip {
+      margin-top:2.5rem;
+      display:grid; grid-template-columns:repeat(3,1fr); gap:1rem;
+    }
+    @media(max-width:640px) { .quick-strip { grid-template-columns:1fr; } }
+
+    .quick-card {
+      background:rgba(255,255,255,.8); backdrop-filter:blur(10px);
+      border:1.5px solid rgba(255,255,255,.8);
+      border-radius:1.25rem; padding:1.25rem;
+      text-align:center;
+      box-shadow:0 3px 14px rgba(99,102,241,.07);
+      transition:transform .2s, box-shadow .2s;
+      cursor:pointer; text-decoration:none; display:block;
+    }
+    .quick-card:hover {
+      transform:translateY(-4px);
+      box-shadow:0 10px 30px rgba(99,102,241,.14);
+    }
+    .quick-card-icon {
+      font-size:2rem; margin-bottom:.65rem;
+    }
+    .quick-card-title {
+      font-size:.9rem; font-weight:800; color:var(--gray-900); margin-bottom:.3rem;
+    }
+    .quick-card-sub {
+      font-size:.77rem; color:var(--gray-500); line-height:1.5;
+    }
+
+    /* ── TOAST ── */
+    .toast {
+      position:fixed; top:1.25rem; right:1.25rem; z-index:10000;
+      padding:.85rem 1.25rem; border-radius:.875rem;
+      font-size:.88rem; font-weight:700; color:#fff;
+      display:none; align-items:center; gap:.5rem;
+      box-shadow:0 8px 24px rgba(0,0,0,.15);
+      animation:toastIn .3s cubic-bezier(.34,1.56,.64,1);
+    }
+    .toast.show { display:flex; }
+    .toast.success { background:linear-gradient(135deg,#10b981,#059669); }
+    .toast.error   { background:linear-gradient(135deg,#ef4444,#dc2626); }
+    @keyframes toastIn {
+      from { transform:translateX(60px); opacity:0; }
+      to   { transform:translateX(0); opacity:1; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="contact-hero">
+  <div class="contact-hero-eyebrow">📞 Get In Touch</div>
+  <h1>We'd Love to Hear<br>From You</h1>
+  <p>Have a question, need support, or want to list your business on BConnect? Reach out — we're here to help.</p>
+  <div class="hero-quick-btns">
+    <button class="hero-quick-btn whatsapp" onclick="openWhatsApp()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 0C5.148 0 0 5.148 0 11.5c0 2.016.528 3.906 1.45 5.549L0 23l6.093-1.417A11.447 11.447 0 0011.5 23C17.852 23 23 17.852 23 11.5S17.852 0 11.5 0zm0 21.1a9.6 9.6 0 01-4.893-1.343l-.35-.209-3.624.841.872-3.534-.23-.362A9.558 9.558 0 011.9 11.5C1.9 6.196 6.196 1.9 11.5 1.9S21.1 6.196 21.1 11.5 16.804 21.1 11.5 21.1z"/></svg>
+      Chat on WhatsApp
+    </button>
+    <a class="hero-quick-btn call" href="tel:+254118234849">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.22 2.18 2 2 0 012.18 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.18 6.18l1.27-.54a2 2 0 012.11.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+      Call Us Now
+    </a>
+  </div>
+</section>
+
+<!-- Wave -->
+<svg class="hero-wave" viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+  <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#f0f4ff"/>
+</svg>
+
+<!-- MAIN CONTENT -->
+<div class="contact-wrap">
+
+  <div class="contact-grid">
+
+    <!-- LEFT: Info panel -->
+    <div class="info-panel">
+
+      <div class="info-card">
+        <div class="info-icon blue">✉️</div>
+        <div class="info-body">
+          <div class="info-label">Email Us</div>
+          <div class="info-value"><a href="mailto:info@bconnect.co.ke">info@bconnect.co.ke</a></div>
+          <div class="info-sub">We reply within 24 hours</div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-icon teal">📞</div>
+        <div class="info-body">
+          <div class="info-label">Call Us</div>
+          <div class="info-value"><a href="tel:+254118234849">+254 118 234 849</a></div>
+          <div class="info-sub">Mon – Fri, 9AM – 6PM EAT</div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-icon amber">📍</div>
+        <div class="info-body">
+          <div class="info-label">Our Location</div>
+          <div class="info-value">Nairobi, Kenya</div>
+          <div class="info-sub">Serving all of Kenya</div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-icon green">🕐</div>
+        <div class="info-body">
+          <div class="info-label">Business Hours</div>
+          <div class="info-value">Mon – Fri: 9AM – 6PM</div>
+          <div class="info-sub">Sat: 10AM – 4PM · Sun: Closed</div>
+        </div>
+      </div>
+
+      <button class="wa-banner" onclick="openWhatsApp()">
+        <div class="wa-banner-icon">💬</div>
+        <div class="wa-banner-body">
+          <div class="wa-banner-title">Chat on WhatsApp</div>
+          <div class="wa-banner-sub">Fast replies · Usually within minutes</div>
+        </div>
+        <div class="wa-banner-arrow">→</div>
+      </button>
+
+    </div>
+
+    <!-- RIGHT: Form panel -->
+    <div class="form-panel">
+      <div class="form-panel-header">
+        <div class="form-panel-title">Send Us a Message</div>
+        <div class="form-panel-sub">Fill in the form below and we'll send it to our WhatsApp for a fast response.</div>
+      </div>
+
+      <form id="contact-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Your Name</label>
+            <input class="form-input" type="text" name="name" placeholder="e.g. John Kamau" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input class="form-input" type="email" name="email" placeholder="john@email.com" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Phone Number <span style="color:#9ca3af;font-weight:500;text-transform:none">(optional)</span></label>
+          <input class="form-input" type="tel" name="phone" placeholder="+254 7XX XXX XXX">
+        </div>
+
+        <div class="form-group" style="margin-bottom:1.35rem">
+          <label class="form-label">Your Message</label>
+          <textarea class="form-textarea" name="message" placeholder="Tell us how we can help you…" required></textarea>
+        </div>
+
+        <button class="btn-submit" type="submit">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Send via WhatsApp
+        </button>
+      </form>
+
+      <div class="form-note">
+        🔒 Your information is private and never shared with third parties.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Quick links strip -->
+  <div class="quick-strip">
+    <a class="quick-card" href="products.html">
+      <div class="quick-card-icon">🛍️</div>
+      <div class="quick-card-title">Shop Products</div>
+      <div class="quick-card-sub">Browse 144+ verified products on our marketplace</div>
+    </a>
+    <a class="quick-card" href="services.html">
+      <div class="quick-card-icon">🔧</div>
+      <div class="quick-card-title">Book a Service</div>
+      <div class="quick-card-sub">Professionals for plumbing, cleaning, repairs & more</div>
+    </a>
+    <a class="quick-card" href="housing.html">
+      <div class="quick-card-icon">🏠</div>
+      <div class="quick-card-title">Find Housing</div>
+      <div class="quick-card-sub">Apartments, rentals & bedsitters in Nairobi</div>
+    </a>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div id="notification" class="toast"></div>
+
+<script>
+  const supabaseUrl = 'https://qjenuskqxacpvvvpbubp.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZW51c2txeGFjcHZ2dnBidWJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5ODM4ODAsImV4cCI6MjA5MDU1OTg4MH0.ozRR7Bxc3MguhFBe7Mo9iIzEI9hQ2NPIzkrGmKdSODo';
+  const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+  function openWhatsApp() {
+    window.open('https://wa.me/254118234849', '_blank');
+  }
+
+  function showNotification(message, type) {
+    const notif = document.getElementById('notification');
+    notif.textContent = message;
+    notif.className = 'toast ' + type + ' show';
+    setTimeout(() => { notif.className = 'toast'; }, 3500);
+  }
+
+  // Auto-fill from localStorage (service order)
+  function loadServiceOrder() {
+    const serviceOrder = localStorage.getItem('serviceOrder');
+    if (serviceOrder) {
+      try {
+        const order = JSON.parse(serviceOrder);
+        const messageField = document.querySelector('textarea[name="message"]');
+        if (messageField) messageField.value = order.message || `I am interested in ordering: ${order.title}`;
+        localStorage.removeItem('serviceOrder');
+      } catch (e) {}
+    }
+  }
+
+  // Pre-fill from URL param
+  (function(){
+    const params = new URLSearchParams(location.search);
+    const msg = params.get('message');
+    if (msg) {
+      const messageField = document.querySelector('textarea[name="message"]');
+      if (messageField) messageField.value = msg;
+    }
+  })();
+
+  loadServiceOrder();
+
+  document.getElementById('contact-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const name    = formData.get('name') || '';
+    const email   = formData.get('email') || '';
+    const phone   = formData.get('phone') || '';
+    const message = formData.get('message') || '';
+    const whatsappMessage = `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nMessage: ${message}`;
+    const whatsappUrl = `https://wa.me/254118234849?text=${encodeURIComponent(whatsappMessage)}`;
+    window.open(whatsappUrl, '_blank');
+    showNotification('✅ Opening WhatsApp — your message is ready to send!', 'success');
+    e.target.reset();
+  });
+</script>
+<script src="/shared-layout.js?v=7"></script>
+</body>
+</html>

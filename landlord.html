@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>For Landlords | BConnect</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --primary: #4f46e5;
+  --primary-light: #6366f1;
+  --secondary: #8b5cf6;
+  --ink: #111827;
+  --muted: #6b7280;
+  --card: #ffffff;
+  --border: rgba(79, 70, 229, 0.10);
+  --shadow-sm: 0 8px 22px rgba(79, 70, 229, 0.06);
+  --shadow-md: 0 18px 42px rgba(79, 70, 229, 0.10);
+  --shadow-lg: 0 28px 70px rgba(79, 70, 229, 0.15);
+}
+
+body {
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: linear-gradient(135deg, #f0f4ff 0%, #fafbff 40%, #f5f0ff 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+.page { max-width: 1180px; margin: 0 auto; padding: 32px 22px 80px; }
+
+/* ── HERO ─────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  padding: 60px 48px;
+  background:
+    radial-gradient(circle at 85% 8%,  rgba(255,255,255,.18), transparent 48%),
+    radial-gradient(circle at 10% 90%, rgba(255,255,255,.12), transparent 52%),
+    linear-gradient(135deg, #6366f1 0%, #8b5cf6 55%, #4f46e5 100%);
+  color: #fff;
+  box-shadow: var(--shadow-lg);
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='1.5' fill='rgba(255,255,255,0.07)'/%3E%3C/svg%3E") repeat;
+  pointer-events: none;
+}
+.hero-grid { display: grid; grid-template-columns: 1.2fr .9fr; gap: 48px; align-items: center; position: relative; }
+
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,.18); color: #fff;
+  padding: 7px 18px; border-radius: 999px;
+  font-size: .82rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  margin-bottom: 8px; border: 1px solid rgba(255,255,255,.25);
+}
+.hero h1 {
+  margin: 16px 0 16px;
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  line-height: 1.12; font-weight: 800; letter-spacing: -0.025em;
+}
+.hero p { margin: 0 0 28px; font-size: 1.05rem; opacity: .92; max-width: 520px; line-height: 1.7; }
+.cta-row { display: flex; flex-wrap: wrap; gap: 12px; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 13px 26px; border-radius: 12px; font-weight: 700; font-size: .97rem;
+  text-decoration: none; cursor: pointer; border: 0;
+  transition: transform .15s, box-shadow .15s, background .15s;
+}
+.btn-primary {
+  background: #fff; color: var(--primary);
+  box-shadow: 0 8px 24px rgba(0,0,0,.14);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 32px rgba(0,0,0,.2); }
+.btn-ghost {
+  background: rgba(255,255,255,.14); color: #fff;
+  border: 1.5px solid rgba(255,255,255,.35);
+}
+.btn-ghost:hover { background: rgba(255,255,255,.24); transform: translateY(-1px); }
+
+/* hero stats card */
+.hero-card {
+  background: rgba(255,255,255,.12);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,.24);
+  border-radius: 24px; padding: 26px;
+}
+.hero-card h3 { margin: 0 0 18px; font-size: 1rem; font-weight: 700; opacity: .95; }
+.mini-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.mini-stat {
+  background: rgba(255,255,255,.18);
+  border-radius: 16px; padding: 18px 14px;
+  border: 1px solid rgba(255,255,255,.18);
+}
+.mini-stat strong { display: block; font-size: 1.65rem; font-weight: 800; line-height: 1; }
+.mini-stat span { font-size: .83rem; opacity: .88; margin-top: 5px; display: block; }
+
+/* ── SECTION HEADS ───────────────────────────────────── */
+.section { margin-top: 72px; }
+.section-head { text-align: center; max-width: 680px; margin: 0 auto 44px; }
+.section-head .eyebrow {
+  display: inline-block;
+  background: linear-gradient(135deg, #eef2ff, #ede9fe); color: var(--primary);
+  padding: 6px 18px; border-radius: 999px;
+  font-size: .78rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .08em;
+}
+.section-head h2 {
+  margin: 14px 0 12px;
+  font-size: clamp(1.55rem, 2.8vw, 2.3rem);
+  font-weight: 800; letter-spacing: -0.02em; color: var(--ink);
+}
+.section-head p { color: var(--muted); margin: 0; font-size: 1.02rem; line-height: 1.7; }
+
+/* ── FEATURE CARDS ───────────────────────────────────── */
+.features { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 20px; }
+.feature {
+  background: var(--card); border-radius: 22px; padding: 28px 26px;
+  box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+  transition: transform .18s, box-shadow .18s;
+}
+.feature:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+.feature .icon {
+  width: 48px; height: 48px; border-radius: 14px;
+  background: linear-gradient(135deg, #eef2ff 0%, #ede9fe 100%);
+  color: var(--primary);
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-bottom: 18px; flex-shrink: 0;
+}
+.feature .icon svg { width: 22px; height: 22px; }
+.feature h3 { margin: 0 0 8px; font-size: 1.07rem; font-weight: 700; color: var(--ink); }
+.feature p { margin: 0; color: var(--muted); font-size: .93rem; line-height: 1.65; }
+
+/* ── HOW IT WORKS ────────────────────────────────────── */
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+.step {
+  background: var(--card); border-radius: 22px; padding: 32px 26px;
+  box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+  position: relative;
+}
+.step .num {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-light), var(--primary));
+  color: #fff; font-weight: 800; font-size: 1.1rem;
+  display: inline-flex; align-items: center; justify-content: center; margin-bottom: 18px;
+  box-shadow: 0 6px 16px rgba(79, 70, 229, .30);
+}
+.step h3 { margin: 0 0 8px; font-size: 1.08rem; font-weight: 700; color: var(--ink); }
+.step p { margin: 0; color: var(--muted); font-size: .93rem; line-height: 1.65; }
+
+/* ── BENEFITS ────────────────────────────────────────── */
+.benefits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; max-width: 860px; margin: 0 auto; }
+.benefit {
+  display: flex; gap: 14px; align-items: flex-start;
+  background: var(--card); padding: 16px 18px; border-radius: 16px;
+  border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+  transition: transform .15s, box-shadow .15s;
+}
+.benefit:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.benefit .check {
+  width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+  background: #d1fae5; color: #047857;
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-top: 1px;
+}
+.benefit .check svg { width: 13px; height: 13px; }
+.benefit span { color: var(--ink); font-weight: 600; font-size: .93rem; line-height: 1.5; }
+
+/* ── CTA BANNER ──────────────────────────────────────── */
+.cta-banner {
+  margin-top: 72px; padding: 52px 44px;
+  background: linear-gradient(135deg, #1e1b4b 0%, #3730a3 60%, #4f46e5 100%);
+  border-radius: 28px; color: #fff;
+  display: flex; flex-wrap: wrap; gap: 28px; align-items: center; justify-content: space-between;
+  box-shadow: var(--shadow-lg);
+  position: relative; overflow: hidden;
+}
+.cta-banner::before {
+  content: '';
+  position: absolute; right: -60px; top: -60px;
+  width: 300px; height: 300px; border-radius: 50%;
+  background: rgba(139, 92, 246, .18);
+  pointer-events: none;
+}
+.cta-banner h2 { margin: 0 0 8px; font-size: clamp(1.4rem, 2.5vw, 1.95rem); font-weight: 800; }
+.cta-banner p { margin: 0; opacity: .88; max-width: 540px; font-size: .99rem; line-height: 1.65; }
+.btn-cta { background: var(--secondary); color: #fff; box-shadow: 0 8px 24px rgba(139,92,246,.35); }
+.btn-cta:hover { background: #7c3aed; transform: translateY(-2px); box-shadow: 0 12px 28px rgba(139,92,246,.45); }
+
+/* ── TESTIMONIALS ────────────────────────────────────── */
+.testimonials { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.tcard {
+  background: var(--card); border-radius: 22px; padding: 28px 26px;
+  box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 16px;
+  transition: transform .18s, box-shadow .18s;
+}
+.tcard:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.tcard-stars { color: #f59e0b; font-size: 1rem; letter-spacing: 2px; }
+.tcard-body { margin: 0; color: var(--muted); font-size: .95rem; line-height: 1.7; flex: 1; font-style: italic; }
+.tcard-author { display: flex; align-items: center; gap: 12px; margin-top: auto; }
+.tcard-avatar {
+  width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+  color: #fff; font-weight: 800; font-size: .85rem;
+  display: inline-flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 12px rgba(79,70,229,.28);
+}
+.tcard-name { font-size: .9rem; font-weight: 700; color: var(--ink); }
+.tcard-meta { font-size: .8rem; color: var(--muted); margin-top: 2px; }
+
+/* ── RESPONSIVE ──────────────────────────────────────── */
+@media (max-width: 860px) {
+  .hero { padding: 40px 28px; }
+  .hero-grid { grid-template-columns: 1fr; gap: 28px; }
+  .page { padding: 24px 16px 60px; }
+  .benefits-grid { grid-template-columns: 1fr; }
+  .cta-banner { flex-direction: column; align-items: flex-start; padding: 38px 28px; }
+}
+@media (max-width: 540px) {
+  .hero h1 { font-size: 1.7rem; }
+  .features { grid-template-columns: 1fr; }
+  .steps { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <span class="hero-eyebrow">For Landlords</span>
+        <h1>Run your rentals like a pro &mdash; from one simple dashboard.</h1>
+        <p>
+          Collect rent on M&#8209;Pesa, track tenants, list vacant units, and get paid on time.
+          BConnect gives Kenyan landlords everything they need to manage properties without spreadsheets or chasing tenants.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="landlord-dashboard.html">Get Started Free</a>
+          <a class="btn btn-ghost" href="#how-it-works">See how it works</a>
+        </div>
+      </div>
+      <aside class="hero-card">
+        <h3>What landlords get</h3>
+        <div class="mini-stats">
+          <div class="mini-stat"><strong>1&#8209;click</strong><span>Rent reminders</span></div>
+          <div class="mini-stat"><strong>0%</strong><span>Setup fees</span></div>
+          <div class="mini-stat"><strong>24/7</strong><span>Tenant access</span></div>
+          <div class="mini-stat"><strong>M&#8209;Pesa</strong><span>Direct payouts</span></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section">
+    <div class="section-head">
+      <span class="eyebrow">Features</span>
+      <h2>Everything you need to manage rentals</h2>
+      <p>Stop juggling WhatsApp, paper receipts and Excel. Move your whole rental business onto BConnect.</p>
+    </div>
+    <div class="features">
+
+      <div class="feature">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/>
+          </svg>
+        </div>
+        <h3>Online rent collection</h3>
+        <p>Tenants pay rent through M&#8209;Pesa STK push. You see every payment instantly and money lands in your account.</p>
+      </div>
+
+      <div class="feature">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <h3>Tenant directory</h3>
+        <p>Keep every tenant&#8217;s profile, lease and payment history in one place &mdash; searchable in seconds.</p>
+      </div>
+
+      <div class="feature">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+        </div>
+        <h3>List vacant units</h3>
+        <p>Publish vacant properties to the BConnect marketplace and reach thousands of house&#8209;hunters across Kenya.</p>
+      </div>
+
+      <div class="feature">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+        </div>
+        <h3>Automated reminders</h3>
+        <p>Send polite payment reminders with one tap. No more awkward phone calls when rent is late.</p>
+      </div>
+
+      <div class="feature">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+        </div>
+        <h3>Income reports</h3>
+        <p>See total collected, pending balances and occupancy rates at a glance &mdash; ready for your accountant.</p>
+      </div>
+
+      <div class="feature">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <h3>Secure &amp; private</h3>
+        <p>Bank&#8209;grade encryption keeps your data safe. Tenants only see what concerns them &mdash; nothing more.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section" id="how-it-works">
+    <div class="section-head">
+      <span class="eyebrow">How it works</span>
+      <h2>Up and running in three steps</h2>
+      <p>No installation, no contracts. Sign up, add your properties, share a code with tenants &mdash; that&#8217;s it.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="num">1</div>
+        <h3>Create your account</h3>
+        <p>Sign up free as a landlord. We&#8217;ll set up your dashboard in under a minute.</p>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <h3>Add your properties</h3>
+        <p>Enter each unit, monthly rent and a unique property code you can share with tenants.</p>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <h3>Get paid &amp; track</h3>
+        <p>Tenants link their account with the code and pay rent on M&#8209;Pesa. You watch payments arrive in real time.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENEFITS -->
+  <section class="section">
+    <div class="section-head">
+      <span class="eyebrow">Why landlords choose BConnect</span>
+      <h2>Built for the Kenyan rental market</h2>
+    </div>
+    <div class="benefits-grid">
+      <div class="benefit">
+        <span class="check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+        <span>Free to start &mdash; no monthly fee for small landlords</span>
+      </div>
+      <div class="benefit">
+        <span class="check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+        <span>Works on any phone &mdash; no app download required</span>
+      </div>
+      <div class="benefit">
+        <span class="check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+        <span>Direct M&#8209;Pesa payouts to your number or paybill</span>
+      </div>
+      <div class="benefit">
+        <span class="check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+        <span>Dedicated WhatsApp support in English &amp; Kiswahili</span>
+      </div>
+      <div class="benefit">
+        <span class="check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+        <span>Print or download receipts and rent statements anytime</span>
+      </div>
+      <div class="benefit">
+        <span class="check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+        <span>Manage one house or 200 &mdash; same simple dashboard</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section">
+    <div class="section-head">
+      <span class="eyebrow">Landlord Stories</span>
+      <h2>Trusted by landlords across Kenya</h2>
+      <p>Hear from property owners who switched from spreadsheets and WhatsApp to BConnect.</p>
+    </div>
+    <div class="testimonials">
+
+      <div class="tcard">
+        <div class="tcard-stars">★★★★★</div>
+        <p class="tcard-body">"I used to chase tenants for rent every month. Now I just check my dashboard and get notified when payments arrive. It's saved me so much stress."</p>
+        <div class="tcard-author">
+          <div class="tcard-avatar">JM</div>
+          <div>
+            <div class="tcard-name">James Mwangi</div>
+            <div class="tcard-meta">3 properties · Nairobi</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tcard">
+        <div class="tcard-stars">★★★★★</div>
+        <p class="tcard-body">"Listing my vacant unit on BConnect got me a tenant within a week. No agents, no fees. The M-Pesa collection feature is incredible."</p>
+        <div class="tcard-author">
+          <div class="tcard-avatar">FW</div>
+          <div>
+            <div class="tcard-name">Faith Wanjiku</div>
+            <div class="tcard-meta">1 property · Nakuru</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tcard">
+        <div class="tcard-stars">★★★★★</div>
+        <p class="tcard-body">"Managing 12 units felt overwhelming. BConnect gives me one clean view of every tenant, every payment and every maintenance request. Game changer."</p>
+        <div class="tcard-author">
+          <div class="tcard-avatar">PO</div>
+          <div>
+            <div class="tcard-name">Peter Otieno</div>
+            <div class="tcard-meta">12 units · Kisumu</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-banner">
+    <div>
+      <h2>Ready to put rent collection on autopilot?</h2>
+      <p>Join hundreds of Kenyan landlords already using BConnect to manage tenants, collect rent and stay organised.</p>
+    </div>
+    <div class="cta-row">
+      <a class="btn btn-cta" href="landlord-dashboard.html">Create free account</a>
+      <a class="btn btn-ghost" href="contact.html">Talk to us</a>
+    </div>
+  </section>
+
+</div>
+
+<script src="/shared-layout.js?v=8"></script>
+</body>
+</html>

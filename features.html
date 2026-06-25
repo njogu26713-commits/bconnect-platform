@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BConnect Features</title>
+  <style>
+    :root {
+      --blue: #1d4ed8;
+      --blue-light: #60a5fa;
+      --blue-bg: #eef5ff;
+      --dark: #0f172a;
+      --grey: #475569;
+      --white: #fff;
+      --radius: 24px;
+      --shadow: 0 18px 48px rgba(15,41,114,0.09);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Inter, system-ui, sans-serif; background: var(--blue-bg); color: var(--dark); }
+    a { color: inherit; text-decoration: none; }
+
+    .page { max-width: 1160px; margin: 0 auto; padding: 32px 24px 64px; }
+
+    /* HIDDEN STATIC NAV — replaced by shared-layout.js */
+    header.topbar { display: none; }
+
+    /* HERO */
+    .hero {
+      margin-top: 20px;
+      padding: 56px 48px;
+      background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 60%, #60a5fa 100%);
+      border-radius: 28px;
+      color: #fff;
+      box-shadow: 0 28px 72px rgba(15,41,114,0.18);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 340px; height: 340px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; left: -40px;
+      width: 260px; height: 260px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+    }
+    .hero-tag {
+      display: inline-block;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 999px;
+      padding: 6px 16px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3.4rem); line-height: 1.15; font-weight: 800; position: relative; z-index: 1; }
+    .hero p { margin-top: 18px; max-width: 640px; line-height: 1.8; opacity: 0.9; font-size: 1.08rem; position: relative; z-index: 1; }
+    .hero-stats {
+      display: flex; gap: 32px; margin-top: 36px; flex-wrap: wrap; position: relative; z-index: 1;
+    }
+    .hero-stat { text-align: center; }
+    .hero-stat-num { font-size: 2rem; font-weight: 800; line-height: 1; }
+    .hero-stat-label { font-size: 0.82rem; opacity: 0.8; margin-top: 4px; }
+
+    /* SEARCH */
+    .search-wrap {
+      margin-top: 28px;
+      display: flex; gap: 12px;
+    }
+    .search-wrap input {
+      flex: 1; padding: 14px 20px;
+      border: 2px solid #dbeafe;
+      border-radius: 14px;
+      font-size: 1rem; font-family: inherit;
+      background: #fff;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+    .search-wrap input:focus { border-color: var(--blue); }
+    .search-wrap button {
+      padding: 14px 28px;
+      background: var(--blue); color: #fff;
+      border: none; border-radius: 14px;
+      font-weight: 700; font-size: 1rem;
+      cursor: pointer; transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .search-wrap button:hover { background: #1e40af; }
+
+    /* SECTION HEADER */
+    .sec-header { margin: 52px 0 28px; }
+    .sec-tag {
+      display: inline-block;
+      background: #dbeafe; color: var(--blue);
+      border-radius: 999px; padding: 5px 14px;
+      font-size: 0.78rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .sec-header h2 { font-size: 1.75rem; font-weight: 800; color: var(--dark); }
+    .sec-header p { color: var(--grey); margin-top: 8px; font-size: 1rem; line-height: 1.7; }
+
+    /* FEATURE GRID */
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 22px; }
+
+    .fcard {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 30px 28px;
+      box-shadow: var(--shadow);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .fcard:hover { transform: translateY(-6px); box-shadow: 0 28px 64px rgba(15,41,114,0.14); }
+    .fcard-icon {
+      width: 52px; height: 52px;
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 18px;
+    }
+    .fcard h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; color: var(--dark); }
+    .fcard p { color: var(--grey); line-height: 1.75; font-size: 0.95rem; }
+    .fcard-badge {
+      position: absolute; top: 18px; right: 18px;
+      background: #dcfce7; color: #15803d;
+      font-size: 0.7rem; font-weight: 700;
+      padding: 3px 10px; border-radius: 999px;
+      letter-spacing: 0.05em;
+    }
+    .fcard-badge.new { background: #fef9c3; color: #a16207; }
+    .fcard-badge.coming { background: #f3e8ff; color: #7c3aed; }
+
+    /* ICON COLOURS */
+    .ic-blue { background: #dbeafe; }
+    .ic-green { background: #dcfce7; }
+    .ic-orange { background: #ffedd5; }
+    .ic-purple { background: #f3e8ff; }
+    .ic-pink { background: #fce7f3; }
+    .ic-teal { background: #ccfbf1; }
+    .ic-yellow { background: #fef9c3; }
+    .ic-red { background: #fee2e2; }
+
+    /* COMPARISON TABLE */
+    .compare-wrap { overflow-x: auto; margin-top: 8px; }
+    .compare-table {
+      width: 100%; border-collapse: collapse;
+      background: #fff; border-radius: 20px;
+      overflow: hidden; box-shadow: var(--shadow);
+      font-size: 0.95rem;
+    }
+    .compare-table th {
+      background: var(--blue); color: #fff;
+      padding: 16px 20px; text-align: left; font-weight: 700;
+    }
+    .compare-table th:first-child { border-radius: 0; }
+    .compare-table td { padding: 14px 20px; border-bottom: 1px solid #f1f5f9; color: var(--grey); }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .compare-table tr:hover td { background: #f8fbff; }
+    .compare-table td:first-child { font-weight: 600; color: var(--dark); }
+    .check { color: #16a34a; font-size: 1.1rem; }
+    .cross { color: #dc2626; font-size: 1.1rem; }
+
+    /* CTA BANNER */
+    .cta-banner {
+      margin-top: 60px;
+      background: linear-gradient(135deg, #0f172a, #1e3a8a);
+      border-radius: 28px;
+      padding: 52px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 32px; flex-wrap: wrap;
+      color: #fff;
+      box-shadow: 0 24px 64px rgba(15,41,114,0.2);
+    }
+    .cta-banner h2 { font-size: 1.9rem; font-weight: 800; line-height: 1.2; }
+    .cta-banner p { margin-top: 10px; opacity: 0.75; font-size: 1rem; }
+    .cta-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-white {
+      padding: 14px 28px; background: #fff; color: var(--blue);
+      border: none; border-radius: 14px;
+      font-weight: 700; font-size: 1rem; cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-white:hover { opacity: 0.9; }
+    .btn-outline {
+      padding: 14px 28px; background: transparent; color: #fff;
+      border: 2px solid rgba(255,255,255,0.35); border-radius: 14px;
+      font-weight: 700; font-size: 1rem; cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-outline:hover { border-color: #fff; background: rgba(255,255,255,0.07); }
+
+    /* NO RESULTS */
+    .no-results { text-align: center; padding: 48px 20px; color: var(--grey); font-size: 1rem; }
+
+    @media (max-width: 680px) {
+      .hero { padding: 32px 24px; }
+      .hero h1 { font-size: 1.9rem; }
+      .hero-stats { gap: 20px; }
+      .sec-header h2 { font-size: 1.4rem; }
+      .cta-banner { padding: 32px 24px; }
+      .cta-banner h2 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <header class="topbar" style="display:none">
+      <div class="brand">bConnect</div>
+      <nav class="nav">
+        <a href="pre-home.html">Home</a>
+        <a href="solutions.html">Solutions</a>
+        <a class="active" href="features.html">Features</a>
+        <a href="about.html">About</a>
+        <a href="support.html">Support</a>
+        <a href="login.html">Login</a>
+      </nav>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-tag">Platform Features</div>
+      <h1>Everything you need in one Kenyan marketplace</h1>
+      <p>BConnect brings together products, professional services, and property rentals — with tools built for buyers, sellers, landlords, and tenants across Kenya.</p>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="hero-stat-num">7+</div><div class="hero-stat-label">Core Modules</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">M-Pesa</div><div class="hero-stat-label">Payments</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">100%</div><div class="hero-stat-label">Mobile Friendly</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">AI</div><div class="hero-stat-label">Powered Assistant</div></div>
+      </div>
+    </section>
+
+    <!-- SEARCH -->
+    <div class="search-wrap">
+      <input type="text" id="search-input" placeholder="Search features — e.g. payments, landlord, marketplace…" oninput="filterFeatures(this.value)">
+      <button onclick="filterFeatures(document.getElementById('search-input').value)">Search</button>
+    </div>
+
+    <!-- MARKETPLACE -->
+    <div class="sec-header" data-section>
+      <span class="sec-tag">Marketplace</span>
+      <h2>Shop, sell & discover products</h2>
+    </div>
+    <div class="grid">
+      <div class="fcard" data-tags="marketplace products browse shop">
+        <div class="fcard-icon ic-blue"></div>
+        <h3>Product Marketplace</h3>
+        <p>Browse products across electronics, fashion, furniture, and food from verified local sellers.</p>
+      </div>
+      <div class="fcard" data-tags="marketplace seller dashboard manage orders">
+        <div class="fcard-icon ic-green"></div>
+        <span class="fcard-badge">Live</span>
+        <h3>Seller Dashboard</h3>
+        <p>List products, manage inventory, track orders, and view earnings — all from one dashboard.</p>
+      </div>
+      <div class="fcard" data-tags="marketplace promotion boost featured trending">
+        <div class="fcard-icon ic-orange"></div>
+        <h3>Promote & Boost</h3>
+        <p>Sellers can promote products to the homepage slider or boost them to trending for maximum visibility.</p>
+      </div>
+    </div>
+
+    <!-- HOUSING -->
+    <div class="sec-header" data-section>
+      <span class="sec-tag">Housing & Rentals</span>
+      <h2>Find, manage & pay rent with ease</h2>
+    </div>
+    <div class="grid">
+      <div class="fcard" data-tags="housing rental property listings landlord">
+        <div class="fcard-icon ic-teal"></div>
+        <span class="fcard-badge">Live</span>
+        <h3>Property Listings</h3>
+        <p>Browse verified rental properties with photos, pricing, and direct landlord contact.</p>
+      </div>
+      <div class="fcard" data-tags="landlord dashboard tenants manage rent">
+        <div class="fcard-icon ic-blue"></div>
+        <span class="fcard-badge">Live</span>
+        <h3>Landlord Dashboard</h3>
+        <p>Manage properties, track tenants, and monitor rent payments from a single organised view.</p>
+      </div>
+      <div class="fcard" data-tags="tenant portal rent mpesa payment receipt">
+        <div class="fcard-icon ic-purple"></div>
+        <h3>Tenant Portal & M-Pesa</h3>
+        <p>Tenants pay rent via M-Pesa, view payment history, and communicate with landlords in one place.</p>
+      </div>
+    </div>
+
+    <!-- PLATFORM -->
+    <div class="sec-header" data-section>
+      <span class="sec-tag">Platform</span>
+      <h2>Built for Kenya, built for everyone</h2>
+    </div>
+    <div class="grid">
+      <div class="fcard" data-tags="payment mpesa receipt security verified">
+        <div class="fcard-icon ic-green"></div>
+        <span class="fcard-badge">Live</span>
+        <h3>M-Pesa Payments</h3>
+        <p>Pay for anything on BConnect via M-Pesa. Every transaction is receipted and tracked automatically.</p>
+      </div>
+      <div class="fcard" data-tags="ai assistant smart help chatbot">
+        <div class="fcard-icon ic-orange"></div>
+        <span class="fcard-badge new">New</span>
+        <h3>AI Assistant</h3>
+        <p>An integrated AI helps users find products, navigate the platform, and get answers instantly.</p>
+      </div>
+      <div class="fcard" data-tags="admin mobile responsive secure auth">
+        <div class="fcard-icon ic-red"></div>
+        <h3>Secure & Mobile-Ready</h3>
+        <p>Role-based access for buyers, sellers, landlords, and admins — fully optimised for any screen size.</p>
+      </div>
+    </div>
+
+    <!-- CTA BANNER -->
+    <div class="cta-banner" id="no-result-hide">
+      <div>
+        <h2>Ready to join BConnect?</h2>
+        <p>Whether you're buying, selling, renting, or managing — get started for free today.</p>
+      </div>
+      <div class="cta-btns">
+        <a href="login.html"><button class="btn-white">Get Started Free</button></a>
+        <a href="solutions.html"><button class="btn-outline">View Solutions</button></a>
+      </div>
+    </div>
+
+    <div id="no-results" class="no-results" style="display:none">
+      No features matched "<span id="no-results-query"></span>". Try a different keyword.
+    </div>
+
+  </div>
+
+  <script>
+    const allSections = document.querySelectorAll('[data-section]');
+    const allCards = document.querySelectorAll('.fcard');
+
+    function filterFeatures(query) {
+      const q = (query || '').toLowerCase().trim();
+      let anyVisible = false;
+
+      allCards.forEach(card => {
+        const tags = (card.dataset.tags || '').toLowerCase();
+        const text = card.innerText.toLowerCase();
+        const match = !q || tags.includes(q) || text.includes(q);
+        card.style.display = match ? '' : 'none';
+        if (match) anyVisible = true;
+      });
+
+      document.querySelectorAll('.grid').forEach(grid => {
+        const visible = [...grid.querySelectorAll('.fcard')].some(c => c.style.display !== 'none');
+        grid.closest('.page') && (grid.style.display = visible ? '' : 'none');
+        const header = grid.previousElementSibling;
+        if (header && header.dataset.section !== undefined) {
+          header.style.display = visible ? '' : 'none';
+        }
+      });
+
+      const noResults = document.getElementById('no-results');
+      const ctaBanner = document.getElementById('no-result-hide');
+      const tbl = document.querySelector('.compare-wrap');
+      if (q && !anyVisible) {
+        noResults.style.display = '';
+        document.getElementById('no-results-query').textContent = query;
+        ctaBanner.style.display = 'none';
+        tbl && (tbl.style.display = 'none');
+        document.querySelector('.sec-header:has(+ .compare-wrap)') && (document.querySelector('.sec-header:has(+ .compare-wrap)').style.display = 'none');
+      } else {
+        noResults.style.display = 'none';
+        ctaBanner.style.display = '';
+        tbl && (tbl.style.display = '');
+      }
+    }
+
+    document.getElementById('search-input').addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        e.target.value = '';
+        filterFeatures('');
+      }
+    });
+  </script>
+  <script src="/shared-layout.js?v=7"></script>
+</body>
+</html>

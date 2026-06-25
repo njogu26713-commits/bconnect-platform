@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>bConnect – Events & Tickets</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#7c3aed;--primary-light:#8b5cf6;--teal:#0d9488;
+  --amber:#f59e0b;--red:#ef4444;--white:#fff;
+  --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;
+  --gray-400:#9ca3af;--gray-500:#6b7280;--gray-700:#374151;--gray-900:#111827;
+  --shadow-sm:0 1px 4px rgba(0,0,0,.07);--shadow-md:0 4px 16px rgba(0,0,0,.10);--shadow-lg:0 12px 32px rgba(0,0,0,.15);
+}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--gray-50);min-height:100vh;color:var(--gray-900)}
+
+/*  HERO BANNER  */
+.hero{
+  background:linear-gradient(135deg,#1e1b4b 0%,#4c1d95 40%,#7c3aed 100%);
+  color:#fff;padding:48px 24px 36px;text-align:center;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+}
+.hero-inner{position:relative;z-index:1;max-width:700px;margin:0 auto}
+.hero-tag{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:9999px;padding:.3rem .9rem;font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:1rem}
+.hero h1{font-size:2.4rem;font-weight:800;margin-bottom:.6rem;line-height:1.2}
+.hero p{font-size:1.05rem;opacity:.85;margin-bottom:1.5rem}
+.hero-search{display:flex;gap:.6rem;max-width:500px;margin:0 auto}
+.hero-search input{flex:1;padding:.75rem 1.1rem;border-radius:12px;border:none;font-size:.95rem;outline:none;font-family:inherit}
+.hero-search button{padding:.75rem 1.4rem;background:var(--amber);color:#fff;border:none;border-radius:12px;font-size:.9rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .2s}
+.hero-search button:hover{background:#d97706;transform:translateY(-1px)}
+
+/*  LAYOUT  */
+.page-layout{display:flex;min-height:calc(100vh - 57px)}
+.sidebar{width:220px;flex-shrink:0;background:var(--white);border-right:1px solid var(--gray-200);padding:1.25rem .75rem;position:sticky;top:57px;height:calc(100vh - 57px);overflow-y:auto}
+.sidebar-title{font-size:.7rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.06em;padding:.5rem .75rem 1rem}
+.sidebar-item{display:flex;align-items:center;gap:.75rem;padding:.7rem .9rem;border-radius:.75rem;font-size:.88rem;font-weight:600;color:var(--gray-700);cursor:pointer;transition:all .2s;margin-bottom:.15rem;background:none;border:none;width:100%;text-align:left}
+.sidebar-item:hover{background:var(--gray-100);color:var(--primary)}
+.sidebar-item.active{background:#ede9fe;color:var(--primary)}
+.sidebar-item span.icon{font-size:1.1rem}
+hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
+.main{flex:1;padding:1.75rem 2rem;min-width:0}
+
+/*  FILTER BAR  */
+.filter-bar{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.filter-btn{padding:.5rem 1.1rem;border-radius:9999px;border:1.5px solid var(--gray-200);background:var(--white);font-size:.83rem;font-weight:600;color:var(--gray-700);cursor:pointer;transition:all .2s}
+.filter-btn:hover{border-color:var(--primary);color:var(--primary)}
+.filter-btn.active{background:var(--primary);border-color:var(--primary);color:var(--white)}
+
+/*  SECTION HEADER  */
+.sec-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}
+.sec-title{font-size:1.3rem;font-weight:800;color:var(--gray-900)}
+.count-pill{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:var(--white);padding:.35rem .9rem;border-radius:9999px;font-size:.78rem;font-weight:700}
+
+/*  EVENT CARDS  */
+.events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem}
+.e-card{background:var(--white);border-radius:1.25rem;box-shadow:var(--shadow-sm);overflow:hidden;cursor:pointer;border:1.5px solid transparent;transition:transform .25s,box-shadow .25s,border-color .25s;position:relative}
+.e-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:var(--primary)}
+.e-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;z-index:2;background:linear-gradient(90deg,#7c3aed,#8b5cf6)}
+.e-card-img-wrap{position:relative;overflow:hidden;height:180px}
+.e-card-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.e-card:hover .e-card-img-wrap img{transform:scale(1.06)}
+.e-badge{position:absolute;top:.5rem;left:.5rem;z-index:3;background:var(--primary);color:#fff;font-size:.6rem;font-weight:700;padding:.2rem .5rem;border-radius:9999px;text-transform:uppercase;letter-spacing:.04em}
+.e-date-chip{position:absolute;bottom:.5rem;right:.5rem;z-index:3;background:rgba(0,0,0,.72);color:#fff;font-size:.68rem;font-weight:700;padding:.22rem .55rem;border-radius:.45rem;backdrop-filter:blur(4px)}
+.e-card-body{padding:.7rem .9rem .85rem}
+.e-card-title{font-size:.9rem;font-weight:800;color:var(--gray-900);margin-bottom:.3rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.e-card-meta{display:flex;gap:.5rem;font-size:.74rem;color:var(--gray-500);margin-bottom:.5rem;flex-wrap:wrap}
+.e-card-meta span{display:flex;align-items:center;gap:.2rem}
+.e-card-row{display:flex;justify-content:space-between;align-items:center;margin-top:.45rem}
+.e-card-price{font-size:.95rem;font-weight:800;color:var(--primary)}
+.e-card-price.free{color:#059669}
+.e-card-cta{background:var(--primary);color:#fff;border:none;padding:.3rem .75rem;border-radius:.55rem;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .2s}
+.e-card-cta:hover{background:#6d28d9;transform:scale(1.05)}
+.e-card-cta.sold{background:var(--gray-400);cursor:not-allowed}
+.tickets-left{font-size:.7rem;color:var(--gray-500);margin-top:.3rem}
+.tickets-left.low{color:#dc2626;font-weight:700}
+.e-days-chip{display:inline-flex;align-items:center;background:#fef3c7;color:#92400e;font-size:.68rem;font-weight:700;padding:.18rem .5rem;border-radius:9999px;border:1px solid #fde68a}
+.e-days-chip.ended{background:#fee2e2;color:#991b1b;border-color:#fca5a5}
+.e-share-btn{position:absolute;top:.5rem;right:.5rem;z-index:4;background:rgba(255,255,255,.92);border:none;border-radius:50%;width:2.1rem;height:2.1rem;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.9rem;box-shadow:0 2px 8px rgba(0,0,0,.18);transition:all .2s;backdrop-filter:blur(6px)}
+.e-share-btn:hover{background:#fff;transform:scale(1.12);box-shadow:0 4px 14px rgba(0,0,0,.22)}
+.share-panel{position:fixed;background:#fff;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.18);padding:8px;z-index:99999;display:flex;flex-direction:column;gap:4px;min-width:190px;animation:mIn .2s cubic-bezier(.34,1.56,.64,1)}
+.spi{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:9px;border:none;background:none;font-size:.85rem;font-weight:600;cursor:pointer;width:100%;text-align:left;font-family:inherit;color:#374151;transition:background .15s}
+.spi:hover{background:#f3f4f6}
+.modal-share-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.share-modal-btn{flex:1;min-width:80px;padding:10px 10px;border:none;border-radius:10px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s}
+.share-modal-btn:hover{transform:translateY(-1px);filter:brightness(1.08)}
+
+/*  SKELETON  */
+.skeleton-card{background:var(--white);border-radius:1.25rem;height:300px;animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+
+/*  EMPTY  */
+.empty-state{text-align:center;padding:4rem 2rem;color:var(--gray-400)}
+.empty-state .ei{font-size:3.5rem;margin-bottom:1rem}
+.empty-state h3{font-size:1.1rem;font-weight:700;color:var(--gray-700);margin-bottom:.5rem}
+
+/*  MODAL  */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal-box{background:var(--white);border-radius:1.5rem;width:100%;max-width:780px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.3);position:relative;animation:mIn .3s cubic-bezier(.34,1.56,.64,1)}
+@keyframes mIn{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-close{position:absolute;top:1rem;right:1rem;z-index:10;background:var(--gray-100);border:none;border-radius:50%;width:2.2rem;height:2.2rem;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.modal-close:hover{background:var(--gray-200)}
+.modal-inner{display:flex;gap:2rem;padding:2rem}
+.modal-img-col{width:42%;flex-shrink:0}
+.modal-main-img{width:100%;border-radius:1rem;object-fit:cover;aspect-ratio:4/3;background:var(--gray-100)}
+@media(max-width:640px){.modal-main-img{max-height:220px;object-fit:contain;aspect-ratio:unset}.modal-inner{padding:1rem;gap:1rem}}
+.modal-details{flex:1;min-width:0}
+.detail-badge{display:inline-block;padding:.3rem .8rem;border-radius:9999px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.75rem}
+.detail-title{font-size:1.5rem;font-weight:800;color:var(--gray-900);margin-bottom:.5rem;line-height:1.3}
+.detail-info{display:flex;flex-direction:column;gap:.55rem;margin-bottom:1rem}
+.detail-info-row{display:flex;align-items:flex-start;gap:.6rem;font-size:.88rem;color:var(--gray-700)}
+.detail-info-row .lbl{font-weight:700;min-width:70px;color:var(--gray-900)}
+.detail-desc{font-family:Inter,system-ui,-apple-system,sans-serif;font-size:.92rem;font-weight:600;color:var(--gray-700);line-height:1.8;margin-bottom:1.2rem;white-space:pre-wrap;word-break:break-word}
+.ticket-box{background:linear-gradient(135deg,#ede9fe,#f5f3ff);border:1.5px solid #c4b5fd;border-radius:1rem;padding:1.2rem;margin-bottom:1rem}
+.ticket-price-big{font-size:2rem;font-weight:800;color:var(--primary);margin-bottom:.25rem}
+.ticket-price-big.free{color:#059669}
+.ticket-avail{font-size:.82rem;color:var(--gray-500);margin-bottom:.9rem}
+.ticket-avail.low{color:#dc2626;font-weight:700}
+.ticket-qty-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.85rem}
+.qty-btn{background:var(--white);border:1.5px solid var(--gray-200);border-radius:.5rem;width:2rem;height:2rem;font-size:1.1rem;font-weight:700;cursor:pointer;transition:border-color .2s;display:flex;align-items:center;justify-content:center}
+.qty-btn:hover{border-color:var(--primary)}
+.qty-display{font-size:1.1rem;font-weight:800;min-width:24px;text-align:center}
+.btn-buy{width:100%;padding:1rem;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:.9rem;font-size:1rem;font-weight:800;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(124,58,237,.35)}
+.btn-buy:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(124,58,237,.4)}
+.btn-buy:disabled{background:var(--gray-400);cursor:not-allowed;box-shadow:none;transform:none}
+
+/*  MPESA SPINNER  */
+.mpesa-spinner{width:18px;height:18px;border:2.5px solid #ddd6fe;border-top-color:#7c3aed;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/*  SUCCESS TICKET  */
+.ticket-success{background:linear-gradient(135deg,#dcfce7,#f0fdf4);border:1.5px solid #86efac;border-radius:1rem;padding:1.5rem;text-align:center;display:none}
+.ticket-success h3{color:#15803d;font-size:1.1rem;font-weight:800;margin-bottom:.5rem}
+.ticket-success p{color:#166534;font-size:.88rem}
+.ticket-code{font-size:1.3rem;font-weight:800;letter-spacing:.15em;color:#166534;background:#bbf7d0;padding:.5rem 1.2rem;border-radius:.6rem;display:inline-block;margin:.75rem 0}
+
+/*  ORGANIZER CHIP  */
+.e-organizer{display:flex;align-items:center;gap:.3rem;font-size:.72rem;color:var(--gray-500);font-weight:600;margin-top:.35rem;overflow:hidden}
+.e-organizer svg{flex-shrink:0;opacity:.7}
+.e-organizer span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/*  SUBMIT EVENT BUTTON  */
+.submit-event-btn{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.18);color:#fff;border:1.5px solid rgba(255,255,255,.35);border-radius:10px;padding:.55rem 1.2rem;font-size:.83rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;backdrop-filter:blur(4px);text-decoration:none;margin-left:.6rem}
+.submit-event-btn:hover{background:rgba(255,255,255,.28);border-color:rgba(255,255,255,.55);transform:translateY(-1px)}
+.sidebar-submit-btn{display:flex;align-items:center;gap:.7rem;width:100%;margin-top:.5rem;padding:.75rem .9rem;border-radius:.75rem;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;color:#fff;background:linear-gradient(135deg,var(--primary),var(--primary-light));border:none;transition:all .2s;box-shadow:0 3px 12px rgba(124,58,237,.3)}
+.sidebar-submit-btn:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(124,58,237,.4)}
+.sec-submit-btn{display:inline-flex;align-items:center;gap:.5rem;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:.65rem;padding:.45rem 1rem;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;box-shadow:0 2px 8px rgba(124,58,237,.25)}
+.sec-submit-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(124,58,237,.4)}
+
+/*  SUBMIT EVENT MODAL  */
+.submit-modal-overlay{display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;padding:0}
+.submit-modal-overlay.open{display:flex}
+.submit-modal-sheet{background:#fff;border-radius:22px 22px 0 0;width:100%;max-width:640px;max-height:92vh;overflow-y:auto;box-shadow:0 -8px 40px rgba(0,0,0,.2);animation:sheetUp .28s cubic-bezier(.34,1.2,.64,1);padding:0 0 24px}
+@keyframes sheetUp{from{transform:translateY(60px);opacity:0}to{transform:none;opacity:1}}
+.sm-handle{width:36px;height:4px;background:#e5e7eb;border-radius:99px;margin:14px auto 0}
+.sm-header{padding:18px 24px 14px;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;justify-content:space-between}
+.sm-header h3{font-size:1.05rem;font-weight:800;color:var(--gray-900);display:flex;align-items:center;gap:8px}
+.sm-close{background:var(--gray-100);border:none;border-radius:50%;width:32px;height:32px;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--gray-500);transition:background .2s}
+.sm-close:hover{background:var(--gray-200)}
+.sm-body{padding:20px 24px 0}
+.sm-info-box{background:#ede9fe;border:1.5px solid #c4b5fd;border-radius:12px;padding:12px 14px;margin-bottom:18px;display:flex;gap:10px;align-items:flex-start}
+.sm-info-box p{font-size:.82rem;color:#5b21b6;line-height:1.5;margin:0}
+.sm-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sm-group{margin-bottom:14px}
+.sm-group label{display:block;font-size:.78rem;font-weight:700;color:var(--gray-700);margin-bottom:5px}
+.sm-field{display:block;width:100%;padding:10px 13px;border:1.5px solid var(--gray-200);border-radius:9px;font-size:.88rem;font-family:inherit;color:var(--gray-900);background:#fafafa;transition:border-color .15s}
+.sm-field:focus{outline:none;border-color:var(--primary);background:#fff}
+.sm-field::placeholder{color:#9ca3af}
+.sm-field.sm-textarea{min-height:80px;resize:vertical}
+.sm-select{display:block;width:100%;padding:10px 13px;border:1.5px solid var(--gray-200);border-radius:9px;font-size:.88rem;font-family:inherit;color:var(--gray-900);background:#fafafa;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");background-position:right .6rem center;background-repeat:no-repeat;background-size:1.4em;padding-right:2.2rem;transition:border-color .15s}
+.sm-select:focus{outline:none;border-color:var(--primary)}
+.sm-divider{border:none;border-top:1px solid var(--gray-100);margin:18px 0 14px}
+.sm-section-lbl{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gray-400);margin-bottom:12px}
+.sm-actions{display:flex;gap:10px;padding:14px 24px 0}
+.sm-actions .btn-cancel{flex:0 0 auto;padding:11px 20px;border-radius:9px;border:1.5px solid var(--gray-200);background:#fff;font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit;color:var(--gray-700);transition:all .2s}
+.sm-actions .btn-cancel:hover{border-color:var(--gray-400)}
+.sm-actions .btn-submit{flex:1;padding:12px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;font-size:.9rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s;box-shadow:0 3px 12px rgba(124,58,237,.3);display:flex;align-items:center;justify-content:center;gap:7px}
+.sm-actions .btn-submit:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(124,58,237,.4)}
+.sm-actions .btn-submit:disabled{background:#c4b5fd;cursor:not-allowed;transform:none;box-shadow:none}
+.submit-success-box{display:none;text-align:center;padding:32px 24px}
+.submit-success-box h3{font-size:1.1rem;font-weight:800;color:#059669;margin-bottom:8px}
+.submit-success-box p{font-size:.88rem;color:var(--gray-500);line-height:1.5}
+
+/*  FEATURES STRIP  */
+.features-strip{display:flex;justify-content:center;flex-wrap:wrap;gap:1rem;padding:1.5rem 2rem;background:var(--white);border-top:1px solid var(--gray-200);margin-top:1rem}
+.feat{display:flex;align-items:center;gap:.5rem;font-size:.85rem;font-weight:700;color:var(--gray-700);padding:.6rem 1.2rem;background:var(--gray-50);border-radius:.75rem;border:1px solid var(--gray-200)}
+
+@media(max-width:768px){
+  .sidebar{display:none}
+  .main{padding:1rem}
+  .hero h1{font-size:1.7rem}
+  .modal-inner{flex-direction:column}
+  .modal-img-col{width:100%}
+  body { padding-bottom: 72px; }
+  .mob-nav-bar { display:block; }
+}
+
+/* MOBILE BOTTOM NAV */
+.mob-nav-bar { display:none; position:fixed; bottom:0; left:0; right:0; background:#fff; border-top:1px solid #e5e7eb; z-index:300; padding:6px 0 env(safe-area-inset-bottom,0); }
+.mob-nav-bar-inner { display:flex; justify-content:space-around; }
+.mob-nav-a { display:flex; flex-direction:column; align-items:center; gap:2px; color:#6b7280; font-size:10px; font-weight:600; text-decoration:none; padding:6px 8px; flex:1; font-family:'DM Sans',sans-serif; transition:color .15s; }
+.mob-nav-a.active { color:#f97316; }
+.mob-nav-a.active svg { stroke:#f97316 !important; }
+.mob-nav-a svg { stroke:#6b7280; }
+
+/* ══ BConnect Branded Skeleton — Event Cards ══ */
+@keyframes bc-shimmer { 0%{left:-100%} 100%{left:200%} }
+.bc-sk { background:#eef0f3; border-radius:6px; }
+.bc-skel {
+  background:#fff; border-radius:1.25rem; overflow:hidden;
+  position:relative; border:1.5px solid #f1f5f9;
+  box-shadow:0 1px 8px rgba(0,0,0,.05);
+}
+.bc-skel::after {
+  content:''; position:absolute; top:0; left:-100%;
+  width:55%; height:100%;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.62) 50%,transparent 100%);
+  animation:bc-shimmer 1.7s ease-in-out infinite;
+  z-index:9; pointer-events:none;
+}
+.bc-skel::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:4px; z-index:10;
+  background:linear-gradient(90deg,#7c3aed,#8b5cf6);
+}
+.bc-skel-img-wrap { position:relative; width:100%; min-height:180px; overflow:hidden; }
+.bc-skel-img-fill { position:absolute; inset:0; border-radius:0; }
+.bc-skel-logo {
+  position:absolute; top:6px; right:6px; width:48px; height:48px;
+  object-fit:contain; z-index:12; pointer-events:none;
+  opacity:.2; filter:grayscale(1);
+}
+.bc-skel-pill  { position:absolute; top:8px; left:8px; width:48px; height:17px; border-radius:999px; z-index:11; }
+.bc-skel-date  { position:absolute; bottom:8px; right:8px; width:70px; height:20px; border-radius:6px; z-index:11; }
+.bc-skel-body  { padding:.75rem .9rem .85rem; }
+.bc-skel-title { width:80%; height:14px; border-radius:5px; margin-bottom:.4rem; }
+.bc-skel-sub   { width:55%; height:11px; border-radius:4px; margin-bottom:.28rem; }
+.bc-skel-price-row {
+  display:flex; justify-content:space-between; align-items:center; margin-top:.4rem;
+}
+.bc-skel-price { width:76px; height:16px; border-radius:5px; }
+.bc-skel-cta   { height:27px; border-radius:7px; width:80px; }
+</style>
+</head>
+<body>
+<script src="shared-layout.js?v=7"></script>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag"> Events & Tickets</div>
+    <h1>Discover Amazing Events</h1>
+    <p>Concerts, sports, tech meetups, food festivals &amp; more — book your tickets instantly.</p>
+    <div style="display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:.75rem;max-width:580px;margin:0 auto">
+      <div class="hero-search" style="margin:0;flex:1;min-width:280px">
+        <input type="text" id="heroSearch" placeholder="Search events, venues, cities..." oninput="handleHeroSearch(this.value)">
+        <button onclick="handleHeroSearch(document.getElementById('heroSearch').value)">Search</button>
+      </div>
+      <button class="submit-event-btn" onclick="openSubmitModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Submit Event
+      </button>
+      <a href="organizer-dashboard.html" class="submit-event-btn" style="background:rgba(249,115,22,.25);border-color:rgba(249,115,22,.6);text-decoration:none">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Organizer Login
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="page-layout">
+  <aside class="sidebar">
+    <div class="sidebar-title">Browse by Type</div>
+    <ul style="list-style:none">
+      <li><button class="sidebar-item active" onclick="setFilter('',this)"><span class="icon"></span> All Events</button></li>
+      <li><button class="sidebar-item" onclick="setFilter('concert',this)"><span class="icon"></span> Concerts</button></li>
+      <li><button class="sidebar-item" onclick="setFilter('sports',this)"><span class="icon"></span> Sports</button></li>
+      <li><button class="sidebar-item" onclick="setFilter('tech',this)"><span class="icon"></span> Tech & Business</button></li>
+      <li><button class="sidebar-item" onclick="setFilter('food',this)"><span class="icon"></span> Food & Drinks</button></li>
+      <li><button class="sidebar-item" onclick="setFilter('arts',this)"><span class="icon"></span> Arts & Culture</button></li>
+      <li><button class="sidebar-item" onclick="setFilter('fashion',this)"><span class="icon"></span> Fashion</button></li>
+      <li><button class="sidebar-item" onclick="setFilter('comedy',this)"><span class="icon"></span> Comedy</button></li>
+      <li><button class="sidebar-item" onclick="setFilter('other',this)"><span class="icon"></span> Other</button></li>
+    </ul>
+    <hr class="sdiv">
+    <div class="sidebar-title">Filter</div>
+    <ul style="list-style:none">
+      <li><button class="sidebar-item" onclick="setFreeFilter(this)"><span class="icon"></span> Free Events</button></li>
+      <li><button class="sidebar-item" onclick="clearFilters(this)"><span class="icon"></span> Clear Filters</button></li>
+    </ul>
+    <hr class="sdiv">
+    <button class="sidebar-submit-btn" onclick="openSubmitModal()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      Submit Your Event
+    </button>
+    <a href="organizer-dashboard.html" style="display:flex;align-items:center;gap:8px;margin-top:10px;padding:11px 14px;background:linear-gradient(135deg,#f97316,#a855f7);color:#fff;border-radius:10px;font-size:.83rem;font-weight:700;text-decoration:none;transition:opacity .2s" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Organizer Login
+    </a>
+  </aside>
+
+  <main class="main">
+    <div class="filter-bar" id="filterBar">
+      <button class="filter-btn active" onclick="setFilter('',this)">All</button>
+      <button class="filter-btn" onclick="setFilter('concert',this)"> Concerts</button>
+      <button class="filter-btn" onclick="setFilter('sports',this)"> Sports</button>
+      <button class="filter-btn" onclick="setFilter('tech',this)"> Tech</button>
+      <button class="filter-btn" onclick="setFilter('food',this)"> Food</button>
+      <button class="filter-btn" onclick="setFilter('arts',this)"> Arts</button>
+      <button class="filter-btn" onclick="setFilter('fashion',this)"> Fashion</button>
+      <button class="filter-btn" onclick="setFilter('comedy',this)"> Comedy</button>
+    </div>
+
+    <div class="sec-header">
+      <div class="sec-title">Upcoming Events</div>
+      <div style="display:flex;align-items:center;gap:.6rem">
+        <span class="count-pill" id="event-count">Loading…</span>
+        <button class="sec-submit-btn" onclick="openSubmitModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Submit Event
+        </button>
+      </div>
+    </div>
+
+    <div class="events-grid" id="events-grid">
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+    </div>
+  </main>
+</div>
+
+<div class="features-strip">
+  <div class="feat"> Secure Booking</div>
+  <div class="feat"> Instant Tickets</div>
+  <div class="feat"> Nairobi & Beyond</div>
+  <div class="feat"> Easy Payment</div>
+</div>
+
+<!--  EVENT DETAIL + TICKET MODAL  -->
+<div class="modal-overlay" id="event-modal" onclick="closeEventModal()">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeEventModal()"></button>
+    <div class="modal-inner">
+      <div class="modal-img-col">
+        <img class="modal-main-img" id="modal-img" src="" alt="">
+      </div>
+      <div class="modal-details">
+        <span class="detail-badge" id="modal-badge">EVENT</span>
+        <h2 class="detail-title" id="modal-title">Event Name</h2>
+        <div class="detail-info">
+          <div class="detail-info-row"><span class="lbl"> Date</span><span id="modal-date">—</span></div>
+          <div class="detail-info-row"><span class="lbl">⏰ Time</span><span id="modal-time">—</span></div>
+          <div class="detail-info-row"><span class="lbl"> Venue</span><span id="modal-venue">—</span></div>
+          <div class="detail-info-row"><span class="lbl"> City</span><span id="modal-location">—</span></div>
+          <div class="detail-info-row"><span class="lbl"> By</span><span id="modal-organizer">—</span></div>
+        </div>
+        <div class="modal-share-row" id="modal-share-row">
+          <button class="share-modal-btn" style="background:#25d366;color:#fff" onclick="modalShareWhatsApp()"> WhatsApp</button>
+          <button class="share-modal-btn" style="background:#000;color:#fff" onclick="modalShareTwitter()"> Twitter / X</button>
+          <button class="share-modal-btn" style="background:#ede9fe;color:#6d28d9" onclick="modalCopyLink()"> Copy Link</button>
+        </div>
+        <p class="detail-desc" id="modal-desc"></p>
+
+        <div class="ticket-box" id="ticket-box">
+          <div class="ticket-price-big" id="modal-price">Ksh 0</div>
+          <div class="ticket-avail" id="modal-avail">Loading ticket info…</div>
+          <div class="ticket-qty-row" id="qty-row">
+            <button class="qty-btn" onclick="changeQty(-1)">−</button>
+            <span class="qty-display" id="qty-display">1</span>
+            <button class="qty-btn" onclick="changeQty(1)">+</button>
+            <span style="font-size:.82rem;color:var(--gray-500)" id="qty-total-label">= Ksh 0</span>
+          </div>
+          <div id="mpesa-phone-wrap" style="display:none;margin:.6rem 0">
+            <label style="font-size:.78rem;font-weight:600;color:var(--gray-600);display:block;margin-bottom:4px"> M-Pesa Phone Number</label>
+            <input id="mpesa-phone" type="tel" placeholder="e.g. 0712 345678"
+              style="width:100%;padding:10px 12px;border:1.5px solid #d1d5db;border-radius:10px;font-size:.95rem;outline:none;box-sizing:border-box"
+              onfocus="this.style.borderColor='#7c3aed'" onblur="this.style.borderColor='#d1d5db'">
+            <p style="font-size:.72rem;color:var(--gray-400);margin:4px 0 0">You will receive an M-Pesa prompt on this number</p>
+          </div>
+          <button class="btn-buy" id="btn-buy" onclick="buyTicket()"> Get Tickets</button>
+        </div>
+
+        <div id="mpesa-waiting" style="display:none;text-align:center;padding:1.5rem 0">
+          <div style="font-size:2.2rem;margin-bottom:.5rem"></div>
+          <h3 style="margin:0 0 .4rem;color:#1e293b">Check your phone!</h3>
+          <p style="font-size:.88rem;color:#64748b;margin:0 0 1rem">An M-Pesa payment request has been sent. Enter your PIN to complete the booking.</p>
+          <div style="display:flex;align-items:center;justify-content:center;gap:8px;color:#7c3aed;font-size:.85rem;font-weight:600">
+            <div class="mpesa-spinner"></div>
+            <span id="mpesa-status-text">Waiting for payment…</span>
+          </div>
+          <button onclick="cancelMpesaWait()" style="margin-top:1rem;background:none;border:none;color:#9ca3af;font-size:.8rem;cursor:pointer;text-decoration:underline">Cancel</button>
+        </div>
+
+        <div class="ticket-success" id="ticket-success">
+          <div style="font-size:2.5rem;margin-bottom:.5rem"></div>
+          <h3>Tickets Booked!</h3>
+          <div class="ticket-code" id="ticket-code">TKT-000000</div>
+
+          <!-- QR code -->
+          <div style="margin:.9rem auto 0;display:flex;flex-direction:column;align-items:center;gap:.5rem">
+            <canvas id="ticket-qr" style="border-radius:10px;border:3px solid #86efac;display:block"></canvas>
+            <p style="font-size:.72rem;color:#15803d;font-weight:600;margin:0">Scan at the venue entrance</p>
+          </div>
+
+          <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-top:.9rem">
+            <button onclick="downloadTicketQR()" style="display:inline-flex;align-items:center;gap:6px;background:#15803d;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:.82rem;font-weight:700;cursor:pointer"> Save QR</button>
+            <a id="verify-ticket-link" href="/verify-ticket.html" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#ede9fe;color:#6d28d9;border-radius:8px;padding:8px 16px;font-size:.82rem;font-weight:700;text-decoration:none"> View Details</a>
+          </div>
+          <p style="margin-top:.7rem">Show this QR code at the venue entrance.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUBMIT EVENT MODAL -->
+<div class="submit-modal-overlay" id="submit-modal" onclick="e => { if(e.target===this) closeSubmitModal(); }">
+  <div class="submit-modal-sheet" onclick="event.stopPropagation()">
+    <div class="sm-handle"></div>
+    <div class="sm-header">
+      <h3>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg>
+        Submit Your Event
+      </h3>
+      <button class="sm-close" onclick="closeSubmitModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <!-- Success State -->
+    <div class="submit-success-box" id="submit-success-box">
+      <div style="font-size:3rem;margin-bottom:12px">🎉</div>
+      <h3>Event Submitted for Review!</h3>
+      <p>Our team will review your event and publish it within 24 hours. You'll be contacted via the email you provided.</p>
+      <button onclick="closeSubmitModal()" style="margin-top:20px;padding:11px 28px;background:linear-gradient(135deg,#7c3aed,#8b5cf6);color:#fff;border:none;border-radius:9px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit">Done</button>
+    </div>
+
+    <!-- Form State -->
+    <div id="submit-form-body">
+      <div class="sm-body">
+        <div class="sm-info-box">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <p>Submit your event for admin review. Once approved, it will appear live on the events page. Fill in as much detail as possible.</p>
+        </div>
+
+        <div class="sm-section-lbl">Event Details</div>
+        <div class="sm-group">
+          <label>Event Title <span style="color:#ef4444">*</span></label>
+          <input type="text" id="sm-title" class="sm-field" placeholder="e.g. Nairobi Jazz Night 2025" maxlength="120">
+        </div>
+        <div class="sm-group">
+          <label>Description</label>
+          <textarea id="sm-desc" class="sm-field sm-textarea" placeholder="Tell people what to expect — lineup, highlights, etc."></textarea>
+        </div>
+        <div class="sm-grid">
+          <div class="sm-group">
+            <label>Date & Time <span style="color:#ef4444">*</span></label>
+            <input type="datetime-local" id="sm-date" class="sm-field">
+          </div>
+          <div class="sm-group">
+            <label>Category</label>
+            <select id="sm-category" class="sm-select">
+              <option value="Other">Other</option>
+              <option value="Concert">Concert</option>
+              <option value="Sports">Sports</option>
+              <option value="Tech">Tech & Business</option>
+              <option value="Food">Food & Drinks</option>
+              <option value="Arts">Arts & Culture</option>
+              <option value="Fashion">Fashion</option>
+              <option value="Comedy">Comedy</option>
+            </select>
+          </div>
+        </div>
+        <div class="sm-grid">
+          <div class="sm-group">
+            <label>Venue / Venue Name</label>
+            <input type="text" id="sm-venue" class="sm-field" placeholder="e.g. KICC, Alchemist Bar">
+          </div>
+          <div class="sm-group">
+            <label>City / Location</label>
+            <input type="text" id="sm-location" class="sm-field" placeholder="e.g. Nairobi, Mombasa">
+          </div>
+        </div>
+        <div class="sm-grid">
+          <div class="sm-group">
+            <label>Ticket Price (Ksh)</label>
+            <input type="number" id="sm-price" class="sm-field" placeholder="0 for free" min="0">
+          </div>
+          <div class="sm-group">
+            <label>Total Tickets Available</label>
+            <input type="number" id="sm-tickets" class="sm-field" placeholder="Leave blank if unlimited" min="1">
+          </div>
+        </div>
+        <div class="sm-group">
+          <label>Event Image URL (optional)</label>
+          <input type="url" id="sm-image" class="sm-field" placeholder="https://example.com/image.jpg">
+        </div>
+
+        <hr class="sm-divider">
+        <div class="sm-section-lbl">Organizer / Contact Info</div>
+        <div class="sm-group">
+          <label>Your Name / Organization <span style="color:#ef4444">*</span></label>
+          <input type="text" id="sm-org-name" class="sm-field" placeholder="e.g. Nairobi Events Co.">
+        </div>
+        <div class="sm-grid">
+          <div class="sm-group">
+            <label>Email Address <span style="color:#ef4444">*</span></label>
+            <input type="email" id="sm-org-email" class="sm-field" placeholder="organizer@email.com">
+          </div>
+          <div class="sm-group">
+            <label>Phone Number</label>
+            <input type="tel" id="sm-org-phone" class="sm-field" placeholder="07XX XXX XXX">
+          </div>
+        </div>
+      </div>
+
+      <div class="sm-actions">
+        <button class="btn-cancel" onclick="closeSubmitModal()">Cancel</button>
+        <button class="btn-submit" id="sm-submit-btn" onclick="submitEvent()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Submit for Review
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script src="dialogs.js"></script>
+<script>
+const FALLBACK_IMG = 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80';
+let allEvents = [];
+
+function showToast(msg, type) {
+  let t = document.getElementById('ev-toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'ev-toast';
+    t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);padding:13px 24px;border-radius:14px;font-size:.9rem;font-weight:700;z-index:99999;transition:transform .35s cubic-bezier(.34,1.56,.64,1);white-space:pre-wrap;box-shadow:0 8px 24px rgba(0,0,0,.2);max-width:90vw;text-align:center;pointer-events:none;font-family:inherit';
+    document.body.appendChild(t);
+  }
+  const bg = { error:'#dc2626', success:'#059669', warning:'#d97706', info:'#2563eb' };
+  t.style.background = bg[type] || bg.error;
+  t.style.color = '#fff';
+  t.textContent = msg;
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(t._tmr);
+  t._tmr = setTimeout(() => { t.style.transform = 'translateX(-50%) translateY(120px)'; }, 4000);
+}
+let activeFilter = '';
+let freeOnly = false;
+let currentEvent = null;
+let ticketQty = 1;
+
+function fmtDate(d) {
+  if (!d) return '—';
+  try {
+    return new Date(d).toLocaleDateString('en-KE', { weekday:'short', year:'numeric', month:'short', day:'numeric' });
+  } catch { return d; }
+}
+function fmtTime(d) {
+  if (!d) return '—';
+  try {
+    const t = new Date(d).toLocaleTimeString('en-KE', { hour:'2-digit', minute:'2-digit' });
+    return t === 'Invalid Date' ? (d.includes('T') ? d.split('T')[1].slice(0,5) : d) : t;
+  } catch { return d; }
+}
+function fmtPrice(n) {
+  if (!n || n === 0) return 'FREE';
+  return 'Ksh ' + parseInt(n).toLocaleString();
+}
+
+
+function getFiltered() {
+  return allEvents.filter(ev => {
+    const catMatch = !activeFilter || (ev.category||'').toLowerCase().includes(activeFilter);
+    const freeMatch = !freeOnly || !ev.ticket_price || ev.ticket_price === 0;
+    return catMatch && freeMatch;
+  });
+}
+
+function renderEvents(list) {
+  const grid = document.getElementById('events-grid');
+  document.getElementById('event-count').textContent = `${list.length} event${list.length !== 1 ? 's' : ''}`;
+  if (!list.length) {
+    grid.innerHTML = '<div class="empty-state"><div class="ei"></div><h3>No events found</h3><p>Check back soon for upcoming events.</p></div>';
+    return;
+  }
+  grid.innerHTML = list.map(ev => {
+    const img = (ev.images && ev.images[0]) || ev.image_url || ev.imageUrl || FALLBACK_IMG;
+    const price = (!ev.ticket_price || ev.ticket_price === 0) ? 'FREE' : 'Ksh ' + parseInt(ev.ticket_price).toLocaleString();
+    const isFree = !ev.ticket_price || ev.ticket_price === 0;
+    const sold = ev.status === 'sold_out' || (ev.tickets_available !== undefined && ev.tickets_available !== null && ev.tickets_sold >= ev.tickets_available);
+    const ticketsLeft = ev.tickets_available !== undefined && ev.tickets_available !== null ? (ev.tickets_available - (ev.tickets_sold || 0)) : null;
+    const isLow = ticketsLeft !== null && ticketsLeft <= 10 && ticketsLeft > 0;
+    const cat = ev.category || 'Event';
+    const eid = ev._id || ev.id || '';
+    const daysLeft = ev.event_date ? Math.ceil((new Date(ev.event_date) - new Date()) / (1000*60*60*24)) : null;
+    const daysChip = daysLeft !== null
+      ? (daysLeft > 0
+          ? `<span class="e-days-chip">${daysLeft} day${daysLeft!==1?'s':''} left</span>`
+          : `<span class="e-days-chip ended">Ended</span>`)
+      : '';
+    return `
+      <div class="e-card" onclick="openEvent('${eid}')">
+        <div class="e-card-img-wrap">
+          <img src="${img}" alt="${ev.title||'Event'}" onerror="this.src='${FALLBACK_IMG}'">
+          <span class="e-badge">${cat}</span>
+          <span class="e-date-chip">${fmtDate(ev.event_date)}</span>
+          <button class="e-share-btn" title="Share Event" onclick="event.stopPropagation();showSharePanel('${eid}',event)">↗</button>
+        </div>
+        <div class="e-card-body">
+          <div class="e-card-title">${ev.title||'Untitled Event'}</div>
+          <div class="e-card-meta">
+            <span><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> ${ev.location||ev.venue||'TBA'}</span>
+            <span><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ${fmtTime(ev.event_date)}</span>
+            ${daysChip}
+          </div>
+          ${ev.organizer ? `<div class="e-organizer"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>By ${ev.organizer}</span></div>` : ''}
+          <div class="e-card-row">
+            <span class="e-card-price${isFree?' free':''}">${price}</span>
+            <button class="e-card-cta${sold?' sold':''}" onclick="event.stopPropagation();openEvent('${eid}')">${sold ? 'Sold Out' : ' Get Tickets'}</button>
+          </div>
+          ${ticketsLeft !== null ? `<div class="tickets-left${isLow?' low':''}">${sold ? 'No tickets left' : isLow ? ` Only ${ticketsLeft} left!` : `${ticketsLeft} tickets available`}</div>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function openEvent(id) {
+  const ev = allEvents.find(e => (e._id||e.id) === id);
+  if (!ev) return;
+  currentEvent = ev;
+  ticketQty = 1;
+
+  const img = (ev.images && ev.images[0]) || ev.image_url || ev.imageUrl || FALLBACK_IMG;
+  document.getElementById('modal-img').src = img;
+  document.getElementById('modal-img').onerror = function(){ this.src = FALLBACK_IMG; };
+  document.getElementById('modal-badge').textContent = ev.category || 'EVENT';
+  document.getElementById('modal-title').textContent = ev.title || 'Event';
+  document.getElementById('modal-date').textContent = fmtDate(ev.event_date);
+  document.getElementById('modal-time').textContent = fmtTime(ev.event_date);
+  document.getElementById('modal-venue').textContent = ev.venue || '—';
+  document.getElementById('modal-location').textContent = ev.location || '—';
+  document.getElementById('modal-organizer').textContent = ev.organizer || 'bConnect';
+  document.getElementById('modal-desc').textContent = ev.description || '';
+
+  const isFree = !ev.ticket_price || ev.ticket_price === 0;
+  const priceEl = document.getElementById('modal-price');
+  priceEl.textContent = isFree ? 'FREE' : 'Ksh ' + parseInt(ev.ticket_price).toLocaleString();
+  priceEl.className = 'ticket-price-big' + (isFree ? ' free' : '');
+
+  const ticketsLeft = ev.tickets_available !== undefined && ev.tickets_available !== null ? (ev.tickets_available - (ev.tickets_sold || 0)) : null;
+  const sold = ev.status === 'sold_out' || (ticketsLeft !== null && ticketsLeft <= 0);
+  const isLow = ticketsLeft !== null && ticketsLeft <= 10 && !sold;
+
+  const availEl = document.getElementById('modal-avail');
+  availEl.textContent = sold ? 'Sold out' : ticketsLeft !== null ? (isLow ? ` Only ${ticketsLeft} tickets left!` : `${ticketsLeft} tickets available`) : 'Tickets available';
+  availEl.className = 'ticket-avail' + (isLow ? ' low' : '');
+
+  const buyBtn = document.getElementById('btn-buy');
+  buyBtn.disabled = sold;
+  buyBtn.textContent = sold ? ' Sold Out' : ' Get Tickets';
+
+  document.getElementById('qty-display').textContent = 1;
+  updateQtyTotal();
+  document.getElementById('ticket-success').style.display = 'none';
+  document.getElementById('mpesa-waiting').style.display = 'none';
+  document.getElementById('ticket-box').style.display = 'block';
+
+  const isFree2 = !ev.ticket_price || ev.ticket_price === 0;
+  const phoneWrap = document.getElementById('mpesa-phone-wrap');
+  phoneWrap.style.display = (isFree2 || sold) ? 'none' : 'block';
+  const savedPhone = (JSON.parse(localStorage.getItem('user') || '{}').phone) || '';
+  if (savedPhone) document.getElementById('mpesa-phone').value = savedPhone;
+
+  document.getElementById('event-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  history.pushState({ eventId: id }, '', '?event=' + encodeURIComponent(id));
+}
+
+let _mpesaPollTimer = null;
+let _mpesaCancelled = false;
+
+function cancelMpesaWait() {
+  _mpesaCancelled = true;
+  if (_mpesaPollTimer) { clearTimeout(_mpesaPollTimer); _mpesaPollTimer = null; }
+  document.getElementById('mpesa-waiting').style.display = 'none';
+  document.getElementById('ticket-box').style.display = 'block';
+  const btn = document.getElementById('btn-buy');
+  btn.disabled = false;
+  btn.textContent = ' Get Tickets';
+}
+
+function closeEventModal() {
+  cancelMpesaWait();
+  document.getElementById('event-modal').classList.remove('open');
+  document.body.style.overflow = '';
+  currentEvent = null;
+  if (window.location.search.includes('event=')) {
+    history.pushState(null, '', window.location.pathname);
+  }
+}
+
+function changeQty(delta) {
+  if (!currentEvent) return;
+  const ticketsLeft = currentEvent.tickets_available !== undefined && currentEvent.tickets_available !== null
+    ? (currentEvent.tickets_available - (currentEvent.tickets_sold || 0)) : 99;
+  ticketQty = Math.max(1, Math.min(ticketsLeft, ticketQty + delta));
+  document.getElementById('qty-display').textContent = ticketQty;
+  updateQtyTotal();
+}
+
+function updateQtyTotal() {
+  if (!currentEvent) return;
+  const price = currentEvent.ticket_price || 0;
+  const total = price * ticketQty;
+  document.getElementById('qty-total-label').textContent = price ? `= Ksh ${total.toLocaleString()}` : '= FREE';
+}
+
+async function confirmTicket(buyerPhone) {
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const resp = await fetch(`/api/events/${currentEvent._id || currentEvent.id}/buy-ticket`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      quantity: ticketQty,
+      buyer_name: user.full_name || 'Guest',
+      buyer_email: user.email || '',
+      buyer_phone: buyerPhone || user.phone || ''
+    })
+  });
+  return await resp.json();
+}
+
+function showTicketSuccess(ticketCode) {
+  const code = ticketCode || ('TKT-' + Math.random().toString(36).toUpperCase().slice(2,8));
+  document.getElementById('ticket-box').style.display = 'none';
+  document.getElementById('mpesa-waiting').style.display = 'none';
+  document.getElementById('ticket-success').style.display = 'block';
+  document.getElementById('ticket-code').textContent = code;
+
+  const verifyLink = document.getElementById('verify-ticket-link');
+  if (verifyLink) verifyLink.href = '/verify-ticket.html?code=' + encodeURIComponent(code);
+
+  const canvas = document.getElementById('ticket-qr');
+  if (canvas && window.QRCode) {
+    QRCode.toCanvas(canvas, code, {
+      width: 160, margin: 1,
+      color: { dark: '#166534', light: '#f0fdf4' }
+    }, function(err) { if (err) console.warn('QR error', err); });
+  }
+
+  currentEvent.tickets_sold = (currentEvent.tickets_sold || 0) + ticketQty;
+  renderEvents(getFiltered());
+}
+
+function downloadTicketQR() {
+  const canvas = document.getElementById('ticket-qr');
+  if (!canvas) return;
+  const code = document.getElementById('ticket-code').textContent || 'ticket';
+  const link = document.createElement('a');
+  link.download = code + '-QR.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+async function pollOrderStatus(orderId, resolve, reject, attempts) {
+  if (_mpesaCancelled) return;
+  if (attempts <= 0) { reject(new Error('Payment timed out. Please try again.')); return; }
+  try {
+    const r = await fetch('/order-status?orderId=' + encodeURIComponent(orderId));
+    const d = await r.json();
+    const status = (d.paymentStatus || '').toLowerCase();
+    if (status === 'completed' || status === 'success') { resolve(); return; }
+    if (status === 'failed' || status === 'cancelled') { reject(new Error('Payment was not completed. Please try again.')); return; }
+    document.getElementById('mpesa-status-text').textContent = 'Waiting for payment… (' + (21 - attempts) + 's)';
+    _mpesaPollTimer = setTimeout(() => pollOrderStatus(orderId, resolve, reject, attempts - 1), 3000);
+  } catch(e) {
+    _mpesaPollTimer = setTimeout(() => pollOrderStatus(orderId, resolve, reject, attempts - 1), 3000);
+  }
+}
+
+function requireAuth() {
+  const token = localStorage.getItem('token') || localStorage.getItem('authToken') || localStorage.getItem('tenantToken') || localStorage.getItem('landlordToken');
+  if (!token) {
+    sessionStorage.setItem('bc_redirect', window.location.href);
+    window.location.href = 'login.html';
+    return false;
+  }
+  return true;
+}
+
+async function buyTicket() {
+  if (!currentEvent) return;
+  if (!requireAuth()) return;
+  const btn = document.getElementById('btn-buy');
+  const isFree = !currentEvent.ticket_price || currentEvent.ticket_price === 0;
+  const totalAmount = (currentEvent.ticket_price || 0) * ticketQty;
+
+  if (isFree) {
+    btn.disabled = true;
+    btn.textContent = '⏳ Booking…';
+    try {
+      const data = await confirmTicket('');
+      if (data.success) { showTicketSuccess(data.ticket_code); }
+      else { showToast(data.error || 'Booking failed. Please try again.', 'error'); btn.disabled = false; btn.textContent = ' Get Tickets'; }
+    } catch(e) { showToast('Network error. Please try again.', 'error'); btn.disabled = false; btn.textContent = ' Get Tickets'; }
+    return;
+  }
+
+  const phone = (document.getElementById('mpesa-phone').value || '').replace(/\s+/g, '').trim();
+  if (!phone) { showToast('Please enter your M-Pesa phone number to pay.', 'warning'); document.getElementById('mpesa-phone').focus(); return; }
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Sending M-Pesa prompt…';
+
+  try {
+    const stkResp = await fetch('/stk-push', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ item: currentEvent.title, amount: totalAmount, phone })
+    });
+    const stkData = await stkResp.json();
+
+    if (!stkResp.ok || stkData.error) {
+      btn.disabled = false;
+      btn.textContent = ' Get Tickets';
+      showToast('M-Pesa error: ' + (stkData.error || 'Could not send payment request. Try again.'), 'error');
+      return;
+    }
+
+    const orderId = stkData.orderId;
+    document.getElementById('ticket-box').style.display = 'none';
+    document.getElementById('mpesa-waiting').style.display = 'block';
+    document.getElementById('mpesa-status-text').textContent = 'Waiting for payment…';
+    _mpesaCancelled = false;
+
+    await new Promise((resolve, reject) => {
+      pollOrderStatus(orderId, resolve, reject, 20);
+    });
+
+    if (_mpesaCancelled) return;
+
+    document.getElementById('mpesa-status-text').textContent = ' Payment confirmed! Issuing ticket…';
+    const ticketData = await confirmTicket(phone);
+    if (ticketData.success) {
+      showTicketSuccess(ticketData.ticket_code);
+    } else {
+      document.getElementById('mpesa-waiting').style.display = 'none';
+      document.getElementById('ticket-box').style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = ' Get Tickets';
+      showToast(ticketData.error || 'Payment received but ticket issue failed. Contact support.', 'error');
+    }
+  } catch(e) {
+    if (_mpesaCancelled) return;
+    document.getElementById('mpesa-waiting').style.display = 'none';
+    document.getElementById('ticket-box').style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = ' Get Tickets';
+    showToast(e.message || 'An error occurred. Please try again.', 'error');
+  }
+}
+
+function setFilter(val, btn) {
+  activeFilter = val;
+  freeOnly = false;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderEvents(getFiltered());
+}
+
+function setFreeFilter(btn) {
+  freeOnly = true;
+  activeFilter = '';
+  document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderEvents(getFiltered());
+}
+
+function clearFilters(btn) {
+  activeFilter = ''; freeOnly = false;
+  document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.sidebar-item')?.classList.add('active');
+  document.querySelector('.filter-btn')?.classList.add('active');
+  renderEvents(allEvents);
+}
+
+function handleHeroSearch(q) {
+  const query = q.toLowerCase().trim();
+  const filtered = allEvents.filter(ev => {
+    const text = ((ev.title||'')+' '+(ev.venue||'')+' '+(ev.location||'')+' '+(ev.category||'')+' '+(ev.description||'')).toLowerCase();
+    return !query || text.includes(query);
+  });
+  renderEvents(filtered);
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeEventModal(); });
+window.addEventListener('popstate', () => { closeEventModal(); });
+
+//  Share helpers 
+function _buildShareData(ev) {
+  if (!ev) return null;
+  const eid = ev._id || ev.id || '';
+  const url = window.location.origin + '/events.html?event=' + encodeURIComponent(eid);
+  const date = fmtDate(ev.event_date);
+  const venue = ev.venue || ev.location || 'TBA';
+  const price = !ev.ticket_price || ev.ticket_price === 0 ? 'FREE' : 'Ksh ' + parseInt(ev.ticket_price).toLocaleString();
+  const waMsg  = ` *${ev.title}*\n ${date}\n ${venue}\n ${price}\n\nBook on bConnect  ${url}`;
+  const tweet  = ` ${ev.title} — ${date} at ${venue}. ${price} tickets. Book now: ${url} via @bConnect`;
+  return { url, waMsg, tweet };
+}
+
+function showSharePanel(eid, e) {
+  document.getElementById('ev-share-panel')?.remove();
+  const ev = allEvents.find(ev => (ev._id || ev.id) === eid);
+  if (!ev) return;
+  const { url, waMsg, tweet } = _buildShareData(ev);
+  const panel = document.createElement('div');
+  panel.id = 'ev-share-panel';
+  panel.className = 'share-panel';
+  const px = Math.min(e.clientX - 60, window.innerWidth - 210);
+  const py = Math.min(e.clientY + 8, window.innerHeight - 150);
+  panel.style.cssText = `top:${py}px;left:${px}px`;
+  panel.innerHTML = `
+    <button class="spi" onclick="_copyLink('${url}')"> Copy Link</button>
+    <button class="spi" onclick="window.open('https://wa.me/?text='+encodeURIComponent(${JSON.stringify(waMsg)}),'_blank')"> Share on WhatsApp</button>
+    <button class="spi" onclick="window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(${JSON.stringify(tweet)}),'_blank')"> Share on Twitter / X</button>`;
+  document.body.appendChild(panel);
+  setTimeout(() => {
+    document.addEventListener('click', function rm() {
+      document.getElementById('ev-share-panel')?.remove();
+      document.removeEventListener('click', rm);
+    });
+  }, 80);
+}
+
+function _copyLink(url) {
+  document.getElementById('ev-share-panel')?.remove();
+  navigator.clipboard?.writeText(url).then(() => showToast(' Link copied!', 'success'))
+    .catch(() => showToast('Link: ' + url, 'info'));
+}
+
+function modalShareWhatsApp() {
+  if (!currentEvent) return;
+  const { waMsg } = _buildShareData(currentEvent);
+  window.open('https://wa.me/?text=' + encodeURIComponent(waMsg), '_blank');
+}
+function modalShareTwitter() {
+  if (!currentEvent) return;
+  const { tweet } = _buildShareData(currentEvent);
+  window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(tweet), '_blank');
+}
+function modalCopyLink() {
+  if (!currentEvent) return;
+  const { url } = _buildShareData(currentEvent);
+  _copyLink(url);
+}
+
+//  Deep-link: open event from URL 
+function skelCards(n) {
+  return Array.from({length:n}, (_,i) => `
+    <div class="bc-skel" style="animation-delay:${i*0.1}s">
+      <div class="bc-skel-img-wrap">
+        <div class="bc-skel-img-fill bc-sk"></div>
+        <div class="bc-skel-pill bc-sk"></div>
+        <div class="bc-skel-date bc-sk"></div>
+        <img src="/bconnect-badge-nobg.png" class="bc-skel-logo" alt="">
+      </div>
+      <div class="bc-skel-body">
+        <div class="bc-skel-title bc-sk"></div>
+        <div class="bc-skel-sub bc-sk"></div>
+        <div class="bc-skel-sub bc-sk" style="width:40%"></div>
+        <div class="bc-skel-price-row">
+          <div class="bc-skel-price bc-sk"></div>
+          <div class="bc-skel-cta bc-sk"></div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+async function loadEvents() {
+  document.getElementById('events-grid').innerHTML = skelCards(6);
+  try {
+    const resp = await fetch('/api/events?limit=100');
+    const data = await resp.json();
+    allEvents = (data && data.events) ? data.events : [];
+    renderEvents(allEvents);
+    const params = new URLSearchParams(window.location.search);
+    const openId = params.get('event');
+    if (openId) {
+      const ev = allEvents.find(e => (e._id || e.id) === openId);
+      if (ev) setTimeout(() => openEvent(openId), 200);
+    }
+  } catch(e) {
+    document.getElementById('event-count').textContent = 'Error';
+    document.getElementById('events-grid').innerHTML = '<div class="empty-state"><div class="ei"></div><h3>Failed to load events</h3><p>Please try again later.</p></div>';
+  }
+}
+
+loadEvents();
+
+// ═══════ SUBMIT EVENT MODAL ═══════
+function openSubmitModal() {
+  document.getElementById('submit-success-box').style.display = 'none';
+  document.getElementById('submit-form-body').style.display = 'block';
+  document.getElementById('submit-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSubmitModal() {
+  document.getElementById('submit-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('submit-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeSubmitModal();
+});
+
+async function submitEvent() {
+  const title = document.getElementById('sm-title').value.trim();
+  const date = document.getElementById('sm-date').value;
+  const orgName = document.getElementById('sm-org-name').value.trim();
+  const orgEmail = document.getElementById('sm-org-email').value.trim();
+
+  if (!title) { showToast('Please enter an event title.', 'warning'); document.getElementById('sm-title').focus(); return; }
+  if (!date) { showToast('Please select the event date and time.', 'warning'); document.getElementById('sm-date').focus(); return; }
+  if (!orgName) { showToast('Please enter your name or organization.', 'warning'); document.getElementById('sm-org-name').focus(); return; }
+  if (!orgEmail || !orgEmail.includes('@')) { showToast('Please enter a valid email address.', 'warning'); document.getElementById('sm-org-email').focus(); return; }
+
+  const btn = document.getElementById('sm-submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spin .7s linear infinite"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg> Submitting…`;
+
+  try {
+    const payload = {
+      title,
+      description: document.getElementById('sm-desc').value.trim(),
+      event_date: date,
+      venue: document.getElementById('sm-venue').value.trim(),
+      location: document.getElementById('sm-location').value.trim(),
+      category: document.getElementById('sm-category').value,
+      ticket_price: parseFloat(document.getElementById('sm-price').value) || 0,
+      tickets_available: document.getElementById('sm-tickets').value ? parseInt(document.getElementById('sm-tickets').value) : null,
+      imageUrl: document.getElementById('sm-image').value.trim(),
+      organizer_name: orgName,
+      organizer_email: orgEmail,
+      organizer_phone: document.getElementById('sm-org-phone').value.trim()
+    };
+
+    const resp = await fetch('/api/events/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await resp.json();
+
+    if (data.success) {
+      updateLocalRole('organizer');
+      document.getElementById('submit-form-body').style.display = 'none';
+      document.getElementById('submit-success-box').style.display = 'block';
+      // Clear form
+      ['sm-title','sm-desc','sm-venue','sm-location','sm-price','sm-tickets','sm-image','sm-org-name','sm-org-email','sm-org-phone','sm-date'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      document.getElementById('sm-category').value = 'Other';
+    } else {
+      showToast(data.error || 'Failed to submit event. Please try again.', 'error');
+      btn.disabled = false;
+      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Submit for Review`;
+    }
+  } catch(e) {
+    showToast('Network error. Please check your connection and try again.', 'error');
+    btn.disabled = false;
+    btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Submit for Review`;
+  }
+}
+
+function updateLocalRole(newRole) {
+  try {
+    const p = JSON.parse(localStorage.getItem('userProfile') || '{}');
+    if (p.role !== newRole) {
+      p.role = newRole;
+      localStorage.setItem('userProfile', JSON.stringify(p));
+    }
+  } catch(_) {}
+}
+</script>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="mob-nav-bar">
+  <div class="mob-nav-bar-inner">
+    <a class="mob-nav-a" href="website.html">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Home
+    </a>
+    <a class="mob-nav-a" href="products.html">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      Shop
+    </a>
+    <a class="mob-nav-a" href="housing.html">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+      Housing
+    </a>
+    <a class="mob-nav-a active" href="events.html">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      Events
+    </a>
+    <a class="mob-nav-a" href="login.html">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Account
+    </a>
+  </div>
+</nav>
+<script src="profile-widget.js"></script>
+</body>
+</html>

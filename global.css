@@ -1,0 +1,133 @@
+/* ═══════════════════════════════════════════════════════
+   BConnect Global Design Tokens & Base Styles
+   Injected on every page via shared-layout.js
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Design tokens (override any per-page values) ────── */
+:root {
+  --primary:        #4f46e5;
+  --primary-light:  #6366f1;
+  --primary-dark:   #3730a3;
+  --secondary:      #8b5cf6;
+  --teal:           #0d9488;
+  --amber:          #f59e0b;
+  --amber-dark:     #b45309;
+  --red:            #ef4444;
+  --green:          #10b981;
+  --white:          #ffffff;
+  --gray-50:        #f9fafb;
+  --gray-100:       #f3f4f6;
+  --gray-200:       #e5e7eb;
+  --gray-300:       #d1d5db;
+  --gray-400:       #9ca3af;
+  --gray-500:       #6b7280;
+  --gray-600:       #4b5563;
+  --gray-700:       #374151;
+  --gray-800:       #1f2937;
+  --gray-900:       #111827;
+  --shadow-sm:      0 1px 4px rgba(0,0,0,.07);
+  --shadow-md:      0 4px 16px rgba(0,0,0,.10);
+  --shadow-lg:      0 12px 32px rgba(0,0,0,.15);
+  --radius-sm:      8px;
+  --radius-md:      12px;
+  --radius-lg:      16px;
+  --radius-xl:      20px;
+}
+
+/* ── Base font (Inter everywhere) ────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { font-size: 16px; }
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  background: var(--gray-50);
+  color: var(--gray-900);
+}
+
+/* ── Consistent search input focus ───────────────────── */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(79,70,229,.12) !important;
+}
+
+/* ── Consistent button base ──────────────────────────── */
+.btn,
+button.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+  padding: .55rem 1.2rem;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: .92rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background .15s, box-shadow .15s, transform .1s;
+  text-decoration: none;
+}
+.btn:active { transform: translateY(1px); }
+
+.btn-primary  { background: var(--primary);  color: #fff; }
+.btn-primary:hover  { background: var(--primary-dark); box-shadow: 0 4px 12px rgba(79,70,229,.35); }
+.btn-secondary{ background: var(--secondary); color: #fff; }
+.btn-outline  { background: transparent; border: 1.5px solid var(--primary); color: var(--primary); }
+.btn-outline:hover { background: var(--primary); color: #fff; }
+
+/* ── Consistent card ─────────────────────────────────── */
+.card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+  transition: box-shadow .2s;
+}
+.card:hover { box-shadow: var(--shadow-md); }
+
+/* ── Consistent badge ────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: .2rem .65rem;
+  border-radius: 999px;
+  font-size: .78rem;
+  font-weight: 600;
+}
+.badge-primary  { background: #eef2ff; color: var(--primary); }
+.badge-green    { background: #d1fae5; color: #065f46; }
+.badge-amber    { background: #fef3c7; color: var(--amber-dark); }
+.badge-red      { background: #fee2e2; color: #991b1b; }
+
+/* ── Consistent section heading ──────────────────────── */
+.section-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--gray-900);
+  letter-spacing: -.3px;
+  margin-bottom: .5rem;
+}
+.section-sub {
+  font-size: .92rem;
+  color: var(--gray-500);
+}
+
+/* ── Gradient utilities ───────────────────────────────── */
+.grad-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); }
+.grad-text {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Scrollbar ────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--gray-100); }
+::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gray-400); }

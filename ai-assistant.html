@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BConnect AI Assistant</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --brand: #6a5af9;
+      --brand2: #8b5cf6;
+      --brand-light: #eef0ff;
+      --brand-border: #d0d3ff;
+      --user-bg: linear-gradient(135deg, #6a5af9, #8b5cf6);
+      --bot-bg: #f1f0fe;
+      --surface: #ffffff;
+      --bg: #f4f6fb;
+      --border: #e8eaf0;
+      --text: #1f2937;
+      --text-sub: #6b7280;
+      --text-muted: #9ca3af;
+      --radius: 18px;
+      --shadow: 0 2px 12px rgba(106,90,249,.10);
+    }
+
+    html, body { height: 100%; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); }
+
+    /* ── HEADER ─────────────────────────────────────────────────────── */
+    .header {
+      position: sticky; top: 0; z-index: 100;
+      background: linear-gradient(135deg, #5b4de8, #7c3aed, #8b5cf6);
+      color: #fff;
+      padding: 0 20px;
+      height: 62px;
+      display: flex; align-items: center; justify-content: space-between;
+      box-shadow: 0 2px 16px rgba(91,77,232,.35);
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .bot-avatar {
+      width: 38px; height: 38px; border-radius: 12px;
+      background: rgba(255,255,255,.22); border: 2px solid rgba(255,255,255,.35);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0; position: relative;
+    }
+    .bot-avatar::after {
+      content: ''; position: absolute; bottom: -2px; right: -2px;
+      width: 11px; height: 11px; background: #4ade80;
+      border-radius: 50%; border: 2px solid #6d28d9;
+    }
+    .header-info h1 { font-size: 15px; font-weight: 700; letter-spacing: -.2px; }
+    .header-info p { font-size: 11px; opacity: .75; margin-top: 1px; }
+    .header-actions { display: flex; align-items: center; gap: 8px; }
+    .hdr-btn {
+      background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.25);
+      color: #fff; border-radius: 20px; padding: 6px 14px;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      transition: background .2s; display: flex; align-items: center; gap: 5px;
+    }
+    .hdr-btn:hover { background: rgba(255,255,255,.28); }
+
+    /* ── LAYOUT ─────────────────────────────────────────────────────── */
+    .layout { display: flex; height: calc(100vh - 62px); }
+
+    /* ── SIDEBAR ─────────────────────────────────────────────────────── */
+    .sidebar {
+      width: 252px; flex-shrink: 0;
+      background: var(--surface); border-right: 1px solid var(--border);
+      overflow-y: auto; padding: 16px 14px;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .sidebar::-webkit-scrollbar { width: 4px; }
+    .sidebar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+
+    .sb-section { font-size: 10.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .7px; margin: 14px 4px 6px; }
+    .sb-section:first-child { margin-top: 4px; }
+    .sb-item {
+      display: flex; align-items: center; gap: 9px;
+      padding: 9px 10px; border-radius: 10px;
+      font-size: 13px; color: var(--text); cursor: pointer;
+      transition: background .15s, color .15s;
+      border: none; background: none; width: 100%; text-align: left;
+    }
+    .sb-item:hover { background: var(--brand-light); color: var(--brand); }
+    .sb-item .sb-icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
+
+    /* ── CHAT AREA ───────────────────────────────────────────────────── */
+    .chat { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+    /* ── MOBILE CHIPS ─────────────────────────────────────────────────── */
+    .mobile-chips {
+      display: none; overflow-x: auto; white-space: nowrap;
+      padding: 10px 14px; background: var(--surface);
+      border-bottom: 1px solid var(--border); gap: 7px;
+      scrollbar-width: none;
+    }
+    .mobile-chips::-webkit-scrollbar { display: none; }
+    .m-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--brand-light); color: var(--brand);
+      border: 1.5px solid var(--brand-border); border-radius: 20px;
+      padding: 6px 13px; font-size: 12.5px; font-weight: 600;
+      cursor: pointer; white-space: nowrap; transition: background .15s;
+    }
+    .m-chip:hover { background: #e0e0ff; }
+
+    /* ── MESSAGES ─────────────────────────────────────────────────────── */
+    .chat-body {
+      flex: 1; overflow-y: auto; padding: 20px 16px;
+      display: flex; flex-direction: column; gap: 4px;
+      scroll-behavior: smooth;
+    }
+    .chat-body::-webkit-scrollbar { width: 5px; }
+    .chat-body::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+
+    .msg-row { display: flex; gap: 8px; align-items: flex-end; max-width: 82%; animation: fadeUp .25s ease; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .msg-row.user { margin-left: auto; flex-direction: row-reverse; }
+
+    .msg-avatar {
+      width: 30px; height: 30px; border-radius: 9px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+    .msg-row.bot .msg-avatar { background: linear-gradient(135deg, #6a5af9, #8b5cf6); }
+    .msg-row.user .msg-avatar { background: #e5e7eb; }
+
+    .bubble-wrap { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+    .msg-row.user .bubble-wrap { align-items: flex-end; }
+
+    .bubble {
+      padding: 11px 15px; border-radius: 16px;
+      font-size: 14px; line-height: 1.6; word-break: break-word;
+      position: relative; group;
+    }
+    .msg-row.bot .bubble {
+      background: var(--bot-bg); color: var(--text);
+      border-bottom-left-radius: 5px;
+    }
+    .msg-row.user .bubble {
+      background: linear-gradient(135deg, #6a5af9, #8b5cf6);
+      color: #fff; border-bottom-right-radius: 5px;
+    }
+
+    /* Markdown styles inside bubbles */
+    .bubble strong { font-weight: 700; }
+    .bubble em { font-style: italic; }
+    .bubble a { color: #6a5af9; font-weight: 600; text-decoration: none; }
+    .bubble a:hover { text-decoration: underline; }
+    .msg-row.user .bubble a { color: #c4b5fd; }
+    .bubble ul { margin: 6px 0 6px 18px; }
+    .bubble ol { margin: 6px 0 6px 18px; }
+    .bubble li { margin-bottom: 3px; }
+    .bubble code { background: rgba(0,0,0,.07); border-radius: 5px; padding: 1px 5px; font-family: monospace; font-size: 13px; }
+    .bubble hr { border: none; border-top: 1px solid rgba(0,0,0,.1); margin: 8px 0; }
+    .bubble .step { display: flex; gap: 8px; margin: 4px 0; }
+    .bubble .step-num { background: var(--brand); color: #fff; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+
+    .msg-meta { font-size: 10.5px; color: var(--text-muted); display: flex; gap: 8px; align-items: center; padding: 0 4px; }
+    .copy-btn {
+      background: none; border: none; color: var(--text-muted); cursor: pointer;
+      font-size: 11px; padding: 2px 5px; border-radius: 5px;
+      opacity: 0; transition: opacity .2s, background .15s;
+    }
+    .msg-row:hover .copy-btn { opacity: 1; }
+    .copy-btn:hover { background: var(--brand-light); color: var(--brand); }
+
+    /* Result cards inside bubbles */
+    .r-cards { display: flex; flex-direction: column; gap: 7px; margin-top: 8px; }
+    .r-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 10px 12px;
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: inherit;
+      transition: box-shadow .2s, transform .15s, border-color .2s;
+    }
+    .r-card:hover { box-shadow: 0 4px 14px rgba(106,90,249,.18); transform: translateY(-1px); border-color: var(--brand-border); }
+    .r-card-img { width: 48px; height: 48px; border-radius: 8px; object-fit: cover; background: var(--brand-light); flex-shrink: 0; }
+    .r-card-info { flex: 1; min-width: 0; }
+    .r-card-title { font-weight: 700; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .r-card-sub { font-size: 11.5px; color: var(--text-sub); margin-top: 2px; }
+    .r-card-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+    .r-badge { font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 700; }
+    .r-badge.product { background: #eef2ff; color: #6a5af9; }
+    .r-badge.service { background: #d1fae5; color: #065f46; }
+    .r-badge.housing { background: #fef3c7; color: #92400e; }
+    .r-price { font-weight: 800; color: var(--brand); font-size: 13px; }
+
+    /* Suggestion chips */
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .chip {
+      background: var(--surface); border: 1.5px solid var(--brand-border);
+      color: var(--brand); border-radius: 20px;
+      padding: 5px 12px; font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: all .15s; white-space: nowrap;
+    }
+    .chip:hover { background: var(--brand-light); border-color: var(--brand); }
+
+    /* ── TYPING INDICATOR ─────────────────────────────────────────────── */
+    #typing { padding: 0 16px 4px; }
+    .typing-row { display: flex; gap: 8px; align-items: flex-end; }
+    .typing-bubble {
+      background: var(--bot-bg); border-radius: 16px; border-bottom-left-radius: 5px;
+      padding: 12px 16px; display: flex; gap: 4px; align-items: center;
+    }
+    .dot { width: 7px; height: 7px; background: #a78bfa; border-radius: 50%; animation: blink 1.3s infinite; }
+    .dot:nth-child(2) { animation-delay: .22s; }
+    .dot:nth-child(3) { animation-delay: .44s; }
+    @keyframes blink { 0%,80%,100%{transform:scale(.85);opacity:.45} 40%{transform:scale(1.2);opacity:1} }
+
+    /* ── INPUT BAR ────────────────────────────────────────────────────── */
+    .chat-input-wrap {
+      padding: 10px 14px 14px;
+      background: var(--surface); border-top: 1px solid var(--border);
+    }
+    .input-row {
+      display: flex; gap: 8px; align-items: flex-end;
+      background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: 24px; padding: 6px 6px 6px 16px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .input-row:focus-within { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(106,90,249,.12); }
+    #msg-input {
+      flex: 1; border: none; background: none; outline: none;
+      font-size: 14px; color: var(--text); resize: none;
+      max-height: 120px; min-height: 24px; line-height: 1.5;
+      padding: 4px 0; font-family: inherit;
+    }
+    #msg-input::placeholder { color: var(--text-muted); }
+    .input-btns { display: flex; gap: 5px; align-items: flex-end; flex-shrink: 0; }
+    .mic-btn {
+      width: 36px; height: 36px; border-radius: 50%; border: none;
+      background: var(--bg); color: var(--text-sub);
+      cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center;
+      transition: all .2s; flex-shrink: 0;
+    }
+    .mic-btn:hover { background: var(--brand-light); color: var(--brand); }
+    .mic-btn.listening { background: #fee2e2; color: #ef4444; animation: mic-pulse 1s infinite; }
+    @keyframes mic-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.4)} 50%{box-shadow:0 0 0 7px rgba(239,68,68,0)} }
+    .send-btn {
+      width: 36px; height: 36px; border-radius: 50%; border: none;
+      background: linear-gradient(135deg, #6a5af9, #8b5cf6);
+      color: #fff; cursor: pointer; font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity .2s, transform .15s; flex-shrink: 0;
+    }
+    .send-btn:hover { opacity: .88; transform: scale(1.05); }
+    .send-btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+    .char-hint { font-size: 10.5px; color: var(--text-muted); text-align: right; margin-top: 4px; padding-right: 4px; min-height: 16px; }
+
+    /* ── WELCOME SCREEN ───────────────────────────────────────────────── */
+    #welcome {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 32px 24px; text-align: center; gap: 20px;
+    }
+    .welcome-icon {
+      width: 72px; height: 72px; border-radius: 22px;
+      background: linear-gradient(135deg, #6a5af9, #8b5cf6);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 34px; box-shadow: 0 8px 24px rgba(106,90,249,.35);
+    }
+    #welcome h2 { font-size: 22px; font-weight: 800; color: var(--text); }
+    #welcome p { font-size: 14px; color: var(--text-sub); max-width: 340px; line-height: 1.6; }
+    .welcome-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: 420px; }
+    .w-chip {
+      background: var(--surface); border: 1.5px solid var(--brand-border);
+      color: var(--brand); border-radius: 22px;
+      padding: 8px 16px; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all .15s;
+      box-shadow: var(--shadow);
+    }
+    .w-chip:hover { background: var(--brand-light); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(106,90,249,.18); }
+
+    /* ── VIDEO BUTTON ─────────────────────────────────────────────────── */
+    .vid-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      color: #fff; border: none; border-radius: 20px;
+      padding: 7px 16px; font-size: 12px; font-weight: 700;
+      cursor: pointer; margin: 8px 0 2px;
+      transition: opacity .2s, transform .15s;
+      box-shadow: 0 3px 10px rgba(124,58,237,.35);
+    }
+    .vid-btn:hover { opacity: .88; transform: translateY(-1px); }
+    .vid-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+    .tut-video { width:100%; border-radius:12px; margin-top:8px; max-height:280px; background:#000; display:block; }
+    .tut-dl { display:inline-block; margin-top:5px; font-size:12px; color:#6a5af9; font-weight:600; text-decoration:none; }
+    .tut-dl:hover { text-decoration:underline; }
+
+    /* ── RESPONSIVE ───────────────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .sidebar { display: none; }
+      .mobile-chips { display: flex; }
+      .layout { height: calc(100vh - 62px); }
+      .msg-row { max-width: 92%; }
+      #welcome h2 { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="bot-avatar">🤖</div>
+    <div class="header-info">
+      <h1>BConnect AI Assistant</h1>
+      <p id="status-text">🟢 Online — ready to help</p>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="hdr-btn" onclick="toggleTTS()" id="tts-btn">🔊 <span id="tts-label">Voice On</span></button>
+    <button class="hdr-btn" onclick="clearChat()" title="Clear conversation">🗑 Clear</button>
+  </div>
+</div>
+
+<!-- MOBILE CHIPS -->
+<div class="mobile-chips">
+  <span class="m-chip" onclick="ask('Show me all available products')">🛍 Products</span>
+  <span class="m-chip" onclick="ask('What housing is available?')">🏠 Housing</span>
+  <span class="m-chip" onclick="ask('What services are available?')">🔧 Services</span>
+  <span class="m-chip" onclick="ask('Show me cheap items under Ksh 2000')">💸 Under 2K</span>
+  <span class="m-chip" onclick="ask('How do I pay with M-Pesa?')">📱 M-Pesa</span>
+  <span class="m-chip" onclick="ask('How do I become a seller?')">🏪 Sell</span>
+  <span class="m-chip" onclick="ask('How do I list my property for rent?')">📋 List</span>
+</div>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-section">Quick Actions</div>
+    <button class="sb-item" onclick="ask('Show me all available products')"><span class="sb-icon">🛍</span> Browse Products</button>
+    <button class="sb-item" onclick="ask('What housing is available?')"><span class="sb-icon">🏠</span> Find Housing</button>
+    <button class="sb-item" onclick="ask('What services are available?')"><span class="sb-icon">🔧</span> Book Services</button>
+    <button class="sb-item" onclick="ask('Show me cheap items under Ksh 2000')"><span class="sb-icon">💸</span> Budget Deals</button>
+    <button class="sb-item" onclick="ask('How do I pay with M-Pesa?')"><span class="sb-icon">📱</span> M-Pesa Guide</button>
+    <button class="sb-item" onclick="ask('How do I become a seller?')"><span class="sb-icon">🏪</span> Become a Seller</button>
+    <button class="sb-item" onclick="ask('How do I list my property for rent?')"><span class="sb-icon">📋</span> List Property</button>
+
+    <div class="sb-section">Categories</div>
+    <button class="sb-item" onclick="ask('Show me electronics')"><span class="sb-icon">📱</span> Electronics</button>
+    <button class="sb-item" onclick="ask('Show me fashion and clothing')"><span class="sb-icon">👗</span> Fashion</button>
+    <button class="sb-item" onclick="ask('Show me vehicles')"><span class="sb-icon">🚗</span> Vehicles</button>
+    <button class="sb-item" onclick="ask('Show me furniture')"><span class="sb-icon">🛋</span> Furniture</button>
+    <button class="sb-item" onclick="ask('Find a plumber or electrician')"><span class="sb-icon">🔌</span> Find Pro</button>
+
+    <div class="sb-section">Info</div>
+    <button class="sb-item" onclick="ask('What is BConnect?')"><span class="sb-icon">ℹ️</span> About BConnect</button>
+    <button class="sb-item" onclick="ask('How is my data kept safe?')"><span class="sb-icon">🔒</span> Privacy & Safety</button>
+    <button class="sb-item" onclick="ask('I need help with my account')"><span class="sb-icon">🆘</span> Support</button>
+  </div>
+
+  <!-- CHAT -->
+  <div class="chat">
+    <div class="chat-body" id="chat-body">
+      <!-- Welcome screen shown until first message -->
+      <div id="welcome">
+        <div class="welcome-icon">🤖</div>
+        <h2>Hi, I'm BConnect Bot!</h2>
+        <p>Your AI guide to Kenya's all-in-one marketplace. Ask me anything about products, housing, services, payments, or how to sell.</p>
+        <div class="welcome-chips">
+          <span class="w-chip" onclick="ask('What is BConnect?')">ℹ️ What is BConnect?</span>
+          <span class="w-chip" onclick="ask('Show me housing listings in Nairobi')">🏠 Housing in Nairobi</span>
+          <span class="w-chip" onclick="ask('How do I pay with M-Pesa?')">📱 How to pay</span>
+          <span class="w-chip" onclick="ask('How do I become a seller?')">🏪 How to sell</span>
+          <span class="w-chip" onclick="ask('Show me cheap items under Ksh 2000')">💸 Budget deals</span>
+          <span class="w-chip" onclick="ask('Find a plumber near me')">🔧 Find a plumber</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="typing" style="display:none;">
+      <div class="typing-row">
+        <div class="msg-avatar" style="width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#6a5af9,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:14px;">🤖</div>
+        <div class="typing-bubble">
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input-wrap">
+      <div class="input-row">
+        <textarea id="msg-input" rows="1" placeholder="Ask me anything about BConnect…" oninput="autoResize(this); updateCharHint(this)" onkeydown="handleKey(event)"></textarea>
+        <div class="input-btns">
+          <button class="mic-btn" id="mic-btn" onclick="toggleVoice()" title="Voice input">🎤</button>
+          <button class="send-btn" id="send-btn" onclick="send()" title="Send">➤</button>
+        </div>
+      </div>
+      <div class="char-hint" id="char-hint"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────────
+let ttsEnabled = true;
+let recognition = null;
+let conversationHistory = [];
+const _tutSteps = {};
+let _tutStepId = 0;
+
+// ── Helpers ────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function updateCharHint(el) {
+  const len = el.value.length;
+  document.getElementById('char-hint').textContent = len > 200 ? `${len}/500` : '';
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+}
+
+function scrollChat() {
+  const b = document.getElementById('chat-body');
+  b.scrollTop = b.scrollHeight;
+}
+
+function showTyping() { document.getElementById('typing').style.display='block'; scrollChat(); }
+function hideTyping() { document.getElementById('typing').style.display='none'; }
+
+function fmtTime() {
+  return new Date().toLocaleTimeString('en-KE', { hour: '2-digit', minute: '2-digit' });
+}
+
+// ── Markdown parser ────────────────────────────────────────────────────
+function parseMarkdown(text) {
+  if (!text) return '';
+  let html = esc(text);
+
+  // Bold & italic
+  html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  html = html.replace(/__(.+?)__/g, '<strong>$1</strong>');
+
+  // Inline code
+  html = html.replace(/`(.+?)`/g, '<code>$1</code>');
+
+  // Convert KES/Ksh amounts to highlighted
+  html = html.replace(/(Ksh\s[\d,]+(?:\/\w+)?)/g, '<span style="color:#6a5af9;font-weight:700">$1</span>');
+
+  // Numbered steps (Step 1: ...)
+  html = html.replace(/^Step\s+(\d+):\s*(.+)$/gm, '<div class="step"><div class="step-num">$1</div><div>$2</div></div>');
+
+  // Numbered list (1. ...)
+  html = html.replace(/^(\d+)\.\s+(.+)$/gm, '<div class="step"><div class="step-num">$1</div><div>$2</div></div>');
+
+  // Bullet points (• or - or *)
+  html = html.replace(/^[•\-]\s+(.+)$/gm, '<div style="display:flex;gap:7px;margin:2px 0"><span style="color:#8b5cf6;margin-top:2px">•</span><span>$1</span></div>');
+
+  // URLs → links
+  html = html.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+
+  // Horizontal rule
+  html = html.replace(/^---+$/gm, '<hr>');
+
+  // Line breaks
+  html = html.replace(/\n{2,}/g, '<br><br>');
+  html = html.replace(/\n/g, '<br>');
+
+  return html;
+}
+
+// ── Message rendering ──────────────────────────────────────────────────
+function appendBotMsg(html, rawText, steps, topic) {
+  hideWelcome();
+  const body = document.getElementById('chat-body');
+  const row = document.createElement('div');
+  row.className = 'msg-row bot';
+  let vidBtn = '';
+  if (steps && steps.length >= 2) {
+    const sid = ++_tutStepId;
+    _tutSteps[sid] = { topic: (topic || 'Tutorial').substring(0, 80), steps };
+    vidBtn = `<button class="vid-btn" onclick="generateTutorialVideo(this,${sid})">🎬 Generate Tutorial Video</button>`;
+  }
+  row.innerHTML = `
+    <div class="msg-avatar">🤖</div>
+    <div class="bubble-wrap">
+      <div class="bubble">${html}</div>
+      ${vidBtn}
+      <div class="msg-meta">
+        <span>${fmtTime()}</span>
+        <button class="copy-btn" onclick="copyText(this, ${JSON.stringify(rawText||'').replace(/"/g,'&quot;')})" title="Copy">📋 Copy</button>
+      </div>
+    </div>`;
+  body.appendChild(row);
+  scrollChat();
+  return row;
+}
+
+function appendUserMsg(text) {
+  hideWelcome();
+  const body = document.getElementById('chat-body');
+  const row = document.createElement('div');
+  row.className = 'msg-row user';
+  row.innerHTML = `
+    <div class="msg-avatar">👤</div>
+    <div class="bubble-wrap">
+      <div class="bubble">${esc(text)}</div>
+      <div class="msg-meta"><span>${fmtTime()}</span></div>
+    </div>`;
+  body.appendChild(row);
+  scrollChat();
+}
+
+function hideWelcome() {
+  const w = document.getElementById('welcome');
+  if (w) w.remove();
+}
+
+function copyText(btn, text) {
+  navigator.clipboard.writeText(text || btn.closest('.bubble-wrap').querySelector('.bubble').innerText).then(() => {
+    btn.textContent = '✅ Copied';
+    setTimeout(() => btn.textContent = '📋 Copy', 2000);
+  });
+}
+
+// ── Step extractor ─────────────────────────────────────────────────────
+function extractSteps(text) {
+  const numbered  = [...text.matchAll(/^\d+\.\s+(.+)$/gm)].map(m => m[1].trim());
+  const stepStyle = [...text.matchAll(/^[Ss]tep\s+\d+:?\s+(.+)$/gm)].map(m => m[1].trim());
+  const bullets   = [...text.matchAll(/^[•\-]\s+(.+)$/gm)].map(m => m[1].trim());
+  const best = numbered.length >= 2 ? numbered : stepStyle.length >= 2 ? stepStyle : bullets.length >= 2 ? bullets : [];
+  return best.slice(0, 6).map(s => s.replace(/<[^>]+>/g, '').trim()).filter(s => s.length > 3 && s.length < 120);
+}
+
+// ── Tutorial video: button handler ─────────────────────────────────────
+async function generateTutorialVideo(btn, sid) {
+  const entry = _tutSteps[sid];
+  if (!entry) return;
+  const { topic, steps } = entry;
+  btn.disabled = true;
+  btn.textContent = '⏳ Rendering video…';
+  try {
+    const blob = await _renderTutorialVideo(topic, steps);
+    const url = URL.createObjectURL(blob);
+    const wrap = btn.closest('.bubble-wrap');
+    const vid = document.createElement('video');
+    vid.src = url; vid.controls = true; vid.autoplay = true; vid.muted = false;
+    vid.className = 'tut-video';
+    const dl = document.createElement('a');
+    dl.href = url; dl.download = 'bconnect-tutorial.webm';
+    dl.className = 'tut-dl'; dl.textContent = '⬇️ Download video';
+    wrap.insertBefore(vid, btn.nextSibling);
+    wrap.insertBefore(dl, vid.nextSibling);
+    btn.textContent = '✅ Video ready!';
+    scrollChat();
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = '🎬 Generate Tutorial Video';
+    console.error('Tutorial video error:', e);
+  }
+}
+
+// ── Tutorial video: canvas renderer ────────────────────────────────────
+function _renderTutorialVideo(topic, steps) {
+  return new Promise((resolve, reject) => {
+    const W = 1080, H = 1080, FPS = 30, DURATION = 20;
+    const S = W / 720;
+    const canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+    const totalFrames = FPS * DURATION;
+    let frame = 0;
+    const n = steps.length;
+
+    const particles = Array.from({ length: 55 }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      r: Math.random() * 3 + 0.5,
+      vx: (Math.random() - 0.5) * 0.4, vy: -Math.random() * 0.5 - 0.1,
+      a: Math.random() * 0.45 + 0.10,
+      color: ['#a78bfa','#fb923c','#38bdf8','#34d399'][Math.floor(Math.random()*4)]
+    }));
+
+    function ease(t)      { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
+    function clamp(v,lo,hi){ return Math.max(lo,Math.min(hi,v)); }
+    function fadeIn(t,s,d) { return clamp((t-s)/d,0,1); }
+    function fadeOut(t,s,d){ return clamp(1-(t-s)/d,0,1); }
+    function easeOut(t)    { return 1-(1-t)*(1-t); }
+
+    function _rr(x,y,w,h,r) {
+      ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y);
+      ctx.quadraticCurveTo(x+w,y,x+w,y+r); ctx.lineTo(x+w,y+h-r);
+      ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h); ctx.lineTo(x+r,y+h);
+      ctx.quadraticCurveTo(x,y+h,x,y+h-r); ctx.lineTo(x,y+r);
+      ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
+    }
+
+    function wrapText(text, x, y, maxW, lineH, maxLines) {
+      const words = text.split(' '); let line = ''; let lines = 0;
+      for (const w of words) {
+        if (maxLines && lines >= maxLines) break;
+        const test = line + w + ' ';
+        if (ctx.measureText(test).width > maxW && line) {
+          ctx.fillText(line.trim(), x, y); line = w + ' '; y += lineH; lines++;
+        } else { line = test; }
+      }
+      if (!maxLines || lines < maxLines) ctx.fillText(line.trim(), x, y);
+    }
+
+    function drawBg(t) {
+      const hue = 245 + Math.sin(t * Math.PI * 0.7) * 15;
+      const g = ctx.createLinearGradient(0, 0, W*0.4, H);
+      g.addColorStop(0, `hsl(${hue},72%,7%)`);
+      g.addColorStop(0.5, `hsl(${hue+22},68%,11%)`);
+      g.addColorStop(1, `hsl(260,62%,9%)`);
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+      const o1 = ctx.createRadialGradient(W*0.12,H*0.28,0, W*0.12,H*0.28, Math.round(370*S));
+      o1.addColorStop(0,'rgba(124,58,237,.24)'); o1.addColorStop(1,'transparent');
+      ctx.fillStyle = o1; ctx.fillRect(0,0,W,H);
+      const o2 = ctx.createRadialGradient(W*0.88,H*0.72,0, W*0.88,H*0.72, Math.round(280*S));
+      o2.addColorStop(0,'rgba(249,115,22,.15)'); o2.addColorStop(1,'transparent');
+      ctx.fillStyle = o2; ctx.fillRect(0,0,W,H);
+    }
+
+    function drawGrid(alpha) {
+      const gs = Math.round(90*S);
+      ctx.save(); ctx.globalAlpha = alpha*0.04; ctx.strokeStyle = '#818cf8'; ctx.lineWidth = Math.round(1.2*S);
+      for (let x=0; x<W; x+=gs) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+      for (let y=0; y<H; y+=gs) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+      ctx.restore();
+    }
+
+    function drawParticles() {
+      particles.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        if (p.y < -8) { p.y = H+8; p.x = Math.random()*W; }
+        ctx.save(); ctx.globalAlpha = p.a; ctx.fillStyle = p.color;
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill(); ctx.restore();
+      });
+    }
+
+    function drawWatermark(alpha) {
+      if (alpha <= 0) return;
+      const px = Math.round(48*S), py = Math.round(48*S);
+      const ph = Math.round(52*S), pr = Math.round(26*S);
+      ctx.save(); ctx.globalAlpha = alpha;
+      ctx.font = `800 ${Math.round(23*S)}px Inter,system-ui,sans-serif`;
+      const tw = ctx.measureText('BConnect').width + Math.round(50*S);
+      ctx.fillStyle = 'rgba(0,0,0,.55)'; _rr(px,py,tw,ph,pr); ctx.fill();
+      const wg = ctx.createLinearGradient(px,0,px+tw,0);
+      wg.addColorStop(0,'#fb923c'); wg.addColorStop(1,'#c084fc');
+      ctx.fillStyle = wg; ctx.fillText('BConnect', px+Math.round(25*S), py+ph*0.68);
+      ctx.restore();
+    }
+
+    // Phase 1: Intro (t = 0 → 0.08)
+    function drawIntro(t) {
+      const a = ease(fadeIn(t,0,0.08)) * ease(fadeOut(t,0.06,0.04));
+      if (a <= 0) return;
+      ctx.save(); ctx.globalAlpha = a; ctx.textAlign = 'center';
+      const scale = 0.72 + easeOut(clamp(t/0.07,0,1)) * 0.28;
+      ctx.save();
+      ctx.translate(W/2, H/2-Math.round(20*S)); ctx.scale(scale,scale); ctx.translate(-W/2,-(H/2-Math.round(20*S)));
+      ctx.font = `900 ${Math.round(108*S)}px Inter,system-ui,sans-serif`;
+      const bg = ctx.createLinearGradient(W*0.15,0,W*0.85,0);
+      bg.addColorStop(0,'#fb923c'); bg.addColorStop(0.5,'#e879f9'); bg.addColorStop(1,'#818cf8');
+      ctx.fillStyle = bg; ctx.shadowColor = 'rgba(124,58,237,.7)'; ctx.shadowBlur = Math.round(34*S);
+      ctx.fillText('BConnect', W/2, H/2-Math.round(20*S)); ctx.restore();
+      ctx.font = `500 ${Math.round(36*S)}px Inter,system-ui,sans-serif`;
+      ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.shadowBlur = 0;
+      ctx.fillText('Step-by-Step Tutorial', W/2, H/2+Math.round(68*S));
+      ctx.textAlign = 'left'; ctx.restore();
+    }
+
+    // Phase 2: Topic title (t = 0.08 → 0.20)
+    function drawTitle(t) {
+      const a = ease(fadeIn(t,0.08,0.08)) * ease(fadeOut(t,0.18,0.05));
+      if (a <= 0) return;
+      const slideY = (1 - ease(fadeIn(t,0.08,0.10))) * Math.round(60*S);
+      ctx.save(); ctx.globalAlpha = a; ctx.textAlign = 'center';
+
+      // Topic pill background
+      const pillW = Math.round(880*S), pillH = Math.round(280*S), pillR = Math.round(32*S);
+      const pillX = (W-pillW)/2, pillY = H/2-pillH/2+slideY;
+      const pg = ctx.createLinearGradient(pillX,pillY,pillX+pillW,pillY+pillH);
+      pg.addColorStop(0,'rgba(91,48,209,.55)'); pg.addColorStop(1,'rgba(67,56,202,.45)');
+      ctx.fillStyle = pg; _rr(pillX,pillY,pillW,pillH,pillR); ctx.fill();
+      ctx.strokeStyle = 'rgba(167,139,250,.45)'; ctx.lineWidth = Math.round(2*S);
+      ctx.stroke();
+
+      // "HOW TO" label
+      ctx.font = `700 ${Math.round(26*S)}px Inter,system-ui,sans-serif`;
+      ctx.fillStyle = '#fb923c'; ctx.shadowColor = 'rgba(251,146,60,.6)'; ctx.shadowBlur = Math.round(12*S);
+      ctx.fillText('HOW TO', W/2, pillY+Math.round(60*S));
+
+      // Topic text
+      ctx.font = `800 ${Math.round(58*S)}px Inter,system-ui,sans-serif`;
+      ctx.fillStyle = '#fff'; ctx.shadowColor = 'rgba(0,0,0,.7)'; ctx.shadowBlur = Math.round(18*S);
+      const maxTW = pillW - Math.round(80*S);
+      const words = topic.split(' '); let line = ''; let lineY = pillY + Math.round(136*S);
+      for (const w of words) {
+        const test = line + w + ' ';
+        if (ctx.measureText(test).width > maxTW && line) {
+          ctx.fillText(line.trim(), W/2, lineY); line = w + ' '; lineY += Math.round(70*S);
+          if (lineY > pillY+pillH-Math.round(30*S)) break;
+        } else { line = test; }
+      }
+      ctx.fillText(line.trim(), W/2, lineY);
+
+      ctx.textAlign = 'left'; ctx.restore();
+    }
+
+    // Phase 3: Steps (t = 0.20 → 0.88)
+    const STEPS_START = 0.20, STEPS_END = 0.88;
+    const stepDur = (STEPS_END - STEPS_START) / n;
+
+    function drawStep(t, i, stepText) {
+      const sStart = STEPS_START + i * stepDur;
+      const sEnd   = sStart + stepDur;
+      const sIn    = ease(fadeIn(t, sStart, stepDur * 0.18));
+      const sOut   = ease(fadeOut(t, sEnd - stepDur * 0.18, stepDur * 0.18));
+      const a = sIn * sOut;
+      if (a <= 0) return;
+
+      const slideX = (1 - ease(fadeIn(t, sStart, stepDur * 0.22))) * Math.round(80*S);
+      ctx.save(); ctx.globalAlpha = a;
+
+      const cardW = Math.round(940*S), cardH = Math.round(400*S), cardR = Math.round(36*S);
+      const cardX = (W-cardW)/2 + slideX, cardY = (H-cardH)/2;
+
+      // Card background
+      const cg = ctx.createLinearGradient(cardX,cardY,cardX+cardW,cardY+cardH);
+      cg.addColorStop(0,'rgba(30,27,75,.85)'); cg.addColorStop(1,'rgba(15,10,50,.90)');
+      ctx.fillStyle = cg; _rr(cardX,cardY,cardW,cardH,cardR); ctx.fill();
+      ctx.strokeStyle = 'rgba(139,92,246,.5)'; ctx.lineWidth = Math.round(2.5*S); ctx.stroke();
+
+      // Step number badge
+      const numR = Math.round(72*S);
+      const numX = cardX + Math.round(80*S), numY = cardY + Math.round(90*S);
+      const ng = ctx.createLinearGradient(numX-numR,numY-numR,numX+numR,numY+numR);
+      ng.addColorStop(0,'#7c3aed'); ng.addColorStop(1,'#4f46e5');
+      ctx.fillStyle = ng;
+      ctx.shadowColor = 'rgba(124,58,237,.7)'; ctx.shadowBlur = Math.round(28*S);
+      ctx.beginPath(); ctx.arc(numX,numY,numR,0,Math.PI*2); ctx.fill();
+      ctx.shadowBlur = 0;
+      ctx.font = `900 ${Math.round(64*S)}px Inter,system-ui,sans-serif`;
+      ctx.fillStyle = '#fff'; ctx.textAlign = 'center';
+      ctx.fillText(String(i+1), numX, numY+Math.round(23*S));
+
+      // Progress dots
+      const dotY = cardY + cardH - Math.round(52*S);
+      const dotSpacing = Math.round(28*S);
+      const dotsW = n * dotSpacing; const dotStartX = W/2 - dotsW/2 + dotSpacing/2;
+      for (let di = 0; di < n; di++) {
+        ctx.beginPath(); ctx.arc(dotStartX + di*dotSpacing, dotY, Math.round(di===i?8:5*S), 0, Math.PI*2);
+        ctx.fillStyle = di === i ? '#a78bfa' : 'rgba(167,139,250,.28)'; ctx.fill();
+      }
+
+      // Step label
+      ctx.textAlign = 'left';
+      ctx.font = `600 ${Math.round(24*S)}px Inter,system-ui,sans-serif`;
+      ctx.fillStyle = '#a78bfa';
+      ctx.fillText(`STEP ${i+1} OF ${n}`, cardX+Math.round(200*S), cardY+Math.round(64*S));
+
+      // Step text
+      ctx.font = `700 ${Math.round(52*S)}px Inter,system-ui,sans-serif`;
+      ctx.fillStyle = '#fff';
+      ctx.shadowColor = 'rgba(0,0,0,.6)'; ctx.shadowBlur = Math.round(14*S);
+      wrapText(stepText, cardX+Math.round(192*S), cardY+Math.round(128*S), cardW-Math.round(248*S), Math.round(64*S), 3);
+      ctx.shadowBlur = 0;
+
+      // Animated progress bar
+      const prog = clamp((t - sStart) / stepDur, 0, 1);
+      const barY = cardY + cardH + Math.round(18*S);
+      const barW = cardW; const barH2 = Math.round(8*S);
+      ctx.fillStyle = 'rgba(167,139,250,.18)';
+      _rr(cardX, barY, barW, barH2, barH2/2); ctx.fill();
+      const fillG = ctx.createLinearGradient(cardX,barY,cardX+barW*prog,barY);
+      fillG.addColorStop(0,'#7c3aed'); fillG.addColorStop(1,'#818cf8');
+      ctx.fillStyle = fillG;
+      _rr(cardX, barY, barW*prog, barH2, barH2/2); ctx.fill();
+
+      ctx.restore();
+    }
+
+    // Phase 4: Outro (t = 0.88 → 1.0)
+    function drawOutro(t) {
+      const a = ease(fadeIn(t, 0.88, 0.07)) * ease(fadeOut(t, 0.96, 0.04));
+      if (a <= 0) return;
+      const slideY = (1 - ease(fadeIn(t, 0.88, 0.10))) * Math.round(80*S);
+      ctx.save(); ctx.globalAlpha = a;
+      const ov = ctx.createLinearGradient(0,0,0,H);
+      ov.addColorStop(0,'rgba(3,0,18,.92)'); ov.addColorStop(1,'rgba(8,3,36,.97)');
+      ctx.fillStyle = ov; ctx.fillRect(0, slideY, W, H);
+      const og = ctx.createRadialGradient(W/2,H/2,0, W/2,H/2, Math.round(340*S));
+      og.addColorStop(0,'rgba(124,58,237,.35)'); og.addColorStop(1,'transparent');
+      ctx.fillStyle = og; ctx.fillRect(0,0,W,H);
+      ctx.textAlign = 'center';
+      ctx.font = `900 ${Math.round(80*S)}px Inter,system-ui,sans-serif`;
+      const wg = ctx.createLinearGradient(W*0.15,0,W*0.85,0);
+      wg.addColorStop(0,'#fb923c'); wg.addColorStop(0.5,'#e879f9'); wg.addColorStop(1,'#818cf8');
+      ctx.fillStyle = wg; ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = Math.round(18*S);
+      ctx.fillText('BConnect', W/2, H/2-Math.round(24*S));
+      ctx.font = `500 ${Math.round(34*S)}px Inter,system-ui,sans-serif`;
+      ctx.fillStyle = 'rgba(255,255,255,.65)'; ctx.shadowBlur = 0;
+      ctx.fillText("Kenya's Premier Marketplace", W/2, H/2+Math.round(44*S));
+      ctx.font = `600 ${Math.round(26*S)}px Inter,system-ui,sans-serif`;
+      ctx.fillStyle = 'rgba(167,139,250,.75)';
+      ctx.fillText('Visit BConnect today →', W/2, H/2+Math.round(100*S));
+      ctx.textAlign = 'left'; ctx.restore();
+    }
+
+    // Main render loop
+    function drawFrame() {
+      const t = frame / totalFrames;
+      ctx.clearRect(0, 0, W, H);
+      drawBg(t); drawGrid(1); drawParticles();
+      drawIntro(t); drawTitle(t);
+      for (let i = 0; i < n; i++) drawStep(t, i, steps[i]);
+      drawOutro(t);
+      drawWatermark(ease(fadeIn(t,0.10,0.08)) * ease(fadeOut(t,0.88,0.06)));
+
+      // Fade in / out
+      if (t < 0.04) { ctx.save(); ctx.globalAlpha = easeOut(1-t/0.04); ctx.fillStyle='#000'; ctx.fillRect(0,0,W,H); ctx.restore(); }
+      if (t > 0.96) { ctx.save(); ctx.globalAlpha = easeOut((t-0.96)/0.04); ctx.fillStyle='#000'; ctx.fillRect(0,0,W,H); ctx.restore(); }
+
+      frame++;
+      if (frame < totalFrames) setTimeout(drawFrame, 1000/FPS);
+      else recorder.stop();
+    }
+
+    // Audio: gentle ambient pulse
+    let recorder;
+    try {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const dest = audioCtx.createMediaStreamDestination();
+      const comp = audioCtx.createDynamicsCompressor();
+      comp.connect(dest);
+      const master = audioCtx.createGain(); master.gain.value = 0.30; master.connect(comp);
+
+      function note(freq, start, dur, vol=0.18, type='sine') {
+        const osc = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        osc.type = type; osc.frequency.value = freq;
+        g.gain.setValueAtTime(0, audioCtx.currentTime+start);
+        g.gain.linearRampToValueAtTime(vol, audioCtx.currentTime+start+0.06);
+        g.gain.linearRampToValueAtTime(0,  audioCtx.currentTime+start+dur);
+        osc.connect(g); g.connect(master);
+        osc.start(audioCtx.currentTime+start);
+        osc.stop(audioCtx.currentTime+start+dur+0.1);
+      }
+
+      // Gentle chime sequence — one chime per step
+      const stepInterval = (DURATION * (STEPS_END - STEPS_START)) / n;
+      for (let i = 0; i < n; i++) {
+        const t0 = DURATION * STEPS_START + i * stepInterval + 0.3;
+        const freqs = [523, 659, 784, 880, 988, 1047];
+        note(freqs[i % freqs.length], t0, 1.2, 0.22);
+        note(freqs[i % freqs.length] * 1.5, t0+0.08, 0.8, 0.10);
+      }
+      // Outro resolution chord
+      note(523, DURATION*0.88+0.2, 1.5, 0.18);
+      note(659, DURATION*0.88+0.3, 1.4, 0.14);
+      note(784, DURATION*0.88+0.4, 1.3, 0.12);
+
+      const combined = new MediaStream([...canvas.captureStream(FPS).getTracks(), ...dest.stream.getTracks()]);
+      const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus') ? 'video/webm;codecs=vp9,opus'
+        : MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus') ? 'video/webm;codecs=vp8,opus' : 'video/webm';
+      recorder = new MediaRecorder(combined, { mimeType, videoBitsPerSecond: 8000000 });
+      const chunks = [];
+      recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+      recorder.onstop = () => { audioCtx.close(); resolve(new Blob(chunks, { type: 'video/webm' })); };
+      recorder.start();
+      drawFrame();
+    } catch(e) {
+      // Fallback: video only (no audio)
+      const stream = canvas.captureStream(FPS);
+      const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' : 'video/webm';
+      recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 8000000 });
+      const chunks = [];
+      recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+      recorder.onstop = () => resolve(new Blob(chunks, { type: 'video/webm' }));
+      recorder.start();
+      drawFrame();
+    }
+  });
+}
+
+// ── AI request ─────────────────────────────────────────────────────────
+
+async function askAI(message) {
+  const token = localStorage.getItem('token') || localStorage.getItem('authToken') || '';
+  const history = conversationHistory.slice(-8).map(m => ({ role: m.role, text: m.text }));
+  const res = await fetch('/api/ai/chat', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { 'Authorization': 'Bearer ' + token } : {})
+    },
+    body: JSON.stringify({ message, history, context: 'AI assistant page' })
+  });
+  const data = await res.json();
+  if (!res.ok || !data.success) throw new Error(data.error || data.fallback || 'AI unavailable');
+  return data.response;
+}
+
+// ── Send message ───────────────────────────────────────────────────────
+let sending = false;
+async function send() {
+  if (sending) return;
+  const input = document.getElementById('msg-input');
+  const text  = input.value.trim();
+  if (!text) return;
+
+  input.value = ''; input.style.height = 'auto';
+  document.getElementById('char-hint').textContent = '';
+  document.getElementById('send-btn').disabled = true;
+  sending = true;
+
+  appendUserMsg(text);
+  conversationHistory.push({ role: 'user', text });
+
+  showTyping();
+  document.getElementById('status-text').textContent = '✍️ Typing…';
+
+  try {
+    const aiText = await askAI(text);
+    hideTyping();
+    const rendered = parseMarkdown(aiText);
+    const steps = extractSteps(aiText);
+    appendBotMsg(rendered, aiText, steps.length >= 2 ? steps : null, text);
+    conversationHistory.push({ role: 'bot', text: aiText });
+    if (ttsEnabled) speak(aiText.substring(0, 200));
+  } catch(e) {
+    hideTyping();
+    appendBotMsg('⚠️ <strong>Service temporarily unavailable.</strong><br>Please try again in a moment, or <a href="support.html" style="color:#6a5af9">contact support</a>.', 'Service temporarily unavailable.');
+  } finally {
+    document.getElementById('send-btn').disabled = false;
+    document.getElementById('status-text').textContent = '🟢 Online — ready to help';
+    sending = false;
+  }
+}
+
+function ask(text) {
+  document.getElementById('msg-input').value = text;
+  send();
+}
+
+// ── Clear chat ─────────────────────────────────────────────────────────
+function clearChat() {
+  const body = document.getElementById('chat-body');
+  body.innerHTML = `<div id="welcome">
+    <div class="welcome-icon">🤖</div>
+    <h2>Hi, I'm BConnect Bot!</h2>
+    <p>Your AI guide to Kenya's all-in-one marketplace. Ask me anything about products, housing, services, payments, or how to sell.</p>
+    <div class="welcome-chips">
+      <span class="w-chip" onclick="ask('What is BConnect?')">ℹ️ What is BConnect?</span>
+      <span class="w-chip" onclick="ask('Show me housing listings in Nairobi')">🏠 Housing in Nairobi</span>
+      <span class="w-chip" onclick="ask('How do I pay with M-Pesa?')">📱 How to pay</span>
+      <span class="w-chip" onclick="ask('How do I become a seller?')">🏪 How to sell</span>
+      <span class="w-chip" onclick="ask('Show me cheap items under Ksh 2000')">💸 Budget deals</span>
+      <span class="w-chip" onclick="ask('Find a plumber near me')">🔧 Find a plumber</span>
+    </div>
+  </div>`;
+  conversationHistory = [];
+}
+
+// ── TTS ────────────────────────────────────────────────────────────────
+function toggleTTS() {
+  ttsEnabled = !ttsEnabled;
+  document.getElementById('tts-label').textContent = ttsEnabled ? 'Voice On' : 'Voice Off';
+  document.getElementById('tts-btn').style.opacity = ttsEnabled ? '1' : '.6';
+  if (!ttsEnabled && window.speechSynthesis) window.speechSynthesis.cancel();
+}
+
+function speak(text) {
+  if (!ttsEnabled || !window.speechSynthesis) return;
+  const clean = text.replace(/<[^>]+>/g,'').replace(/[•→]/g,'').trim();
+  if (!clean) return;
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(clean);
+  utt.lang = 'en-KE'; utt.rate = 1.05; utt.pitch = 1.05;
+  window.speechSynthesis.speak(utt);
+}
+
+// ── Voice input ────────────────────────────────────────────────────────
+function toggleVoice() {
+  const SpeechRecog = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecog) { alert('Voice input not supported in this browser. Try Chrome.'); return; }
+  const btn = document.getElementById('mic-btn');
+  if (recognition) { recognition.stop(); recognition = null; btn.classList.remove('listening'); return; }
+  recognition = new SpeechRecog();
+  recognition.lang = 'en-KE'; recognition.continuous = false; recognition.interimResults = false;
+  recognition.onstart = () => btn.classList.add('listening');
+  recognition.onresult = e => {
+    document.getElementById('msg-input').value = e.results[0][0].transcript;
+    autoResize(document.getElementById('msg-input'));
+    send();
+  };
+  recognition.onerror = () => { btn.classList.remove('listening'); recognition = null; };
+  recognition.onend   = () => { btn.classList.remove('listening'); recognition = null; };
+  recognition.start();
+}
+
+// ── Init ───────────────────────────────────────────────────────────────
+document.getElementById('msg-input').focus();
+</script>
+</body>
+</html>

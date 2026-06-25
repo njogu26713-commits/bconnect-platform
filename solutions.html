@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BConnect Solutions</title>
+<style>
+  body { margin:0; font-family: Inter, system-ui, sans-serif; background:#f3f7ff; color:#0f172a; }
+  .page { max-width:1100px; margin:0 auto; padding:28px; }
+  .topbar { display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between; background:#fff; padding:18px 24px; border-radius:20px; box-shadow:0 24px 50px rgba(15,41,114,0.08); }
+  .brand { font-weight:800; color:#1d4ed8; font-size:1.15rem; }
+  .nav { display:flex; flex-wrap:wrap; gap:16px; }
+  .nav a { color:#475569; text-decoration:none; font-weight:600; }
+  .nav a.active, .nav a:hover { color:#1d4ed8; }
+  .hero { margin-top:24px; padding:32px; border-radius:28px; background:linear-gradient(135deg,#eff6ff,#dbeafe); box-shadow:0 24px 60px rgba(15,41,114,0.08); }
+  .hero h1 { margin:0 0 16px; font-size:clamp(2rem,3vw,3.2rem); line-height:1.05; }
+  .hero p { margin:0; color:#475569; line-height:1.9; max-width:720px; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px; margin-top:28px; }
+  .card { padding:24px; border-radius:24px; background:#fff; box-shadow:0 18px 40px rgba(15,41,114,0.08); }
+  .card h3 { margin:0 0 10px; font-size:1.15rem; }
+  .card p { margin:0; color:#475569; line-height:1.75; }
+  .section-title { margin-top:42px; font-size:1.1rem; text-transform:uppercase; color:#1d4ed8; letter-spacing:0.14em; }
+  @media(max-width:720px){ .topbar{flex-direction:column;align-items:flex-start;} }
+</style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar" style="display:none">
+      <div class="brand">bConnect</div>
+      <nav class="nav">
+        <a href="pre-home.html">Home</a>
+        <a class="active" href="solutions.html">Solutions</a>
+        <a href="features.html">Features</a>
+        <a href="about.html">About</a>
+        <a href="support.html">Support</a>
+        <a href="login.html">Login</a>
+      </nav>
+    </header>
+    <section class="hero">
+      <h1>Solutions for Products, Services & Rentals</h1>
+      <p>Explore our scalable solutions for product sales, service bookings, and rental management built to connect buyers, sellers, landlords, tenants, and service providers in a thriving marketplace.</p>
+    </section>
+    <p class="section-title">Core BConnect Solutions</p>
+    <div class="cards">
+      <article class="card">
+        <h3>Product Sales Platform</h3>
+        <p>Comprehensive marketplace for selling products with inventory management, order processing, and customer support.</p>
+      </article>
+      <article class="card">
+        <h3>Service Management</h3>
+        <p>Tools for service providers to manage bookings, schedules, payments, and customer relationships.</p>
+      </article>
+      <article class="card">
+        <h3>Rental Management</h3>
+        <p>Complete solution for landlords to list properties, screen tenants, collect rent, and maintain properties.</p>
+      </article>
+      <article class="card">
+        <h3>Marketplace Integration</h3>
+        <p>Unified platform connecting products, services, and rentals for seamless transactions.</p>
+      </article>
+    </div>
+  </div>
+  <script src="/shared-layout.js?v=7"></script>
+</body>
+</html>

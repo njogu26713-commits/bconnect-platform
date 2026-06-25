@@ -1,0 +1,3500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BConnect - Everything you need, All in one place</title>
+  <script>window._homeDataPromise=fetch('/api/homepage').then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});</script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    }
+    
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #1e40af;
+      --primary-light: #dbeafe;
+      --primary-bg: #f0f9ff;
+      --secondary: #8b5cf6;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --white: #ffffff;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-150: #ecf0f3;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+      --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.12);
+      --shadow-xl: 0 15px 35px rgba(0, 0, 0, 0.15);
+      --accent-green: #d1fae5;
+      --accent-blue: #dbeafe;
+      --accent-orange: #fed7aa;
+      --accent-purple: #e9d5ff;
+    }
+    
+    body {
+      background: linear-gradient(135deg, var(--gray-50) 0%, #f5f7fa 100%);
+      min-height: 100vh;
+      color: var(--gray-900);
+    }
+    
+    .flex { display: flex; }
+    .min-h-screen { min-height: 100vh; }
+    
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background: var(--white);
+      box-shadow: var(--shadow-lg);
+      padding: 2rem 1.25rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      border-right: 1px solid var(--gray-100);
+    }
+    
+    .sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .sidebar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    .sidebar::-webkit-scrollbar-thumb {
+      background: var(--gray-200);
+      border-radius: 3px;
+    }
+    
+    .sidebar::-webkit-scrollbar-thumb:hover {
+      background: var(--gray-300);
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 2.5rem;
+      letter-spacing: -0.5px;
+    }
+    
+    
+    .nav-section { margin-bottom: 2rem; }
+    
+    .nav-label {
+      color: var(--gray-400);
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+      padding-left: 0.75rem;
+    }
+    
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      padding: 0.75rem 1rem;
+      border-radius: 0.75rem;
+      color: var(--gray-600);
+      text-decoration: none;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      border-left: 3px solid transparent;
+    }
+    
+    .nav-link:hover {
+      background: var(--gray-100);
+      color: var(--primary);
+      transform: translateX(4px);
+    }
+    
+    .nav-link.active {
+      background: linear-gradient(135deg, var(--primary-bg) 0%, rgba(59, 130, 246, 0.05) 100%);
+      color: var(--primary);
+      border-left-color: var(--primary);
+      font-weight: 600;
+    }
+    
+    .nav-icon {
+      font-size: 1.1rem;
+      width: 20px;
+      text-align: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding: 2rem 2.5rem;
+      max-width: 100%;
+    }
+    
+    /* Top Bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      gap: 1.5rem;
+    }
+    
+    .search-container {
+      flex: 1;
+      max-width: 520px;
+      position: relative;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 0.875rem 1rem 0.875rem 3rem;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 0.875rem;
+      font-size: 0.95rem;
+      background: var(--white);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s ease;
+      color: var(--gray-900);
+    }
+    
+    .search-input::placeholder {
+      color: var(--gray-400);
+    }
+    
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+      background: var(--white);
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 1.125rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-400);
+      font-size: 1rem;
+    }
+    
+    .top-bar-icons {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    
+    .icon-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 0.75rem;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+    
+    .icon-btn:hover {
+      background: var(--gray-100);
+      border-color: var(--gray-300);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
+      color: var(--white);
+      font-size: 0.6rem;
+      font-weight: 700;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--white);
+    }
+    
+    .avatar {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      border-radius: 0.875rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-left: 0.75rem;
+      box-shadow: var(--shadow-md);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .avatar:hover {
+      transform: scale(1.05);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      padding: 3rem 3.5rem;
+      border-radius: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      min-height: 220px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: -30%;
+      right: -5%;
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+    
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 50%;
+    }
+    
+    .hero h2 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      line-height: 1.25;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.5px;
+    }
+    
+    .hero p {
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 1.05rem;
+      margin-bottom: 1.75rem;
+      font-weight: 500;
+    }
+    
+    .btn-primary {
+      background: var(--white);
+      color: #667eea;
+      padding: 0.875rem 2rem;
+      border-radius: 0.875rem;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 700;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+    
+    .hero-image {
+      width: 200px;
+      height: 160px;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+      border-radius: 1.25rem;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    /* ===== SPLIT HERO ===== */
+    .hero-split {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .hero-left {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+    .hero-left-text { flex: 1; min-width: 220px; }
+    .hero-left-actions { display: flex; flex-direction: column; gap: .75rem; flex-shrink: 0; }
+    .hero-eyebrow {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #4f46e5;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.02em;
+    }
+    .hero-headline {
+      font-size: 2.1rem;
+      font-weight: 900;
+      color: #111827;
+      line-height: 1.15;
+      margin-bottom: 0.9rem;
+    }
+    .hero-headline span { color: #4f46e5; }
+    .hero-desc {
+      font-size: 0.88rem;
+      color: #6b7280;
+      line-height: 1.65;
+      margin-bottom: 1.4rem;
+    }
+    .hero-btns { display: flex; gap: 0.65rem; margin-bottom: 1.75rem; flex-wrap: wrap; }
+    .hero-cta-primary {
+      background: #4f46e5; color: #fff; border: none;
+      padding: 0.65rem 1.25rem; border-radius: 0.6rem;
+      font-size: 0.87rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+    }
+    .hero-cta-primary:hover { opacity: 0.88; }
+    .hero-cta-secondary {
+      background: transparent; color: #4f46e5; border: 1.5px solid #4f46e5;
+      padding: 0.65rem 1.25rem; border-radius: 0.6rem;
+      font-size: 0.87rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    }
+    .hero-cta-secondary:hover { background: #eef2ff; }
+    .hero-stats { display: flex; align-items: center; gap: 1.1rem; }
+    .hero-stat { text-align: center; }
+    .hero-stat-num { display: block; font-size: 1.35rem; font-weight: 800; color: #111827; }
+    .hero-stat-label { font-size: 0.72rem; color: #9ca3af; font-weight: 500; }
+    .hero-stat-divider { width: 1px; height: 1.75rem; background: #e5e7eb; }
+
+    /* Multi-card carousel */
+    .hero-right { width: 100%; position: relative; }
+    .mc-track-wrap { overflow: hidden; width: 100%; border-radius: 1.25rem; }
+    .mc-track {
+      display: flex; gap: 1rem;
+      transition: transform 0.42s cubic-bezier(0.25,0.46,0.45,0.94);
+      will-change: transform;
+    }
+    .mc-card {
+      flex: 0 0 calc(50% - 0.5rem);
+      border-radius: 1.25rem; overflow: hidden; cursor: pointer;
+      box-shadow: 0 6px 28px rgba(0,0,0,0.14);
+      transition: transform 0.2s, box-shadow 0.2s;
+      background: #f8fafc;
+      display: flex; flex-direction: column;
+      aspect-ratio: 1 / 1;
+    }
+    .mc-card:hover { transform: translateY(-5px); box-shadow: 0 16px 40px rgba(0,0,0,0.22); }
+    .mc-card-img {
+      width: 100%;
+      flex: 1;
+      position: relative;
+      background: #f0f4ff;
+      overflow: hidden;
+      min-height: 0;
+    }
+    .mc-card-img img {
+      width: 100%; height: 100%; object-fit: contain;
+      display: block; background: #f8fafc;
+    }
+    /* Arrow buttons for full-width carousel */
+    .mc-arrow-btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 2.6rem; height: 2.6rem; border-radius: 50%;
+      background: rgba(255,255,255,0.95); border: 1.5px solid #e0e7ff;
+      box-shadow: 0 4px 16px rgba(99,102,241,0.18);
+      cursor: pointer; z-index: 10;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; color: #4f46e5;
+      transition: all 0.2s;
+    }
+    .mc-arrow-btn:hover { background: #4f46e5; color: #fff; border-color: #4f46e5; transform: translateY(-50%) scale(1.08); }
+    .mc-arrow-btn.left { left: -1.2rem; }
+    .mc-arrow-btn.right { right: -1.2rem; }
+    .mc-card-badge {
+      position: absolute; top: 0.6rem; left: 0.6rem; z-index: 2;
+      color: #fff; font-size: 0.63rem; font-weight: 700;
+      padding: 0.2rem 0.55rem; border-radius: 9999px;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    .mc-card-fav {
+      position: absolute; top: 0.55rem; right: 0.55rem; z-index: 3;
+      background: rgba(255,255,255,0.92); border: none; border-radius: 50%;
+      width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 1rem;
+      transition: background 0.2s, transform 0.15s; color: #374151;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    }
+    .mc-card-fav:hover { background: rgba(239,68,68,0.9); color:#fff; transform: scale(1.15); }
+    .mc-card-fav.liked { background: rgba(239,68,68,0.9); color:#fff; }
+    .mc-cd-badge {
+      position: absolute; bottom: 0.55rem; left: 0.55rem; z-index: 4;
+      display: inline-flex; align-items: center; gap: 4px;
+      background: linear-gradient(135deg,#7c3aed,#f59e0b);
+      color: #fff; font-size: 0.67rem; font-weight: 800;
+      padding: 0.28rem 0.65rem; border-radius: 9999px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.35);
+      letter-spacing: 0.02em; white-space: nowrap;
+    }
+    .mc-cd-badge.mc-cd-soon {
+      background: linear-gradient(135deg,#dc2626,#f97316);
+      animation: cd-pulse 1.6s ease-in-out infinite;
+    }
+    .mc-cd-badge.mc-cd-urgent {
+      background: linear-gradient(135deg,#dc2626,#b91c1c);
+      animation: cd-pulse 0.9s ease-in-out infinite;
+    }
+    .mc-cd-badge.mc-cd-ended {
+      background: linear-gradient(135deg,#6b7280,#374151);
+      animation: none;
+    }
+    @keyframes cd-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.85;transform:scale(1.04)} }
+    .mc-card-body {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 1.8rem 0.75rem 0.6rem;
+      background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, transparent 100%);
+    }
+    .mc-card-title {
+      font-size: 0.82rem; font-weight: 700; color: #fff;
+      margin-bottom: 0.08rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .mc-card-loc {
+      font-size: 0.68rem; color: rgba(255,255,255,0.75); margin-bottom: 0.18rem;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .mc-card-price { font-size: 0.85rem; font-weight: 800; color: #a5f3fc; }
+    .mc-card-period { font-size: 0.62rem; color: rgba(255,255,255,0.6); }
+    .mc-nav {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0.75rem; margin-top: 0.85rem;
+    }
+    .mc-arrow {
+      width: 1.9rem; height: 1.9rem; border-radius: 50%;
+      border: 1.5px solid #e5e7eb; background: #fff; cursor: pointer;
+      font-size: 0.78rem; color: #374151;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+    .mc-arrow:hover { background: #4f46e5; color: #fff; border-color: #4f46e5; }
+    .mc-dots { display: flex; gap: 0.4rem; align-items: center; }
+    .mc-dot {
+      width: 6px; height: 6px; border-radius: 9999px;
+      background: #d1d5db; border: none; cursor: pointer; transition: all 0.3s;
+    }
+    .mc-dot.active { width: 1.5rem; background: #4f46e5; }
+    .mc-loading {
+      display: flex; align-items: center; justify-content: center;
+      height: 180px; color: #9ca3af; font-size: 0.9rem; width: 100%;
+    }
+    /* ── Carousel branded skeleton ── */
+    @keyframes mc-shimmer { 0%{left:-100%} 100%{left:200%} }
+    .mc-skel {
+      flex: 0 0 calc(50% - 0.5rem);
+      border-radius: 1.25rem; overflow: hidden; position: relative;
+      aspect-ratio: 1 / 1; background: #e8eaed;
+      box-shadow: 0 6px 28px rgba(0,0,0,0.10);
+    }
+    .mc-skel::after {
+      content: ''; position: absolute; top: 0; left: -100%;
+      width: 55%; height: 100%;
+      background: linear-gradient(90deg,transparent 0%,rgba(255,255,255,.55) 50%,transparent 100%);
+      animation: mc-shimmer 1.7s ease-in-out infinite;
+      z-index: 4; pointer-events: none;
+    }
+    .mc-skel-badge {
+      position: absolute; top: 6px; right: 6px; z-index: 5;
+      width: 48px; height: 48px; object-fit: contain;
+      opacity: .18; filter: grayscale(1); pointer-events: none;
+    }
+    .mc-skel-pill {
+      position: absolute; top: 10px; left: 10px; z-index: 5;
+      width: 56px; height: 18px; border-radius: 999px;
+      background: rgba(255,255,255,.28);
+    }
+    .mc-skel-overlay {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 2rem 0.75rem 0.65rem;
+      background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 100%);
+      z-index: 3;
+    }
+    .mc-skel-title {
+      height: 13px; border-radius: 5px; width: 70%;
+      background: rgba(255,255,255,.3);
+    }
+    @media(max-width:900px){ .mc-skel { flex: 0 0 calc(50% - 0.43rem); } }
+    @media(max-width:600px){ .mc-skel { flex: 0 0 calc(100% - 0.85rem); } }
+    @media (max-width: 900px) {
+      .hero-split { flex-direction: column; min-height: auto; }
+      .hero-left { flex: none; max-width: 100%; }
+      .mc-card { flex: 0 0 calc(50% - 0.43rem); }
+    }
+    @media (max-width: 600px) {
+      .mc-card { flex: 0 0 calc(100% - 0.85rem); }
+      .hero-headline { font-size: 1.6rem; }
+    }
+
+    /* ===== FEATURED LISTINGS ===== */
+    .featured-section { margin-bottom: 2rem; }
+    .featured-scroll-wrap { overflow-x: auto; padding-bottom: 8px; }
+    .featured-scroll-wrap::-webkit-scrollbar { height: 4px; }
+    .featured-scroll-wrap::-webkit-scrollbar-track { background: transparent; }
+    .featured-scroll-wrap::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 9999px; }
+    .featured-row { display: flex; gap: 1rem; width: max-content; }
+    .feat-card {
+      width: 190px;
+      border-radius: 1.1rem; overflow: hidden;
+      background: #fff;
+      cursor: pointer; flex-shrink: 0;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      border: 1px solid var(--gray-100);
+    }
+    .feat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 28px rgba(0,0,0,0.16); }
+    @keyframes imgShimmer {
+      0% { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
+    }
+    .feat-card-img-wrap {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      background: linear-gradient(90deg,#f1f5f9 25%,#e2e8f0 50%,#f1f5f9 75%);
+      background-size: 800px 100%;
+      animation: imgShimmer 1.5s infinite linear;
+    }
+    .feat-card-img-wrap img {
+      width: 100%; height: 180px; object-fit: cover;
+      display: block;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .feat-card-img-wrap img.img-loaded {
+      opacity: 1;
+    }
+    .feat-card-star {
+      position: absolute; top: 0.45rem; left: 0.45rem;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #fff; font-size: 0.58rem; font-weight: 700;
+      padding: 0.15rem 0.45rem; border-radius: 9999px;
+      letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .feat-card-body {
+      padding: 0.65rem 0.8rem 0.75rem;
+      background: #fff;
+    }
+    .feat-card-top-row {
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 4px;
+      margin-bottom: 0.2rem;
+    }
+    .feat-card-title {
+      font-size: 0.83rem; font-weight: 700; color: var(--gray-900);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      flex: 1;
+    }
+    .feat-card-price { font-size: 0.88rem; font-weight: 800; color: var(--primary); }
+    .feat-card-cat {
+      font-size: 0.67rem; color: var(--gray-400);
+      margin-top: 0.2rem; font-weight: 500;
+    }
+    .card-fav {
+      background: none; border: none; cursor: pointer;
+      font-size: 1rem; padding: 0; line-height: 1; color: #d1d5db;
+      flex-shrink: 0; transition: color 0.2s, transform 0.15s;
+    }
+    .card-fav:hover, .card-fav.liked { color: #ef4444; transform: scale(1.2); }
+    .feat-empty { color: var(--gray-400); font-size: 0.88rem; padding: 1.25rem 0; }
+
+    /* Quick Actions */
+    .quick-actions {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding-bottom: 6px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .quick-actions::-webkit-scrollbar { display: none; }
+    
+    .action-card {
+      background: var(--white);
+      padding: 1.25rem 1rem;
+      border-radius: 1rem;
+      box-shadow: var(--shadow-sm);
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1.5px solid transparent;
+      flex: 0 0 110px;
+      min-width: 110px;
+    }
+    
+    .action-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    
+    .action-icon {
+      font-size: 1.75rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+    
+    /* User Action Cards */
+    .user-actions {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding-bottom: 6px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .user-actions::-webkit-scrollbar { display: none; }
+    
+    .user-card {
+      padding: 1.5rem;
+      border-radius: 1.25rem;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: none;
+      box-shadow: var(--shadow-sm);
+      flex: 0 0 200px;
+      min-width: 200px;
+    }
+    
+    .user-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .user-card.landlord {
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    }
+    
+    .user-card.buyer {
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    }
+    
+    .user-card.seller {
+      background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
+    }
+    
+    .user-card.service {
+      background: linear-gradient(135deg, #e9d5ff 0%, #d8b4fe 100%);
+    }
+    
+    .user-card h3 {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      font-size: 1.05rem;
+      color: var(--gray-900);
+    }
+    
+    .user-card p {
+      font-size: 0.85rem;
+      color: var(--gray-600);
+      font-weight: 500;
+    }
+    
+    /* Listings */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      margin-top: 1rem;
+    }
+    
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--gray-900);
+      letter-spacing: -0.3px;
+    }
+    
+    .see-all {
+      color: var(--primary);
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .see-all:hover {
+      gap: 0.5rem;
+      transform: translateX(4px);
+    }
+    
+    /* ===== TOP SELLERS FEED ===== */
+    .listings {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+      margin: 0 0 2rem;
+    }
+
+    /* Each seller = full-width section */
+    .ts-slot {
+      background: #fff;
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.10);
+      border: 1px solid #e9ecf0;
+    }
+
+    /* Seller header row */
+    .ts-seller-row {
+      display: flex; align-items: center; gap: 0.65rem;
+      padding: 0.75rem 1rem 0.65rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .ts-seller-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; font-weight: 800; color: #fff;
+      flex-shrink: 0; overflow: hidden;
+    }
+    .ts-seller-avatar img {
+      width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+    }
+    .ts-seller-info { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+    .ts-seller-name {
+      font-size: 0.92rem; font-weight: 700; color: #1a202c;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .ts-seller-sub { font-size: 0.72rem; color: #6b7280; }
+    .ts-seller-badge {
+      font-size: 0.65rem; font-weight: 700; color: #6366f1;
+      background: #ede9fe; padding: 0.15rem 0.5rem; border-radius: 999px;
+      flex-shrink: 0;
+    }
+    .ts-see-all-link {
+      font-size: 0.72rem; font-weight: 700; color: #4f46e5;
+      text-decoration: none; white-space: nowrap; flex-shrink: 0;
+      padding: 0.25rem 0.6rem; border-radius: 0.45rem;
+      border: 1.5px solid #c7d2fe; background: #eef2ff;
+      transition: background .18s, color .18s;
+    }
+    .ts-see-all-link:hover { background: #4f46e5; color: #fff; }
+
+    /* Horizontal scroll row of item cards */
+    .ts-items-row {
+      display: flex;
+      gap: 0.85rem;
+      padding: 0.85rem 1rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .ts-items-row::-webkit-scrollbar { height: 4px; }
+    .ts-items-row::-webkit-scrollbar-track { background: #f1f5f9; }
+    .ts-items-row::-webkit-scrollbar-thumb { background: #c7d2fe; border-radius: 99px; }
+
+    /* Individual item card — one per screen on mobile, narrower on desktop */
+    .ts-item-card {
+      flex: 0 0 calc(100vw - 3rem);
+      max-width: 380px;
+      border-radius: 0.85rem;
+      background: #f8fafc;
+      border: 1px solid #e9ecf0;
+      overflow: hidden;
+      cursor: pointer;
+      scroll-snap-align: start;
+      transition: box-shadow 0.18s, transform 0.18s;
+      display: flex;
+      flex-direction: column;
+    }
+    .ts-item-card:hover { box-shadow: 0 4px 20px rgba(99,102,241,0.18); transform: translateY(-2px); }
+    .ts-item-card-img {
+      width: 100%; height: auto; display: block; flex-shrink: 0;
+    }
+    .ts-item-card-body { padding: 0.7rem 0.85rem 0.85rem; display: flex; flex-direction: column; flex: 1; }
+    .ts-item-card-title {
+      font-size: 0.9rem; font-weight: 700; color: #1a202c;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+      margin-bottom: 0.3rem; line-height: 1.4;
+    }
+    .ts-item-card-price { font-size: 1rem; font-weight: 800; color: #6366f1; }
+    .ts-item-card-cat {
+      font-size: 0.68rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.04em;
+      margin-top: 0.2rem; margin-bottom: 0.65rem;
+    }
+    .ts-item-card-btn {
+      display: block; width: 100%; padding: 0.5rem 0;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #fff; font-size: 0.8rem; font-weight: 700;
+      border: none; border-radius: 0.55rem; cursor: pointer;
+      text-align: center; letter-spacing: 0.02em;
+      transition: opacity 0.15s;
+      margin-top: auto;
+    }
+    .ts-item-card-btn:hover { opacity: 0.88; }
+
+    @media (min-width: 600px) {
+      .ts-item-card { flex: 0 0 260px; max-width: 260px; }
+    }
+    @media (min-width: 1024px) {
+      .ts-item-card { flex: 0 0 230px; max-width: 230px; }
+    }
+
+    /* Listing card is now borderless — the slot is the card (fallback grid) */
+    .listing-card {
+      cursor: pointer;
+      background: #fff;
+    }
+    .listing-img-wrap {
+      position: relative;
+      width: 100%; overflow: hidden;
+      background: linear-gradient(90deg,#f1f5f9 25%,#e2e8f0 50%,#f1f5f9 75%);
+      background-size: 800px 100%;
+      animation: imgShimmer 1.5s infinite linear;
+    }
+    .listing-img-wrap img {
+      width: 100%; height: auto; display: block;
+      object-fit: contain; max-height: 420px;
+      opacity: 0; transition: opacity 0.3s ease;
+    }
+    .listing-img-wrap img.img-loaded {
+      opacity: 1;
+      background: #eef0f3;
+    }
+    .listing-img-wrap { background: #eef0f3; animation: none; }
+    .listing-badge {
+      position: absolute; top: 0.6rem; left: 0.6rem;
+      color: #fff; font-size: 0.62rem; font-weight: 700;
+      padding: 0.18rem 0.55rem; border-radius: 9999px;
+      text-transform: uppercase; letter-spacing: 0.04em;
+      background: rgba(0,0,0,0.45); backdrop-filter: blur(4px);
+    }
+    .listing-content {
+      padding: 0.85rem 1rem 0.5rem;
+    }
+    .listing-top-row {
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 4px;
+      margin-bottom: 0.25rem;
+    }
+    .listing-title {
+      font-weight: 700; font-size: 1rem; color: #1a202c;
+      flex: 1; line-height: 1.3;
+    }
+    .listing-price {
+      font-weight: 800; font-size: 1.05rem; color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+    .listing-feed-actions {
+      display: flex; gap: 0.6rem; align-items: center;
+      padding: 0.6rem 1rem 0.85rem;
+      border-top: 1px solid #f1f5f9;
+    }
+    .listing-feed-btn {
+      flex: 1; padding: 0.5rem 0; border-radius: 0.6rem;
+      font-size: 0.82rem; font-weight: 700; cursor: pointer;
+      border: none; transition: background 0.2s;
+    }
+    .listing-feed-btn.primary {
+      background: linear-gradient(90deg,#6366f1,#8b5cf6);
+      color: #fff;
+    }
+    .listing-feed-btn.primary:hover { opacity: 0.9; }
+    .listing-feed-btn.outline {
+      background: #f1f5f9; color: #374151; border: 1px solid #e5e7eb;
+    }
+    .listing-feed-btn.outline:hover { background: #e5e7eb; }
+    .listing-meta { display: none; }
+    .card-fav {
+      background: none; border: none; cursor: pointer;
+      color: #9ca3af; padding: 0.15rem;
+    }
+    .card-fav.liked { color: #ef4444; }
+
+    /* ===== LISTING DETAIL MODAL ===== */
+    .ld-overlay {
+      display: none; position: fixed; inset: 0; z-index: 9999;
+      background: rgba(15,23,42,0.55); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+    }
+    .ld-overlay.open { display: flex; }
+    .ld-modal {
+      background: #fff; border-radius: 1.5rem;
+      width: min(520px, 92vw); max-height: 88vh;
+      overflow-y: auto; box-shadow: 0 32px 80px rgba(0,0,0,0.25);
+      animation: ldIn 0.22s ease;
+    }
+    @keyframes ldIn { from { opacity:0; transform:translateY(20px) scale(0.97); } to { opacity:1; transform:none; } }
+    .ld-img {
+      width: 100%; height: 240px;
+      background-size: cover; background-position: center;
+      border-radius: 1.5rem 1.5rem 0 0;
+      position: relative;
+    }
+    .ld-close {
+      position: absolute; top: 0.75rem; right: 0.75rem;
+      background: rgba(255,255,255,0.9); border: none; border-radius: 50%;
+      width: 2.2rem; height: 2.2rem; font-size: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      transition: background 0.2s;
+    }
+    .ld-close:hover { background: #fff; }
+    .ld-body { padding: 1.5rem 1.75rem 2rem; }
+    .ld-badge {
+      display: inline-block;
+      background: var(--primary-light); color: var(--primary);
+      font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.7rem;
+      border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+    }
+    .ld-title { font-size: 1.4rem; font-weight: 800; color: var(--gray-900); margin-bottom: 0.3rem; }
+    .ld-price { font-size: 1.5rem; font-weight: 900; color: var(--primary); margin-bottom: 1.1rem; }
+    .ld-row { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .ld-meta { font-size: 0.82rem; color: var(--gray-500); }
+    .ld-meta span { font-weight: 600; color: var(--gray-700); }
+    .ld-desc { font-size: 0.9rem; color: var(--gray-600); line-height: 1.7; margin-bottom: 1.4rem; }
+    .ld-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .ld-btn-primary {
+      flex: 1; padding: 0.85rem; background: var(--primary); color: #fff;
+      border: none; border-radius: 0.875rem; font-weight: 700; font-size: 0.95rem;
+      cursor: pointer; transition: opacity 0.2s; min-width: 140px;
+    }
+    .ld-btn-primary:hover { opacity: 0.88; }
+    .ld-btn-outline {
+      padding: 0.85rem 1.25rem; background: transparent; color: var(--primary);
+      border: 2px solid var(--primary); border-radius: 0.875rem;
+      font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: background 0.2s;
+    }
+    .ld-btn-outline:hover { background: var(--primary-light); }
+    
+    /* Right Panel */
+    .right-panel {
+      width: 340px;
+      padding: 2rem 1.5rem;
+      background: linear-gradient(180deg, var(--gray-50) 0%, #f5f7fa 100%);
+      border-left: 1px solid var(--gray-200);
+      overflow-y: auto;
+    }
+    
+    .right-panel::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .right-panel::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    .right-panel::-webkit-scrollbar-thumb {
+      background: var(--gray-200);
+      border-radius: 3px;
+    }
+    
+    .right-panel::-webkit-scrollbar-thumb:hover {
+      background: var(--gray-300);
+    }
+    
+    .panel-card {
+      background: var(--white);
+      padding: 1.5rem;
+      border-radius: 1.25rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--gray-150);
+      transition: all 0.3s ease;
+    }
+    
+    .panel-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+    
+    .panel-card h3 {
+      font-weight: 800;
+      font-size: 1rem;
+      margin-bottom: 1.25rem;
+      color: var(--gray-900);
+      letter-spacing: -0.3px;
+    }
+    
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    
+    .overview-item {
+      padding: 1rem;
+      border-radius: 0.875rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    
+    .overview-item:hover {
+      transform: scale(1.05);
+    }
+    
+    .overview-item.properties { 
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+      color: #065f46; 
+    }
+    
+    .overview-item.tenants { 
+      background: linear-gradient(135deg, #e9d5ff 0%, #d8b4fe 100%);
+      color: #6b21a8; 
+    }
+    
+    .overview-item.rent-due { 
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      color: #991b1b; 
+    }
+    
+    .overview-item.orders { 
+      background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 100%);
+      color: #92400e; 
+    }
+    
+    .rent-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.875rem 0;
+      border-bottom: 1px solid var(--gray-150);
+      font-size: 0.85rem;
+      color: var(--gray-700);
+    }
+    
+    .rent-item:last-child { border-bottom: none; }
+    
+    .rent-status {
+      padding: 0.3rem 0.625rem;
+      border-radius: 0.4rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+    
+    .rent-status.paid { 
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+      color: #065f46; 
+    }
+    
+    .rent-status.due { 
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      color: #991b1b; 
+    }
+    
+    .btn-full {
+      width: 100%;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: var(--white);
+      padding: 0.875rem;
+      border-radius: 0.875rem;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-top: 1rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .btn-full:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      font-size: 0.85rem;
+      border-bottom: 1px solid var(--gray-150);
+      color: var(--gray-700);
+    }
+    
+    .order-item:last-child { border-bottom: none; }
+    
+    .order-status {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.3rem 0.625rem;
+      border-radius: 0.4rem;
+    }
+    
+    .order-status.delivered { 
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+      color: #065f46; 
+    }
+    
+    .order-status.completed { 
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+      color: #1e40af; 
+    }
+    
+    /* Modal Styles */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .modal-overlay.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    .modal-content {
+      background: var(--white);
+      border-radius: 1.5rem;
+      box-shadow: var(--shadow-xl);
+      max-width: 90vw;
+      max-height: 90vh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .modal-header {
+      padding: 2rem;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .modal-header h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--gray-900);
+      letter-spacing: -0.3px;
+    }
+    
+    .modal-close {
+      background: var(--gray-100);
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    
+    .modal-close:hover {
+      background: var(--gray-200);
+      transform: rotate(90deg);
+    }
+    
+    .modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 2rem;
+    }
+    
+    .modal-body::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .modal-body::-webkit-scrollbar-track {
+      background: var(--gray-100);
+      border-radius: 10px;
+    }
+    
+    .modal-body::-webkit-scrollbar-thumb {
+      background: var(--gray-300);
+      border-radius: 10px;
+    }
+    
+    .modal-body::-webkit-scrollbar-thumb:hover {
+      background: var(--gray-400);
+    }
+    
+    .modal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .modal-item-card {
+      background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+      border-radius: 1.25rem;
+      padding: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid transparent;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .modal-item-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary);
+      background: linear-gradient(135deg, var(--white) 0%, var(--primary-bg) 100%);
+    }
+    
+    .modal-item-image {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+    
+    .modal-item-title {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--gray-900);
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+    }
+    
+    .modal-item-price {
+      color: var(--primary);
+      font-weight: 800;
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+    }
+    
+    .modal-item-meta {
+      font-size: 0.8rem;
+      color: var(--gray-600);
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+    
+    .modal-item-desc {
+      font-size: 0.85rem;
+      color: var(--gray-700);
+      line-height: 1.5;
+      margin-bottom: 0.4rem;
+    }
+    .modal-item-desc.clamped {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .modal-read-more {
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--primary);
+      cursor: pointer;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+    .modal-read-more:hover { text-decoration: underline; }
+    
+    .modal-item-action {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: var(--white);
+      border: none;
+      padding: 0.75rem 1rem;
+      border-radius: 0.75rem;
+      margin-top: auto;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+    
+    .modal-item-action:hover {
+      transform: scale(1.02);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .modal-empty {
+      text-align: center;
+      padding: 3rem;
+      color: var(--gray-500);
+    }
+    
+    .modal-empty-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    
+    .modal-empty p {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Seller Form Modal */
+    .seller-form-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-group label {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--gray-900);
+      display: block;
+    }
+
+    .form-group input,
+    .form-group select {
+      padding: 0.875rem 1rem;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 0.875rem;
+      font-size: 0.95rem;
+      color: var(--gray-900);
+      background: var(--white);
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .form-group input::placeholder,
+    .form-group select::placeholder {
+      color: var(--gray-400);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    }
+
+    .form-group select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
+      background-position: right 0.75rem center;
+      background-repeat: no-repeat;
+      background-size: 1.5em 1.5em;
+      padding-right: 2.5rem;
+    }
+
+    .form-description {
+      font-size: 0.85rem;
+      color: var(--gray-600);
+      margin-top: 0.25rem;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .form-btn {
+      flex: 1;
+      padding: 0.875rem 1.5rem;
+      border-radius: 0.875rem;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .form-btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: var(--white);
+      box-shadow: var(--shadow-md);
+    }
+
+    .form-btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .form-btn-secondary {
+      background: var(--gray-100);
+      color: var(--gray-700);
+      border: 1.5px solid var(--gray-200);
+    }
+
+    .form-btn-secondary:hover {
+      background: var(--gray-200);
+      border-color: var(--gray-300);
+    }
+
+    .seller-info {
+      background: linear-gradient(135deg, var(--primary-bg) 0%, rgba(59, 130, 246, 0.05) 100%);
+      padding: 1rem;
+      border-radius: 0.875rem;
+      border-left: 4px solid var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .seller-info p {
+      font-size: 0.85rem;
+      color: var(--gray-700);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* ===== RESPONSIVE MEDIA QUERIES ===== */
+
+    /* Tablets and Small Devices (640px - 1024px) */
+    @media (max-width: 1024px) {
+      .sidebar {
+        width: 240px;
+        padding: 1.5rem 1rem;
+      }
+      
+      .logo {
+        font-size: 1.25rem;
+        margin-bottom: 2rem;
+      }
+      
+      .main-content {
+        padding: 1.5rem 2rem;
+      }
+      
+      .right-panel {
+        width: 280px;
+        padding: 1.5rem 1rem;
+      }
+      
+      .hero {
+        padding: 2rem 2.5rem;
+        flex-direction: column;
+        text-align: center;
+        min-height: auto;
+      }
+      
+      .hero-content {
+        max-width: 100%;
+        margin-bottom: 1.5rem;
+      }
+      
+      .hero h2 {
+        font-size: 1.75rem;
+      }
+      
+      .listings {
+        gap: 1rem;
+      }
+      
+      .quick-actions {
+        gap: 0.75rem;
+      }
+      
+      .user-actions {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+      }
+      
+      .modal-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+      }
+    }
+
+    /* Mobile Devices (max 640px) */
+    @media (max-width: 640px) {
+      .flex {
+        flex-direction: column;
+      }
+
+      .min-h-screen {
+        min-height: auto;
+      }
+      
+      .main-content {
+        flex: 1;
+        padding: 1rem;
+        max-width: 100%;
+      }
+      
+      .top-bar {
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      
+      .search-container {
+        max-width: 100%;
+      }
+      
+      .search-input {
+        padding: 0.75rem 1rem 0.75rem 2.5rem;
+        font-size: 0.9rem;
+      }
+      
+      .top-bar-icons {
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .icon-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+      }
+      
+      .avatar {
+        width: 40px;
+        height: 40px;
+        margin-left: 0;
+        font-size: 0.85rem;
+      }
+      
+      .hero {
+        padding: 1.5rem 1rem;
+        border-radius: 1rem;
+        margin-bottom: 1.5rem;
+        flex-direction: column;
+        text-align: center;
+        min-height: auto;
+      }
+      
+      .hero h2 {
+        font-size: 1.4rem;
+        margin-bottom: 0.5rem;
+      }
+      
+      .hero p {
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+      }
+      
+      .btn-primary {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.85rem;
+      }
+      
+      .hero-image {
+        width: 140px;
+        height: 100px;
+      }
+      
+      .quick-actions {
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+      
+      .action-card {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.7rem;
+        flex: 0 0 95px;
+        min-width: 95px;
+      }
+      
+      .action-icon {
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+      }
+      
+      .user-actions {
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      
+      .user-card {
+        padding: 1.25rem;
+        border-radius: 1rem;
+      }
+      
+      .user-card h3 {
+        font-size: 0.95rem;
+      }
+      
+      .user-card p {
+        font-size: 0.8rem;
+      }
+      
+      .section-header {
+        margin-bottom: 1rem;
+      }
+      
+      .section-title {
+        font-size: 1.1rem;
+      }
+      
+      .see-all {
+        font-size: 0.8rem;
+      }
+      
+      .listings {
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+      }
+      
+      .listing-card {
+        border-radius: 0.875rem;
+      }
+      
+      .listing-image {
+        height: 120px;
+        font-size: 2rem;
+      }
+      
+      .listing-content {
+        padding: 0.75rem;
+      }
+      
+      .listing-title {
+        font-size: 0.8rem;
+      }
+      
+      .listing-price {
+        font-size: 0.95rem;
+      }
+      
+      .listing-meta {
+        font-size: 0.7rem;
+        gap: 0.25rem;
+      }
+      
+      .right-panel {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(180deg, var(--gray-50) 0%, #f5f7fa 100%);
+        border-left: none;
+        border-top: 1px solid var(--gray-200);
+        margin-top: 1rem;
+      }
+      
+      .panel-card {
+        padding: 1.25rem;
+        margin-bottom: 1rem;
+      }
+      
+      .panel-card h3 {
+        font-size: 0.95rem;
+      }
+      
+      .overview-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+      }
+      
+      .overview-item {
+        padding: 0.75rem;
+        font-size: 0.7rem;
+      }
+      
+      .rent-item {
+        padding: 0.5rem 0;
+        font-size: 0.8rem;
+      }
+      
+      .rent-status {
+        font-size: 0.65rem;
+        padding: 0.2rem 0.5rem;
+      }
+      
+      .btn-full {
+        padding: 0.75rem;
+        font-size: 0.85rem;
+        margin-top: 0.75rem;
+      }
+      
+      .order-item {
+        padding: 0.5rem 0;
+        font-size: 0.8rem;
+      }
+      
+      .order-status {
+        font-size: 0.65rem;
+        padding: 0.2rem 0.4rem;
+      }
+      
+      /* Modal Responsive */
+      .modal-content {
+        max-width: 95vw;
+        max-height: 85vh;
+        border-radius: 1rem;
+      }
+      
+      .modal-header {
+        padding: 1.25rem;
+      }
+      
+      .modal-header h2 {
+        font-size: 1.1rem;
+      }
+      
+      .modal-close {
+        width: 36px;
+        height: 36px;
+        font-size: 1.25rem;
+      }
+      
+      .modal-body {
+        padding: 1rem;
+      }
+      
+      .modal-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 0.75rem;
+      }
+      
+      .modal-item-card {
+        padding: 1rem;
+        border-radius: 1rem;
+      }
+      
+      .modal-item-image {
+        font-size: 2rem;
+        margin-bottom: 0.75rem;
+      }
+      
+      .modal-item-title {
+        font-size: 0.85rem;
+        margin-bottom: 0.25rem;
+      }
+      
+      .modal-item-price {
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+      }
+      
+      .modal-item-meta {
+        font-size: 0.75rem;
+        margin-bottom: 0.5rem;
+      }
+      
+      .modal-item-desc {
+        font-size: 0.8rem;
+        margin-bottom: 0.75rem;
+      }
+      
+      .modal-item-action {
+        padding: 0.6rem 0.75rem;
+        font-size: 0.8rem;
+      }
+
+      /* Seller Form Responsive */
+      .form-group input,
+      .form-group select {
+        font-size: 16px;
+      }
+
+      .form-group label {
+        font-size: 0.9rem;
+      }
+
+      .form-btn {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.9rem;
+      }
+
+      .seller-info {
+        padding: 0.875rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .seller-info p {
+        font-size: 0.8rem;
+      }
+    }
+
+    /* Extra Small Phones (max 480px) */
+    @media (max-width: 480px) {
+      .main-content {
+        padding: 0.75rem;
+      }
+      
+      .hero {
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+      
+      .hero h2 {
+        font-size: 1.2rem;
+      }
+      
+      .hero p {
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+      }
+      
+      .hero-image {
+        width: 120px;
+        height: 90px;
+      }
+      
+      .quick-actions {
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+      
+      .user-actions {
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+      
+      .listings {
+        gap: 0.65rem;
+      }
+      
+      .listing-image {
+        height: 170px;
+        font-size: 1.5rem;
+      }
+      
+      .modal-grid {
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        gap: 0.5rem;
+      }
+      
+      .modal-item-card {
+        padding: 0.75rem;
+      }
+      
+      .modal-item-image {
+        font-size: 1.75rem;
+        margin-bottom: 0.5rem;
+      }
+    }
+
+    /* Large Screens (1280px and up) */
+    @media (min-width: 1280px) {
+      .main-content { padding: 2.5rem 3rem; }
+      .listings { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    }
+
+    /* ===== RESPONSIVE OVERHAUL ===== */
+    html, body { overflow-x: hidden; }
+
+    /* Laptop / tablet (≤1024px) */
+    @media (max-width: 1024px) {
+      .main-content { padding: 1.5rem 1.75rem; }
+      .hero-headline { font-size: 1.85rem; }
+    }
+
+    /* Tablet (≤880px) */
+    @media (max-width: 880px) {
+      .main-content { padding: 1.25rem 1.25rem; }
+      .top-bar { gap: 0.75rem; margin-bottom: 1.25rem; }
+      .search-container { max-width: none; }
+      .hero-left { gap: 1rem; }
+      .hero-left-actions { flex-direction: row; }
+      .hero-headline { font-size: 1.75rem; }
+      .mc-arrow-btn { width: 2.1rem; height: 2.1rem; font-size: .9rem; }
+      .mc-arrow-btn.left { left: -0.9rem; }
+      .mc-arrow-btn.right { right: -0.9rem; }
+      .user-actions { gap: 1rem; }
+      .quick-actions { gap: 0.75rem; }
+    }
+
+    /* Phone (≤600px) — single-card carousel */
+    @media (max-width: 600px) {
+      .main-content { padding: 1rem; }
+      .top-bar { flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1rem; }
+      .search-input { font-size: 0.85rem; padding: 0.7rem 0.9rem 0.7rem 2.5rem; }
+      .top-bar-icons .avatar { display: none; }
+      .hero-split { gap: 1rem; }
+      .hero-headline { font-size: 1.5rem; }
+      .hero-eyebrow { font-size: 0.75rem; }
+      .hero-desc { font-size: 0.84rem; margin-bottom: 1rem; }
+      .hero-cta-primary, .hero-cta-secondary { padding: 0.6rem 1rem; font-size: 0.82rem; }
+      .hero-stat-num { font-size: 1.1rem; }
+      .hero-stat-label { font-size: 0.68rem; }
+      .hero-left-actions { flex-direction: row; }
+      .mc-card { flex: 0 0 100%; }
+      .mc-skel { flex: 0 0 100%; }
+      .mc-arrow-btn { display: none; }
+      .quick-actions { gap: 0.6rem; }
+      .user-actions { gap: 0.6rem; }
+      .listings { gap: 0.75rem; }
+      .listing-image { height: 180px; }
+    }
+
+    /* Very small phones (≤380px) */
+    @media (max-width: 380px) {
+      .main-content { padding: 0.75rem; }
+      .hero-btns { flex-direction: column; }
+      .hero-cta-primary, .hero-cta-secondary { width: 100%; text-align: center; }
+      .user-actions { grid-template-columns: 1fr; }
+      .quick-actions { grid-template-columns: repeat(2, 1fr); }
+      .listings { grid-template-columns: 1fr; }
+      .listing-image { height: 160px; }
+    }
+
+    /* ══ BConnect Branded Skeleton — Home Page ══ */
+    @keyframes bc-shimmer { 0%{left:-100%} 100%{left:200%} }
+    .bc-sk { background:#eef0f3; border-radius:6px; }
+    .bc-skel {
+      background:#fff; border-radius:1rem; overflow:hidden;
+      position:relative; border:1px solid #f1f5f9;
+      box-shadow:0 1px 8px rgba(0,0,0,.05);
+    }
+    .bc-skel::after {
+      content:''; position:absolute; top:0; left:-100%;
+      width:55%; height:100%;
+      background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.62) 50%,transparent 100%);
+      animation:bc-shimmer 1.7s ease-in-out infinite;
+      z-index:9; pointer-events:none;
+    }
+    .bc-skel-img-wrap { position:relative; width:100%; min-height:150px; overflow:hidden; }
+    .bc-skel-img-fill { position:absolute; inset:0; border-radius:0; }
+    .bc-skel-logo {
+      position:absolute; top:6px; right:6px; width:44px; height:44px;
+      object-fit:contain; z-index:12; pointer-events:none;
+      opacity:.2; filter:grayscale(1);
+    }
+    .bc-skel-pill { position:absolute; top:8px; left:8px; width:52px; height:17px; border-radius:999px; z-index:11; }
+    .bc-skel-body { padding:.65rem .8rem .75rem; }
+    .bc-skel-title-row { display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:.22rem; }
+    .bc-skel-title { height:13px; flex:1; border-radius:5px; }
+    .bc-skel-fav   { width:16px; height:16px; border-radius:50%; flex-shrink:0; }
+    .bc-skel-price { width:72px; height:14px; border-radius:5px; margin-top:.3rem; }
+    /* Featured row cards */
+    .bc-skel-feat {
+      background:#fff; border-radius:1rem; overflow:hidden;
+      position:relative; border:1px solid #f1f5f9;
+      box-shadow:0 1px 8px rgba(0,0,0,.05);
+      flex:0 0 210px;
+    }
+    .bc-skel-feat::after {
+      content:''; position:absolute; top:0; left:-100%;
+      width:55%; height:100%;
+      background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.62) 50%,transparent 100%);
+      animation:bc-shimmer 1.7s ease-in-out infinite;
+      z-index:9; pointer-events:none;
+    }
+  </style>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+  <div class="flex min-h-screen">
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+
+      <!-- TOP BAR -->
+      <div class="top-bar">
+        <div class="top-bar-icons">
+          <button class="icon-btn" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border-radius:10px;padding:.4rem .6rem;box-shadow:0 2px 8px rgba(99,102,241,.3);font-size:1.05rem;" title="AI Assistant" onclick="window.location.href='ai-assistant.html'"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg></button>
+          <button class="icon-btn"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="badge">3</span></button>
+          <button class="icon-btn"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg><span class="badge">5</span></button>
+          <div class="avatar">JD</div>
+        </div>
+      </div>
+
+      <!-- HERO -->
+      <section class="hero-split">
+        <!-- Top: headline + CTA + stats in one row -->
+        <div class="hero-left">
+          <div class="hero-left-text">
+            <p class="hero-eyebrow"><i data-lucide="map-pin" style="width:13px;height:13px;vertical-align:-2px;margin-right:4px;color:#a78bfa"></i>Kenya's #1 Property Platform</p>
+            <h1 class="hero-headline">Find your<br><span>perfect home</span></h1>
+            <p class="hero-desc">Browse verified properties, marketplace products and professional services — all in one place.</p>
+          </div>
+          <div class="hero-left-actions">
+            <div class="hero-btns" style="margin-bottom:0">
+              <button class="hero-cta-primary" onclick="navigateTo('products.html')"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Explore</button>
+              <button class="hero-cta-secondary" onclick="navigateTo('products.html')"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Marketplace</button>
+            </div>
+            <div class="hero-stats">
+              <div class="hero-stat">
+                <span class="hero-stat-num" id="stat-properties">120+</span>
+                <span class="hero-stat-label">Listings</span>
+              </div>
+              <div class="hero-stat-divider"></div>
+              <div class="hero-stat">
+                <span class="hero-stat-num">300+</span>
+                <span class="hero-stat-label">Users</span>
+              </div>
+              <div class="hero-stat-divider"></div>
+              <div class="hero-stat">
+                <span class="hero-stat-num">3</span>
+                <span class="hero-stat-label">Categories</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Full-width carousel -->
+        <div class="hero-right">
+          <button class="mc-arrow-btn left" onclick="mcSlide(-1)">&#8249;</button>
+          <div class="mc-track-wrap">
+            <div class="mc-track" id="mc-track">
+              <div class="mc-skel" id="mc-skel-1">
+                <div class="mc-skel-pill"></div>
+                <img src="/bconnect-badge-nobg.png" class="mc-skel-badge" alt="">
+                <div class="mc-skel-overlay"><div class="mc-skel-title"></div></div>
+              </div>
+              <div class="mc-skel" id="mc-skel-2" style="animation-delay:.15s">
+                <div class="mc-skel-pill"></div>
+                <img src="/bconnect-badge-nobg.png" class="mc-skel-badge" alt="">
+                <div class="mc-skel-overlay"><div class="mc-skel-title"></div></div>
+              </div>
+            </div>
+          </div>
+          <button class="mc-arrow-btn right" onclick="mcSlide(1)">&#8250;</button>
+          <div class="mc-nav">
+            <div class="mc-dots" id="mc-dots"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ROLE DASHBOARD BANNER (shown when user has an auto-assigned role) -->
+      <div id="role-banner" style="display:none;margin-bottom:18px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border-radius:14px;padding:16px 20px;display:none;align-items:center;gap:14px;box-shadow:0 4px 18px rgba(124,58,237,.25)">
+        <div id="role-banner-icon" style="font-size:28px;flex-shrink:0"></div>
+        <div style="flex:1;min-width:0">
+          <div id="role-banner-title" style="font-size:14px;font-weight:800;color:#fff;margin-bottom:2px"></div>
+          <div id="role-banner-sub" style="font-size:12px;color:rgba(255,255,255,.78)"></div>
+        </div>
+        <a id="role-banner-btn" href="#" style="flex-shrink:0;background:#fff;color:#7c3aed;border-radius:9px;padding:8px 18px;font-size:13px;font-weight:800;text-decoration:none;white-space:nowrap;transition:opacity .2s" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">Go to Dashboard →</a>
+        <button onclick="document.getElementById('role-banner').style.display='none'" style="flex-shrink:0;background:rgba(255,255,255,.18);border:none;color:#fff;border-radius:6px;padding:4px 8px;font-size:16px;cursor:pointer;line-height:1">✕</button>
+      </div>
+
+      <!-- FEATURED LISTINGS -->
+      <div class="featured-section">
+        <div class="section-header">
+          <h3 class="section-title"><i data-lucide="star" style="width:18px;height:18px;color:#f59e0b;vertical-align:-3px;margin-right:6px"></i>Featured Listings</h3>
+          <a class="see-all" onclick="navigateTo('products.html')">See All →</a>
+        </div>
+        <div class="featured-scroll-wrap">
+          <div class="featured-row" id="featured-row">
+            <div class="feat-empty" id="feat-loading">Loading featured listings…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUICK ACTIONS -->
+      <div class="quick-actions">
+        <div class="action-card"><span class="action-icon"><i data-lucide="layout-dashboard" style="width:28px;height:28px"></i></span>Dashboard</div>
+        <div class="action-card"><span class="action-icon"><i data-lucide="building-2" style="width:28px;height:28px"></i></span>Properties</div>
+        <div class="action-card"><span class="action-icon"><i data-lucide="credit-card" style="width:28px;height:28px"></i></span>Pay Rent</div>
+        <div class="action-card"><span class="action-icon"><i data-lucide="clipboard-list" style="width:28px;height:28px"></i></span>Orders</div>
+      </div>
+
+      <!-- USER ACTION CARDS -->
+      <div class="user-actions">
+        <div class="user-card landlord" onclick="navigateTo('landlord.html')"><i data-lucide="building" style="width:28px;height:28px;margin-bottom:.5rem;color:#059669"></i>
+          <h3> I'm a Landlord</h3>
+          <p>Manage properties & tenants</p>
+        </div>
+
+        <div class="user-card buyer" onclick="navigateTo('products.html')"><i data-lucide="shopping-bag" style="width:28px;height:28px;margin-bottom:.5rem;color:#2563eb"></i>
+          <h3> I want to Buy</h3>
+          <p>Browse marketplace</p>
+        </div>
+
+        <div class="user-card seller" onclick="handleSellerClick()"><i data-lucide="tag" style="width:28px;height:28px;margin-bottom:.5rem;color:#d97706"></i>
+          <h3> I want to Sell</h3>
+          <p>List your products</p>
+        </div>
+
+        <div class="user-card service" onclick="navigateTo('services.html')"><i data-lucide="wrench" style="width:28px;height:28px;margin-bottom:.5rem;color:#7c3aed"></i>
+          <h3> I need a Service</h3>
+          <p>Book services</p>
+        </div>
+      </div>
+
+      <!-- LISTINGS -->
+      <div class="section-header">
+        <h3 class="section-title"><i data-lucide="award" style="width:18px;height:18px;color:#6366f1;vertical-align:-3px;margin-right:6px"></i>Top Sellers</h3>
+        <a class="see-all" onclick="navigateTo('products.html')">See All →</a>
+      </div>
+      <div class="listings" id="listings-container">
+        <!-- skeletons inserted by JS on DOMContentLoaded -->
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- LISTING DETAIL MODAL -->
+  <div class="ld-overlay" id="ld-overlay" onclick="closeListingModal(event)">
+    <div class="ld-modal" id="ld-modal">
+      <div class="ld-img" id="ld-img">
+        <button class="ld-close" onclick="document.getElementById('ld-overlay').classList.remove('open')"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="ld-body">
+        <div class="ld-badge" id="ld-cat"></div>
+        <div class="ld-title" id="ld-title"></div>
+        <div class="ld-price" id="ld-price"></div>
+        <div class="ld-row" id="ld-meta-row"></div>
+        <div class="ld-desc" id="ld-desc"></div>
+        <div class="ld-actions">
+          <button class="ld-btn-primary" id="ld-cta">View Full Details</button>
+          <button class="ld-btn-outline" onclick="document.getElementById('ld-overlay').classList.remove('open')">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Use relative URL for API calls
+    const API_BASE_URL = '';
+    
+    // Get auth token from localStorage or sessionStorage
+    function getAuthToken() {
+      return localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+    }
+
+    // Fetch wrapper with auth
+    async function fetchWithAuth(url, options = {}) {
+      const token = getAuthToken();
+      const headers = {
+        'Content-Type': 'application/json',
+        ...options.headers
+      };
+      
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      
+      return fetch(url, { ...options, headers });
+    }
+    
+    function navigateTo(page) {
+      window.location.href = page;
+    }
+    
+    // Format price to KES
+    function formatPrice(price) {
+      if (!price && price !== 0) return 'KES 0';
+      return new Intl.NumberFormat('en-KE', {
+        style: 'currency',
+        currency: 'KES',
+        minimumFractionDigits: 0
+      }).format(price);
+    }
+
+    // Read-more toggle
+    window.toggleReadMore = function(btn) {
+      const p = btn.previousElementSibling;
+      const expanded = !p.classList.contains('clamped');
+      p.classList.toggle('clamped', expanded);
+      btn.textContent = expanded ? 'Read more ›' : 'Show less ‹';
+    };
+
+    // Favourite toggle (heart icon)
+    window.toggleFav = function(btn) {
+      btn.classList.toggle('liked');
+      btn.innerHTML = btn.classList.contains('liked') ? `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#ef4444" stroke="#ef4444" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>` : `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
+    };
+
+    function descHtml(text, limit) {
+      const str = (text || '').trim();
+      if (!str) return '';
+      const needsClamp = str.length > (limit || 120);
+      return `<p class="modal-item-desc${needsClamp ? ' clamped' : ''}">${str}</p>${needsClamp ? '<button class="modal-read-more" onclick="toggleReadMore(this)">Read more ›</button>' : ''}`;
+    }
+    
+    // Get category badge
+    function getCategoryBadge(category) {
+      const badges = {
+        'rent': ' For Rent',
+        'sale': ' For Sale',
+        'electronics': ' Electronics',
+        'vehicles': ' Vehicles',
+        'furniture': ' Furniture',
+        'clothing': ' Clothing',
+        'services': ' Services',
+        'jobs': ' Jobs',
+        'housing': ' Housing'
+      };
+      return badges[category?.toLowerCase()] || ' Other';
+    }
+
+    // Get category icon
+    function getCategoryIcon(category) {
+      const icons = {
+        'rent': 'home',
+        'sale': 'tag',
+        'electronics': 'zap',
+        'vehicles': 'car',
+        'furniture': 'armchair',
+        'clothing': 'shirt',
+        'services': 'wrench',
+        'jobs': 'briefcase',
+        'housing': 'building-2'
+      };
+      return icons[category?.toLowerCase()] || 'package';
+    }
+    
+    // Image fallbacks per category for Popular Listings
+    const LISTING_IMGS = {
+      rent:        'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80',
+      property:    'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80',
+      electronics: 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=600&q=80',
+      vehicles:    'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600&q=80',
+      furniture:   'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80',
+      clothing:    'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&q=80',
+      food:        'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80',
+      service:     'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&q=80',
+      default:     'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=80',
+    };
+
+    function listingImg(item) {
+      const url = item.image_url || item.imageUrl || (item.images && item.images[0]) || item.image || '';
+      if (url) return url;
+      const c = (item.category || '').toLowerCase();
+      for (const key of Object.keys(LISTING_IMGS)) {
+        if (c.includes(key)) return LISTING_IMGS[key];
+      }
+      return LISTING_IMGS.default;
+    }
+
+    function listingCatLabel(item) {
+      const c = (item.category || '').toLowerCase();
+      if (c.includes('service')) return 'Service';
+      if (c.includes('electronics')) return 'Electronics';
+      if (c.includes('vehicle')) return 'Vehicles';
+      if (c.includes('furniture')) return 'Furniture';
+      if (c.includes('clothing')) return 'Clothing';
+      if (c.includes('property') || c.includes('rent') || c.includes('sale')) return 'Property';
+      return item.category || 'Listing';
+    }
+
+    function skelCards(n) {
+      return Array.from({length:n}, (_,i) => `
+        <div class="bc-skel" style="animation-delay:${i*0.1}s">
+          <div class="bc-skel-img-wrap">
+            <div class="bc-skel-img-fill bc-sk"></div>
+            <div class="bc-skel-pill bc-sk"></div>
+            <img src="/bconnect-badge-nobg.png" class="bc-skel-logo" alt="">
+          </div>
+          <div class="bc-skel-body">
+            <div class="bc-skel-title-row">
+              <div class="bc-skel-title bc-sk"></div>
+              <div class="bc-skel-fav bc-sk"></div>
+            </div>
+            <div class="bc-skel-price bc-sk"></div>
+          </div>
+        </div>`).join('');
+    }
+
+    function skelFeatCards(n) {
+      return Array.from({length:n}, (_,i) => `
+        <div class="bc-skel-feat" style="animation-delay:${i*0.1}s">
+          <div class="bc-skel-img-wrap" style="min-height:130px">
+            <div class="bc-skel-img-fill bc-sk"></div>
+            <img src="/bconnect-badge-nobg.png" class="bc-skel-logo" alt="">
+          </div>
+          <div class="bc-skel-body">
+            <div class="bc-skel-title bc-sk" style="width:80%;margin-bottom:.3rem"></div>
+            <div class="bc-skel-price bc-sk"></div>
+          </div>
+        </div>`).join('');
+    }
+
+    // Load Top Sellers — fetches featured sellers (admin-chosen or auto top-5 by listings)
+    async function loadListings() {
+      const container = document.getElementById('listings-container');
+      container.innerHTML = skelCards(5);
+      try {
+        const fsRes = await fetch('/api/featured-sellers').catch(() => null);
+        if (fsRes && fsRes.ok) {
+          const fsData = await fsRes.json();
+          if (fsData.sellers && fsData.sellers.length > 0) {
+            container.innerHTML = fsData.sellers.map((seller) => {
+              const sellerName   = seller.name;
+              const avatarLetter = sellerName.charAt(0).toUpperCase() || 'S';
+              const avatarHtml   = seller.avatar_url
+                ? `<img src="${seller.avatar_url}" alt="${sellerName}" onerror="this.parentNode.innerHTML='${avatarLetter}'">`
+                : avatarLetter;
+              const totalLabel = seller.listingCount > (seller.listings || []).length
+                ? `${seller.listingCount} items`
+                : `${(seller.listings || []).length} item${(seller.listings || []).length !== 1 ? 's' : ''}`;
+
+              const itemCards = (seller.listings || []).map((item) => {
+                const img      = listingImg(item);
+                const title    = item.title || item.name || 'Untitled';
+                const price    = item.price || item.rate || 0;
+                const cat      = listingCatLabel(item);
+                const priceStr = price ? `KSh ${Number(price).toLocaleString()}` : 'Contact for price';
+                const data     = encodeURIComponent(JSON.stringify({ title, price: priceStr, img, cat, description: item.description || item.details || '', location: item.location || '', seller: sellerName, isService: !!(item.listing_type === 'service') }));
+                return `
+                  <div class="ts-item-card" onclick="openListingModal('${data}')">
+                    <img class="ts-item-card-img" src="${img}" alt="${title}" loading="lazy" onerror="this.src=''" onload="this.style.opacity=1" style="opacity:0;transition:opacity .3s">
+                    <div class="ts-item-card-body">
+                      <div class="ts-item-card-title">${title}</div>
+                      <div class="ts-item-card-price">${priceStr}</div>
+                      <div class="ts-item-card-cat">${cat}</div>
+                      <button class="ts-item-card-btn" onclick="event.stopPropagation();openListingModal('${data}')">View Details</button>
+                    </div>
+                  </div>`;
+              }).join('');
+
+              const seeAllUrl = `products.html?seller=${encodeURIComponent(seller._id)}&seller_name=${encodeURIComponent(sellerName)}`;
+              return `
+                <div class="ts-slot">
+                  <div class="ts-seller-row">
+                    <div class="ts-seller-avatar">${avatarHtml}</div>
+                    <div class="ts-seller-info">
+                      <span class="ts-seller-name">${sellerName}</span>
+                      <span class="ts-seller-sub">${totalLabel}</span>
+                    </div>
+                    <span class="ts-seller-badge">⭐ Top Seller</span>
+                    <a href="${seeAllUrl}" class="ts-see-all-link">See All →</a>
+                  </div>
+                  <div class="ts-items-row">${itemCards}</div>
+                </div>`;
+            }).join('');
+            return;
+          }
+        }
+        // Fallback: show listings from homepage data
+        let products = [], services = [], housing = [];
+        const homeData = await window._homeDataPromise;
+        if (homeData) {
+          if (homeData.products) products = homeData.products.slice(0, 20);
+          if (homeData.services) services = homeData.services.slice(0, 10).map(s => ({ ...s, _isService: true, _type: 'service' }));
+          if (homeData.housing) housing = homeData.housing.slice(0, 10).map(h => ({ ...h, _isHousing: true, _type: 'housing' }));
+        }
+        const buckets = [products, services, housing].filter(b => b.length > 0);
+        const seen = new Set();
+        let items = [];
+        const maxLen = Math.max(...buckets.map(b => b.length), 0);
+        for (let i = 0; i < maxLen; i++) {
+          for (const bucket of buckets) {
+            if (i < bucket.length) {
+              const id = String(bucket[i]._id);
+              if (!seen.has(id)) { seen.add(id); items.push(bucket[i]); }
+            }
+          }
+        }
+        const seenSellers = new Set();
+        const finalItems = [];
+        for (const item of items) {
+          const sellerKey = (item.sellerName || item.seller || item.sellerId || '').toString().trim().toLowerCase();
+          if (sellerKey && seenSellers.has(sellerKey)) continue;
+          if (sellerKey) seenSellers.add(sellerKey);
+          finalItems.push(item);
+        }
+        if (finalItems.length > 0) {
+          container.innerHTML = finalItems.map((item) => {
+            const img       = listingImg(item);
+            const title     = item.title || item.name || 'Untitled';
+            const price     = item.price || item.rate || 0;
+            const cat       = listingCatLabel(item);
+            const priceStr  = price ? `KSh ${Number(price).toLocaleString()}` : 'Contact for price';
+            const location  = item.location ? `· ${item.location}` : '';
+            const sellerRaw = (item.sellerName || item.seller || 'BConnect Seller').toString().trim();
+            const avatarLetter = sellerRaw.charAt(0).toUpperCase() || 'S';
+            const data = encodeURIComponent(JSON.stringify({ title, price: priceStr, img, cat, description: item.description || item.details || '', location: item.location || '', seller: sellerRaw, isService: !!item._isService }));
+            return `
+              <div class="ts-slot">
+                <div class="ts-seller-row">
+                  <div class="ts-seller-avatar">${avatarLetter}</div>
+                  <div class="ts-seller-info">
+                    <span class="ts-seller-name">${sellerRaw}</span>
+                    <span class="ts-seller-sub">${cat} ${location}</span>
+                  </div>
+                  <span class="ts-seller-badge">Seller</span>
+                </div>
+                <div class="listing-card" onclick="openListingModal('${data}')">
+                  <div class="listing-img-wrap">
+                    <img src="${img}" alt="${title}" loading="lazy" decoding="async" onload="this.classList.add('img-loaded')" onerror="this.classList.add('img-loaded')">
+                    <span class="listing-badge">${cat}</span>
+                  </div>
+                  <div class="listing-content">
+                    <div class="listing-top-row">
+                      <div class="listing-title">${title}</div>
+                      <button class="card-fav" onclick="event.stopPropagation();toggleFav(this)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+                    </div>
+                    <div class="listing-price">${priceStr}</div>
+                  </div>
+                  <div class="listing-feed-actions" onclick="event.stopPropagation()">
+                    <button class="listing-feed-btn primary" onclick="openListingModal('${data}')">View Listing</button>
+                    <button class="listing-feed-btn outline" onclick="toggleFav(this.previousElementSibling)">Save</button>
+                  </div>
+                </div>
+              </div>`;
+          }).join('');
+        } else {
+          container.innerHTML = '<p style="color:var(--gray-500);padding:1rem;grid-column:1/-1">No listings available</p>';
+        }
+      } catch (error) {
+        console.error('Error loading listings:', error);
+        container.innerHTML = '<p style="color:var(--gray-500);padding:1rem;grid-column:1/-1">Failed to load listings</p>';
+      }
+    }
+    
+    // ===== MULTI-CARD HERO CAROUSEL =====
+    (function() {
+      const FALLBACK_IMGS = {
+        property: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80',
+        product:  'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=80',
+        service:  'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&q=80'
+      };
+      const CATS = [
+        { key: 'property', label: 'Property',  color: '#4f46e5', badge: 'FOR RENT',  period: '/ month' },
+        { key: 'product',  label: 'Product',   color: '#0ea5e9', badge: 'FOR SALE',  period: '' },
+        { key: 'service',  label: 'Service',   color: '#10b981', badge: 'SERVICE',   period: '/ service' }
+      ];
+
+      let mcOffset = 0;   // current page index
+      let mcTotal  = 0;   // total number of cards
+      let mcVisible = 3;  // cards visible at once
+      let mcTimer  = null;
+
+      function catMeta(item) {
+        const c = (item.category || '').toLowerCase();
+        if (c.includes('service')) return CATS[2];
+        if (c.includes('product')) return CATS[1];
+        return CATS[0];
+      }
+
+      const TYPE_COLOR = { Property:'#4f46e5', Service:'#10b981', Product:'#0ea5e9', Banner:'#7c3aed', Event:'#f59e0b' };
+      const TYPE_BADGE = { Property:'FOR RENT', Service:'SERVICE', Product:'FOR SALE', Banner:'FEATURED', Event:' TICKETS' };
+
+      function buildEventCountdown(eventDate) {
+        if (!eventDate) return '';
+        const now = new Date();
+        const target = new Date(eventDate);
+        const diff = target - now;
+        if (diff <= 0) return '<span class="mc-cd-badge mc-cd-ended">Event Ended</span>';
+        const totalSecs = Math.floor(diff / 1000);
+        const days  = Math.floor(totalSecs / 86400);
+        const hours = Math.floor((totalSecs % 86400) / 3600);
+        const mins  = Math.floor((totalSecs % 3600) / 60);
+        let label = '';
+        let urgency = '';
+        if (days > 0) {
+          label = days + 'd ' + hours + 'h remaining';
+          urgency = days <= 1 ? 'mc-cd-soon' : '';
+        } else if (hours > 0) {
+          label = hours + 'h ' + mins + 'm remaining';
+          urgency = 'mc-cd-soon';
+        } else {
+          label = mins + 'm remaining';
+          urgency = 'mc-cd-urgent';
+        }
+        return `<span class="mc-cd-badge ${urgency}">⏱ ${label}</span>`;
+      }
+
+      function buildSliderCard(s) {
+        const img   = s.imageUrl || FALLBACK_IMGS.property;
+        const link  = s.link || '#';
+        const countdown = s.type === 'Event' ? buildEventCountdown(s.event_date) : '';
+        const card  = document.createElement('div');
+        card.className = 'mc-card';
+        card.style.cssText = 'background:transparent;';
+        card.onclick = () => { if (link && link !== '#') window.location.href = link; };
+        card.innerHTML = `
+          <div class="mc-card-img" style="position:relative;height:100%;">
+            <img src="${img}" alt="${s.title}" loading="lazy" style="width:100%;height:100%;object-fit:contain;display:block;background:#f8fafc;">
+            ${countdown}
+            <div style="position:absolute;bottom:0;left:0;right:0;padding:1.8rem 0.75rem 0.6rem;background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 100%);">
+              <div style="color:#fef9c3;font-size:0.9rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 4px rgba(0,0,0,.4);">${s.title}</div>
+            </div>
+          </div>`;
+        return card;
+      }
+
+      function buildCard(item) {
+        const meta  = catMeta(item);
+        const img   = item.image_url || item.imageUrl || (item.images && item.images[0]) || item.image || FALLBACK_IMGS[meta.key];
+        const title = item.title || item.name || 'Listing';
+        const card = document.createElement('div');
+        card.className = 'mc-card';
+        card.style.cssText = 'background:transparent;';
+        card.onclick = () => navigateTo('products.html');
+        card.innerHTML = `
+          <div class="mc-card-img" style="position:relative;height:100%;">
+            <img src="${img}" alt="${title}" loading="lazy" style="width:100%;height:100%;object-fit:contain;display:block;background:#f8fafc;">
+            <div style="position:absolute;bottom:0;left:0;right:0;padding:1.8rem 0.75rem 0.6rem;background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 100%);">
+              <div style="color:#fef9c3;font-size:0.9rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 4px rgba(0,0,0,.4);">${title}</div>
+            </div>
+          </div>`;
+        return card;
+      }
+
+      function mcPages() { return Math.max(1, mcTotal - mcVisible + 1); }
+
+      function mcBuildClones() {
+        const track = document.getElementById('mc-track');
+        if (!track) return;
+        track.querySelectorAll('.mc-clone').forEach(c => c.remove());
+        const realCards = Array.from(track.querySelectorAll('.mc-card:not(.mc-clone)'));
+        const count = Math.min(mcVisible, realCards.length);
+        for (let i = 0; i < count; i++) {
+          const clone = realCards[i].cloneNode(true);
+          clone.classList.add('mc-clone');
+          track.appendChild(clone);
+        }
+      }
+
+      function mcRender(instant) {
+        const track = document.getElementById('mc-track');
+        if (!track) return;
+        const cards = track.querySelectorAll('.mc-card:not(.mc-clone)');
+        if (!cards.length) return;
+        const cardW = cards[0].getBoundingClientRect().width;
+        const gap   = parseFloat(getComputedStyle(track).gap) || 0;
+        const w = cardW + gap;
+        if (instant) {
+          track.style.transition = 'none';
+          track.style.transform = `translateX(-${mcOffset * w}px)`;
+          track.getBoundingClientRect(); // force reflow
+          track.style.transition = '';
+        } else {
+          track.style.transform = `translateX(-${mcOffset * w}px)`;
+        }
+        const dotIndex = mcOffset % mcPages();
+        document.querySelectorAll('.mc-dot').forEach((d, i) => {
+          d.classList.toggle('active', i === dotIndex);
+        });
+        if (mcOffset >= mcPages()) {
+          track.addEventListener('transitionend', function snapBack() {
+            track.removeEventListener('transitionend', snapBack);
+            mcOffset = mcOffset % mcPages();
+            mcRender(true);
+          }, { once: true });
+        }
+      }
+
+      function mcBuildDots() {
+        const dotsEl = document.getElementById('mc-dots');
+        if (!dotsEl) return;
+        dotsEl.innerHTML = '';
+        const pages = mcPages();
+        for (let i = 0; i < pages; i++) {
+          const d = document.createElement('button');
+          d.className = 'mc-dot' + (i === 0 ? ' active' : '');
+          d.onclick = () => { mcOffset = i; mcRender(); mcAutoReset(); };
+          dotsEl.appendChild(d);
+        }
+      }
+
+      function mcAutoReset() {
+        clearInterval(mcTimer);
+        mcTimer = setInterval(() => {
+          mcOffset++;
+          if (mcOffset > mcPages()) mcOffset = mcPages();
+          mcRender();
+        }, 4000);
+      }
+
+      window.mcSlide = function(dir) {
+        if (dir > 0) {
+          mcOffset++;
+          if (mcOffset > mcPages()) mcOffset = mcPages();
+        } else {
+          mcOffset = ((mcOffset - 1) + mcPages()) % mcPages();
+        }
+        mcRender();
+        mcAutoReset();
+      };
+
+      function clearCarouselSkels() {
+        ['mc-skel-1','mc-skel-2','mc-skel-3'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.remove();
+        });
+      }
+
+      async function loadCarousel() {
+        const track   = document.getElementById('mc-track');
+
+        async function apiFetch(url) {
+          try {
+            const r = await fetchWithAuth(url);
+            const d = await r.json();
+            return d.products || d.services || [];
+          } catch { return []; }
+        }
+
+        // Use pre-fetched homepage data (already in flight since <head>)
+        let usedSliders = false;
+        try {
+          const homeData = await window._homeDataPromise;
+          const rawSliders = homeData ? homeData.sliders || [] : [];
+          const activeSlides = rawSliders.filter(s => s.active).sort((a, b) => (a.order || 0) - (b.order || 0));
+          if (activeSlides.length > 0) {
+            clearCarouselSkels();
+            activeSlides.forEach(s => track.appendChild(buildSliderCard(s)));
+            mcTotal   = activeSlides.length;
+            mcVisible = window.innerWidth <= 600 ? 1 : 2;
+            mcBuildDots();
+            mcBuildClones();
+            mcAutoReset();
+            usedSliders = true;
+            const statEl = document.getElementById('stat-properties');
+            if (statEl) statEl.textContent = mcTotal + '+';
+          }
+        } catch (e) { /* fall through to default */ }
+
+        if (usedSliders) return;
+
+        const homeData2 = await window._homeDataPromise;
+        const allItems = homeData2 ? (homeData2.products || []) : await apiFetch(`${API_BASE_URL}/api/products?limit=20`);
+        const services = homeData2 ? (homeData2.services || []) : await apiFetch(`${API_BASE_URL}/api/services`);
+
+        clearCarouselSkels();
+
+        // Take up to 3 from each category
+        const propItems = allItems.filter(i => !((i.category||'').toLowerCase().includes('product'))).slice(0, 3);
+        const prodItems = allItems.filter(i => (i.category||'').toLowerCase().includes('product')).slice(0, 3);
+        const svcItems  = services.slice(0, 3);
+        const picks = [...propItems, ...prodItems, ...svcItems];
+
+        if (!picks.length) {
+          track.innerHTML = '<div class="mc-loading">No listings found in database.</div>';
+          return;
+        }
+
+        picks.forEach(item => track.appendChild(buildCard(item)));
+        mcTotal   = picks.length;
+        mcVisible = window.innerWidth <= 600 ? 1 : 2;
+        mcBuildDots();
+        mcBuildClones();
+        mcAutoReset();
+
+        // Update property stat count
+        const statEl = document.getElementById('stat-properties');
+        if (statEl && mcTotal > 0) statEl.textContent = mcTotal + '+';
+
+        // Touch / swipe support
+        const wrap = document.querySelector('.mc-track-wrap');
+        if (wrap) {
+          let touchStartX = 0;
+          wrap.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+          wrap.addEventListener('touchend', e => {
+            const dx = e.changedTouches[0].clientX - touchStartX;
+            if (Math.abs(dx) > 40) {
+              const dir = dx < 0 ? 1 : -1;
+              if (dir > 0) { mcOffset++; if (mcOffset > mcPages()) mcOffset = mcPages(); }
+              else { mcOffset = ((mcOffset - 1) + mcPages()) % mcPages(); }
+              mcRender(); mcAutoReset();
+            }
+          }, { passive: true });
+        }
+
+        // Recalculate on resize
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(() => {
+            const newVis = window.innerWidth <= 600 ? 1 : window.innerWidth <= 880 ? 2 : 3;
+            if (newVis !== mcVisible) {
+              mcVisible = newVis;
+              mcOffset  = 0;
+              mcBuildDots();
+              mcBuildClones();
+              mcRender();
+            }
+          }, 150);
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', loadCarousel);
+    })();
+
+    // ===== LISTING DETAIL MODAL =====
+    function openListingModal(encodedData) {
+      const d = JSON.parse(decodeURIComponent(encodedData));
+      document.getElementById('ld-img').style.backgroundImage = `url('${d.img}')`;
+      document.getElementById('ld-cat').textContent = d.cat || 'Listing';
+      document.getElementById('ld-title').textContent = d.title;
+      document.getElementById('ld-price').textContent = d.price;
+
+      const metaRow = document.getElementById('ld-meta-row');
+      metaRow.innerHTML = '';
+      if (d.location) metaRow.innerHTML += `<div class="ld-meta"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"13\" height=\"13\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z\"/><circle cx=\"12\" cy=\"10\" r=\"3\"/></svg> Location: <span>${d.location}</span></div>`;
+      if (d.seller)   metaRow.innerHTML += `<div class="ld-meta"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"13\" height=\"13\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/></svg> Seller: <span>${d.seller}</span></div>`;
+      if (d.cat)      metaRow.innerHTML += `<div class="ld-meta"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"13\" height=\"13\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z\"/><line x1=\"7\" y1=\"7\" x2=\"7.01\" y2=\"7\"/></svg> Category: <span>${d.cat}</span></div>`;
+
+      const descEl = document.getElementById('ld-desc');
+      descEl.textContent = d.description || 'No additional description available.';
+      descEl.style.display = d.description ? '' : 'none';
+
+      document.getElementById('ld-cta').onclick = () => {
+        document.getElementById('ld-overlay').classList.remove('open');
+        navigateTo(d.isService ? 'services.html' : 'products.html');
+      };
+
+      document.getElementById('ld-overlay').classList.add('open');
+    }
+
+    function closeListingModal(e) {
+      if (e.target === document.getElementById('ld-overlay')) {
+        document.getElementById('ld-overlay').classList.remove('open');
+      }
+    }
+
+    // ===== FEATURED LISTINGS =====
+    async function loadFeaturedListings() {
+      const row = document.getElementById('featured-row');
+      row.innerHTML = skelFeatCards(5);
+      try {
+        const homeData = await window._homeDataPromise;
+        let items = homeData ? (homeData.featured || []) : [];
+
+        // Fall back to API if cache missed
+        if (!items.length) {
+          try {
+            const res = await fetchWithAuth(`${API_BASE_URL}/api/products?premium=featured&limit=12`);
+            if (res.ok) { const data = await res.json(); items = data.products || []; }
+          } catch(e) {}
+        }
+        // Fall back to recent products if no featured ones exist
+        if (!items.length && homeData && homeData.products) {
+          items = homeData.products.slice(0, 8);
+        }
+        if (!items.length) {
+          const fallRes = await fetchWithAuth(`${API_BASE_URL}/api/products?limit=8`);
+          if (fallRes.ok) {
+            const fallData = await fallRes.json();
+            items = fallData.products || [];
+          }
+        }
+
+        if (!items.length) {
+          row.innerHTML = '<div class="feat-empty">No listings available.</div>';
+          return;
+        }
+
+        row.innerHTML = items.map(item => {
+          const img      = listingImg(item);
+          const title    = item.title || item.name || 'Untitled';
+          const price    = item.price || item.rate || 0;
+          const cat      = listingCatLabel(item);
+          const priceStr = price ? `KSh ${Number(price).toLocaleString()}` : 'Contact';
+          const data = encodeURIComponent(JSON.stringify({ title, price: priceStr, img, cat, description: item.description || item.details || '', location: item.location || '', seller: item.sellerName || item.seller || '' }));
+          return `
+            <div class="feat-card" onclick="openListingModal('${data}')">
+              <div class="feat-card-img-wrap">
+                <img src="${img}" alt="${title}" loading="lazy" decoding="async" onload="this.classList.add('img-loaded')" onerror="this.classList.add('img-loaded')">
+                <span class="feat-card-star"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Featured</span>
+              </div>
+              <div class="feat-card-body">
+                <div class="feat-card-top-row">
+                  <div class="feat-card-title">${title}</div>
+                  <button class="card-fav" onclick="event.stopPropagation();toggleFav(this)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+                </div>
+                <div class="feat-card-price">${priceStr}</div>
+              </div>
+            </div>`;
+        }).join('');
+      } catch (e) {
+        row.innerHTML = '<div class="feat-empty">Could not load featured listings.</div>';
+      }
+    }
+
+    // Show dashboard banner for users with auto-assigned roles
+    function showRoleBanner() {
+      try {
+        const p = JSON.parse(localStorage.getItem('userProfile') || '{}');
+        const role = p.role;
+        const map = {
+          seller:    { icon:'🏪', title:'You have a Seller account', sub:'Manage your listings, orders and earnings', url:'seller-dashboard.html' },
+          landlord:  { icon:'🏠', title:'You have a Landlord account', sub:'Manage your properties and tenants', url:'landlord-dashboard.html' },
+          tenant:    { icon:'🔑', title:'You have a Tenant account', sub:'Pay rent, track payments and chat with your landlord', url:'tenant.html' },
+          organizer: { icon:'🎪', title:'You have an Organizer account', sub:'Manage your events and ticket sales', url:'organizer-dashboard.html' }
+        };
+        if (!map[role]) return;
+        const info = map[role];
+        document.getElementById('role-banner-icon').textContent = info.icon;
+        document.getElementById('role-banner-title').textContent = info.title;
+        document.getElementById('role-banner-sub').textContent = info.sub;
+        document.getElementById('role-banner-btn').href = info.url;
+        const banner = document.getElementById('role-banner');
+        if (banner) { banner.style.display = 'flex'; }
+      } catch(_) {}
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Show skeleton cards instantly before data arrives
+      document.getElementById('listings-container').innerHTML = skelCards(8);
+      loadListings();
+      loadFeaturedListings();
+      setupModalListeners();
+      setupClickHandlers();
+      showRoleBanner();
+
+      // Reveal top-bar icons after page is ready (prevents flash on reload)
+      var tbIcons = document.querySelector('.top-bar-icons');
+      if (tbIcons) tbIcons.style.opacity = '1';
+
+      // Auto-open seller modal if redirected from seller-dashboard "Login Required" screen
+      const openCreate = sessionStorage.getItem('openSellerModal');
+      const openLogin  = sessionStorage.getItem('openSellerLogin');
+      if (openCreate || openLogin) {
+        sessionStorage.removeItem('openSellerModal');
+        sessionStorage.removeItem('openSellerLogin');
+        showSellerView(openLogin ? 'login-form' : 'register-form');
+        openModal('seller-modal');
+      }
+    });
+
+    // ========== CLICK HANDLERS ==========
+    
+    function setupClickHandlers() {
+      // User Card Handlers
+      const userCards = document.querySelectorAll('.user-card');
+      userCards.forEach(card => {
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', function() {
+          if (this.classList.contains('landlord')) handleLandlordDashboardClick();
+          else if (this.classList.contains('buyer')) navigateTo('products.html');
+          // seller card uses onclick attribute directly — skip here to avoid double-fire
+          else if (this.classList.contains('service')) openServicesModal();
+        });
+      });
+
+      // Action Card Handlers
+      const actionCards = document.querySelectorAll('.action-card');
+      actionCards.forEach((card, i) => {
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', function() {
+          if (i === 0) openModal('dashboard-picker-modal');
+          else if (i === 1) navigateTo('tenant.html');
+          else if (i === 2) navigateTo('payrent.html');
+          else if (i === 3) navigateTo('orders.html');
+        });
+      });
+
+      // Hero Button
+      const heroBtn = document.querySelector('.btn-primary');
+      if (heroBtn) {
+        heroBtn.addEventListener('click', function() {
+          navigateTo('products.html');
+        });
+      }
+    }
+
+    // ========== MODAL FUNCTIONS ==========
+    
+    function setupModalListeners() {
+      const modals = document.querySelectorAll('.modal-overlay');
+      modals.forEach(modal => {
+        modal.addEventListener('click', function(e) {
+          if (e.target === this) {
+            closeModal(this.id);
+          }
+        });
+      });
+    }
+    
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+    
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      }
+    }
+    
+    // Housing Modal
+    async function openHousingModal() {
+      openModal('housing-modal');
+      const container = document.getElementById('housing-items');
+      container.innerHTML = '<p style="text-align: center; color: var(--gray-500); padding: 2rem;">Loading properties...</p>';
+      
+      try {
+        const response = await fetchWithAuth(`${API_BASE_URL}/api/products?category=housing`);
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.products && data.products.length > 0) {
+            container.innerHTML = data.products.map(property => `
+              <div class="modal-item-card">
+                <span class="modal-item-image"></span>
+                <h3 class="modal-item-title">${property.title || property.name || 'Property'}</h3>
+                <p class="modal-item-price">${formatPrice(property.price)}</p>
+                ${descHtml(property.description || 'Modern property in great location')}
+                <p class="modal-item-desc">Posted by ${property.seller_name || 'Property Owner'}</p>
+                <button class="modal-item-action" onclick="navigateTo('products.html')">View Details</button>
+              </div>
+            `).join('');
+          } else {
+            container.innerHTML = '<div class="modal-empty"><div class="modal-empty-icon"></div><p>No properties available</p></div>';
+          }
+        } else {
+          container.innerHTML = '<div class="modal-empty"><div class="modal-empty-icon"></div><p>Please login to view properties</p></div>';
+        }
+      } catch (error) {
+        console.error('Error loading housing:', error);
+        container.innerHTML = '<div class="modal-empty"><div class="modal-empty-icon"></div><p>Error loading properties</p></div>';
+      }
+    }
+    
+    // Services Modal
+    async function openServicesModal() {
+      openModal('services-modal');
+      const container = document.getElementById('services-items');
+      container.innerHTML = '<p style="text-align: center; color: var(--gray-500); padding: 2rem;">Loading services...</p>';
+      
+      try {
+        const response = await fetchWithAuth(`${API_BASE_URL}/api/services?limit=12`);
+        const data = await response.json();
+        
+        if (data.services && data.services.length > 0) {
+          container.innerHTML = data.services.map(service => `
+            <div class="modal-item-card">
+              <span class="modal-item-image"></span>
+              <h3 class="modal-item-title">${service.title || service.name || 'Service'}</h3>
+              <p class="modal-item-price">${formatPrice(service.price || service.rate || 0)}</p>
+              <p class="modal-item-meta">${service.category || 'Service'}</p>
+              ${descHtml(service.description || '')}
+              <button class="modal-item-action" onclick="navigateTo('services.html')">View Service</button>
+            </div>
+          `).join('');
+        } else {
+          container.innerHTML = '<div class="modal-empty"><div class="modal-empty-icon"></div><p>No services available</p></div>';
+        }
+      } catch (error) {
+        console.error('Error loading services:', error);
+        container.innerHTML = '<div class="modal-empty"><div class="modal-empty-icon"></div><p>Error loading services</p></div>';
+      }
+    }
+
+    // Seller Handler
+    async function handleSellerClick() {
+      const token = getAuthToken();
+      if (!token) {
+        // Not logged in — show auth-choice screen inside the modal
+        showSellerView('auth-choice');
+        openModal('seller-modal');
+        return;
+      }
+      try {
+        const response = await fetchWithAuth(`${API_BASE_URL}/api/auth/me`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.role === 'seller') {
+            navigateTo('seller-dashboard.html');
+            return;
+          }
+          showSellerView('register-form');
+          openModal('seller-modal');
+        } else {
+          showSellerView('auth-choice');
+          openModal('seller-modal');
+        }
+      } catch (error) {
+        console.error('Error checking seller status:', error);
+        showSellerView('auth-choice');
+        openModal('seller-modal');
+      }
+    }
+
+    function showSellerView(view) {
+      document.getElementById('seller-view-auth').style.display   = view === 'auth-choice'    ? '' : 'none';
+      document.getElementById('seller-view-login').style.display  = view === 'login-form'      ? '' : 'none';
+      document.getElementById('seller-view-form').style.display   = view === 'register-form'   ? '' : 'none';
+      // Update modal title
+      const titles = { 'auth-choice': ' Start Selling on BConnect', 'login-form': ' Seller Login', 'register-form': ' Become a Seller' };
+      document.getElementById('seller-modal-title').textContent = titles[view] || ' BConnect Seller';
+    }
+
+    // Seller login form submit
+    async function handleSellerLoginSubmit(e) {
+      e.preventDefault();
+      const email    = document.getElementById('sl-email').value.trim();
+      const password = document.getElementById('sl-pass').value;
+      const btn      = document.getElementById('sl-login-btn');
+      const err      = document.getElementById('sl-error');
+      if (!email || !password) { err.textContent = 'Please enter your email and password.'; err.style.display = ''; return; }
+      btn.disabled = true; btn.textContent = 'Logging in…'; err.style.display = 'none';
+      try {
+        const res  = await fetch(`${API_BASE_URL}/api/auth/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || data.error || 'Login failed');
+        localStorage.setItem('token', data.token);
+        if (data.refreshToken) localStorage.setItem('refreshToken', data.refreshToken);
+        closeModal('seller-modal');
+        if (data.user?.role === 'seller') { navigateTo('seller-dashboard.html'); }
+        else { showSellerView('register-form'); openModal('seller-modal'); }
+      } catch (err2) {
+        err.textContent = err2.message; err.style.display = '';
+        btn.disabled = false; btn.textContent = 'Login';
+      }
+    }
+
+    // Handle Seller Registration Form Submission
+    async function handleSellerFormSubmit(event) {
+      event.preventDefault();
+
+      const fullName     = document.getElementById('sr-fullname').value.trim();
+      const phone        = document.getElementById('sr-phone').value.trim();
+      const email        = document.getElementById('sr-email').value.trim();
+      const password     = document.getElementById('sr-password').value;
+      const businessName = document.getElementById('business-name').value.trim();
+      const businessType = document.getElementById('business-type').value;
+      const errEl        = document.getElementById('sr-error');
+      const btn          = document.getElementById('sr-submit-btn');
+
+      errEl.style.display = 'none';
+
+      if (!fullName || !email || !password || !businessName || !businessType) {
+        errEl.textContent = 'Please fill in all required fields.';
+        errEl.style.display = '';
+        return;
+      }
+      if (password.length < 6) {
+        errEl.textContent = 'Password must be at least 6 characters.';
+        errEl.style.display = '';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Creating account…';
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fullName,
+            email,
+            password,
+            phone:         phone || null,
+            role:          'seller',
+            business_name: businessName,
+            bio:           businessType
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || data.message || 'Registration failed');
+        }
+
+        // Auto-login: store token
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          if (data.refreshToken) localStorage.setItem('refreshToken', data.refreshToken);
+        }
+
+        closeModal('seller-modal');
+        bAlert(' Welcome, ' + fullName + '! Your seller account is ready.', 'success');
+        setTimeout(() => navigateTo('seller-dashboard.html'), 1200);
+
+      } catch (err) {
+        errEl.textContent = err.message;
+        errEl.style.display = '';
+        btn.disabled = false;
+        btn.textContent = 'Create Account →';
+      }
+    }
+
+    // Handle Landlord Dashboard Click
+    async function handleLandlordDashboardClick() {
+      try {
+        // Check if user has properties
+        const response = await fetch(`${API_BASE_URL}/api/landlord/properties`, { 
+          credentials: 'include' 
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          
+          // If user has properties, go to dashboard
+          if (data.properties && data.properties.length > 0) {
+            navigateTo('landlord.html');
+          } else {
+            // If no properties, show add property modal
+            generatePropertyCode();
+            openModal('landlord-property-modal');
+          }
+        } else {
+          // User not logged in or error, show add property modal
+          generatePropertyCode();
+          openModal('landlord-property-modal');
+        }
+      } catch (error) {
+        console.error('Error checking properties:', error);
+        generatePropertyCode();
+        openModal('landlord-property-modal');
+      }
+    }
+
+    // Generate Property Code
+    function generatePropertyCode() {
+      const timestamp = Date.now().toString().slice(-6);
+      const random = Math.random().toString(36).substring(2, 5).toUpperCase();
+      const propertyCode = `PROP-${timestamp}-${random}`;
+      
+      const codeInput = document.getElementById('property-code');
+      if (codeInput) {
+        codeInput.value = propertyCode;
+      }
+      
+      return propertyCode;
+    }
+
+    // Regenerate Property Code
+    function regeneratePropertyCode() {
+      generatePropertyCode();
+    }
+
+    // Handle Property Form Submission
+    async function handlePropertyFormSubmit(event) {
+      event.preventDefault();
+      
+      const propertyTitle = document.getElementById('property-title').value.trim();
+      const propertyCode = document.getElementById('property-code').value.trim();
+      
+      if (!propertyTitle || !propertyCode) {
+        bAlert('Please fill in all required fields.', 'warning');
+        return;
+      }
+      
+      try {
+        // Send property data to server
+        const response = await fetch(`${API_BASE_URL}/api/landlord/properties`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            title: propertyTitle,
+            propertyCode: propertyCode,
+            address: propertyTitle
+          })
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          // Close modal and redirect to landlord dashboard
+          closeModal('landlord-property-modal');
+          bAlert('Property added successfully! Property Code: ' + propertyCode, 'success');
+          navigateTo('landlord.html');
+        } else {
+          const error = await response.json();
+          bAlert('Error: ' + (error.message || 'Failed to add property'), 'error');
+        }
+      } catch (error) {
+        console.error('Error adding property:', error);
+        bAlert('Error: ' + error.message, 'error');
+      }
+    }
+  </script>
+  
+  <!-- MODALS -->
+  <div id="housing-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2> Available Properties</h2>
+        <button class="modal-close" onclick="closeModal('housing-modal')"></button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-grid" id="housing-items"></div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div id="services-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2> Available Services</h2>
+        <button class="modal-close" onclick="closeModal('services-modal')"></button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-grid" id="services-items"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SELLER MODAL -->
+  <div id="seller-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="seller-modal-title"> Start Selling on BConnect</h2>
+        <button class="modal-close" onclick="closeModal('seller-modal')"></button>
+      </div>
+      <div class="modal-body">
+
+        <!--  VIEW 1: Auth Choice (not logged in)  -->
+        <div id="seller-view-auth">
+          <div style="text-align:center;padding:10px 0 24px;">
+            <div style="font-size:52px;margin-bottom:12px;"></div>
+            <p style="font-size:15px;color:#374151;line-height:1.6;margin-bottom:24px;">Join thousands of sellers on BConnect.<br>List products, reach customers, grow your business.</p>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <button class="form-btn form-btn-primary" style="font-size:15px;padding:14px;" onclick="showSellerView('register-form')">
+               Create Seller Account
+            </button>
+            <button class="form-btn form-btn-secondary" style="font-size:15px;padding:14px;" onclick="showSellerView('login-form')">
+               Login to Existing Account
+            </button>
+          </div>
+          <p style="text-align:center;margin-top:18px;font-size:12px;color:#9ca3af;">Already a landlord? Use your existing login.</p>
+        </div>
+
+        <!--  VIEW 2: Seller Login  -->
+        <div id="seller-view-login" style="display:none">
+          <p style="font-size:13px;color:#6b7280;margin-bottom:20px;">Enter your BConnect account credentials to access your seller dashboard.</p>
+          <form onsubmit="handleSellerLoginSubmit(event)">
+            <div class="form-group">
+              <label>Email Address</label>
+              <input type="email" id="sl-email" placeholder="you@example.com" required style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:10px;font-size:14px;box-sizing:border-box;">
+            </div>
+            <div class="form-group" style="margin-top:14px;">
+              <label>Password</label>
+              <input type="password" id="sl-pass" placeholder="Your password" required style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:10px;font-size:14px;box-sizing:border-box;">
+            </div>
+            <p id="sl-error" style="display:none;color:#dc2626;font-size:13px;margin-top:8px;"></p>
+            <div class="form-actions" style="margin-top:20px;">
+              <button type="button" class="form-btn form-btn-secondary" onclick="showSellerView('auth-choice')">← Back</button>
+              <button type="submit" id="sl-login-btn" class="form-btn form-btn-primary">Login</button>
+            </div>
+          </form>
+          <p style="text-align:center;margin-top:16px;font-size:13px;color:#6b7280;">
+            Don't have an account? <a href="#" onclick="showSellerView('register-form');return false;" style="color:#7c3aed;font-weight:600;">Create one →</a>
+          </p>
+        </div>
+
+        <!--  VIEW 3: Register as Seller  -->
+        <div id="seller-view-form" style="display:none">
+          <div class="seller-info" style="margin-bottom:16px;">
+            <p>Fill in your details to create a free seller account and start listing products on BConnect.</p>
+          </div>
+          <form id="seller-form" onsubmit="handleSellerFormSubmit(event)">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div class="form-group" style="margin:0;">
+                <label for="sr-fullname">Full Name *</label>
+                <input type="text" id="sr-fullname" placeholder="Jane Mwangi" required style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:10px;font-size:13px;box-sizing:border-box;">
+              </div>
+              <div class="form-group" style="margin:0;">
+                <label for="sr-phone">Phone Number</label>
+                <input type="tel" id="sr-phone" placeholder="07XX XXX XXX" style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:10px;font-size:13px;box-sizing:border-box;">
+              </div>
+            </div>
+            <div class="form-group" style="margin-top:12px;">
+              <label for="sr-email">Email Address *</label>
+              <input type="email" id="sr-email" placeholder="you@example.com" required style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:10px;font-size:13px;box-sizing:border-box;">
+            </div>
+            <div class="form-group" style="margin-top:12px;">
+              <label for="sr-password">Password * <span style="font-weight:400;color:#9ca3af;">(min 6 characters)</span></label>
+              <input type="password" id="sr-password" placeholder="Create a strong password" required minlength="6" style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:10px;font-size:13px;box-sizing:border-box;">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;">
+              <div class="form-group" style="margin:0;">
+                <label for="business-name">Business Name *</label>
+                <input type="text" id="business-name" placeholder="e.g. Jane's Electronics" required style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:10px;font-size:13px;box-sizing:border-box;">
+              </div>
+              <div class="form-group" style="margin:0;">
+                <label for="business-type">Business Type *</label>
+                <select id="business-type" required style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:10px;font-size:13px;box-sizing:border-box;background:#fff;">
+                  <option value="">Select type</option>
+                  <option value="retail">Retail Store</option>
+                  <option value="wholesale">Wholesale</option>
+                  <option value="services">Services</option>
+                  <option value="electronics">Electronics</option>
+                  <option value="fashion">Fashion & Clothing</option>
+                  <option value="furniture">Furniture</option>
+                  <option value="home">Home & Garden</option>
+                  <option value="food">Food & Beverages</option>
+                  <option value="automotive">Automotive</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+            <p id="sr-error" style="display:none;color:#dc2626;font-size:13px;margin-top:10px;padding:8px 12px;background:#fef2f2;border-radius:8px;"></p>
+            <div class="form-actions" style="margin-top:18px;">
+              <button type="button" class="form-btn form-btn-secondary" onclick="showSellerView('auth-choice')">← Back</button>
+              <button type="submit" id="sr-submit-btn" class="form-btn form-btn-primary">Create Account →</button>
+            </div>
+          </form>
+          <p style="text-align:center;margin-top:14px;font-size:13px;color:#6b7280;">
+            Already have an account? <a href="#" onclick="showSellerView('login-form');return false;" style="color:#7c3aed;font-weight:600;">Login →</a>
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- LANDLORD PROPERTY MODAL -->
+  <div id="landlord-property-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2> Add New Property</h2>
+        <button class="modal-close" onclick="closeModal('landlord-property-modal')"></button>
+      </div>
+      <div class="modal-body">
+        <div class="seller-form-container">
+          <div class="seller-info">
+            <p>Add a new property to your landlord portfolio. Enter the property details and we'll auto-generate a unique property code for easy management.</p>
+          </div>
+          
+          <form id="landlord-property-form" onsubmit="handlePropertyFormSubmit(event)">
+            <div class="form-group">
+              <label for="property-title">Property Name/Title *</label>
+              <input 
+                type="text" 
+                id="property-title" 
+                name="propertyTitle" 
+                placeholder="e.g., Sunset Apartment, Modern 2-Bedroom House"
+                required
+              >
+              <p class="form-description">Enter a descriptive name for your property</p>
+            </div>
+
+            <div class="form-group">
+              <label for="property-code">Property Code</label>
+              <div style="display: flex; gap: 0.75rem; align-items: center;">
+                <input 
+                  type="text" 
+                  id="property-code" 
+                  name="propertyCode" 
+                  placeholder="Auto-generated"
+                  readonly
+                  style="background: var(--gray-100); cursor: not-allowed; flex: 1;"
+                >
+                <button type="button" class="form-btn form-btn-secondary" onclick="regeneratePropertyCode()" style="flex: 0 0 auto; width: auto; padding: 0.875rem 1rem;"> Generate</button>
+              </div>
+              <p class="form-description">Unique code for this property (automatically generated)</p>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="form-btn form-btn-secondary" onclick="closeModal('landlord-property-modal')">Cancel</button>
+              <button type="submit" class="form-btn form-btn-primary">Add Property</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- DASHBOARD PICKER MODAL -->
+  <div id="dashboard-picker-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width:420px;width:92%">
+      <div class="modal-header">
+        <h2 style="font-size:18px">Choose Your Dashboard</h2>
+        <button class="modal-close" onclick="closeModal('dashboard-picker-modal')"></button>
+      </div>
+      <div class="modal-body" style="padding:20px">
+        <p style="margin:0 0 18px;font-size:13.5px;color:#6b7280;text-align:center">Select the dashboard you want to access</p>
+        <div style="display:flex;flex-direction:column;gap:12px">
+
+          <div onclick="navigateTo('seller-dashboard.html');closeModal('dashboard-picker-modal')"
+            style="display:flex;align-items:center;gap:16px;padding:16px 18px;border-radius:12px;border:2px solid #fde68a;background:#fffbeb;cursor:pointer;transition:all .2s"
+            onmouseover="this.style.borderColor='#f59e0b';this.style.background='#fef3c7'"
+            onmouseout="this.style.borderColor='#fde68a';this.style.background='#fffbeb'">
+            <div style="width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🏪</div>
+            <div>
+              <div style="font-size:15px;font-weight:800;color:#92400e;margin-bottom:2px">Seller Dashboard</div>
+              <div style="font-size:12.5px;color:#b45309">Manage your listings, orders & earnings</div>
+            </div>
+            <div style="margin-left:auto;color:#d97706;font-size:18px">›</div>
+          </div>
+
+          <div onclick="navigateTo('tenant-dashboard.html');closeModal('dashboard-picker-modal')"
+            style="display:flex;align-items:center;gap:16px;padding:16px 18px;border-radius:12px;border:2px solid #bfdbfe;background:#eff6ff;cursor:pointer;transition:all .2s"
+            onmouseover="this.style.borderColor='#3b82f6';this.style.background='#dbeafe'"
+            onmouseout="this.style.borderColor='#bfdbfe';this.style.background='#eff6ff'">
+            <div style="width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#3b82f6,#2563eb);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🏠</div>
+            <div>
+              <div style="font-size:15px;font-weight:800;color:#1e40af;margin-bottom:2px">Tenant Dashboard</div>
+              <div style="font-size:12.5px;color:#2563eb">View your rental, payments & lease info</div>
+            </div>
+            <div style="margin-left:auto;color:#3b82f6;font-size:18px">›</div>
+          </div>
+
+          <div onclick="handleLandlordDashboardClick();closeModal('dashboard-picker-modal')"
+            style="display:flex;align-items:center;gap:16px;padding:16px 18px;border-radius:12px;border:2px solid #bbf7d0;background:#f0fdf4;cursor:pointer;transition:all .2s"
+            onmouseover="this.style.borderColor='#22c55e';this.style.background='#dcfce7'"
+            onmouseout="this.style.borderColor='#bbf7d0';this.style.background='#f0fdf4'">
+            <div style="width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#22c55e,#16a34a);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🏘️</div>
+            <div>
+              <div style="font-size:15px;font-weight:800;color:#15803d;margin-bottom:2px">Landlord Dashboard</div>
+              <div style="font-size:12.5px;color:#16a34a">Manage properties, tenants & rent</div>
+            </div>
+            <div style="margin-left:auto;color:#22c55e;font-size:18px">›</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/shared-layout.js?v=7" defer></script>
+<script src="dialogs.js" defer></script>
+
+<script>document.addEventListener("DOMContentLoaded",function(){if(window.lucide)lucide.createIcons();});</script>
+<script src="profile-widget.js"></script>
+</body>
+</html>

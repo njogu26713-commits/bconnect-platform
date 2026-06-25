@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Service — BConnect</title>
+<link rel="icon" href="/favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --indigo:#4f46e5;
+  --indigo-deep:#3730a3;
+  --indigo-light:#eef2ff;
+  --teal:#0d9488;
+  --teal-light:#f0fdfa;
+  --gold:#f59e0b;
+  --surface:#f8fafc;
+  --white:#ffffff;
+  --text:#1e293b;
+  --muted:#64748b;
+  --border:#e2e8f0;
+  --radius:14px;
+  --shadow:0 4px 24px rgba(79,70,229,.10);
+}
+
+body{ font-family:'DM Sans',system-ui,sans-serif; background:var(--surface); color:var(--text); min-height:100vh; }
+
+/* ── BREADCRUMB ── */
+.bc-breadcrumb{ padding:14px 48px; font-size:.8rem; color:var(--muted); display:flex; gap:6px; align-items:center; max-width:1180px; margin:0 auto; }
+.bc-breadcrumb a{ color:var(--indigo); text-decoration:none; }
+.bc-breadcrumb a:hover{ text-decoration:underline; }
+.bc-breadcrumb .sep{ opacity:.4; }
+
+/* ── MAIN GRID ── */
+.pd-page{ max-width:1180px; margin:0 auto; padding:0 24px 64px; display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:start; }
+
+/* ── LOADING ── */
+.pd-loading{ grid-column:1/-1; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:55vh; gap:1rem; color:var(--muted); }
+.pd-spinner{ width:2.4rem; height:2.4rem; border:3px solid var(--border); border-top-color:var(--indigo); border-radius:50%; animation:spin .8s linear infinite; }
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── GALLERY ── */
+.gallery{ position:sticky; top:80px; }
+.main-img-wrap{ background:#fff; border-radius:var(--radius); border:1.5px solid var(--border); overflow:hidden; aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; position:relative; box-shadow:var(--shadow); }
+.main-img-wrap img{ width:100%; height:100%; object-fit:cover; transition:transform .4s cubic-bezier(.22,1,.36,1),opacity .22s; }
+.main-img-wrap:hover img{ transform:scale(1.04); }
+.badge-pill{ position:absolute; top:16px; left:16px; background:linear-gradient(135deg,var(--indigo),var(--teal)); color:#fff; font-size:.7rem; font-weight:700; padding:4px 10px; border-radius:20px; letter-spacing:.5px; text-transform:uppercase; }
+.img-nav{ position:absolute; top:50%; transform:translateY(-50%); width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,.92); box-shadow:0 2px 10px rgba(0,0,0,.12); font-size:1.1rem; color:var(--indigo); display:flex; align-items:center; justify-content:center; cursor:pointer; border:none; transition:all .15s; }
+.img-nav:hover{ background:#fff; transform:translateY(-50%) scale(1.08); }
+.img-nav.left{ left:.6rem; }
+.img-nav.right{ right:.6rem; }
+.img-counter{ position:absolute; bottom:.55rem; right:.6rem; background:rgba(0,0,0,.45); color:#fff; font-size:.65rem; font-weight:700; border-radius:9999px; padding:.18rem .5rem; }
+.thumbs{ display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
+.thumb{ flex:1; min-width:56px; max-width:80px; background:#fff; border-radius:10px; border:1.5px solid var(--border); aspect-ratio:1; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; transition:border-color .2s,box-shadow .2s; }
+.thumb.active,.thumb:hover{ border-color:var(--indigo); box-shadow:0 0 0 3px rgba(79,70,229,.15); }
+.thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+/* ── PROVIDER ROW ── */
+.info{ padding-top:4px; }
+.provider-row{ display:flex; align-items:center; gap:8px; padding:10px 14px; background:#fff; border:1.5px solid var(--border); border-radius:10px; margin-bottom:18px; }
+.prov-avatar{ width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--indigo),var(--teal)); color:#fff; display:grid; place-items:center; font-size:.9rem; font-weight:700; flex-shrink:0; }
+.prov-meta{ flex:1; min-width:0; }
+.prov-name{ font-size:.85rem; font-weight:600; color:var(--text); }
+.prov-loc{ font-size:.75rem; color:var(--muted); }
+.verified-badge{ font-size:.72rem; color:#059669; font-weight:700; background:#f0fdf4; border:1px solid #a7f3d0; border-radius:9999px; padding:3px 8px; white-space:nowrap; flex-shrink:0; }
+.team-badge{ font-size:.72rem; color:var(--indigo); font-weight:700; background:var(--indigo-light); border:1px solid #c7d2fe; border-radius:9999px; padding:3px 8px; white-space:nowrap; flex-shrink:0; }
+
+/* ── TITLE / RATING ── */
+.svc-category{ font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--indigo); background:var(--indigo-light); border-radius:20px; padding:3px 10px; display:inline-block; margin-bottom:10px; }
+.svc-title{ font-family:'DM Serif Display',serif; font-size:2rem; line-height:1.2; color:var(--indigo-deep); margin-bottom:8px; }
+.stars-row{ display:flex; align-items:center; gap:6px; margin-bottom:18px; }
+.stars-row .s{ color:var(--gold); font-size:1rem; letter-spacing:1px; }
+.stars-row .count{ font-size:.8rem; color:var(--muted); }
+
+/* ── PRICE ── */
+.price-row{ display:flex; align-items:baseline; gap:10px; margin-bottom:20px; }
+.price-main{ font-family:'DM Serif Display',serif; font-size:2rem; color:var(--indigo-deep); }
+.price-type-label{ font-size:.85rem; font-weight:600; color:var(--muted); align-self:center; }
+
+/* ── SERVICE META GRID ── */
+.sect-label{ font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:10px; }
+.svc-meta-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+.svc-meta-item{ background:#fff; border:1.5px solid var(--border); border-radius:10px; padding:12px 14px; }
+.svc-meta-label{ font-size:.68rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:4px; }
+.svc-meta-value{ font-size:.9rem; font-weight:700; color:var(--text); }
+
+/* ── AVAILABILITY ── */
+.avail-card{ background:#fff; border:1.5px solid var(--border); border-radius:var(--radius); padding:16px 18px; margin-bottom:20px; }
+.avail-card h3{ font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:12px; }
+.avail-hours{ font-size:.84rem; color:var(--text); font-weight:600; margin-bottom:10px; }
+.days-wrap{ display:flex; flex-wrap:wrap; gap:6px; }
+.day-pill{ font-size:.72rem; font-weight:700; padding:.25rem .65rem; border-radius:99px; background:#f0fdf4; color:#059669; border:1px solid #a7f3d0; }
+
+/* ── INCLUDES ── */
+.includes-card{ background:#fffbeb; border:1.5px solid #fde68a; border-radius:var(--radius); padding:16px 18px; margin-bottom:20px; }
+.includes-card h3{ font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#92400e; margin-bottom:8px; }
+.includes-card p{ font-size:.875rem; color:#78350f; line-height:1.65; }
+
+/* ── ABOUT ── */
+.about-card{ background:#fff; border-radius:var(--radius); border:1.5px solid var(--border); padding:18px; margin-bottom:0; }
+.about-card h3{ font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:10px; }
+.about-card p{ font-size:.875rem; color:#3a4a5e; line-height:1.65; }
+.about-card.collapsed p{ display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+.about-toggle{ font-size:.75rem; color:var(--indigo); font-weight:600; cursor:pointer; background:none; border:none; padding:0; margin-top:8px; display:inline-block; }
+.tags{ display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+.tag{ font-size:.72rem; background:var(--indigo-light); color:var(--indigo); border-radius:20px; padding:3px 10px; font-weight:500; }
+
+/* ── CREDS ── */
+.creds-card{ background:#fff; border:1.5px solid var(--border); border-radius:var(--radius); padding:16px 18px; margin-top:16px; }
+.creds-card h3{ font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:10px; }
+.cred-item{ font-size:.85rem; color:var(--text); margin-bottom:6px; }
+
+/* ── TRUST STRIP ── */
+.trust-strip{ display:flex; align-items:center; gap:8px; background:#f0fdf4; border:1px solid #a7f3d0; border-radius:.875rem; padding:.65rem 1rem; margin-bottom:16px; font-size:.8rem; color:#065f46; font-weight:600; flex-wrap:wrap; }
+
+/* ── ACTIONS ── */
+.actions{ display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
+.btn{ width:100%; padding:14px 20px; border-radius:10px; font-family:'DM Sans',sans-serif; font-size:.95rem; font-weight:600; cursor:pointer; border:none; transition:all .2s; display:flex; align-items:center; justify-content:center; gap:8px; }
+.btn-book{ background:linear-gradient(135deg,var(--indigo) 0%,var(--teal) 100%); color:#fff; box-shadow:0 4px 14px rgba(79,70,229,.35); }
+.btn-book:hover{ transform:translateY(-1px); box-shadow:0 6px 20px rgba(79,70,229,.45); }
+.btn-wa{ background:#25d366; color:#fff; box-shadow:0 4px 14px rgba(37,211,102,.30); }
+.btn-wa:hover{ transform:translateY(-1px); opacity:.92; }
+.btn-contact{ background:#fff; border:1.5px solid var(--indigo); color:var(--indigo); }
+.btn-contact:hover{ background:var(--indigo-light); }
+
+/* ── RELATED ── */
+.more-section{ grid-column:1/-1; padding-top:8px; border-top:1.5px solid var(--border); margin-top:16px; }
+.more-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; padding-top:24px; }
+.more-header h2{ font-family:'DM Serif Display',serif; font-size:1.4rem; color:var(--indigo-deep); }
+.more-header a{ font-size:.85rem; color:var(--indigo); text-decoration:none; }
+.more-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+.more-card{ background:#fff; border-radius:var(--radius); border:1.5px solid var(--border); overflow:hidden; transition:box-shadow .2s,transform .2s; cursor:pointer; text-decoration:none; color:inherit; display:block; }
+.more-card:hover{ box-shadow:var(--shadow); transform:translateY(-3px); }
+.mc-img{ background:var(--indigo-light); aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.mc-img img{ width:100%; height:100%; object-fit:cover; display:block; }
+.mc-info{ padding:12px 14px; }
+.mc-name{ font-size:.85rem; font-weight:600; color:var(--text); margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.mc-cat{ font-size:.75rem; color:var(--muted); margin-bottom:6px; }
+.mc-price{ font-size:.9rem; font-weight:700; color:var(--indigo); }
+
+/* ── TOAST ── */
+.pd-toast{ position:fixed; bottom:32px; left:50%; transform:translateX(-50%) translateY(80px); background:var(--indigo-deep); color:#fff; padding:.65rem 1.4rem; border-radius:12px; font-size:.85rem; font-weight:600; z-index:9999; transition:transform .3s cubic-bezier(.34,1.56,.64,1); white-space:nowrap; pointer-events:none; opacity:0; }
+.pd-toast.show{ transform:translateX(-50%) translateY(0); opacity:1; }
+
+/* ── MOBILE ── */
+@media(max-width:820px){
+  .pd-page{ grid-template-columns:1fr; gap:0; padding:0 0 80px; }
+  .gallery{ position:static; padding:16px 16px 0; }
+  .info{ padding:20px 16px 24px; background:#fff; border-radius:20px 20px 0 0; margin-top:-12px; position:relative; z-index:2; box-shadow:0 -4px 24px rgba(79,70,229,.08); }
+  .svc-title{ font-size:1.5rem; }
+  .svc-meta-grid{ grid-template-columns:1fr 1fr; }
+  .more-grid{ grid-template-columns:repeat(2,1fr); }
+  .bc-breadcrumb{ padding:10px 16px; }
+  .more-section{ padding:0 16px 32px; }
+}
+@media(max-width:480px){
+  .svc-title{ font-size:1.3rem; }
+  .price-main{ font-size:1.7rem; }
+  .svc-meta-grid{ grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="bc-breadcrumb" id="bc-breadcrumb">
+  <a href="website.html">Home</a><span class="sep">›</span>
+  <a href="services.html">Services</a><span class="sep">›</span>
+  <span id="bc-title">Loading…</span>
+</div>
+
+<div class="pd-page" id="pd-page">
+  <div class="pd-loading" id="pd-loading">
+    <div class="pd-spinner"></div>
+    <div style="font-weight:600;color:var(--muted)">Loading service…</div>
+  </div>
+</div>
+
+<div id="pd-related-section"></div>
+<div class="pd-toast" id="pd-toast"></div>
+
+<script>
+var _svc    = null;
+var _images = [];
+var _imgIdx = 0;
+
+const PRICE_TYPE_LABELS = { per_job:' / job', per_hour:' / hr', per_day:' / day', per_sqft:' / sq.ft', quote:'' };
+const NOTICE_LABELS     = { same_day:'Same-day booking OK', '1_day':'1 day notice required', '2_days':'2 days notice required', '1_week':'1 week notice required' };
+const TEAM_LABELS       = { solo:'👤 Solo provider', '2-3':'👥 2–3 people', '4-10':'👥 4–10 people', '10+':'🏢 10+ people' };
+
+function fmtKes(n){ return 'Ksh ' + Number(n||0).toLocaleString(); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function showToast(msg){ var t=document.getElementById('pd-toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(function(){ t.classList.remove('show'); },2400); }
+
+function parseSvcMeta(description){
+  if (!description) return null;
+  var m = description.match(/<!--service:([\s\S]*?)-->/);
+  if (!m) return null;
+  try{ return JSON.parse(m[1]); } catch(e){ return null; }
+}
+function cleanDesc(description){
+  return (description||'').replace(/<!--service:[\s\S]*?-->/g,'').trim();
+}
+
+// ── Load ──────────────────────────────────────────────────────────────────────
+(function(){
+  var id = new URLSearchParams(location.search).get('id');
+  if (!id){ showError('No service ID in URL.'); return; }
+  fetch('/api/products/' + encodeURIComponent(id))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (!d.success || !d.product){ showError('Service not found.'); return; }
+      renderService(d.product);
+    })
+    .catch(function(){ showError('Could not load service. Check your connection.'); });
+})();
+
+function showError(msg){
+  document.getElementById('pd-loading').innerHTML =
+    '<div style="font-size:2.5rem">😕</div>' +
+    '<div style="font-weight:700;color:var(--indigo-deep)">' + esc(msg) + '</div>' +
+    '<a href="services.html" style="margin-top:.5rem;color:var(--indigo);font-weight:700;font-size:.9rem">← Back to Services</a>';
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function renderService(p){
+  _svc = p;
+  var meta = parseSvcMeta(p.description) || p.serviceMeta || null;
+  var desc = cleanDesc(p.description) || p.details || '';
+
+  // Images
+  _images = [];
+  if (Array.isArray(p.images) && p.images.length) _images = p.images.slice();
+  if (p.image_url && !_images.includes(p.image_url)) _images.unshift(p.image_url);
+  if (p.imageUrl  && !_images.includes(p.imageUrl))  _images.unshift(p.imageUrl);
+  if (p.image     && !_images.includes(p.image))     _images.unshift(p.image);
+  if (!_images.length) _images = ['https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&q=80'];
+  _imgIdx = 0;
+
+  var title      = p.title || p.name || 'Service';
+  var category   = p.subcategory || p.category || '';
+  var location   = p.location || p.city || 'Nairobi, Kenya';
+  var sellerName = p.seller_name || p.sellerName || 'Service Provider';
+  var price      = p.price || p.rate || 0;
+  var priceType  = meta ? (meta.priceType || '') : '';
+  var reviews    = p.views ? Math.max(p.views, 1) : (Math.floor(Math.random()*120)+20);
+
+  // Breadcrumb
+  document.title = title + ' — BConnect Services';
+  document.getElementById('bc-breadcrumb').innerHTML =
+    '<a href="website.html">Home</a><span class="sep">›</span>' +
+    '<a href="services.html">Services</a><span class="sep">›</span>' +
+    (category ? '<a href="services.html?filter=' + encodeURIComponent(category) + '">' + esc(category) + '</a><span class="sep">›</span>' : '') +
+    '<span>' + esc(title) + '</span>';
+
+  var html = '';
+
+  // ── LEFT: Gallery ──────────────────────────────────────────────────────────
+  html += '<div class="gallery">';
+  html += '<div class="main-img-wrap" id="pd-img-wrap">';
+  html += '<span class="badge-pill">' + esc(category || 'Service') + '</span>';
+  html += '<img id="pd-main-img" src="' + esc(_images[0]) + '" alt="' + esc(title) + '" onerror="this.src=\'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&q=80\'">';
+  if (_images.length > 1){
+    html += '<button class="img-nav left" onclick="navImg(-1)">&#8249;</button>';
+    html += '<button class="img-nav right" onclick="navImg(1)">&#8250;</button>';
+    html += '<div class="img-counter" id="pd-img-counter">1 / ' + _images.length + '</div>';
+  }
+  html += '</div>';
+  if (_images.length > 1){
+    html += '<div class="thumbs" id="pd-thumbs">';
+    _images.slice(0,5).forEach(function(url,i){
+      html += '<div class="thumb' + (i===0?' active':'') + '" onclick="selectThumb(this,' + i + ')">';
+      html += '<img src="' + esc(url) + '" alt="photo ' + (i+1) + '" onerror="this.parentElement.style.display=\'none\'">';
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+  html += '</div>'; // gallery
+
+  // ── RIGHT: Info ────────────────────────────────────────────────────────────
+  html += '<div class="info">';
+
+  // Provider row
+  var initials = sellerName.split(' ').map(function(w){ return w[0]; }).join('').slice(0,2).toUpperCase();
+  html += '<div class="provider-row">';
+  html += '<div class="prov-avatar">' + esc(initials) + '</div>';
+  html += '<div class="prov-meta">';
+  html += '<div class="prov-name">' + esc(sellerName) + '</div>';
+  html += '<div class="prov-loc">📍 ' + esc(location) + '</div>';
+  html += '</div>';
+  html += '<div class="verified-badge">✔ Verified</div>';
+  if (meta && meta.provider && meta.provider.teamSize){
+    html += '<div class="team-badge">' + esc(TEAM_LABELS[meta.provider.teamSize] || '') + '</div>';
+  }
+  html += '</div>';
+
+  // Category pill + title
+  if (category) html += '<div class="svc-category">' + esc(category) + '</div>';
+  html += '<h1 class="svc-title">' + esc(title) + '</h1>';
+  html += '<div class="stars-row"><span class="s">★★★★</span><span style="color:#e2e8f0;font-size:1rem">★</span><span class="count">4.8 (' + reviews + ' bookings)</span></div>';
+
+  // Price
+  var ptLabel = PRICE_TYPE_LABELS[priceType] || '';
+  html += '<div class="price-row">';
+  if (priceType === 'quote'){
+    html += '<div class="price-main" style="font-size:1.5rem">Quote on Request</div>';
+  } else {
+    html += '<div class="price-main"><span style="font-size:1rem;font-family:\'DM Sans\',sans-serif;font-weight:600">Ksh </span>' + Number(price).toLocaleString() + '</div>';
+    if (ptLabel) html += '<div class="price-type-label">' + esc(ptLabel) + '</div>';
+  }
+  html += '</div>';
+
+  // Service meta grid
+  var hasMeta = meta && (meta.duration || meta.provider || meta.availability);
+  if (hasMeta){
+    html += '<div class="svc-meta-grid">';
+    // Areas served
+    html += '<div class="svc-meta-item"><div class="svc-meta-label">📍 Areas Served</div><div class="svc-meta-value">' + esc(location) + '</div></div>';
+    // Duration
+    if (meta.duration){
+      html += '<div class="svc-meta-item"><div class="svc-meta-label">⏱ Duration</div><div class="svc-meta-value">' + esc(meta.duration) + '</div></div>';
+    }
+    // Experience
+    if (meta.provider && meta.provider.experience){
+      var exp = meta.provider.experience;
+      html += '<div class="svc-meta-item"><div class="svc-meta-label">🏅 Experience</div><div class="svc-meta-value">' + esc(exp) + ' yr' + (parseInt(exp)!==1?'s':'') + '</div></div>';
+    }
+    // Booking notice
+    if (meta.availability && meta.availability.notice){
+      html += '<div class="svc-meta-item"><div class="svc-meta-label">📋 Booking Notice</div><div class="svc-meta-value">' + esc(NOTICE_LABELS[meta.availability.notice] || meta.availability.notice) + '</div></div>';
+    }
+    html += '</div>'; // svc-meta-grid
+  }
+
+  // Availability
+  if (meta && meta.availability && (meta.availability.days||[]).length){
+    html += '<div class="avail-card">';
+    html += '<h3>📅 Availability</h3>';
+    if (meta.availability.timeFrom && meta.availability.timeTo){
+      html += '<div class="avail-hours">⏰ ' + esc(meta.availability.timeFrom) + ' – ' + esc(meta.availability.timeTo) + '</div>';
+    }
+    html += '<div class="days-wrap">';
+    (meta.availability.days || []).forEach(function(d){
+      html += '<span class="day-pill">' + esc(d) + '</span>';
+    });
+    html += '</div></div>';
+  }
+
+  // What's included
+  if (meta && meta.includes){
+    html += '<div class="includes-card">';
+    html += '<h3>✅ What\'s Included</h3>';
+    html += '<p>' + esc(meta.includes) + '</p>';
+    html += '</div>';
+  }
+
+  // Trust strip
+  html += '<div class="trust-strip">🛡 Secure booking &nbsp;·&nbsp; Verified provider &nbsp;·&nbsp; Satisfaction guaranteed</div>';
+
+  // Action buttons
+  html += '<div class="actions">';
+  html += '<button class="btn btn-book" onclick="bookNow()">📅 Book Now</button>';
+  if (meta && meta.provider && meta.provider.phone){
+    var phone = meta.provider.phone;
+    var clean = phone.replace(/\D/g,'').replace(/^0/,'254');
+    var waMsg = encodeURIComponent('Hi, I found your service "' + title + '" on BConnect and I\'d like to book it.');
+    html += '<a class="btn btn-wa" href="https://wa.me/' + clean + '?text=' + waMsg + '" target="_blank" rel="noopener">💬 WhatsApp Provider</a>';
+  }
+  html += '<button class="btn btn-contact" onclick="contactProvider()">✉️ Send a Message</button>';
+  html += '</div>';
+
+  // About / description
+  if (desc){
+    var needsCollapse = desc.length > 220;
+    html += '<div class="about-card' + (needsCollapse?' collapsed':'') + '" id="pd-about">';
+    html += '<h3>About This Service</h3>';
+    html += '<p>' + esc(desc) + '</p>';
+    if (needsCollapse) html += '<button class="about-toggle" id="pd-about-toggle" onclick="expandDesc()">Read more ▾</button>';
+    html += '<div class="tags">';
+    if (category) html += '<span class="tag">' + esc(category) + '</span>';
+    html += '<span class="tag">BConnect Verified</span>';
+    html += '<span class="tag">Secure Payment</span>';
+    html += '</div>';
+    html += '</div>';
+  }
+
+  // Certifications / Equipment
+  if (meta && meta.provider && (meta.provider.certs || meta.provider.equipment)){
+    html += '<div class="creds-card">';
+    html += '<h3>🛠 Provider Details</h3>';
+    if (meta.provider.certs){
+      html += '<div class="cred-item">🏅 <strong>Certifications:</strong> ' + esc(meta.provider.certs) + '</div>';
+    }
+    if (meta.provider.equipment){
+      html += '<div class="cred-item">🔧 <strong>Equipment / Tools:</strong> ' + esc(meta.provider.equipment) + '</div>';
+    }
+    html += '</div>';
+  }
+
+  html += '</div>'; // info
+
+  document.getElementById('pd-page').innerHTML = html;
+
+  if (category) loadRelated(category, String(p._id || p.id || ''));
+}
+
+// ── Related ───────────────────────────────────────────────────────────────────
+function loadRelated(category, currentId){
+  fetch('/api/services?limit=8')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var items = (d.services || []).filter(function(s){
+        return String(s._id || s.id || '') !== currentId;
+      }).slice(0, 4);
+      if (!items.length) return;
+
+      var html = '<div class="pd-page" style="display:block;padding-top:0">';
+      html += '<div class="more-section">';
+      html += '<div class="more-header"><h2>More Services</h2><a href="services.html">View all →</a></div>';
+      html += '<div class="more-grid">';
+      items.forEach(function(s){
+        var sid   = s._id || s.id || '';
+        var name  = s.title || s.name || 'Service';
+        var cat   = s.subcategory || s.category || '';
+        var price = s.price || s.rate || 0;
+        var img   = s.image_url || s.imageUrl || s.image || (Array.isArray(s.images)&&s.images[0]) || 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=300&q=70';
+        html += '<a class="more-card" href="service.html?id=' + encodeURIComponent(String(sid)) + '">';
+        html += '<div class="mc-img"><img src="' + esc(img) + '" alt="' + esc(name) + '" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=300&q=70\'"></div>';
+        html += '<div class="mc-info">';
+        html += '<div class="mc-name" title="' + esc(name) + '">' + esc(name) + '</div>';
+        if (cat) html += '<div class="mc-cat">' + esc(cat) + '</div>';
+        if (price) html += '<div class="mc-price">' + fmtKes(price) + '</div>';
+        html += '</div></a>';
+      });
+      html += '</div></div></div>';
+      document.getElementById('pd-related-section').innerHTML = html;
+    })
+    .catch(function(){});
+}
+
+// ── Gallery controls ──────────────────────────────────────────────────────────
+function selectThumb(thumb, idx){
+  _imgIdx = idx;
+  document.querySelectorAll('.thumb').forEach(function(t){ t.classList.remove('active'); });
+  thumb.classList.add('active');
+  var img = document.getElementById('pd-main-img');
+  if (img){ img.style.opacity='0'; setTimeout(function(){ img.src=_images[idx]; img.style.opacity='1'; },130); }
+  var ctr = document.getElementById('pd-img-counter');
+  if (ctr) ctr.textContent = (idx+1) + ' / ' + _images.length;
+}
+function navImg(dir){
+  _imgIdx = (_imgIdx + dir + _images.length) % _images.length;
+  var img = document.getElementById('pd-main-img');
+  if (img){ img.style.opacity='0'; setTimeout(function(){ img.src=_images[_imgIdx]; img.style.opacity='1'; },120); }
+  var ctr = document.getElementById('pd-img-counter');
+  if (ctr) ctr.textContent = (_imgIdx+1) + ' / ' + _images.length;
+  document.querySelectorAll('.thumb').forEach(function(t,i){ t.classList.toggle('active', i===_imgIdx); });
+}
+
+// ── Description expand ────────────────────────────────────────────────────────
+function expandDesc(){
+  var el = document.getElementById('pd-about');
+  var btn = document.getElementById('pd-about-toggle');
+  if (el) el.classList.remove('collapsed');
+  if (btn) btn.remove();
+}
+
+// ── Auth guard ────────────────────────────────────────────────────────────────
+function requireAuth(){
+  var token = localStorage.getItem('token') || localStorage.getItem('authToken') || localStorage.getItem('tenantToken') || localStorage.getItem('landlordToken');
+  if (!token){ window.location.href='login.html?next='+encodeURIComponent(location.href); return false; }
+  return true;
+}
+
+// ── Book Now ──────────────────────────────────────────────────────────────────
+function bookNow(){
+  if (!requireAuth()) return;
+  var p = _svc;
+  var title = p.title || p.name || 'Service';
+  var price = p.price || p.rate || 0;
+  window.location.href = 'payment.html?type=order'
+    + '&item='     + encodeURIComponent(title)
+    + '&price='    + encodeURIComponent(price)
+    + '&returnTo=' + encodeURIComponent(location.href);
+}
+
+// ── Contact ───────────────────────────────────────────────────────────────────
+function contactProvider(){
+  var p = _svc;
+  var title = p.title || p.name || 'Service';
+  var price = p.price || p.rate || 0;
+  var msg = 'Hi, I found your service "' + title + '" on BConnect'
+    + (price ? ' priced at KES ' + Number(price).toLocaleString() : '')
+    + ' and I would like more information.';
+  localStorage.setItem('serviceOrder', JSON.stringify({ title:title, message:msg }));
+  window.location.href = 'contact.html?message=' + encodeURIComponent(msg);
+}
+</script>
+
+<script src="shared-layout.js?v=7"></script>
+</body>
+</html>

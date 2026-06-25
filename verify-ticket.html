@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verify Ticket — bConnect</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,sans-serif;background:linear-gradient(135deg,#ede9fe 0%,#f0fdf4 100%);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:40px 16px 60px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;margin-bottom:32px}
+.logo-icon{width:44px;height:44px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;font-weight:900}
+.logo-text{font-size:1.4rem;font-weight:800;color:#1e293b}
+.card{background:#fff;border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,.08);width:100%;max-width:480px;padding:36px}
+.card-title{font-size:1.3rem;font-weight:800;color:#1e293b;margin-bottom:4px}
+.card-sub{font-size:.85rem;color:#64748b;margin-bottom:28px}
+.input-wrap{position:relative;margin-bottom:12px}
+.input-wrap input{width:100%;padding:14px 18px;border:2px solid #e2e8f0;border-radius:12px;font-size:1rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;outline:none;font-family:inherit;transition:border-color .2s}
+.input-wrap input:focus{border-color:#7c3aed}
+.btn-verify{width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:800;cursor:pointer;transition:all .2s;margin-top:4px}
+.btn-verify:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,58,237,.4)}
+.btn-verify:disabled{background:#94a3b8;cursor:not-allowed;transform:none;box-shadow:none}
+
+/*  Scan with camera  */
+.or-divider{display:flex;align-items:center;gap:12px;margin:18px 0;color:#94a3b8;font-size:.8rem;font-weight:600}
+.or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:#e2e8f0}
+.btn-scan{width:100%;padding:13px;background:#f8fafc;color:#475569;border:2px dashed #cbd5e1;border-radius:12px;font-size:.9rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
+.btn-scan:hover{border-color:#7c3aed;color:#7c3aed;background:#faf5ff}
+#camera-wrap{display:none;margin-top:16px;border-radius:12px;overflow:hidden;position:relative;background:#000}
+#camera-wrap video{width:100%;display:block;max-height:260px;object-fit:cover}
+#scan-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+#scan-box{width:180px;height:180px;border:3px solid #7c3aed;border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,.45)}
+
+/*  Result cards  */
+#result{margin-top:24px;display:none}
+.result-valid{background:linear-gradient(135deg,#dcfce7,#f0fdf4);border:2px solid #86efac;border-radius:16px;padding:24px}
+.result-used{background:linear-gradient(135deg,#fef3c7,#fffbeb);border:2px solid #fbbf24;border-radius:16px;padding:24px}
+.result-invalid{background:linear-gradient(135deg,#fee2e2,#fff5f5);border:2px solid #fca5a5;border-radius:16px;padding:24px}
+.btn-mark-used{width:100%;margin-top:10px;padding:12px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;color:#fff;border-radius:10px;font-weight:800;cursor:pointer;font-size:.9rem;font-family:inherit;transition:all .2s}
+.btn-mark-used:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,58,237,.4)}
+.btn-mark-used:disabled{background:#94a3b8;cursor:not-allowed;transform:none;box-shadow:none}
+.result-icon{font-size:2.8rem;text-align:center;margin-bottom:10px}
+.result-status{font-size:1.1rem;font-weight:800;text-align:center;margin-bottom:16px}
+.result-valid .result-status{color:#15803d}
+.result-invalid .result-status{color:#dc2626}
+.detail-row{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid rgba(0,0,0,.06);gap:12px}
+.detail-row:last-child{border-bottom:none}
+.detail-label{font-size:.78rem;font-weight:600;color:#64748b;white-space:nowrap}
+.detail-value{font-size:.88rem;font-weight:700;color:#1e293b;text-align:right}
+.check-again{width:100%;margin-top:14px;padding:11px;background:#fff;border:2px solid #86efac;color:#15803d;border-radius:10px;font-weight:700;cursor:pointer;font-size:.88rem}
+.check-again-red{border-color:#fca5a5;color:#dc2626}
+.spinner{width:20px;height:20px;border:2.5px solid #ddd6fe;border-top-color:#7c3aed;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.recent-section{margin-top:28px;width:100%;max-width:480px}
+.recent-title{font-size:.82rem;font-weight:700;color:#64748b;margin-bottom:10px;letter-spacing:.04em;text-transform:uppercase}
+.recent-item{background:#fff;border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:12px;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.recent-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.dot-valid{background:#22c55e}
+.dot-invalid{background:#ef4444}
+.recent-code{font-size:.82rem;font-weight:800;font-family:monospace;color:#1e293b}
+.recent-info{font-size:.75rem;color:#64748b}
+</style>
+</head>
+<body>
+
+<a class="logo" href="/">
+  <div class="logo-icon">B</div>
+  <div class="logo-text">bConnect</div>
+</a>
+
+<div class="card">
+  <div class="card-title"> Verify Ticket</div>
+  <div class="card-sub">Enter a ticket code or scan the QR code to validate entry.</div>
+
+  <div class="input-wrap">
+    <input id="code-input" type="text" placeholder="e.g. TKT-ABC123XY"
+      autocomplete="off" spellcheck="false"
+      onkeydown="if(event.key==='Enter')verifyTicket()">
+  </div>
+  <button class="btn-verify" id="verify-btn" onclick="verifyTicket()"> Verify Ticket</button>
+
+  <div class="or-divider">or</div>
+  <button class="btn-scan" id="btn-scan" onclick="toggleCamera()"> Scan QR Code with Camera</button>
+  <div id="camera-wrap">
+    <video id="cam-video" autoplay playsinline muted></video>
+    <div id="scan-overlay"><div id="scan-box"></div></div>
+  </div>
+
+  <div id="result"></div>
+</div>
+
+<div class="recent-section" id="recent-section" style="display:none">
+  <div class="recent-title">Recent Scans</div>
+  <div id="recent-list"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+<script>
+function showVTToast(msg, type) {
+  let t = document.getElementById('vt-toast');
+  if (!t) { t = document.createElement('div'); t.id = 'vt-toast'; t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);padding:13px 24px;border-radius:14px;font-size:.9rem;font-weight:700;z-index:99999;transition:transform .35s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.2);max-width:90vw;text-align:center;pointer-events:none;font-family:inherit'; document.body.appendChild(t); }
+  const bg = { error:'#dc2626', success:'#059669', warning:'#d97706' };
+  t.style.background = bg[type] || bg.error; t.style.color = '#fff';
+  t.textContent = msg; t.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(t._tmr); t._tmr = setTimeout(() => { t.style.transform = 'translateX(-50%) translateY(120px)'; }, 4000);
+}
+let cameraActive = false;
+let camStream = null;
+let scanInterval = null;
+let recentScans = JSON.parse(sessionStorage.getItem('bct_scans') || '[]');
+
+function renderRecent() {
+  if (!recentScans.length) { document.getElementById('recent-section').style.display = 'none'; return; }
+  document.getElementById('recent-section').style.display = 'block';
+  document.getElementById('recent-list').innerHTML = recentScans.slice().reverse().slice(0, 8).map(s => `
+    <div class="recent-item">
+      <div class="recent-dot ${s.valid ? 'dot-valid' : 'dot-invalid'}"></div>
+      <div>
+        <div class="recent-code">${s.code}</div>
+        <div class="recent-info">${s.valid ? (s.event + ' — ' + s.buyer) : 'Invalid ticket'} &bull; ${s.time}</div>
+      </div>
+    </div>`).join('');
+}
+
+async function verifyTicket() {
+  const raw = document.getElementById('code-input').value.trim().toUpperCase().replace(/\s+/g,'');
+  if (!raw) { document.getElementById('code-input').focus(); return; }
+  const btn = document.getElementById('verify-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Checking…';
+  document.getElementById('result').style.display = 'none';
+  try {
+    const res = await fetch('/api/tickets/verify/' + encodeURIComponent(raw));
+    const data = await res.json();
+    showResult(raw, data);
+  } catch(e) {
+    showResult(raw, { valid: false, error: 'Network error. Please check your connection.' });
+  }
+  btn.disabled = false;
+  btn.textContent = ' Verify Ticket';
+}
+
+function showResult(code, data) {
+  const el = document.getElementById('result');
+  el.style.display = 'block';
+  const now = new Date().toLocaleTimeString('en-KE', { hour:'2-digit', minute:'2-digit' });
+
+  if (data.valid && data.ticket) {
+    const t = data.ticket;
+    const alreadyUsed = t.status === 'used';
+    const fmtDate = d => d ? new Date(d).toLocaleDateString('en-KE', { weekday:'short', day:'numeric', month:'short', year:'numeric' }) : '—';
+    const cardClass = alreadyUsed ? 'result-used' : 'result-valid';
+    const icon = alreadyUsed ? '' : '';
+    const statusLabel = alreadyUsed ? '<span style="color:#92400e">Already Scanned — Entry Was Used</span>' : '<span style="color:#15803d">Valid Ticket — Entry Granted</span>';
+    const markBtn = alreadyUsed
+      ? `<div style="background:#fef3c7;border:1.5px solid #fbbf24;border-radius:10px;padding:10px 14px;text-align:center;font-size:.82rem;font-weight:700;color:#78350f;margin-top:10px"> This ticket was already scanned and marked as used.</div>`
+      : `<button class="btn-mark-used" id="mark-used-btn" onclick="markAsUsed('${t.ticket_code}')"> Mark as Used (Scan Entry)</button>`;
+    el.innerHTML = `
+      <div class="${cardClass}">
+        <div class="result-icon">${icon}</div>
+        <div class="result-status">${statusLabel}</div>
+        <div class="detail-row"><span class="detail-label">Ticket Code</span><span class="detail-value" style="font-family:monospace;color:#6d28d9">${t.ticket_code}</span></div>
+        <div class="detail-row"><span class="detail-label">Event</span><span class="detail-value">${t.event_title}</span></div>
+        <div class="detail-row"><span class="detail-label">Date</span><span class="detail-value">${fmtDate(t.event_date)}</span></div>
+        <div class="detail-row"><span class="detail-label">Venue</span><span class="detail-value">${t.venue}</span></div>
+        <div class="detail-row"><span class="detail-label">Buyer</span><span class="detail-value">${t.buyer_name}</span></div>
+        <div class="detail-row"><span class="detail-label">Phone</span><span class="detail-value">${t.buyer_phone || '—'}</span></div>
+        <div class="detail-row"><span class="detail-label">Qty</span><span class="detail-value">${t.quantity} ticket${t.quantity > 1 ? 's' : ''}</span></div>
+        <div class="detail-row"><span class="detail-label">Amount Paid</span><span class="detail-value" style="color:#15803d">${t.total_amount ? 'Ksh ' + Number(t.total_amount).toLocaleString() : 'FREE'}</span></div>
+        <div class="detail-row"><span class="detail-label">Status</span><span class="detail-value" style="color:${alreadyUsed ? '#d97706' : '#15803d'};text-transform:capitalize">${t.status}</span></div>
+        ${markBtn}
+        <button class="check-again" style="margin-top:8px" onclick="resetForm()"> Verify Another Ticket</button>
+      </div>`;
+    recentScans.push({ code, valid: !alreadyUsed, event: t.event_title, buyer: t.buyer_name, time: now, used: alreadyUsed });
+  } else {
+    el.innerHTML = `
+      <div class="result-invalid">
+        <div class="result-icon"></div>
+        <div class="result-status">Invalid Ticket</div>
+        <p style="text-align:center;font-size:.88rem;color:#dc2626;margin-bottom:14px">${data.error || 'This ticket code was not found in our system.'}</p>
+        <button class="check-again check-again-red" onclick="resetForm()"> Try Another Code</button>
+      </div>`;
+    recentScans.push({ code, valid: false, time: now });
+  }
+
+  if (recentScans.length > 50) recentScans = recentScans.slice(-50);
+  sessionStorage.setItem('bct_scans', JSON.stringify(recentScans));
+  renderRecent();
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+async function markAsUsed(code) {
+  const btn = document.getElementById('mark-used-btn');
+  if (!btn) return;
+  btn.style.background = '#dc2626';
+  btn.textContent = ' Confirm Mark as Used?';
+  btn.onclick = async () => {
+    btn.disabled = true;
+    btn.textContent = 'Marking…';
+    btn.style.background = '';
+    try {
+      const res = await fetch('/api/tickets/mark-used/' + encodeURIComponent(code), { method: 'PUT' });
+      const data = await res.json();
+      if (data.success) {
+        btn.style.cssText = 'width:100%;margin-top:10px;padding:12px;background:#059669;border:none;color:#fff;border-radius:10px;font-weight:800;font-size:.9rem;cursor:default';
+        btn.textContent = ' Entry Marked as Used';
+      } else if (data.alreadyUsed) {
+        btn.style.cssText = 'width:100%;margin-top:10px;padding:12px;background:#d97706;border:none;color:#fff;border-radius:10px;font-weight:800;font-size:.9rem;cursor:default';
+        btn.textContent = ' Already scanned before';
+      } else {
+        btn.disabled = false;
+        btn.textContent = ' Mark as Used (Scan Entry)';
+        showVTToast('Error: ' + (data.error || 'Failed to update ticket'), 'error');
+      }
+    } catch(e) {
+      btn.disabled = false;
+      btn.textContent = ' Mark as Used (Scan Entry)';
+      showVTToast('Network error. Please try again.', 'error');
+    }
+  };
+}
+
+function resetForm() {
+  document.getElementById('code-input').value = '';
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('code-input').focus();
+}
+
+//  Camera QR scanning 
+async function toggleCamera() {
+  if (cameraActive) { stopCamera(); return; }
+  const wrap = document.getElementById('camera-wrap');
+  const btn = document.getElementById('btn-scan');
+  try {
+    camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+    const video = document.getElementById('cam-video');
+    video.srcObject = camStream;
+    wrap.style.display = 'block';
+    btn.textContent = ' Stop Camera';
+    cameraActive = true;
+    scanInterval = setInterval(() => scanFrame(video), 300);
+  } catch(e) {
+    showVTToast('Camera access denied or not available on this device.', 'error');
+  }
+}
+
+function stopCamera() {
+  if (camStream) { camStream.getTracks().forEach(t => t.stop()); camStream = null; }
+  if (scanInterval) { clearInterval(scanInterval); scanInterval = null; }
+  document.getElementById('camera-wrap').style.display = 'none';
+  document.getElementById('btn-scan').textContent = ' Scan QR Code with Camera';
+  cameraActive = false;
+}
+
+function scanFrame(video) {
+  if (!video.videoWidth) return;
+  const canvas = document.createElement('canvas');
+  canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(video, 0, 0);
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'dontInvert' });
+  if (code && code.data) {
+    const detected = code.data.trim().toUpperCase();
+    if (detected.startsWith('TKT-')) {
+      stopCamera();
+      document.getElementById('code-input').value = detected;
+      verifyTicket();
+    }
+  }
+}
+
+// Pre-fill code from URL ?code=...
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const c = params.get('code');
+  if (c) {
+    document.getElementById('code-input').value = c.toUpperCase();
+    verifyTicket();
+  }
+  renderRecent();
+})();
+</script>
+<script src="shared-layout.js?v=7"></script>
+</body>
+</html>

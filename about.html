@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>About BConnect</title>
+<style>
+  body { margin:0; font-family: Inter, system-ui, sans-serif; background:#f4f8ff; color:#0f172a; }
+  .page { max-width:1080px; margin:0 auto; padding:28px; }
+  .topbar { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; padding:18px 24px; background:#fff; border-radius:20px; box-shadow:0 24px 60px rgba(15,41,114,0.08); gap:12px; }
+  .brand { font-weight:800; color:#1d4ed8; }
+  .nav { display:flex; flex-wrap:wrap; gap:16px; }
+  .nav a { color:#475569; text-decoration:none; font-weight:600; }
+  .nav a.active, .nav a:hover { color:#1d4ed8; }
+  .hero { margin-top:24px; padding:32px; background:linear-gradient(135deg, #06b6d4, #3b82f6); border-radius:28px; color:#fff; box-shadow:0 24px 60px rgba(15,41,114,0.12); }
+  .hero h1 { margin:0; font-size:clamp(2rem,4vw,3.4rem); }
+  .hero p { margin-top:18px; max-width:620px; line-height:1.75; opacity:0.95; }
+  .content { display:grid; grid-template-columns:1.2fr .8fr; gap:24px; margin-top:28px; }
+  .card { background:#fff; border-radius:24px; padding:26px; box-shadow:0 18px 42px rgba(15,41,114,0.08); }
+  .card h2 { margin-top:0; font-size:1.5rem; }
+  .card p { line-height:1.8; color:#475569; }
+  .stats { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:18px; margin-top:18px; }
+  .stat { background:linear-gradient(135deg, #eef2ff, #f8fafc); border-radius:20px; padding:20px; }
+  .stat strong { display:block; font-size:1.9rem; color:#1d4ed8; }
+  .stat span { color:#475569; }
+  .values { margin-top:24px; display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:18px; }
+  .value { background:#eef5ff; border-radius:20px; padding:22px; }
+  .value h3 { margin:0 0 10px; font-size:1.1rem; }
+  .value p { margin:0; color:#475569; line-height:1.75; }
+  @media(max-width:820px){ .content{grid-template-columns:1fr;} }
+  @media(max-width:720px){ .topbar{flex-direction:column;align-items:flex-start;} }
+</style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar" style="display:none">
+      <div class="brand">bConnect</div>
+      <nav class="nav">
+        <a href="pre-home.html">Home</a>
+        <a href="solutions.html">Solutions</a>
+        <a href="features.html">Features</a>
+        <a class="active" href="about.html">About</a>
+        <a href="support.html">Support</a>
+        <a href="login.html">Login</a>
+      </nav>
+    </header>
+    <section class="hero">
+      <h1>About BConnect - Products, Services & Rentals Platform</h1>
+      <p>BConnect is Brayan's comprehensive platform that brings together a wide range of products, professional services, and rental listings in one seamless marketplace, connecting buyers, sellers, landlords, tenants, and service providers.</p>
+    </section>
+    <div class="content">
+      <div class="card">
+        <h2>Our mission</h2>
+        <p>Founded by Brayan, BConnect simplifies access to products, services, and rentals by offering a unified platform where you can discover items, book professionals, and find properties. Whether you're shopping, getting services, or renting, BConnect connects you with everything you need.</p>
+        <div class="stats">
+          <div class="stat">
+            <strong>500+</strong>
+            <span>Properties listed</span>
+          </div>
+          <div class="stat">
+            <strong>99.5%</strong>
+            <span>Uptime guarantee</span>
+          </div>
+        </div>
+      </div>
+      <aside class="card">
+        <h2>Why choose us</h2>
+        <p>We combine products, services, and rentals in one platform, making access to goods and services affordable and convenient for everyone.</p>
+        <div class="values">
+          <div class="value">
+            <h3>Product Variety</h3>
+            <p>Wide range of products from furniture to electronics, all from verified sellers.</p>
+          </div>
+          <div class="value">
+            <h3>Service Excellence</h3>
+            <p>Connect with professional service providers for various needs like maintenance and repairs.</p>
+          </div>
+          <div class="value">
+            <h3>Rental Simplicity</h3>
+            <p>Easy property listings and rental management for landlords and tenants alike.</p>
+          </div>
+        </div>
+      </aside>
+    </div>
+    <div class="content" style="margin-top:24px; grid-template-columns:1fr;">
+      <div class="card">
+        <h2>Contact Brayan</h2>
+        <p>For inquiries about BConnect platform, partnerships, or support, reach out to Brayan directly.</p>
+        <p><strong>WhatsApp:</strong> +254118234849</p>
+        <p><strong>Email:</strong> brayan@bconnect.com</p>
+        <p><strong>Phone:</strong> +254118234849</p>
+      </div>
+    </div>
+  </div>
+  <script src="/shared-layout.js?v=7"></script>
+</body>
+</html>

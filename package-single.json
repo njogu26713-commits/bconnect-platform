@@ -1,0 +1,20 @@
+{
+  "name": "bconnect-single-file",
+  "version": "1.0.0",
+  "description": "BConnect platform - Single file deployment for Replit",
+  "main": "bconnect-single-file.js",
+  "scripts": {
+    "start": "node bconnect-single-file.js",
+    "dev": "node bconnect-single-file.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.31.0",
+    "axios": "^1.5.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.4"
+  },
+  "keywords": ["bconnect", "platform", "marketplace", "housing", "services"],
+  "author": "BConnect Team",
+  "license": "MIT"
+}

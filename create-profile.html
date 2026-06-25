@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>bConnect Create Profile</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+      min-height: 100vh; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      padding: 1rem; 
+    }
+    .card { 
+      background: white; 
+      border-radius: 16px; 
+      padding: 2rem; 
+      max-width: 500px; 
+      width: 100%; 
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); 
+    }
+    .logo { 
+      text-align: center; 
+      margin-bottom: 2rem; 
+      font-size: 2rem; 
+      font-weight: bold; 
+      color: #667eea; 
+    }
+    h2 { 
+      color: #333; 
+      font-size: 1.5rem; 
+      margin-bottom: 1rem; 
+      text-align: center; 
+    }
+    .section { margin-top: 1.5rem; }
+    .section-title { 
+      font-size: 0.9rem; 
+      font-weight: 700; 
+      margin-bottom: 0.75rem; 
+      color: #667eea; 
+      text-transform: uppercase; 
+      letter-spacing: 0.5px; 
+    }
+    input, textarea { 
+      width: 100%; 
+      padding: 0.75rem; 
+      margin-bottom: 0.75rem; 
+      border-radius: 8px; 
+      border: 1px solid #ddd; 
+      font-size: 1rem; 
+      font-family: inherit; 
+    }
+    input:focus, textarea:focus { 
+      outline: none; 
+      border-color: #667eea; 
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); 
+    }
+    .roles { 
+      display: flex; 
+      gap: 0.75rem; 
+      margin-bottom: 1rem; 
+    }
+    .role { 
+      flex: 1; 
+      padding: 0.75rem; 
+      text-align: center; 
+      border-radius: 8px; 
+      border: 2px solid #e0e0e0; 
+      cursor: pointer; 
+      background: #f8f9fa; 
+      font-weight: 500; 
+      transition: all 0.3s; 
+    }
+    .role:hover { border-color: #667eea; }
+    .role.selected { 
+      background: #667eea; 
+      color: white; 
+      border-color: #667eea; 
+    }
+    button { 
+      width: 100%; 
+      padding: 0.75rem; 
+      margin-top: 1rem; 
+      border: none; 
+      border-radius: 8px; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+      color: white; 
+      font-weight: 700; 
+      cursor: pointer; 
+      font-size: 1rem; 
+      transition: transform 0.2s; 
+    }
+    button:hover { transform: translateY(-2px); }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    #status-message { 
+      text-align: center; 
+      margin-top: 1rem; 
+      font-weight: 600; 
+      min-height: 1.5rem; 
+    }
+    .upload { 
+      position: relative; 
+      cursor: pointer; 
+      width: 120px; 
+      height: 120px; 
+      border-radius: 50%; 
+      border: 3px dashed #ddd; 
+      margin: 1rem auto; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      color: #999; 
+      font-size: 2rem; 
+      transition: all 0.3s; 
+      text-align: center; 
+    }
+    .upload:hover { 
+      border-color: #667eea; 
+      background: #f0f3ff; 
+    }
+    .upload img { 
+      width: 100%; 
+      height: 100%; 
+      border-radius: 50%; 
+      object-fit: cover; 
+    }
+    #upload-text { pointer-events: none; }
+    #photo-input { display: none; }
+    .email-warning { 
+      color: #f59e0b; 
+      font-size: 0.85rem; 
+      margin-top: 0.25rem; 
+      display: none; 
+    }
+    .email-warning.show { display: block; }
+    #email-address.email-duplicate { 
+      border-color: #f59e0b !important; 
+      background-color: #fffbeb !important; 
+    }
+    #profile-status { 
+      text-align: center; 
+      margin-bottom: 1rem; 
+      font-size: 0.9rem; 
+      color: #666; 
+    }
+    @media (max-width: 600px) { 
+      .card { padding: 1.5rem; } 
+      h2 { font-size: 1.3rem; } 
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">bConnect</div>
+    <h2 id="page-title">Create Profile</h2>
+    <div id="profile-status"></div>
+
+    <div class="upload" id="upload-area">
+      <span id="upload-text"> Upload</span>
+      <input type="file" id="photo-input" accept="image/*">
+    </div>
+
+    <div class="section">
+      <div class="section-title">Basic Information</div>
+      <input id="full-name" type="text" placeholder="Full Name">
+      <div style="position: relative;">
+        <input id="email-address" type="email" placeholder="Email Address">
+        <div class="email-warning" id="email-warning">This email is already registered. Please use a different email.</div>
+      </div>
+      <input id="phone-number" type="text" placeholder="Phone Number">
+    </div>
+
+    <div class="section">
+      <div class="section-title">Account Type</div>
+      <div class="roles">
+        <div class="role">Buyer</div>
+        <div class="role">Seller</div>
+        <div class="role">Landlord</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Location Details</div>
+      <input id="country" type="text" placeholder="Country">
+      <input id="city" type="text" placeholder="City">
+      <input id="address" type="text" placeholder="Address">
+    </div>
+
+    <div class="section">
+      <div class="section-title">Optional Information</div>
+      <input id="business-name" type="text" placeholder="Business Name (optional)">
+      <textarea id="bio" placeholder="Bio (optional)" style="min-height: 80px; resize: vertical;"></textarea>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Security</div>
+      <input id="password" type="password" placeholder="Password">
+      <input id="confirm-password" type="password" placeholder="Confirm Password">
+    </div>
+
+    <div id="status-message"></div>
+    <button onclick="handleCreateAccount(event)">Create Account</button>
+  </div>
+
+  <script>
+    async function checkExistingProfile() {
+      try {
+        const token = localStorage.getItem('authToken');
+        if (!token) return;
+        const apiBase = window.location.protocol === 'file:' ? 'http://localhost:3000' : window.location.origin;
+        const response = await fetch(`${apiBase}/api/profile`, { 
+          method: 'GET', 
+          headers: { 
+            'Content-Type': 'application/json', 
+            'Authorization': `Bearer ${token}` 
+          } 
+        });
+        if (response.status === 404) return;
+        if (response.ok) {
+          const profileData = await response.json();
+          document.getElementById('page-title').textContent = 'Profile Already Exists';
+          document.getElementById('profile-status').innerHTML = '<div style="background: #f0fdf4; border: 2px solid #16a34a; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;"><p style="color: #16a34a; font-weight: 600; margin: 0 0 0.5rem 0;"> Profile exists!</p><button type="button" onclick="window.location.href=\'website.html\'" style="background: #3b82f6; color: white; padding: 0.5rem 1rem; width: auto; border: none; cursor: pointer; border-radius: 6px; margin-right: 0.5rem;">Return Home</button><button type="button" onclick="toggleEditMode()" style="background: #3ba55d; color: white; padding: 0.5rem 1rem; width: auto; border: none; cursor: pointer; border-radius: 6px;">Edit</button></div>';
+          const sections = document.querySelectorAll('.section, button[onclick*="handleCreateAccount"]');
+          sections.forEach(s => s.style.display = 'none');
+        }
+      } catch (error) {
+        // profile check failed — proceed to create form
+      }
+    }
+
+    function toggleEditMode() {
+      const sections = document.querySelectorAll('.section, button[onclick*="handleCreateAccount"]');
+      const btn = event.target;
+      if (btn.textContent === 'Edit') {
+        sections.forEach(s => s.style.display = 'block');
+        btn.textContent = 'Cancel';
+      } else {
+        sections.forEach(s => s.style.display = 'none');
+        btn.textContent = 'Edit';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async function() {
+      await checkExistingProfile();
+      
+      const uploadArea = document.getElementById('upload-area');
+      const photoInput = document.getElementById('photo-input');
+      const roleButtons = document.querySelectorAll('.role');
+      const inputs = document.querySelectorAll('input:not(#photo-input)');
+
+      uploadArea.addEventListener('click', () => photoInput.click());
+      uploadArea.addEventListener('dragover', (e) => { 
+        e.preventDefault(); 
+        uploadArea.style.borderColor = '#667eea'; 
+      });
+      uploadArea.addEventListener('dragleave', (e) => { 
+        e.preventDefault(); 
+        uploadArea.style.borderColor = '#ddd'; 
+      });
+      uploadArea.addEventListener('drop', (e) => { 
+        e.preventDefault(); 
+        if (e.dataTransfer.files.length) { 
+          photoInput.files = e.dataTransfer.files; 
+          photoInput.dispatchEvent(new Event('change', { bubbles: true })); 
+        } 
+      });
+
+      photoInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            uploadArea.innerHTML = `<img src="${event.target.result}" alt="Profile">`;
+          };
+          reader.readAsDataURL(file);
+        } else if (file) {
+          bAlert('Please select an image file.', 'warning');
+        }
+      });
+
+      roleButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+          roleButtons.forEach(b => b.classList.remove('selected'));
+          this.classList.add('selected');
+        });
+      });
+
+      inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+          if (this.id === 'email-address') {
+            this.classList.remove('email-duplicate');
+            document.getElementById('email-warning').classList.remove('show');
+          }
+        });
+      });
+    });
+
+    async function handleCreateAccount(event) {
+      event.preventDefault();
+      const btn = event.target;
+      const statusMsg = document.getElementById('status-message');
+      
+      const fullName = document.getElementById('full-name').value.trim();
+      const email = document.getElementById('email-address').value.trim();
+      const phone = document.getElementById('phone-number').value.trim();
+      const country = document.getElementById('country').value.trim();
+      const city = document.getElementById('city').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const businessName = document.getElementById('business-name').value.trim();
+      const bio = document.getElementById('bio').value.trim();
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+      const selectedRole = document.querySelector('.role.selected');
+      const role = selectedRole ? selectedRole.textContent.toLowerCase() : '';
+
+      statusMsg.textContent = '';
+
+      if (!fullName || !email || !selectedRole || !password || !confirmPassword) {
+        statusMsg.textContent = 'Please fill all required fields';
+        statusMsg.style.color = '#dc2626';
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        statusMsg.textContent = 'Passwords do not match';
+        statusMsg.style.color = '#dc2626';
+        return;
+      }
+
+      btn.textContent = 'Saving...';
+      btn.disabled = true;
+
+      try {
+        const apiBase = window.location.protocol === 'file:' ? 'http://localhost:3000' : window.location.origin;
+        const response = await fetch(`${apiBase}/api/profile/save-public`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, fullName, role, phone, country, city, address, business_name: businessName, bio })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          statusMsg.textContent = result.error || 'Unable to save profile';
+          statusMsg.style.color = '#dc2626';
+
+          if (response.status === 409) {
+            document.getElementById('email-address').classList.add('email-duplicate');
+            document.getElementById('email-warning').classList.add('show');
+          }
+          throw new Error(result.error);
+        }
+
+        statusMsg.textContent = 'Profile saved! You can now log in.';
+        statusMsg.style.color = '#16a34a';
+        btn.textContent = 'Saved ';
+        
+        setTimeout(() => {
+          btn.textContent = 'Create Account';
+          btn.disabled = false;
+          statusMsg.textContent = '';
+        }, 2000);
+      } catch (error) {
+        console.error('Profile creation failed:', error);
+        statusMsg.style.color = '#dc2626';
+        
+        if (error.message.includes('Failed to fetch')) {
+          statusMsg.textContent = 'Cannot reach server. Make sure the backend is running on port 3000.';
+        } else {
+          statusMsg.textContent = error.message || 'Unexpected error. Please try again.';
+        }
+        
+        btn.disabled = false;
+        btn.textContent = 'Create Account';
+      }
+    }
+  </script>
+  <script src="/shared-layout.js?v=7"></script>
+<script src="dialogs.js"></script>
+</body>
+</html>

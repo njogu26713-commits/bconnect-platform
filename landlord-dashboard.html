@@ -1,0 +1,2188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BConnect — Landlord Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#e4e9ff;
+  --bg2:#ffffff;
+  --bg3:#d8d0fd;
+  --border:rgba(79,70,229,.22);
+  --amber:#4f46e5;
+  --amber-dim:rgba(79,70,229,.15);
+  --amber-glow:rgba(79,70,229,.38);
+  --teal:#0284c7;
+  --teal-dim:rgba(2,132,199,.16);
+  --rose:#ef4444;
+  --rose-dim:rgba(239,68,68,.16);
+  --green:#059669;
+  --green-dim:rgba(5,150,105,.16);
+  --blue:#4f46e5;
+  --blue-dim:rgba(79,70,229,.16);
+  --purple:#7c3aed;
+  --text:#111827;
+  --text2:#374151;
+  --text3:#6b7280;
+  --card-radius:16px;
+  --transition:.2s cubic-bezier(.22,1,.36,1);
+  --sidebar-w:240px;
+  /* sidebar-specific (deep indigo) */
+  --sb-bg:#0f0c38;
+  --sb-bg2:#1e198a;
+  --sb-bg3:rgba(255,255,255,.09);
+  --sb-border:rgba(255,255,255,.14);
+  --sb-text:#e8e8ff;
+  --sb-text2:#b4c0ff;
+  --sb-text3:#818cf8;
+}
+
+html,body{height:100%;font-family:'Outfit',system-ui,sans-serif;color:var(--text);background:var(--bg);}
+body{min-height:100vh;display:flex;overflow-x:hidden;}
+
+/* ── AUTH ── */
+.auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:24px;}
+.auth-card{background:var(--bg2);border-radius:24px;padding:42px 36px;width:100%;max-width:420px;box-shadow:0 8px 40px rgba(37,99,235,.1);border:1px solid var(--border);}
+.auth-brand{display:flex;align-items:center;gap:12px;margin-bottom:28px;}
+.auth-logo{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#4f46e5,#6366f1);display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;font-weight:900;}
+.auth-app-name{font-size:1.05rem;font-weight:700;color:var(--text);}
+.auth-app-sub{font-size:11px;color:var(--text3);margin-top:1px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;}
+.auth-h{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--text);margin-bottom:6px;}
+.auth-sub{font-size:.88rem;color:var(--text3);margin-bottom:22px;line-height:1.5;}
+.field{display:block;width:100%;padding:12px 15px;margin-bottom:10px;border:1px solid var(--border);border-radius:10px;font-size:14px;font-family:'Outfit',sans-serif;color:var(--text);background:var(--bg3);transition:border-color .15s,box-shadow .15s;}
+.field:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0 3px var(--amber-dim);}
+.field::placeholder{color:var(--text3);}
+select.field option{background:var(--bg3);color:var(--text);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:10px;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .15s;text-decoration:none;}
+.btn-primary{background:var(--amber);color:#fff;box-shadow:0 3px 12px var(--amber-glow);}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px var(--amber-glow);}
+.btn-ghost{background:var(--bg3);color:var(--text2);border:1px solid var(--border);}
+.btn-ghost:hover{color:var(--text);border-color:var(--amber);}
+.btn-outline{background:transparent;color:var(--text2);border:1px solid var(--border);}
+.btn-outline:hover{border-color:var(--amber);color:var(--amber);}
+.btn-green{background:var(--green);color:#fff;}
+.btn-green:hover{transform:translateY(-1px);}
+.btn-amber{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(37,99,235,.25);}
+.btn-amber:hover{background:var(--amber);color:#fff;}
+.btn-red{background:var(--rose-dim);color:var(--rose);border:1px solid rgba(239,68,68,.25);}
+.btn-purple{background:rgba(155,109,255,.12);color:var(--purple);border:1px solid rgba(155,109,255,.25);}
+.btn-ghost-dark{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);}
+.btn-ghost-dark:hover{background:rgba(255,255,255,.18);}
+.btn-block{width:100%;padding:13px;}
+.btn-sm{padding:6px 13px;font-size:12px;border-radius:8px;}
+.btn-xs{padding:4px 9px;font-size:11px;border-radius:6px;}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sidebar-w);min-height:100vh;
+  background:var(--sb-bg);border-right:1px solid var(--sb-border);
+  display:flex;flex-direction:column;padding:28px 0;
+  position:fixed;left:0;top:0;bottom:0;z-index:300;
+  transform:translateX(-100%);
+  transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s;
+}
+body.sb-open .sidebar{transform:translateX(0);box-shadow:4px 0 40px rgba(0,0,0,.4);}
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.52);z-index:299;backdrop-filter:blur(2px);cursor:pointer;}
+body.sb-open .sb-overlay{display:block;}
+
+.sb-brand{padding:0 20px 24px;border-bottom:1px solid var(--sb-border);margin-bottom:20px;display:flex;align-items:center;gap:12px;}
+.sb-logo{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#fff;flex-shrink:0;}
+.sb-brand-name{font-family:'Playfair Display',serif;font-size:1.1rem;color:#fff;}
+.sb-brand-sub{font-size:.65rem;color:var(--sb-text2);text-transform:uppercase;letter-spacing:1px;margin-top:1px;}
+.sb-section{font-size:.65rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--sb-text3);padding:6px 24px 8px;}
+.sb-props{flex:1;overflow-y:auto;padding:0 12px 10px;scrollbar-width:none;}
+.sb-props::-webkit-scrollbar{display:none;}
+.sb-prop-btn{
+  display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;
+  cursor:pointer;font-size:.825rem;font-weight:500;color:var(--sb-text2);
+  transition:all .15s;margin-bottom:2px;border:1px solid transparent;
+  background:transparent;width:100%;text-align:left;font-family:'Outfit',sans-serif;
+}
+.sb-prop-btn:hover{background:rgba(255,255,255,.08);color:#fff;}
+.sb-prop-btn.active{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.2);color:#fff;}
+.sb-prop-dot{width:7px;height:7px;border-radius:50%;background:var(--sb-text3);flex-shrink:0;}
+.sb-prop-btn.active .sb-prop-dot{background:#60a5fa;}
+.sb-prop-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.sb-prop-code{font-size:10px;background:rgba(255,255,255,.1);padding:1px 6px;border-radius:4px;white-space:nowrap;color:var(--sb-text2);}
+.sb-add-btn{
+  display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;
+  cursor:pointer;font-size:.825rem;font-weight:600;color:var(--sb-text2);
+  border:1.5px dashed rgba(255,255,255,.2);background:transparent;
+  width:100%;text-align:left;font-family:'Outfit',sans-serif;margin-top:6px;transition:all .15s;
+}
+.sb-add-btn:hover{border-color:rgba(255,255,255,.5);color:#fff;}
+.sb-actions{padding:0 12px 4px;}
+.sb-nav-btn{
+  display:flex;align-items:center;gap:10px;padding:10px 12px;
+  font-size:.825rem;font-weight:500;color:var(--sb-text2);cursor:pointer;
+  border:none;background:none;width:100%;font-family:'Outfit',sans-serif;text-align:left;
+  transition:background .15s,color .15s;border-radius:10px;margin-bottom:2px;
+}
+.sb-nav-btn:hover{background:rgba(255,255,255,.08);color:#fff;}
+.sb-nav-icon{font-size:15px;width:20px;text-align:center;}
+.sb-footer{padding:16px;border-top:1px solid var(--sb-border);margin-top:auto;display:flex;align-items:center;gap:10px;}
+.sb-avatar{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;overflow:hidden;}
+.sb-user-name{font-size:.825rem;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;}
+.sb-user-sub{font-size:.65rem;color:var(--sb-text2);}
+.sb-out{width:30px;height:30px;border-radius:8px;border:1px solid rgba(255,255,255,.2);background:transparent;color:var(--sb-text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .15s;flex-shrink:0;}
+.sb-out:hover{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.5);color:#fca5a5;}
+
+/* ── MOBILE TOPBAR ── */
+.topbar{
+  position:sticky;top:0;z-index:200;background:var(--bg2);height:56px;
+  padding:0 14px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);box-shadow:0 1px 6px rgba(79,70,229,.08);
+}
+.tb-brand{display:flex;align-items:center;gap:10px;}
+.tb-logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#4f46e5,#6366f1);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;}
+.tb-title{font-size:.95rem;font-weight:700;color:var(--text);}
+.tb-right{display:flex;align-items:center;gap:8px;}
+.notif-btn{position:relative;width:34px;height:34px;border-radius:9px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;}
+.notif-dot{position:absolute;top:-3px;right:-3px;width:16px;height:16px;background:var(--rose);color:#fff;font-size:9px;font-weight:800;border-radius:99px;display:none;align-items:center;justify-content:center;border:2px solid var(--bg2);}
+.signout-btn{padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:11px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;}
+.signout-btn:hover{color:var(--text);border-color:var(--amber);}
+/* Hamburger */
+.hb-menu{width:36px;height:36px;border-radius:9px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color .15s,background .15s;}
+.hb-menu:hover{border-color:var(--amber);background:var(--amber-dim);}
+
+/* ── LAYOUT ── */
+.section{display:none;}
+.section.active{display:block;}
+.page-wrap{min-height:100vh;}
+.container{max-width:none;margin:0;padding:28px 24px 80px;}
+
+/* ── WELCOME ── */
+.welcome-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 24px;background:var(--bg);}
+.welcome-inner{text-align:center;max-width:420px;}
+.welcome-icon{width:80px;height:80px;border-radius:22px;background:linear-gradient(135deg,#4f46e5,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:38px;margin:0 auto 24px;box-shadow:0 16px 48px rgba(79,70,229,.28);}
+.welcome-inner h2{font-family:'Playfair Display',serif;font-size:1.9rem;color:var(--text);margin-bottom:10px;}
+.welcome-inner p{color:var(--text2);font-size:1rem;max-width:380px;margin:0 auto 32px;line-height:1.6;}
+.welcome-btns{display:flex;flex-direction:column;gap:10px;max-width:340px;margin:0 auto;}
+
+/* ── PROPERTY SWITCHER CHIPS ── */
+.prop-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:28px;}
+.prop-chip{padding:7px 16px;border-radius:99px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .15s;font-family:'Outfit',sans-serif;}
+.prop-chip.active{background:var(--amber-dim);color:var(--amber);border-color:rgba(37,99,235,.3);}
+.prop-chip:hover:not(.active){border-color:var(--amber);color:var(--amber);}
+.prop-add-chip{padding:7px 14px;border-radius:99px;border:1.5px dashed rgba(37,99,235,.25);background:transparent;color:var(--text3);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:'Outfit',sans-serif;}
+.prop-add-chip:hover{border-color:var(--amber);color:var(--amber);}
+
+/* ── DASHBOARD TOPBAR ── */
+.dash-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px;}
+.dash-topbar-left .page-title{font-family:'Playfair Display',serif;font-size:1.65rem;color:var(--text);}
+.dash-topbar-left .page-sub{font-size:.82rem;color:var(--text3);margin-top:3px;}
+.dash-topbar-right{display:flex;align-items:center;gap:10px;}
+.icon-btn{width:38px;height:38px;border-radius:10px;background:var(--bg2);border:1px solid var(--border);display:grid;place-items:center;font-size:.95rem;cursor:pointer;position:relative;transition:border-color var(--transition);}
+.icon-btn:hover{border-color:var(--amber);}
+.icon-btn .dot{position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:var(--amber);border:2px solid var(--bg);}
+.add-btn{display:flex;align-items:center;gap:7px;background:var(--amber);color:#111;border:none;border-radius:10px;padding:9px 16px;font-family:'Outfit',sans-serif;font-size:.825rem;font-weight:700;cursor:pointer;transition:all var(--transition);box-shadow:0 4px 16px var(--amber-glow);}
+.add-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px var(--amber-glow);}
+
+/* ── KPI GRID ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.kpi{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--card-radius);
+  padding:22px;position:relative;overflow:hidden;cursor:pointer;
+  transition:border-color var(--transition),transform var(--transition);
+}
+.kpi:hover{border-color:rgba(255,255,255,.14);transform:translateY(-2px);}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:var(--card-radius) var(--card-radius) 0 0;}
+.kpi.amber::before{background:var(--amber);}
+.kpi.teal::before{background:var(--teal);}
+.kpi.green::before{background:var(--green);}
+.kpi.rose::before{background:var(--rose);}
+.kpi.blue::before{background:var(--blue);}
+.kpi-icon{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-size:1.05rem;margin-bottom:14px;}
+.kpi.amber .kpi-icon{background:var(--amber-dim);}
+.kpi.teal  .kpi-icon{background:var(--teal-dim);}
+.kpi.green .kpi-icon{background:var(--green-dim);}
+.kpi.rose  .kpi-icon{background:var(--rose-dim);}
+.kpi.blue  .kpi-icon{background:var(--blue-dim);}
+.kpi-label{font-size:.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;}
+.kpi-value{font-family:'Playfair Display',serif;font-size:1.7rem;color:var(--text);line-height:1;margin-bottom:8px;}
+.kpi-delta{font-size:.72rem;font-weight:500;color:var(--text3);}
+.kpi-delta.up{color:var(--green);}
+.kpi-delta.down{color:var(--rose);}
+
+/* ── MID ROW ── */
+.mid-row{display:grid;grid-template-columns:1fr 340px;gap:20px;margin-bottom:20px;}
+
+/* ── PROP VAULT CARD ── */
+.pvcard{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--card-radius);padding:24px;
+  animation:fadeUp .6s both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}}
+.card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:12px;}
+.card-title{font-family:'Playfair Display',serif;font-size:1rem;color:var(--text);}
+.card-sub{font-size:.72rem;color:var(--text3);margin-top:3px;}
+.chip{font-size:.7rem;font-weight:700;padding:4px 10px;border-radius:20px;background:var(--green-dim);color:var(--green);white-space:nowrap;}
+
+/* ── REVENUE CHART ── */
+.chart-area{height:160px;}
+.chart-bars{display:flex;align-items:flex-end;gap:8px;height:140px;}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;}
+.bar-wrap{width:100%;flex:1;display:flex;align-items:flex-end;}
+.bar{width:100%;border-radius:5px 5px 0 0;transition:opacity var(--transition);cursor:pointer;}
+.bar:hover{opacity:.75;}
+.bar.amber{background:linear-gradient(180deg,var(--amber) 0%,rgba(99,102,241,.35) 100%);}
+.bar.dim{background:var(--bg3);}
+.bar-lbl{font-size:.6rem;color:var(--text3);}
+
+/* ── OCCUPANCY RING ── */
+.occ-ring{display:flex;justify-content:center;margin:4px 0 18px;}
+.ring-svg{transform:rotate(-90deg);}
+.ring-bg{fill:none;stroke:var(--bg3);stroke-width:10;}
+.ring-fill{fill:none;stroke:var(--amber);stroke-width:10;stroke-linecap:round;stroke-dasharray:283;stroke-dashoffset:283;transition:stroke-dashoffset 1s cubic-bezier(.22,1,.36,1);}
+.ring-wrap{position:relative;width:110px;height:110px;}
+.ring-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
+.ring-pct{font-family:'Playfair Display',serif;font-size:1.55rem;color:var(--text);}
+.ring-lbl2{font-size:.65rem;color:var(--text3);margin-top:2px;}
+.occ-legend{display:flex;flex-direction:column;gap:10px;}
+.occ-row{display:flex;align-items:center;justify-content:space-between;font-size:.8rem;}
+.occ-dot{width:7px;height:7px;border-radius:50%;margin-right:7px;display:inline-block;flex-shrink:0;}
+.occ-name{color:var(--text2);display:flex;align-items:center;}
+.occ-val{font-weight:600;color:var(--text);font-size:.8rem;}
+.occ-bar-bg{flex:1;height:4px;background:var(--bg3);border-radius:2px;margin:0 10px;}
+.occ-bar-fill{height:100%;border-radius:2px;transition:width .8s cubic-bezier(.22,1,.36,1);}
+
+/* ── BOTTOM ROW ── */
+.bottom-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+
+/* ── TENANT ROWS (PropVault) ── */
+.pv-search-bar{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px 12px;margin-bottom:14px;}
+.pv-search-bar input{background:none;border:none;outline:none;font-family:'Outfit',sans-serif;font-size:.825rem;color:var(--text);flex:1;}
+.pv-search-bar input::placeholder{color:var(--text3);}
+.tenant-row{display:flex;align-items:center;gap:10px;padding:10px 8px;border-bottom:1px solid var(--border);transition:background var(--transition);border-radius:8px;cursor:pointer;}
+.tenant-row:hover{background:var(--bg3);}
+.tenant-row:last-child{border-bottom:none;}
+.t-avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:.72rem;font-weight:700;color:#fff;flex-shrink:0;}
+.t-name{font-size:.85rem;font-weight:500;color:var(--text);}
+.t-unit{font-size:.72rem;color:var(--text3);}
+.t-status{margin-left:auto;font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;}
+.t-status.paid{background:var(--green-dim);color:var(--green);}
+.t-status.due{background:var(--amber-dim);color:var(--amber);}
+.t-status.late{background:var(--rose-dim);color:var(--rose);}
+.t-amount{font-size:.8rem;font-weight:600;color:var(--text2);min-width:70px;text-align:right;}
+
+/* ── MAINTENANCE ROWS (PropVault) ── */
+.maint-item{display:flex;gap:10px;padding:11px 8px;border-bottom:1px solid var(--border);border-radius:8px;transition:background var(--transition);cursor:pointer;}
+.maint-item:hover{background:var(--bg3);}
+.maint-item:last-child{border-bottom:none;}
+.maint-icon{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:.9rem;flex-shrink:0;}
+.maint-title{font-size:.85rem;font-weight:500;color:var(--text);}
+.maint-from{font-size:.72rem;color:var(--text3);margin-top:2px;}
+.maint-pri{margin-left:auto;font-size:.65rem;font-weight:700;padding:3px 9px;border-radius:20px;align-self:flex-start;white-space:nowrap;}
+.maint-pri.high{background:var(--rose-dim);color:var(--rose);}
+.maint-pri.med{background:var(--amber-dim);color:var(--amber);}
+.maint-pri.low{background:var(--teal-dim);color:var(--teal);}
+.maint-date{font-size:.68rem;color:var(--text3);margin-top:4px;}
+
+/* ── HERO BANNER (property card) ── */
+.hero-banner{
+  border-radius:var(--card-radius);padding:24px 26px 22px;margin-bottom:20px;
+  background:linear-gradient(135deg,#1e1b4b 0%,#4f46e5 55%,#6366f1 100%);
+  border:none;position:relative;overflow:hidden;
+}
+.hero-banner::before{content:'';position:absolute;top:-60px;right:-50px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.05);}
+.hero-banner::after{content:'';position:absolute;bottom:-60px;right:80px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.04);}
+.hb-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;position:relative;z-index:1;}
+.hb-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px;letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px;}
+.hb-name{font-family:'Playfair Display',serif;font-size:1.5rem;color:#fff;margin-bottom:4px;letter-spacing:-.01em;}
+.hb-loc{font-size:12px;color:rgba(255,255,255,.7);margin-bottom:12px;}
+.hb-code-pill{display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:7px 14px;}
+.hb-code-lbl{font-size:10px;color:rgba(255,255,255,.6);font-weight:700;text-transform:uppercase;letter-spacing:.06em;}
+.hb-code-val{font-size:1.1rem;font-weight:900;letter-spacing:3px;color:#fff;}
+.hb-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.hb-occ{margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,.15);position:relative;z-index:1;}
+.hb-occ-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
+.hb-occ-lbl{font-size:10px;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.06em;}
+.hb-occ-nums{font-size:13px;font-weight:700;color:#fff;}
+.hb-occ-track{height:7px;background:rgba(255,255,255,.15);border-radius:99px;overflow:hidden;}
+.hb-occ-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#34d399,#06b6d4);transition:width .6s;}
+.hb-occ-fill.amber{background:linear-gradient(90deg,#fbbf24,#f59e0b);}
+.hb-occ-fill.red{background:linear-gradient(90deg,#f87171,#ef4444);}
+.hb-occ-sub{display:flex;justify-content:space-between;margin-top:5px;}
+.hb-occ-sub span{font-size:11px;color:rgba(255,255,255,.55);}
+.occ-badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:99px;font-size:10px;font-weight:700;}
+.occ-badge.full{background:rgba(62,207,142,.15);color:var(--green);}
+.occ-badge.good{background:rgba(79,142,247,.15);color:var(--blue);}
+.occ-badge.low{background:var(--amber-dim);color:var(--amber);}
+.occ-badge.empty{background:var(--rose-dim);color:var(--rose);}
+
+/* ── ACTIVITY PANEL ── */
+.panel{background:var(--bg2);border-radius:var(--card-radius);border:1px solid var(--border);overflow:hidden;margin-bottom:18px;}
+.panel-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.panel-head h3{font-size:.875rem;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px;}
+.panel-head .ph-r{display:flex;align-items:center;gap:8px;}
+.panel-tag{font-size:11px;color:var(--text3);font-weight:500;}
+.feed-item{display:flex;align-items:flex-start;gap:10px;padding:12px 20px;border-bottom:1px solid var(--border);}
+.feed-item:last-child{border-bottom:none;}
+.feed-dot{width:32px;height:32px;border-radius:9px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.feed-body{flex:1;min-width:0;}
+.feed-text{font-size:.825rem;color:var(--text2);font-weight:500;}
+.feed-detail{font-size:.7rem;color:var(--text3);margin-top:2px;}
+.feed-time{font-size:.7rem;color:var(--text3);white-space:nowrap;}
+.feed-empty{text-align:center;padding:32px 20px;color:var(--text3);font-size:.825rem;}
+.loading-hint{color:var(--text3);font-size:.825rem;text-align:center;padding:24px;}
+
+/* ── PENDING JOIN REQUESTS ── */
+.pend-panel{background:rgba(79,70,229,.04);border:1px solid rgba(79,70,229,.18);border-radius:var(--card-radius);overflow:hidden;margin-bottom:18px;}
+.pend-panel .panel-head{border-bottom-color:rgba(79,70,229,.12);background:transparent;}
+
+/* ── TENANTS TABLE (modal) ── */
+.t-table{width:100%;border-collapse:collapse;}
+.t-table thead th{background:var(--bg3);padding:10px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);text-align:left;border-bottom:1px solid var(--border);}
+.t-table thead th:last-child{text-align:right;}
+.t-table tbody tr{border-bottom:1px solid var(--border);transition:background .12s;}
+.t-table tbody tr:last-child{border-bottom:none;}
+.t-table tbody tr:hover{background:var(--bg3);}
+.t-table tbody td{padding:13px 14px;vertical-align:middle;font-size:13px;color:var(--text2);}
+.t-table tbody td:last-child{text-align:right;}
+.av{width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0;}
+.td-name-row{display:flex;align-items:center;gap:10px;}
+.td-name{font-weight:600;color:var(--text);}
+.td-email{font-size:10px;color:var(--text3);margin-top:2px;}
+.rent-chip{display:inline-flex;align-items:center;background:var(--green-dim);color:var(--green);font-size:11px;font-weight:700;padding:4px 10px;border-radius:7px;border:1px solid rgba(5,150,105,.2);}
+.t-actions{display:flex;gap:6px;justify-content:flex-end;}
+.t-empty{text-align:center;padding:40px 20px;}
+.t-empty .ei{font-size:36px;margin-bottom:10px;}
+.t-empty p{color:var(--text3);font-size:13px;}
+
+/* ── STATUS BADGES ── */
+.status-badge{display:inline-block;font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;text-transform:uppercase;letter-spacing:.04em;}
+.status-badge.pending{background:var(--amber-dim);color:var(--amber);}
+.status-badge.in_progress{background:var(--blue-dim);color:var(--blue);}
+.status-badge.resolved,.status-badge.completed,.status-badge.paid{background:var(--green-dim);color:var(--green);}
+.status-badge.rejected{background:var(--rose-dim);color:var(--rose);}
+
+/* ── ANNOUNCEMENT CARDS ── */
+.ann-card{background:var(--bg3);border-left:3px solid var(--amber);border-radius:10px;padding:12px 14px;margin-bottom:8px;}
+.ann-card h4{font-size:13px;color:var(--text);margin-bottom:4px;font-weight:600;}
+.ann-card .ann-body{font-size:13px;color:var(--text2);white-space:pre-wrap;}
+.ann-card .ann-meta{font-size:11px;color:var(--text3);margin-top:6px;}
+
+/* ── CODE DISPLAY ── */
+.code-display{background:var(--amber-dim);border:1px solid rgba(79,70,229,.2);border-radius:14px;padding:20px;text-align:center;margin-bottom:18px;}
+.code-display .cd-lbl{font-size:10px;color:var(--amber);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
+.code-display .cd-code{font-size:2.2rem;font-weight:900;color:var(--amber);letter-spacing:5px;}
+
+/* ── CHAT ── */
+.chat-thread{min-height:200px;max-height:280px;overflow-y:auto;background:var(--bg3);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
+.bubble{max-width:78%;padding:9px 13px;border-radius:14px;font-size:13px;line-height:1.4;word-break:break-word;}
+.bubble.landlord{align-self:flex-end;background:#4f46e5;color:#fff;border-bottom-right-radius:4px;}
+.bubble.tenant{align-self:flex-start;background:var(--bg2);color:var(--text);border:1px solid var(--border);border-bottom-left-radius:4px;}
+.bubble .ts{display:block;font-size:9px;opacity:.6;margin-top:3px;}
+.chat-input-row{display:flex;gap:8px;}
+.chat-input-row input{flex:1;padding:10px 12px;border:1px solid var(--border);border-radius:9px;font-size:14px;font-family:'Outfit',sans-serif;color:var(--text);background:var(--bg3);}
+.chat-input-row input:focus{outline:none;border-color:var(--amber);}
+
+/* ── WITHDRAWAL ── */
+.wd-info{background:var(--green-dim);border-radius:12px;padding:14px;margin-bottom:16px;border:1px solid rgba(62,207,142,.2);}
+.wd-info .wd-lbl{font-size:11px;color:var(--green);font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;}
+.wd-info .wd-val{font-size:24px;font-weight:800;color:var(--green);}
+.wd-preview{display:none;background:var(--amber-dim);border-radius:10px;padding:12px;margin:10px 0;border:1px solid rgba(79,70,229,.2);}
+.wd-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;color:var(--text2);}
+
+/* ── EMPTY STATE ── */
+.empty-box{background:var(--bg2);border-radius:20px;border:1.5px dashed var(--border);padding:56px 24px;text-align:center;}
+.empty-box .ei{font-size:44px;margin-bottom:16px;}
+.empty-box h3{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--text);margin-bottom:8px;}
+.empty-box p{color:var(--text3);font-size:13px;margin-bottom:22px;max-width:340px;margin-left:auto;margin-right:auto;}
+
+/* ── MODALS ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);z-index:500;align-items:flex-end;justify-content:center;}
+.modal-overlay.active{display:flex;}
+.modal-box{background:var(--bg2);border-radius:22px 22px 0 0;padding:26px 22px;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;box-shadow:0 -8px 40px rgba(0,0,0,.4);border-top:1px solid var(--border);border-left:1px solid var(--border);border-right:1px solid var(--border);animation:sheetUp .26s cubic-bezier(.34,1.56,.64,1);}
+@keyframes sheetUp{from{transform:translateY(80px);opacity:0}to{transform:none;opacity:1}}
+.drag-handle{width:36px;height:4px;background:var(--bg3);border-radius:99px;margin:0 auto 18px;}
+.modal-box h3{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--text);margin-bottom:4px;}
+.modal-sub{font-size:.8rem;color:var(--text3);margin-bottom:14px;}
+.modal-close{float:right;font-size:22px;line-height:1;color:var(--text3);cursor:pointer;transition:color .15s;margin-top:-2px;background:none;border:none;}
+.modal-close:hover{color:var(--rose);}
+.m-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 0;border-bottom:1px solid var(--border);}
+.m-row:last-child{border-bottom:none;}
+.m-name{font-weight:600;font-size:.875rem;color:var(--text);}
+.m-sub{font-size:.75rem;color:var(--text3);margin-top:2px;}
+.m-pay-amt{font-size:15px;font-weight:800;color:var(--green);}
+
+/* ── TOAST ── */
+.toast-wrap{position:fixed;top:16px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:8px;max-width:340px;pointer-events:none;}
+.toast{pointer-events:auto;padding:12px 14px;border-radius:12px;color:#fff;font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.3);display:flex;align-items:flex-start;gap:8px;transform:translateX(110%);transition:transform .28s,opacity .28s;opacity:0;}
+.toast.show{transform:none;opacity:1;}
+.toast .tm{flex:1;line-height:1.35;}
+.toast .tx{background:rgba(255,255,255,.2);border:none;color:#fff;width:20px;height:20px;border-radius:50%;font-size:12px;cursor:pointer;}
+.toast.success{background:linear-gradient(135deg,var(--green),#2a9b6a);}
+.toast.error{background:linear-gradient(135deg,var(--rose),#b02d51);}
+.toast.warning{background:linear-gradient(135deg,#f59e0b,#d97706);}
+.toast.info{background:linear-gradient(135deg,var(--blue),#2563eb);}
+
+/* ── BOTTOM BAR (mobile) ── */
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);padding:8px 12px;display:flex;gap:8px;z-index:100;}
+.bb-btn{flex:1;padding:9px 5px;border-radius:10px;border:1px solid var(--border);background:var(--bg3);color:var(--text3);font-size:10px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all .15s;}
+.bb-btn .bi{font-size:17px;line-height:1;}
+.bb-btn:hover{border-color:var(--amber);color:var(--amber);}
+.bb-btn.bb-main{background:var(--amber);color:#fff;border-color:var(--amber);box-shadow:0 3px 12px var(--amber-glow);}
+.bb-btn.bb-main:hover{transform:translateY(-1px);}
+
+/* ── RESPONSIVE ── */
+
+/* Desktop — sidebar always visible */
+@media(min-width:900px){
+  body{display:flex;min-height:100vh;}
+  .sidebar{transform:translateX(0)!important;box-shadow:none!important;}
+  .topbar{display:none!important;}
+  .bottom-bar{display:none!important;}
+  #sWelcome,#sSignup,#sLogin,#sDash{margin-left:var(--sidebar-w);flex:1;min-height:100vh;overflow-y:auto;}
+  .container{max-width:none;margin:0;padding:32px 36px 40px;}
+  .welcome-screen{min-height:100vh;}
+  .hb-menu{display:none!important;}
+}
+
+/* Tablet wide — 2-col KPI */
+@media(max-width:1200px) and (min-width:900px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr);}
+}
+
+/* Tablet narrow — stack mid-row */
+@media(max-width:1100px) and (min-width:900px){
+  .mid-row{grid-template-columns:1fr;}
+  .bottom-row{grid-template-columns:1fr;}
+}
+
+/* Mobile — drawer sidebar */
+@media(max-width:899px){
+  body{display:block;}
+  .topbar{display:flex;}
+  #sWelcome,#sSignup,#sLogin,#sDash{margin-left:0!important;}
+
+  /* KPI: 2 cols on mobile */
+  .kpi-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
+  .kpi{padding:16px 14px;}
+  .kpi-value{font-size:1.4rem;}
+  .kpi-label{font-size:.63rem;}
+
+  /* Grids: single column */
+  .mid-row{grid-template-columns:1fr;}
+  .bottom-row{grid-template-columns:1fr;}
+
+  /* Container */
+  .container{padding:16px 14px 96px;}
+
+  /* Dash topbar */
+  .dash-topbar{margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+  .dash-topbar-left .page-title{font-size:1.25rem;}
+  .dash-topbar-right{width:100%;justify-content:flex-end;}
+  .add-btn{font-size:.775rem;padding:8px 13px;}
+
+  /* Hero banner */
+  .hero-banner{padding:18px 16px 16px;}
+  .hb-name{font-size:1.15rem;}
+  .hb-top{flex-direction:column;gap:12px;}
+  .hb-actions{flex-wrap:wrap;gap:6px;}
+  .hb-actions .btn-sm{font-size:.72rem;padding:6px 10px;}
+
+  /* Prop-bar: horizontal scroll */
+  .prop-bar{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;gap:6px;margin-bottom:18px;scrollbar-width:none;}
+  .prop-bar::-webkit-scrollbar{display:none;}
+  .prop-chip,.prop-add-chip{flex-shrink:0;}
+
+  /* Pending panel */
+  .pend-panel{margin-bottom:14px;}
+
+  /* Chart area */
+  .chart-bars{gap:5px;}
+}
+
+/* Small phones */
+@media(max-width:480px){
+  .kpi-grid{grid-template-columns:1fr 1fr;gap:10px;}
+  .kpi{padding:14px 12px;}
+  .kpi-value{font-size:1.25rem;}
+  .kpi-label{font-size:.6rem;}
+  .kpi-icon{width:32px;height:32px;font-size:.9rem;margin-bottom:10px;}
+
+  .dash-topbar-left .page-title{font-size:1.1rem;}
+  .hb-name{font-size:1rem;}
+
+  .tb-title{display:none;}
+
+  .hero-banner{padding:16px 14px;}
+  .hb-code-val{font-size:.95rem;letter-spacing:2px;}
+
+  .tenant-row{gap:8px;}
+  .t-amount{min-width:56px;font-size:.75rem;}
+
+  .auth-card{padding:28px 18px;}
+
+  .modal-box{border-radius:16px 16px 0 0;padding:20px 16px;}
+}
+</style>
+</head>
+<body>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-brand">
+    <div class="sb-logo">B</div>
+    <div>
+      <div class="sb-brand-name">BConnect</div>
+      <div class="sb-brand-sub">Landlord Hub</div>
+    </div>
+  </div>
+
+  <div class="sb-section">Properties</div>
+  <div class="sb-props" id="dsPropsList">
+    <div style="font-size:12px;color:var(--text3);padding:8px 12px;">Loading…</div>
+  </div>
+
+  <div class="sb-actions">
+    <div class="sb-section" style="padding-left:0;">Quick Actions</div>
+    <button class="sb-nav-btn" onclick="openModal('addPropModal')"><span class="sb-nav-icon">🏠</span>Add Property</button>
+    <button class="sb-nav-btn" onclick="openModal('annModal')"><span class="sb-nav-icon">📢</span>Post Announcement</button>
+    <button class="sb-nav-btn" onclick="openModal('notifModal')">
+      <span class="sb-nav-icon">🔔</span>Notifications
+      <span id="dsBadge" style="margin-left:auto;background:var(--rose);color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:99px;display:none">0</span>
+    </button>
+    <button class="sb-nav-btn" onclick="openModal('withdrawModal')"><span class="sb-nav-icon">💸</span>Withdraw Earnings</button>
+    <button class="sb-nav-btn" onclick="openModal('profileModal')"><span class="sb-nav-icon">👤</span>My Profile</button>
+  </div>
+
+  <div class="sb-footer">
+    <div class="sb-avatar" id="dsAvatar">L</div>
+    <div style="flex:1;min-width:0;">
+      <div class="sb-user-name" id="dsName">Landlord</div>
+      <div class="sb-user-sub">Property Manager</div>
+    </div>
+    <button class="sb-out" onclick="doLogout()" title="Sign out">↪</button>
+  </div>
+</aside>
+
+<!-- SIDEBAR OVERLAY (mobile) -->
+<div class="sb-overlay" id="sbOverlay" onclick="closeSidebar()"></div>
+
+<!-- MOBILE TOPBAR -->
+<header class="topbar">
+  <div class="tb-brand">
+    <button class="hb-menu" id="hbMenuBtn" onclick="toggleSidebar()" aria-label="Open menu">☰</button>
+    <div class="tb-logo">B</div>
+    <span class="tb-title">BConnect Landlord</span>
+  </div>
+  <div class="tb-right">
+    <button class="notif-btn" onclick="openModal('notifModal')">
+      🔔<span class="notif-dot" id="notifBadge">0</span>
+    </button>
+    <button class="signout-btn" onclick="doLogout()">Sign out</button>
+  </div>
+</header>
+
+<!-- WELCOME -->
+<div id="sWelcome" class="section active">
+  <div class="welcome-screen">
+    <div class="welcome-inner">
+      <div class="welcome-icon">🏢</div>
+      <h2>BConnect for Landlords</h2>
+      <p>Manage properties, collect rent via M-Pesa, and communicate with all your tenants from one beautiful dashboard.</p>
+      <div class="welcome-btns">
+        <button class="btn btn-primary btn-block" onclick="show('sLogin')">Login to your account →</button>
+        <button class="btn btn-ghost btn-block" onclick="show('sSignup')">Create a new account</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SIGN UP -->
+<div id="sSignup" class="section">
+  <div class="auth-screen">
+    <div class="auth-card">
+      <div class="auth-brand"><div class="auth-logo">🏢</div><div><div class="auth-app-name">Create Account</div><div class="auth-app-sub">Landlord Dashboard</div></div></div>
+      <div class="auth-h">Get started for free</div>
+      <div class="auth-sub">Set up your landlord account and start managing properties in minutes.</div>
+      <input class="field" id="su_name" placeholder="Full Name"/>
+      <input class="field" id="su_email" type="email" placeholder="Email Address"/>
+      <input class="field" id="su_phone" placeholder="Phone Number"/>
+      <input class="field" id="su_pass" type="password" placeholder="Password (min 6 chars)"/>
+      <button class="btn btn-primary btn-block" style="margin-top:6px;" onclick="doSignup()">Create Account →</button>
+      <button class="btn btn-ghost btn-block" style="margin-top:8px;" onclick="show('sWelcome')">← Back</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="sLogin" class="section">
+  <div class="auth-screen">
+    <div class="auth-card">
+      <div class="auth-brand"><div class="auth-logo">🏢</div><div><div class="auth-app-name">Welcome Back</div><div class="auth-app-sub">Landlord Dashboard</div></div></div>
+      <div class="auth-h">Sign in</div>
+      <div class="auth-sub">Your properties and tenants are waiting.</div>
+      <input class="field" id="li_email" type="email" placeholder="Email Address"/>
+      <input class="field" id="li_pass" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()"/>
+      <button class="btn btn-primary btn-block" style="margin-top:6px;" onclick="doLogin()">Sign In →</button>
+      <button class="btn btn-ghost btn-block" style="margin-top:8px;" onclick="show('sWelcome')">← Back</button>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="sDash" class="section">
+  <div class="container">
+
+    <!-- Property switcher -->
+    <div class="prop-bar" id="propSwitcher"></div>
+
+    <!-- No property state -->
+    <div id="noPropState" class="empty-box" style="display:none;">
+      <div class="ei">🏠</div>
+      <h3>No Properties Yet</h3>
+      <p>Add your first property to start managing tenants and collecting rent on M-Pesa.</p>
+      <button class="btn btn-primary" onclick="openModal('addPropModal')">+ Add First Property</button>
+    </div>
+
+    <div id="propDash" style="display:none;">
+
+      <!-- Dashboard Topbar -->
+      <div class="dash-topbar">
+        <div class="dash-topbar-left">
+          <div class="page-title" id="pd_greeting">Good day 👋</div>
+          <div class="page-sub" id="pd_sub_lbl">Loading property data…</div>
+        </div>
+        <div class="dash-topbar-right">
+          <div class="icon-btn" onclick="openModal('notifModal')">🔔<span class="dot" id="notifDotTop" style="display:none"></span></div>
+          <button class="add-btn" onclick="openModal('addPropModal')">+ Add Property</button>
+        </div>
+      </div>
+
+      <!-- KPI Grid (4 cards) -->
+      <div class="kpi-grid">
+        <div class="kpi amber" onclick="openModal('paymentsModal')" style="cursor:pointer;">
+          <div class="kpi-icon">💰</div>
+          <div class="kpi-label">Monthly Revenue</div>
+          <div class="kpi-value" id="sum_revenue">KES 0</div>
+          <div class="kpi-delta" id="sum_rev_sub">of expected</div>
+        </div>
+        <div class="kpi teal">
+          <div class="kpi-icon">🏢</div>
+          <div class="kpi-label">Total Units</div>
+          <div class="kpi-value" id="kpi_units">0</div>
+          <div class="kpi-delta up" id="kpi_units_sub">in this property</div>
+        </div>
+        <div class="kpi green">
+          <div class="kpi-icon">✅</div>
+          <div class="kpi-label">Occupancy Rate</div>
+          <div class="kpi-value" id="kpi_occ_pct">0%</div>
+          <div class="kpi-delta up" id="kpi_occ_sub">units occupied</div>
+        </div>
+        <div class="kpi rose" onclick="openModal('paymentsModal')" style="cursor:pointer;">
+          <div class="kpi-icon">⚠️</div>
+          <div class="kpi-label">Outstanding</div>
+          <div class="kpi-value" id="sum_pending">KES 0</div>
+          <div class="kpi-delta down" id="sum_pend_sub">not yet collected</div>
+        </div>
+      </div>
+
+      <!-- Mid Row: Revenue Chart + Occupancy Ring -->
+      <div class="mid-row">
+        <!-- Revenue Chart -->
+        <div class="pvcard">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Revenue Overview</div>
+              <div class="card-sub">Rent collected — <span id="chartYear">2026</span></div>
+            </div>
+            <span class="chip" id="revChip">—</span>
+          </div>
+          <div class="chart-area">
+            <div class="chart-bars" id="chartBars"></div>
+          </div>
+        </div>
+
+        <!-- Occupancy Ring -->
+        <div class="pvcard" style="animation-delay:.1s;">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Occupancy</div>
+              <div class="card-sub" id="pd_units_lbl">By units</div>
+            </div>
+          </div>
+          <div class="occ-ring">
+            <div class="ring-wrap">
+              <svg class="ring-svg" width="110" height="110" viewBox="0 0 110 110">
+                <circle class="ring-bg" cx="55" cy="55" r="45"/>
+                <circle class="ring-fill" id="occRingFill" cx="55" cy="55" r="45"/>
+              </svg>
+              <div class="ring-center">
+                <div class="ring-pct" id="occPct">0%</div>
+                <div class="ring-lbl2">Occupied</div>
+              </div>
+            </div>
+          </div>
+          <div class="occ-legend">
+            <div class="occ-row">
+              <div class="occ-name"><span class="occ-dot" style="background:var(--amber)"></span>Occupied</div>
+              <div class="occ-bar-bg"><div class="occ-bar-fill" id="occBarFill" style="width:0%;background:var(--amber)"></div></div>
+              <div class="occ-val" id="occNums">0 / 0</div>
+            </div>
+            <div class="occ-row">
+              <div class="occ-name"><span class="occ-dot" style="background:var(--rose)"></span>Vacant</div>
+              <div class="occ-bar-bg"><div class="occ-bar-fill" id="vacBarFill" style="width:0%;background:var(--rose)"></div></div>
+              <div class="occ-val" id="vacNums">0 units</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Property Banner (hero details) -->
+      <div class="hero-banner" style="margin-bottom:20px;">
+        <div class="hb-top">
+          <div>
+            <div class="hb-tag">🏠 Active Property</div>
+            <div class="hb-name" id="pd_name">—</div>
+            <div class="hb-loc" id="pd_location"></div>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+              <div class="hb-code-pill">
+                <div><div class="hb-code-lbl">Tenant Code</div><div class="hb-code-val" id="pd_code">—</div></div>
+              </div>
+              <span class="occ-badge good" id="occStatusBadge">—</span>
+            </div>
+          </div>
+          <div class="hb-actions">
+            <button class="btn btn-ghost-dark btn-sm" onclick="copyCode()">📋 Copy Code</button>
+            <button class="btn btn-ghost-dark btn-sm" onclick="openModal('addTenantModal')">+ Invite</button>
+            <button id="pd_marketplace_btn" class="btn btn-sm" style="background:var(--bg3);color:var(--text2);border:1px solid var(--border);font-size:12px;">🏬 List on Marketplace</button>
+          </div>
+        </div>
+        <div class="hb-occ">
+          <div class="hb-occ-row">
+            <span class="hb-occ-lbl">Occupancy Rate</span>
+            <span class="hb-occ-nums" id="occNumsBanner">— / — units</span>
+          </div>
+          <div class="hb-occ-track"><div class="hb-occ-fill" id="occFill" style="width:0%"></div></div>
+          <div class="hb-occ-sub">
+            <span id="occPctBanner">0% occupied</span>
+            <span id="pd_units_lbl2"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending Join Requests -->
+      <div class="pend-panel" id="pendingPanel" style="display:none;">
+        <div class="panel-head">
+          <h3 style="color:var(--amber);">🔑 Join Requests</h3>
+          <span class="panel-tag" id="pendingCountTag" style="background:var(--amber-dim);color:var(--amber);padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;"></span>
+        </div>
+        <div id="pendingList" style="padding:0 12px;"></div>
+      </div>
+
+      <!-- Bottom Row: Tenants + Maintenance -->
+      <div class="bottom-row">
+
+        <!-- Tenants Card -->
+        <div class="pvcard" style="animation-delay:.2s;">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Tenants — Rent Status</div>
+              <div class="card-sub" id="tenantCountTag">Loading…</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <button class="btn btn-sm" id="remindAllBtn" style="display:none;background:var(--amber);color:#111;border:none;font-size:.7rem;padding:5px 12px;border-radius:8px;" onclick="doRemindAllUnpaid()">Remind Unpaid</button>
+              <a href="#" style="font-size:.75rem;color:var(--amber);text-decoration:none;" onclick="openModal('tenantsModal');return false;">View all</a>
+            </div>
+          </div>
+          <div class="pv-search-bar">
+            <span>🔍</span>
+            <input type="text" id="tenantSearch" placeholder="Search tenant or unit…" oninput="filterPvTenants(this.value)"/>
+          </div>
+          <div id="pvTenantList"></div>
+        </div>
+
+        <!-- Maintenance Card -->
+        <div class="pvcard" style="animation-delay:.3s;">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Maintenance Requests</div>
+              <div class="card-sub"><span id="gc_requests">0</span> open tickets</div>
+            </div>
+            <a href="#" style="font-size:.75rem;color:var(--amber);text-decoration:none;" onclick="openModal('requestsModal');return false;">View all</a>
+          </div>
+          <div id="pvMaintList"><div class="loading-hint">Loading…</div></div>
+        </div>
+
+      </div>
+
+      <!-- Activity Feed -->
+      <div class="panel" style="animation:fadeUp .6s .35s both;">
+        <div class="panel-head">
+          <h3>📋 Recent Activity</h3>
+          <button class="btn btn-ghost btn-sm" onclick="loadActivity()">↻ Refresh</button>
+        </div>
+        <div id="activityList"><div class="loading-hint">Loading…</div></div>
+      </div>
+
+      <!-- Hidden compat elements for JS (DO NOT REMOVE) -->
+      <div style="display:none;">
+        <span id="sum_expected">KES 0</span>
+        <span id="sum_expected_sub">from 0 tenants</span>
+        <span id="gc_req_badge">0 open</span>
+        <span id="gc_requests_sub">pending</span>
+        <span id="gc_revenue">KES 0</span>
+        <span id="gc_pay_badge">0 records</span>
+        <span id="gc_pending_sub">all clear</span>
+        <span id="gc_ann">0</span>
+        <span id="gc_ann_badge">0 sent</span>
+        <span id="gc_balance">KES 0</span>
+        <span id="gc_wd_badge">Withdraw</span>
+        <div id="reqCard"></div>
+        <span id="occNumsBannerOld"></span>
+        <div id="tenantsTableBody"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM BAR (mobile) -->
+<div class="bottom-bar" id="bottomBar" style="display:none;">
+  <button class="bb-btn bb-main" onclick="openModal('addTenantModal')"><span class="bi">👤</span>Add Tenant</button>
+  <button class="bb-btn" onclick="openModal('annModal')"><span class="bi">📢</span>Announce</button>
+  <button class="bb-btn" onclick="openModal('addPropModal')"><span class="bi">🏠</span>+ Property</button>
+  <button class="bb-btn" onclick="openModal('withdrawModal')" style="background:var(--amber-dim);color:var(--amber);border-color:rgba(245,166,35,.3);"><span class="bi">💸</span>Withdraw</button>
+</div>
+
+<!-- Profile Modal -->
+<div id="profileModal" class="modal-overlay" onclick="bgClose(event,'profileModal')">
+  <div class="modal-box" style="max-width:420px">
+    <div class="drag-handle"></div>
+    <button class="modal-close" onclick="closeModal('profileModal')">×</button>
+    <h3 style="margin-bottom:4px">👤 My Profile</h3>
+    <p class="modal-sub">Manage your landlord account details</p>
+    <div style="display:flex;align-items:center;gap:14px;margin:18px 0;">
+      <div id="profAvatar" style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--amber),#e07b00);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#111;flex-shrink:0;overflow:hidden">L</div>
+      <div>
+        <div id="profNameDisplay" style="font-size:15px;font-weight:700;color:var(--text)">—</div>
+        <div id="profEmailDisplay" style="font-size:12px;color:var(--text3);margin-top:2px">—</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px">Landlord · BConnect</div>
+      </div>
+    </div>
+    <label style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:5px">Full Name</label>
+    <input class="field" id="profName" placeholder="Your full name" style="margin-bottom:12px">
+    <label style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:5px">Phone</label>
+    <input class="field" id="profPhone" placeholder="07XX XXX XXX" style="margin-bottom:12px">
+    <label style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:5px">Location</label>
+    <input class="field" id="profLocation" placeholder="e.g. Nairobi, Kenya" style="margin-bottom:12px">
+    <label style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:5px">Avatar URL</label>
+    <input class="field" id="profAvatarUrl" placeholder="https://…" style="margin-bottom:18px" oninput="previewProfAvatar(this.value)">
+    <div style="background:var(--bg3);border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:13px;color:var(--text3)">
+      <div style="display:flex;justify-content:space-between;padding:4px 0"><span>Role</span><span style="color:var(--text);font-weight:600">Landlord</span></div>
+      <div style="display:flex;justify-content:space-between;padding:4px 0;border-top:1px solid var(--border)"><span>Member since</span><span id="profSince" style="color:var(--text);font-weight:600">—</span></div>
+      <div style="display:flex;justify-content:space-between;padding:4px 0;border-top:1px solid var(--border)"><span>Properties</span><span id="profPropCount" style="color:var(--text);font-weight:600">—</span></div>
+    </div>
+    <button class="btn btn-primary btn-block" style="padding:13px" onclick="saveLandlordProfile()">Save Changes</button>
+    <button class="btn btn-ghost btn-block" style="margin-top:8px" onclick="closeModal('profileModal')">Cancel</button>
+  </div>
+</div>
+
+<!-- Add Property Modal -->
+<div id="addPropModal" class="modal-overlay" onclick="bgClose(event,'addPropModal')">
+  <div class="modal-box">
+    <div class="drag-handle"></div>
+    <button class="modal-close" onclick="closeModal('addPropModal')">×</button>
+    <h3>🏠 Add New Property</h3>
+    <p class="modal-sub">A unique tenant code will be generated automatically.</p>
+    <input class="field" id="ap_name" placeholder="Property Name (e.g. Sunrise Apartments)"/>
+    <input class="field" id="ap_loc" placeholder="Location (e.g. Westlands, Nairobi)"/>
+    <input class="field" id="ap_units" type="number" min="1" placeholder="Number of Units"/>
+    <input class="field" id="ap_rent" type="number" min="1" placeholder="Monthly Rent per Unit (KES)"/>
+    <input class="field" id="ap_bedrooms" type="number" min="0" placeholder="Bedrooms (optional)"/>
+    <input class="field" id="ap_amenities" placeholder="Amenities (e.g. parking, water, security)"/>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;margin-top:4px;">
+      <span style="font-size:12px;font-weight:600;color:var(--text3);">Description (optional)</span>
+      <button type="button" onclick="aiGeneratePropDesc()" style="display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:7px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;">✨ AI Write</button>
+    </div>
+    <textarea class="field" id="ap_desc" placeholder="Describe the property…" rows="3" style="resize:vertical;margin:0;"></textarea>
+    <div id="ap_desc_status" style="display:none;font-size:11px;color:#9b6dff;margin-top:3px;">✨ AI is writing your description…</div>
+    <div style="display:flex;align-items:center;gap:10px;background:var(--green-dim);border:1px solid rgba(62,207,142,.2);border-radius:10px;padding:10px 14px;margin-top:10px;">
+      <input type="checkbox" id="ap_marketplace" style="width:18px;height:18px;accent-color:var(--green);cursor:pointer;flex-shrink:0;">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--green);">List on Housing Marketplace</div>
+        <div style="font-size:11px;color:var(--green);opacity:.7;margin-top:2px;">Visible to all users browsing housing listings</div>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-block" style="margin-top:10px;padding:13px;" onclick="doAddProperty()">Add Property & Generate Code</button>
+    <button class="btn btn-ghost btn-block" style="margin-top:8px;" onclick="closeModal('addPropModal')">Cancel</button>
+  </div>
+</div>
+
+<!-- List on Marketplace Modal -->
+<div id="listMpModal" class="modal-overlay" onclick="bgClose(event,'listMpModal')">
+  <div class="modal-box">
+    <div class="drag-handle"></div>
+    <button class="modal-close" onclick="closeModal('listMpModal')">×</button>
+    <h3>🏬 List on Marketplace</h3>
+    <p class="modal-sub">Review and confirm the details that will appear on the public marketplace listing.</p>
+    <input class="field" id="lmp_name" placeholder="Property Name"/>
+    <input class="field" id="lmp_loc" placeholder="Location (e.g. Westlands, Nairobi)"/>
+    <select class="field" id="lmp_subcategory">
+      <option value="">-- Property Type / Subcategory --</option>
+      <option value="Single Room">Single Room</option>
+      <option value="Studio">Studio</option>
+      <option value="Bedsitter">Bedsitter</option>
+      <option value="1 Bedroom">1 Bedroom</option>
+      <option value="2 Bedroom">2 Bedroom</option>
+      <option value="3 Bedroom+">3 Bedroom+</option>
+      <option value="Apartment">Apartment</option>
+      <option value="House">House</option>
+      <option value="Maisonette">Maisonette</option>
+      <option value="Villa">Villa</option>
+    </select>
+    <div style="display:flex;gap:8px;">
+      <input class="field" id="lmp_rent" type="number" min="1" placeholder="Monthly Rent (KES)" style="flex:1;margin:0 0 10px 0;"/>
+      <input class="field" id="lmp_deposit" type="number" min="0" placeholder="Security Deposit (KES)" style="flex:1;margin:0 0 10px 0;"/>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <input class="field" id="lmp_bedrooms" type="number" min="0" placeholder="Bedrooms" style="flex:1;margin:0 0 10px 0;"/>
+      <input class="field" id="lmp_rooms_remaining" type="number" min="0" placeholder="Rooms Available" style="flex:1;margin:0 0 10px 0;"/>
+    </div>
+    <input class="field" id="lmp_amenities" placeholder="Amenities (e.g. parking, water, security)"/>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;margin-top:4px;">
+      <span style="font-size:12px;font-weight:600;color:var(--text3);">Description</span>
+      <button type="button" onclick="aiGenerateLmpDesc()" style="display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:7px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;">✨ AI Write</button>
+    </div>
+    <textarea class="field" id="lmp_desc" placeholder="Describe the property for potential tenants…" rows="3" style="resize:vertical;margin:0;"></textarea>
+    <div id="lmp_desc_status" style="display:none;font-size:11px;color:#9b6dff;margin-top:3px;">✨ AI is writing your description…</div>
+    <div style="margin-top:10px;">
+      <div style="font-size:12px;font-weight:600;color:var(--text3);margin-bottom:6px;">Property Photos — up to 3 (optional)</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+        <label for="lmp_image_1" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:2px dashed var(--border);border-radius:10px;padding:10px 6px;cursor:pointer;background:var(--bg3);min-height:90px;position:relative;" id="lmp_img_label_1">
+          <div id="lmp_img_preview_wrap_1" style="display:none;width:100%;position:absolute;inset:0;"><img id="lmp_img_preview_1" src="" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:8px;"/></div>
+          <span id="lmp_img_ph_1" style="color:var(--text3);font-size:11px;text-align:center;line-height:1.3;">📷<br>Photo 1</span>
+        </label>
+        <input type="file" id="lmp_image_1" accept="image/*" style="display:none;" onchange="lmpPreviewImage(this,1)"/>
+        <label for="lmp_image_2" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:2px dashed var(--border);border-radius:10px;padding:10px 6px;cursor:pointer;background:var(--bg3);min-height:90px;position:relative;" id="lmp_img_label_2">
+          <div id="lmp_img_preview_wrap_2" style="display:none;width:100%;position:absolute;inset:0;"><img id="lmp_img_preview_2" src="" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:8px;"/></div>
+          <span id="lmp_img_ph_2" style="color:var(--text3);font-size:11px;text-align:center;line-height:1.3;">📷<br>Photo 2</span>
+        </label>
+        <input type="file" id="lmp_image_2" accept="image/*" style="display:none;" onchange="lmpPreviewImage(this,2)"/>
+        <label for="lmp_image_3" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:2px dashed var(--border);border-radius:10px;padding:10px 6px;cursor:pointer;background:var(--bg3);min-height:90px;position:relative;" id="lmp_img_label_3">
+          <div id="lmp_img_preview_wrap_3" style="display:none;width:100%;position:absolute;inset:0;"><img id="lmp_img_preview_3" src="" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:8px;"/></div>
+          <span id="lmp_img_ph_3" style="color:var(--text3);font-size:11px;text-align:center;line-height:1.3;">📷<br>Photo 3</span>
+        </label>
+        <input type="file" id="lmp_image_3" accept="image/*" style="display:none;" onchange="lmpPreviewImage(this,3)"/>
+      </div>
+      <div id="lmp_img_status" style="display:none;font-size:11px;color:#9b6dff;margin-top:6px;">Uploading photos…</div>
+    </div>
+    <div style="background:var(--amber-dim);border:1px solid rgba(245,166,35,.2);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:13px;color:var(--amber);font-weight:600;">
+      ⏳ This listing will be reviewed by an admin before going live on the housing page
+    </div>
+    <button class="btn btn-primary btn-block" style="margin-top:10px;padding:13px;" onclick="doListOnMarketplace()">Submit for Admin Approval</button>
+    <button class="btn btn-ghost btn-block" style="margin-top:8px;" onclick="closeModal('listMpModal')">Cancel</button>
+  </div>
+</div>
+
+<!-- Add Tenant Modal -->
+<div id="addTenantModal" class="modal-overlay" onclick="bgClose(event,'addTenantModal')">
+  <div class="modal-box">
+    <div class="drag-handle"></div>
+    <button class="modal-close" onclick="closeModal('addTenantModal')">×</button>
+    <h3>👤 Invite a Tenant</h3>
+    <p class="modal-sub">Share this code so your tenant can link from the Tenant Portal.</p>
+    <div class="code-display"><div class="cd-lbl">Property Code</div><div class="cd-code" id="at_code">—</div></div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-primary" style="flex:1;" onclick="copyCode()">📋 Copy Code</button>
+      <button class="btn btn-outline" style="flex:1;" onclick="shareCode()">↗ Share</button>
+    </div>
+    <p style="font-size:12px;color:var(--text3);text-align:center;margin-top:14px;">Tenant → Tenant Portal → Link Property → enter this code</p>
+  </div>
+</div>
+
+<!-- Payments Modal -->
+<div id="paymentsModal" class="modal-overlay" onclick="bgClose(event,'paymentsModal')">
+  <div class="modal-box">
+    <div class="drag-handle"></div>
+    <button class="modal-close" onclick="closeModal('paymentsModal')">×</button>
+    <h3>💳 Payment History</h3>
+    <p class="modal-sub" id="pm_sub">All rent payments for this property</p>
+    <div id="pm_stats" style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;"></div>
+    <div id="pm_filter_tabs" style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;">
+      <button class="btn btn-sm" id="pm_tab_all" onclick="setPmFilter('all')" style="padding:5px 12px;font-size:12px;font-weight:700;background:var(--amber-dim);color:var(--amber);border:1px solid rgba(245,166,35,.2);border-radius:20px;">All</button>
+      <button class="btn btn-sm" id="pm_tab_completed" onclick="setPmFilter('completed')" style="padding:5px 12px;font-size:12px;font-weight:700;background:var(--bg3);color:var(--text3);border:1px solid var(--border);border-radius:20px;">Paid</button>
+      <button class="btn btn-sm" id="pm_tab_pending" onclick="setPmFilter('pending')" style="padding:5px 12px;font-size:12px;font-weight:700;background:var(--bg3);color:var(--text3);border:1px solid var(--border);border-radius:20px;">Pending</button>
+    </div>
+    <div id="paymentsList"><div class="loading-hint">Loading…</div></div>
+  </div>
+</div>
+
+<!-- Requests Modal -->
+<div id="requestsModal" class="modal-overlay" onclick="bgClose(event,'requestsModal')">
+  <div class="modal-box">
+    <div class="drag-handle"></div>
+    <button class="modal-close" onclick="closeModal('requestsModal')">×</button>
+    <h3>🔧 Maintenance Requests</h3>
+    <p class="modal-sub" id="req_sub">—</p>
+    <div id="requestsList"><div class="loading-hint">Loading…</div></div>
+  </div>
+</div>
+
+<!-- Announcements Modal -->
+<div id="annModal" class="modal-overlay" onclick="bgClose(event,'annModal')">
+  <div class="modal-box">
+    <div class="drag-handle"></div>
+    <button class="modal-close" onclick="closeModal('annModal')">×</button>
+    <h3>📢 Post Announcement</h3>
+    <p class="modal-sub">All linked tenants will see this message immediately.</p>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px;">
+      <input class="field" id="ann_title" placeholder="Title (e.g. Water shutdown Saturday)" style="margin:0;"/>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;">
+        <span style="font-size:12px;font-weight:600;color:var(--text3);">Message</span>
+        <button type="button" onclick="aiAutoReplyAnnouncement()" style="display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:7px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;">✨ AI Write</button>
+      </div>
+      <textarea class="field" id="ann_body" placeholder="Message to your tenants…" rows="3" style="resize:vertical;margin:0;"></textarea>
+      <div id="ann_ai_status" style="display:none;font-size:11px;color:#9b6dff;">✨ AI is writing your message…</div>
+      <button class="btn btn-primary" onclick="doPostAnnouncement()">📢 Send to All Tenants</button>
+    </div>
+    <div style="font-size:.825rem;font-weight:700;color:var(--text);margin-bottom:10px;">Previous Announcements</div>
+    <div id="annList"><div class="loading-hint">Loading…</div></div>
+  </div>
+</div>
+
+<!-- Notifications Modal -->
+<div id="notifModal" class="modal-overlay" onclick="bgClose(event,'notifModal')">
+  <div class="modal-box">
+    <div class="drag-handle"></div>
+    <button class="modal-close" onclick="closeModal('notifModal')">×</button>
+    <h3>🔔 Notifications</h3>
+    <p class="modal-sub">Pending actions that need your attention.</p>
+    <div id="notifList"><div class="loading-hint">Loading…</div></div>
+  </div>
+</div>
+
+<!-- Tenants Modal -->
+<div id="tenantsModal" class="modal-overlay" onclick="bgClose(event,'tenantsModal')">
+  <div class="modal-box" style="max-width:560px;">
+    <div class="drag-handle"></div>
+    <button class="modal-close" onclick="closeModal('tenantsModal')">×</button>
+    <h3>👥 Tenants</h3>
+    <p class="modal-sub" id="tm_sub">—</p>
+    <div id="tenantsList"></div>
+  </div>
+</div>
+
+<!-- Tenant Pay Hist Modal -->
+<div id="tenantPayHistModal" class="modal-overlay" onclick="bgClose(event,'tenantPayHistModal')">
+  <div class="modal-box" style="max-width:640px;">
+    <div class="drag-handle"></div>
+    <button class="modal-close" onclick="closeModal('tenantPayHistModal')">×</button>
+    <h3 id="tph_title">💳 Payment History</h3>
+    <p class="modal-sub" id="tph_sub">All rent payments for this tenant</p>
+    <div id="tph_summary" style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;"></div>
+    <div style="overflow-x:auto;">
+      <table class="t-table" id="tph_table">
+        <thead><tr><th>Date</th><th>Amount</th><th>Status</th><th>M-Pesa / Ref</th></tr></thead>
+        <tbody id="tph_body"><tr><td colspan="4"><div class="loading-hint">Loading…</div></td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Chat Modal -->
+<div id="chatModal" class="modal-overlay" onclick="bgClose(event,'chatModal')">
+  <div class="modal-box">
+    <div class="drag-handle"></div>
+    <button class="modal-close" onclick="closeModal('chatModal')">×</button>
+    <h3 id="chatTitle">Chat</h3>
+    <p class="modal-sub" id="chatSub">Tenant conversation</p>
+    <div class="chat-thread" id="chatThread"></div>
+    <div class="chat-input-row">
+      <input id="chatInput" type="text" placeholder="Type a message…" onkeydown="if(event.key==='Enter')doSendChat()"/>
+      <button class="btn btn-primary" onclick="doSendChat()">Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- Withdraw Modal -->
+<div id="withdrawModal" class="modal-overlay" onclick="bgClose(event,'withdrawModal')">
+  <div class="modal-box">
+    <div class="drag-handle"></div>
+    <button class="modal-close" onclick="closeModal('withdrawModal')">×</button>
+    <h3>💸 Request Withdrawal</h3>
+    <p class="modal-sub">Withdrawals processed within 24 hours. Platform commission deducted automatically.</p>
+    <div class="wd-info">
+      <div class="wd-lbl">AVAILABLE BALANCE</div>
+      <div class="wd-val" id="wd-balance">KES 0</div>
+      <div style="font-size:12px;color:var(--green);opacity:.8;margin-top:4px">Platform commission: <b id="wd-rate">10</b>% deducted</div>
+    </div>
+    <input class="field" id="wd_amount" type="number" min="1" placeholder="Amount to withdraw (KES)" oninput="previewDeduction()"/>
+    <select class="field" id="wd_method" onchange="toggleLandlordPayoutFields()">
+      <option value="">-- Select payout method --</option>
+      <option value="mpesa">M-Pesa</option>
+      <option value="kcb">KCB Bank</option>
+      <option value="equity">Equity Bank</option>
+    </select>
+    <div id="wd_mpesa_fields" style="display:none;">
+      <input class="field" id="wd_phone" type="tel" placeholder="M-Pesa number (e.g. 0712345678)"/>
+    </div>
+    <div id="wd_bank_fields" style="display:none;">
+      <input class="field" id="wd_account_no" type="text" placeholder="Account Number"/>
+      <input class="field" id="wd_account_name" type="text" placeholder="Account Name (as on bank account)"/>
+    </div>
+    <div class="wd-preview" id="wd-preview">
+      <div style="font-size:12px;font-weight:700;color:var(--amber);margin-bottom:6px">BREAKDOWN</div>
+      <div class="wd-row"><span>Requested:</span><span id="wd-req-amt" style="font-weight:700">—</span></div>
+      <div class="wd-row" style="color:var(--rose);"><span>Commission (<span id="wd-rate2">10</span>%):</span><span id="wd-deduction" style="font-weight:700">—</span></div>
+      <div class="wd-row" style="font-size:14px;font-weight:800;border-top:1px solid rgba(245,166,35,.2);padding-top:8px;color:var(--green);"><span>You receive:</span><span id="wd-net-amt">—</span></div>
+    </div>
+    <button class="btn btn-block" style="margin-top:10px;padding:13px;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;border:none;" onclick="doWithdrawal()">💸 Request Withdrawal</button>
+    <button class="btn btn-ghost btn-block" style="margin-top:8px;" onclick="closeModal('withdrawModal')">Cancel</button>
+    <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px;">
+      <div style="font-size:.825rem;font-weight:700;color:var(--text);margin-bottom:10px;">Withdrawal History</div>
+      <div id="withdraw-history"><div class="loading-hint">Loading…</div></div>
+    </div>
+  </div>
+</div>
+
+<script src="/dialogs.js"></script>
+<script src="/api-client.js"></script>
+<script>
+let landlordName='', properties=[], currentProp=null;
+let tenants=[], payments=[], requests=[], announcements=[], activityLog=[], pendingRequests=[];
+let landlordWithdrawals=[];
+let chatTenantIdLocal=null;
+
+const AV_COLORS=['#2563eb','#059669','#7c3aed','#d97706','#dc2626','#0ea5e9','#db2777','#16a34a'];
+function avColor(name){let h=0;for(const c of(name||'?'))h=(h*31+c.charCodeAt(0))&0xffff;return AV_COLORS[h%AV_COLORS.length];}
+function initials(name){const w=(name||'?').trim().split(/\s+/);return(w[0][0]+(w[1]?w[1][0]:'')).toUpperCase();}
+
+function show(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+
+/* ── Sidebar drawer (mobile) ── */
+function toggleSidebar(){document.body.classList.toggle('sb-open');}
+function closeSidebar(){document.body.classList.remove('sb-open');}
+/* Close drawer when a sidebar nav-btn or prop-btn is clicked on mobile */
+document.addEventListener('click',function(e){
+  if(window.innerWidth>=900)return;
+  if(e.target.closest('.sb-nav-btn')||e.target.closest('.sb-prop-btn'))closeSidebar();
+});
+
+function openModal(id){
+  document.getElementById(id).classList.add('active');
+  if(id==='tenantsModal') renderTenantsModal();
+  if(id==='paymentsModal') renderPaymentsModal();
+  if(id==='withdrawModal') loadWithdrawalData();
+  if(id==='requestsModal') renderRequestsModal();
+  if(id==='annModal') renderAnnModal();
+  if(id==='notifModal') renderNotifModal();
+  if(id==='addTenantModal') document.getElementById('at_code').textContent=currentProp?currentProp.code:'—';
+  if(id==='profileModal') loadLandlordProfile();
+}
+function closeModal(id){document.getElementById(id).classList.remove('active');}
+function bgClose(e,id){if(e.target===document.getElementById(id))closeModal(id);}
+function esc(s){if(s==null)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function fmt(d){return d?new Date(d).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}):'—';}
+function fmtDt(d){return d?new Date(d).toLocaleString(undefined,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'—';}
+function timeAgo(ds){const m=Math.floor((Date.now()-new Date(ds))/60000);if(m<1)return'just now';if(m<60)return m+'m ago';const h=Math.floor(m/60);if(h<24)return h+'h ago';return Math.floor(h/24)+'d ago';}
+
+// ── Profile ────────────────────────────────────────────────────────────────
+async function loadLandlordProfile() {
+  const name  = localStorage.getItem('landlordName') || landlordName || '—';
+  const email = localStorage.getItem('landlordEmail') || '—';
+  const phone = localStorage.getItem('landlordPhone') || '';
+  const loc   = localStorage.getItem('landlordLocation') || '';
+  const av    = localStorage.getItem('landlordAvatar') || '';
+  const since = localStorage.getItem('landlordSince') || '';
+  document.getElementById('profName').value      = name;
+  document.getElementById('profPhone').value     = phone;
+  document.getElementById('profLocation').value  = loc;
+  document.getElementById('profAvatarUrl').value = av;
+  document.getElementById('profNameDisplay').textContent  = name;
+  document.getElementById('profEmailDisplay').textContent = email;
+  document.getElementById('profSince').textContent = since ? new Date(since).toLocaleDateString('en-KE',{year:'numeric',month:'long'}) : '—';
+  document.getElementById('profPropCount').textContent = String(properties.length || 0);
+  const av2 = document.getElementById('profAvatar');
+  if (av) { av2.innerHTML = `<img src="${av}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.textContent='${name.charAt(0).toUpperCase()}'">`; }
+  else { av2.textContent = name.charAt(0).toUpperCase(); av2.style.background = 'linear-gradient(135deg,#f5a623,#e07b00)'; }
+  try {
+    const d = await api('/api/landlord/me');
+    if (d && !d.error) {
+      if (d.email) { document.getElementById('profEmailDisplay').textContent = d.email; localStorage.setItem('landlordEmail', d.email); }
+      if (d.phone) { document.getElementById('profPhone').value = d.phone; }
+      if (d.created_at) { document.getElementById('profSince').textContent = new Date(d.created_at).toLocaleDateString('en-KE',{year:'numeric',month:'long'}); localStorage.setItem('landlordSince', d.created_at); }
+    }
+  } catch(e) {}
+}
+function previewProfAvatar(url) {
+  const av = document.getElementById('profAvatar');
+  if (url) { av.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.textContent='${(document.getElementById('profName').value||'L').charAt(0).toUpperCase()}'">` }
+  else { av.textContent = (document.getElementById('profName').value||'L').charAt(0).toUpperCase(); }
+}
+async function saveLandlordProfile() {
+  const name  = document.getElementById('profName').value.trim();
+  const phone = document.getElementById('profPhone').value.trim();
+  const loc   = document.getElementById('profLocation').value.trim();
+  const av    = document.getElementById('profAvatarUrl').value.trim();
+  if (!name) { toast('Name is required','error'); return; }
+  localStorage.setItem('landlordName', name);
+  if (phone) localStorage.setItem('landlordPhone', phone);
+  if (loc)   localStorage.setItem('landlordLocation', loc);
+  if (av)    localStorage.setItem('landlordAvatar', av);
+  landlordName = name;
+  document.getElementById('dsName').textContent = name;
+  const av2 = document.getElementById('dsAvatar');
+  if (av) { av2.innerHTML = `<img src="${av}" style="width:100%;height:100%;border-radius:50%;object-fit:cover" onerror="this.textContent='${name.charAt(0).toUpperCase()}'">`; }
+  else { av2.textContent = name.charAt(0).toUpperCase(); }
+  try { await api('/api/landlord/profile', { method:'PUT', body: JSON.stringify({ name, phone, location: loc, avatar_url: av }) }); } catch(e) {}
+  toast('Profile updated!','success');
+  closeModal('profileModal');
+}
+
+function toast(msg,type){
+  const c=document.getElementById('toastWrap'),t=document.createElement('div');
+  t.className='toast '+(type||'info');
+  t.innerHTML=`<div class="tm">${esc(msg)}</div><button class="tx" onclick="this.parentElement.remove()">×</button>`;
+  c.appendChild(t);requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),300);},type==='error'?6000:4000);
+}
+(function(){window.alert=function(m){m=String(m==null?'':m);let t='info';if(/fail|error/i.test(m))t='error';else if(/warn/i.test(m))t='warning';else if(/success|created|linked|saved|added|posted|sent/i.test(m))t='success';toast(m,t);};})();
+function tk(){return localStorage.getItem('landlordToken')||localStorage.getItem('token')||'';}
+async function apiFetch(path,opts){
+  const r=await fetch(path,{headers:{'Content-Type':'application/json','Authorization':'Bearer '+tk(),...(opts&&opts.headers)},...opts});
+  const d=await r.json();if(!r.ok)throw new Error(d.error||'Request failed');return d;
+}
+
+let _wdRate=10,_wdTotalBalance=0;
+async function loadWithdrawalData(){
+  try{
+    const landlordId=localStorage.getItem('landlordId');
+    const [rateRes,wdRes]=await Promise.all([
+      apiFetch('/api/admin/commission-rate'),
+      landlordId?apiFetch('/api/landlord/withdrawals/'+landlordId):Promise.resolve({withdrawals:[]})
+    ]);
+    _wdRate=rateRes?.rate??10;
+    document.querySelectorAll('[id^="wd-rate"]').forEach(el=>el.textContent=_wdRate);
+
+    landlordWithdrawals=wdRes?.withdrawals||[];
+    const isOk=p=>p&&(p.status==='completed'||p.status==='paid');
+    const grossTotal=payments.filter(isOk).reduce((s,p)=>s+(p.amount||0),0);
+    const withdrawnSoFar=landlordWithdrawals.filter(w=>w.status==='pending'||w.status==='completed').reduce((s,w)=>s+(w.requested_amount||0),0);
+    _wdTotalBalance=Math.max(0,grossTotal-withdrawnSoFar);
+
+    const balEl=document.getElementById('wd-balance');
+    balEl.textContent='KES '+_wdTotalBalance.toLocaleString();
+
+    let subInfo=document.getElementById('wd-balance-sub');
+    if(!subInfo){subInfo=document.createElement('div');subInfo.id='wd-balance-sub';subInfo.style.cssText='font-size:11px;color:var(--green);opacity:.7;margin-top:4px';balEl.parentNode.insertBefore(subInfo,balEl.nextSibling);}
+    subInfo.innerHTML=`Total earned: <b>KES ${grossTotal.toLocaleString()}</b> &nbsp;·&nbsp; Withdrawn: <b>KES ${withdrawnSoFar.toLocaleString()}</b>`;
+
+    renderWithdrawHistory(landlordWithdrawals);
+    previewDeduction();
+  }catch(e){console.error('Withdrawal data error:',e);}
+}
+function renderWithdrawHistory(list){
+  const el=document.getElementById('withdraw-history');
+  if(!list||!list.length){el.innerHTML='<p style="color:var(--text3);font-size:12px;text-align:center;padding:10px">No withdrawals yet.</p>';return;}
+  el.innerHTML=list.map(w=>{
+    const sc=w.status==='completed'?'resolved':w.status==='rejected'?'rejected':'pending';
+    const statusIcon=w.status==='completed'?'✅':w.status==='rejected'?'❌':'⏳';
+    return`<div style="padding:10px 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:14px;font-weight:700;color:var(--text)">KES ${(w.net_amount||0).toLocaleString()} <span style="font-size:11px;color:var(--text3);font-weight:400">received</span></span>
+        <span class="status-badge ${sc}">${statusIcon} ${w.status}</span>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px;line-height:1.6">
+        Requested: <b style="color:var(--text2)">KES ${(w.requested_amount||0).toLocaleString()}</b>
+        &nbsp;·&nbsp; Commission: <b style="color:var(--rose)">${w.commission_rate||10}%</b> (KES ${(w.deduction_amount||0).toLocaleString()})
+        &nbsp;·&nbsp; ${w.created_at?new Date(w.created_at).toLocaleDateString('en-KE',{day:'numeric',month:'short',year:'numeric'}):''}
+      </div>
+    </div>`;
+  }).join('');
+}
+function previewDeduction(){
+  const amt=parseFloat(document.getElementById('wd_amount').value)||0;
+  const preview=document.getElementById('wd-preview');
+  const warnEl=document.getElementById('wd-exceed-warn');
+  if(amt<=0){preview.style.display='none';if(warnEl)warnEl.style.display='none';return;}
+  const deduction=Math.round((amt*_wdRate)/100),net=amt-deduction;
+  document.getElementById('wd-req-amt').textContent='KES '+amt.toLocaleString();
+  document.getElementById('wd-deduction').textContent='−KES '+deduction.toLocaleString();
+  document.getElementById('wd-net-amt').textContent='KES '+net.toLocaleString();
+  document.querySelectorAll('[id^="wd-rate"]').forEach(el=>el.textContent=_wdRate);
+  preview.style.display='';
+  if(!warnEl){
+    const w=document.createElement('div');w.id='wd-exceed-warn';
+    w.style.cssText='display:none;background:var(--rose-dim);border:1px solid rgba(224,92,122,.3);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--rose);font-weight:600;margin-top:6px;';
+    preview.after(w);
+  }
+  const warn=document.getElementById('wd-exceed-warn');
+  if(amt>_wdTotalBalance){warn.style.display='';warn.textContent='⚠️ Amount exceeds your available balance of KES '+_wdTotalBalance.toLocaleString();}
+  else{warn.style.display='none';}
+}
+function toggleLandlordPayoutFields(){
+  const method=(document.getElementById('wd_method').value||'');
+  document.getElementById('wd_mpesa_fields').style.display=method==='mpesa'?'block':'none';
+  document.getElementById('wd_bank_fields').style.display=(method&&method!=='mpesa')?'block':'none';
+}
+const LD_PAYOUT_LABELS={mpesa:'M-Pesa',kcb:'KCB Bank',equity:'Equity Bank'};
+async function doWithdrawal(){
+  const landlordId=localStorage.getItem('landlordId');
+  if(!landlordId){toast('Please log in first','error');return;}
+  const amount=parseFloat(document.getElementById('wd_amount').value);
+  const method=(document.getElementById('wd_method').value||'').trim();
+  if(!amount||amount<=0){toast('Enter a valid amount','error');return;}
+  if(!method){toast('Select a payout method','error');return;}
+  if(amount>_wdTotalBalance){toast(`Amount exceeds available balance of KES ${_wdTotalBalance.toLocaleString()}`,'error');return;}
+  let phone='',accountNumber='',accountName='';
+  if(method==='mpesa'){
+    phone=(document.getElementById('wd_phone').value||'').trim();
+    if(!phone){toast('Enter M-Pesa phone number','error');return;}
+  }else{
+    accountNumber=(document.getElementById('wd_account_no').value||'').trim();
+    accountName=(document.getElementById('wd_account_name').value||'').trim();
+    if(!accountNumber){toast('Enter your account number','error');return;}
+    if(!accountName){toast('Enter the account name','error');return;}
+  }
+  try{
+    const res=await apiFetch('/api/landlord/withdrawal',{method:'POST',body:JSON.stringify({landlordId,amount,phone,payoutMethod:method,accountNumber,accountName})});
+    if(res?.success){
+      const dest=method==='mpesa'?phone:accountNumber+' ('+accountName+')';
+      toast(`Withdrawal submitted to ${LD_PAYOUT_LABELS[method]||method} ${dest}\nYou'll receive KES ${(res.netAmount||0).toLocaleString()} · Commission: KES ${(res.deduction||0).toLocaleString()} (${res.rate||_wdRate}%)`,'success');
+      document.getElementById('wd_amount').value='';
+      document.getElementById('wd_method').value='';
+      toggleLandlordPayoutFields();
+      document.getElementById('wd-preview').style.display='none';
+      const warnEl=document.getElementById('wd-exceed-warn');if(warnEl)warnEl.style.display='none';
+      await loadWithdrawalData();
+      landlordWithdrawals=(await apiFetch('/api/landlord/withdrawals/'+landlordId).catch(()=>({withdrawals:[]}))).withdrawals||[];
+      updateStats();
+    }else throw new Error(res?.error||'Failed');
+  }catch(e){toast(e.message,'error');}
+}
+
+let _pollInterval=null;
+function startPolling(){
+  if(_pollInterval)clearInterval(_pollInterval);
+  _pollInterval=setInterval(async()=>{
+    if(!localStorage.getItem('landlordToken')&&!localStorage.getItem('token')){clearInterval(_pollInterval);return;}
+    if(currentProp)await refreshPropertyData().catch(()=>{});
+  },30000);
+}
+function stopPolling(){if(_pollInterval){clearInterval(_pollInterval);_pollInterval=null;}}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const t=localStorage.getItem('landlordToken')||localStorage.getItem('token');
+  let n=localStorage.getItem('landlordName');
+  if(!n){try{const u=JSON.parse(localStorage.getItem('user')||'{}');n=u.name||'';}catch(_){}}
+  if(t&&n){
+    landlordName=n;
+    loadDashboard()
+      .then(()=>startPolling())
+      .catch((err)=>{
+        const msg=(err?.message||'').toLowerCase();
+        const isAuth=msg.includes('401')||msg.includes('403')||msg.includes('token')||msg.includes('unauthorized')||msg.includes('session');
+        if(isAuth){localStorage.removeItem('landlordToken');localStorage.removeItem('landlordName');landlordName='';show('sWelcome');}
+      });
+  }
+});
+
+async function doSignup(){
+  const name=document.getElementById('su_name').value.trim(),email=document.getElementById('su_email').value.trim(),phone=document.getElementById('su_phone').value.trim(),pass=document.getElementById('su_pass').value.trim();
+  if(!name||!email||!phone||!pass){toast('Please fill in all fields.','warning');return;}
+  try{const d=await registerLandlord(name,email,phone,pass);localStorage.setItem('landlordToken',d.token);localStorage.setItem('landlordId',d.landlordId);localStorage.setItem('landlordName',d.landlord.fullName);landlordName=d.landlord.fullName;toast('Account created! Welcome, '+landlordName,'success');await loadDashboard();startPolling();}catch(e){toast(e.message,'error');}
+}
+async function doLogin(){
+  const email=document.getElementById('li_email').value.trim(),pass=document.getElementById('li_pass').value.trim();
+  if(!email||!pass){toast('Enter email and password.','warning');return;}
+  try{const d=await loginLandlord(email,pass);localStorage.setItem('landlordToken',d.token);localStorage.setItem('landlordId',d.landlordId);localStorage.setItem('landlordName',d.landlord.fullName);if(d.landlord.email)localStorage.setItem('landlordEmail',d.landlord.email);landlordName=d.landlord.fullName;toast('Welcome back, '+landlordName+'!','success');await loadDashboard();startPolling();}catch(e){toast(e.message,'error');}
+}
+async function doLogout(){stopPolling();
+  if(!await bConfirm('Are you sure you want to sign out?',{icon:'',okLabel:'Sign Out',title:'Sign Out'}))return;
+  logoutLandlord();localStorage.removeItem('landlordName');landlordName='';currentProp=null;properties=[];
+  document.getElementById('bottomBar').style.display='none';show('sWelcome');
+}
+
+async function loadDashboard(){
+  show('sDash');document.getElementById('bottomBar').style.display='flex';
+  document.getElementById('propDash').style.display='none';
+  document.getElementById('noPropState').style.display='none';
+  document.getElementById('propSwitcher').innerHTML='<span style="font-size:12px;color:var(--text3);">Loading…</span>';
+  document.getElementById('dsPropsList').innerHTML='<div style="font-size:12px;color:var(--text3);padding:8px 12px;">Loading…</div>';
+  if(landlordName){
+    document.getElementById('dsName').textContent=landlordName;
+    document.getElementById('dsAvatar').textContent=landlordName.charAt(0).toUpperCase();
+    const hr=new Date().getHours();
+    const greetEl=document.getElementById('pd_greeting');
+    if(greetEl)greetEl.textContent=(hr<12?'Good morning':hr<17?'Good afternoon':'Good evening')+', '+landlordName.split(' ')[0]+' 👋';
+  }
+  try{properties=await getLandlordProperties();}catch(e){
+    const msg=(e?.message||'').toLowerCase();
+    const isAuth=msg.includes('401')||msg.includes('403')||msg.includes('token')||msg.includes('unauthorized');
+    if(isAuth){localStorage.removeItem('landlordToken');localStorage.removeItem('landlordName');landlordName='';show('sWelcome');toast('Session expired. Please log in again.','warning');}
+    else{toast('Network error loading properties. Retrying…','warning');}
+    return;
+  }
+  renderPropSwitcher();
+  if(!properties.length){document.getElementById('noPropState').style.display='block';}
+  else{await selectProperty(properties[0]);}
+}
+
+function renderPropSwitcher(){
+  const el=document.getElementById('propSwitcher'),dsEl=document.getElementById('dsPropsList');
+  if(!properties.length){el.innerHTML='';dsEl.innerHTML='<div style="font-size:12px;color:var(--text3);padding:8px 12px;">No properties yet</div>';return;}
+  el.innerHTML=properties.map(p=>{
+    const id=p._id||p.id;const active=currentProp&&(currentProp._id===id||currentProp.id===id);
+    return`<button class="prop-chip${active?' active':''}" onclick="selectPropertyById('${id}')">${esc(p.name)}</button>`;
+  }).join('')+`<button class="prop-add-chip" onclick="openModal('addPropModal')">+ Add Property</button>`;
+  dsEl.innerHTML=properties.map(p=>{
+    const id=p._id||p.id;const active=currentProp&&(currentProp._id===id||currentProp.id===id);
+    return`<button class="sb-prop-btn${active?' active':''}" onclick="selectPropertyById('${id}')">
+      <span class="sb-prop-dot"></span>
+      <span class="sb-prop-name">${esc(p.name)}</span>
+      <span class="sb-prop-code">${esc(p.code||'')}</span>
+    </button>`;
+  }).join('')+`<button class="sb-add-btn" onclick="openModal('addPropModal')">+ Add Property</button>`;
+}
+async function selectPropertyById(id){const p=properties.find(x=>(x._id===id||x.id===id));if(p)await selectProperty(p);}
+async function selectProperty(prop){
+  currentProp=prop;renderPropSwitcher();
+  document.getElementById('noPropState').style.display='none';
+  document.getElementById('propDash').style.display='block';
+  document.getElementById('pd_name').textContent=prop.name||'—';
+  document.getElementById('pd_location').textContent=prop.location||'';
+  document.getElementById('pd_code').textContent=prop.code||'—';
+  document.getElementById('pd_units_lbl').textContent=(prop.units||0)+' total units';
+  try{document.getElementById('pd_units_lbl2').textContent=(prop.units||0)+' total units';}catch(e){}
+  document.getElementById('kpi_units').textContent=prop.units||0;
+  document.getElementById('kpi_units_sub').textContent='in '+esc(prop.name||'this property');
+  document.getElementById('pd_sub_lbl').textContent=(prop.location||'')+(requests.filter?(' · '+(requests.filter(r=>r.status!=='resolved').length)+' open requests'):'');
+  setOccupancy(prop.totalTenants||0,prop.units||0);
+  buildRevenueChart();
+  const mpBtn=document.getElementById('pd_marketplace_btn');
+  if(mpBtn){
+    const listed=prop.listOnMarketplace||false;
+    const pending=prop.marketplaceStatus==='pending';
+    if(pending){
+      mpBtn.textContent='⏳ Pending Approval';
+      mpBtn.style.background='var(--amber-dim)';mpBtn.style.color='var(--amber)';mpBtn.style.border='1px solid rgba(245,166,35,.3)';
+      mpBtn.onclick=()=>toggleMarketplace(prop._id||prop.id,false);
+    }else if(listed){
+      mpBtn.textContent='✅ Listed on Marketplace';
+      mpBtn.style.background='var(--green-dim)';mpBtn.style.color='var(--green)';mpBtn.style.border='1px solid rgba(62,207,142,.2)';
+      mpBtn.onclick=()=>toggleMarketplace(prop._id||prop.id,false);
+    }else{
+      mpBtn.textContent='🏬 List on Marketplace';
+      mpBtn.style.background='var(--bg3)';mpBtn.style.color='var(--text2)';mpBtn.style.border='1px solid var(--border)';
+      mpBtn.onclick=()=>toggleMarketplace(prop._id||prop.id,true);
+    }
+  }
+  await refreshPropertyData();
+}
+
+function setOccupancy(occupied, total){
+  const pct=total>0?Math.round((occupied/total)*100):0;
+  // KPI card
+  document.getElementById('kpi_occ_pct').textContent=pct+'%';
+  document.getElementById('kpi_occ_sub').textContent=occupied+' / '+total+' units';
+  // Ring
+  document.getElementById('occPct').textContent=pct+'%';
+  const circ=2*Math.PI*45; // ~283
+  const offset=circ-(pct/100)*circ;
+  document.getElementById('occRingFill').style.strokeDashoffset=offset;
+  // Bars
+  document.getElementById('occBarFill').style.width=pct+'%';
+  document.getElementById('occNums').textContent=occupied+' / '+total;
+  const vacPct=total>0?Math.round(((total-occupied)/total)*100):0;
+  document.getElementById('vacBarFill').style.width=vacPct+'%';
+  document.getElementById('vacNums').textContent=(total-occupied)+' units';
+  // Banner
+  document.getElementById('occFill').style.width=pct+'%';
+  document.getElementById('occFill').className='hb-occ-fill'+(pct>=70?'':pct>=40?' amber':' red');
+  try{document.getElementById('occNumsBanner').textContent=occupied+' / '+total+' units';}catch(e){}
+  try{document.getElementById('occPctBanner').textContent=pct+'% occupied';}catch(e){}
+  // Status badge
+  const badge=document.getElementById('occStatusBadge');
+  if(badge){
+    const cls=pct===100?'full':pct>=70?'good':pct>=40?'low':'empty';
+    const lbl=pct===100?'Fully Occupied':pct>=70?'Good Occupancy':pct>=40?'Low Occupancy':'Mostly Vacant';
+    badge.className='occ-badge '+cls;badge.textContent=lbl;
+  }
+}
+
+function buildRevenueChart(){
+  const container=document.getElementById('chartBars');
+  if(!container)return;
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const now=new Date();
+  const curMonth=now.getMonth();
+  const curYear=now.getFullYear();
+  document.getElementById('chartYear').textContent=curYear;
+  const isOk=p=>p&&(p.status==='completed'||p.status==='paid'||p.status==='success');
+  const byMonth=Array(12).fill(0);
+  payments.filter(isOk).forEach(p=>{
+    const d=new Date(p.createdAt||p.paidAt||0);
+    if(d.getFullYear()===curYear)byMonth[d.getMonth()]+=(p.amount||0);
+  });
+  const maxVal=Math.max(...byMonth,1);
+  container.innerHTML='';
+  months.forEach((m,i)=>{
+    const h=byMonth[i]?Math.round((byMonth[i]/maxVal)*120):0;
+    const col=document.createElement('div');
+    col.className='bar-col';
+    col.innerHTML=`<div class="bar-wrap"><div class="bar ${byMonth[i]?'amber':'dim'}" style="height:${h||14}px" title="${byMonth[i]?'KES '+byMonth[i].toLocaleString():'No data'}"></div></div><span class="bar-lbl">${m}</span>`;
+    container.appendChild(col);
+  });
+  // Update chip with this month vs last month
+  const thisM=byMonth[curMonth];
+  const lastM=byMonth[curMonth>0?curMonth-1:11];
+  const chipEl=document.getElementById('revChip');
+  if(chipEl){
+    if(lastM>0){const diff=Math.round(((thisM-lastM)/lastM)*100);chipEl.textContent=(diff>=0?'↑':'↓')+Math.abs(diff)+'%';chipEl.style.background=diff>=0?'var(--green-dim)':'var(--rose-dim)';chipEl.style.color=diff>=0?'var(--green)':'var(--rose)';}
+    else{chipEl.textContent='This Month';}
+  }
+}
+
+function renderPvTenantList(filter){
+  const el=document.getElementById('pvTenantList');
+  if(!el)return;
+  const now=new Date(),thisMonth=now.getMonth(),thisYear=now.getFullYear();
+  const isOk=p=>p&&(p.status==='completed'||p.status==='paid'||p.status==='success');
+  const list=filter?tenants.filter(t=>(t.fullName||'').toLowerCase().includes(filter.toLowerCase())):tenants;
+  if(!list.length){el.innerHTML='<div style="text-align:center;padding:24px;color:var(--text3);font-size:.82rem;">'+(tenants.length?'No tenants match your search.':'No tenants yet. Share the property code to invite them.')+'</div>';return;}
+  el.innerHTML=list.slice(0,6).map(t=>{
+    const tid=t.tenantId||t.id||t._id||'';
+    const monthPaid=payments.filter(p=>isOk(p)&&String(p.tenantId||p.tenant_id||'')===String(tid)&&p.createdAt&&new Date(p.createdAt).getMonth()===thisMonth&&new Date(p.createdAt).getFullYear()===thisYear).reduce((s,p)=>s+(p.amount||0),0);
+    const rent=t.monthlyRent||0;
+    const statusLabel=monthPaid>=rent?'paid':monthPaid>0?'due':'late';
+    const color=avColor(t.fullName||'?');
+    const safeName=esc(t.fullName||'').replace(/'/g,"\\'");
+    return`<div class="tenant-row" onclick="openTenantPayHist('${tid}','${safeName}')">
+      <div class="t-avatar" style="background:${color}">${initials(t.fullName||'?')}</div>
+      <div style="flex:1;min-width:0;">
+        <div class="t-name">${esc(t.fullName||'Unknown')}</div>
+        <div class="t-unit">${rent?'KES '+rent.toLocaleString()+'/mo':''}</div>
+      </div>
+      <div class="t-amount">KES ${monthPaid.toLocaleString()}</div>
+      <span class="t-status ${statusLabel}">${statusLabel==='paid'?'Paid':statusLabel==='due'?'Partial':'Unpaid'}</span>
+    </div>`;
+  }).join('');
+}
+
+function filterPvTenants(val){renderPvTenantList(val);}
+
+function renderPvMaintList(){
+  const el=document.getElementById('pvMaintList');
+  if(!el)return;
+  const open=requests.filter(r=>r.status!=='resolved');
+  document.getElementById('gc_requests').textContent=open.length;
+  if(!open.length){el.innerHTML='<div style="text-align:center;padding:24px;color:var(--text3);font-size:.82rem;">No open requests 🎉</div>';return;}
+  const icons={plumbing:'🔧',electrical:'⚡',cleaning:'🧹',security:'🔒',other:'🔨'};
+  el.innerHTML=open.slice(0,5).map(r=>{
+    const s=r.status||'pending';
+    const pri=s==='in_progress'?'med':'high';
+    const priLabel=s==='in_progress'?'In Progress':'Pending';
+    const cat=(r.category||'other').toLowerCase();
+    const icon=icons[cat]||'🔧';
+    const safeName=esc(r.fullName||r.tenantName||'Tenant');
+    return`<div class="maint-item" onclick="openModal('requestsModal')">
+      <div class="maint-icon" style="background:${pri==='high'?'var(--rose-dim)':'var(--amber-dim)'}">${icon}</div>
+      <div style="flex:1;min-width:0;">
+        <div class="maint-title">${esc((r.description||'').slice(0,50)+(r.description&&r.description.length>50?'…':''))}</div>
+        <div class="maint-from">From ${safeName}</div>
+        <div class="maint-date">${r.createdAt?fmt(r.createdAt):''}</div>
+      </div>
+      <span class="maint-pri ${pri}">${priLabel}</span>
+    </div>`;
+  }).join('');
+}
+
+async function toggleMarketplace(propId,newVal){
+  if(newVal){
+    const prop=properties.find(x=>(x._id===propId||x.id===propId))||currentProp||{};
+    document.getElementById('lmp_name').value=prop.name||'';
+    document.getElementById('lmp_loc').value=prop.location||'';
+    document.getElementById('lmp_rent').value=prop.rent||prop.rentPerUnit||'';
+    document.getElementById('lmp_deposit').value=prop.deposit||'';
+    document.getElementById('lmp_subcategory').value=prop.subcategory||'';
+    document.getElementById('lmp_bedrooms').value=prop.bedrooms||'';
+    document.getElementById('lmp_rooms_remaining').value=prop.roomsRemaining||prop.rooms_remaining||'';
+    document.getElementById('lmp_amenities').value=prop.amenities||'';
+    document.getElementById('lmp_desc').value=prop.description||'';
+    document.getElementById('lmp_desc_status').style.display='none';
+    const existingImages=prop.images&&prop.images.length?prop.images:(prop.imageUrl?[prop.imageUrl]:[]);
+    for(let n=1;n<=3;n++){
+      const fileInput=document.getElementById('lmp_image_'+n);
+      const previewWrap=document.getElementById('lmp_img_preview_wrap_'+n);
+      const previewImg=document.getElementById('lmp_img_preview_'+n);
+      const placeholder=document.getElementById('lmp_img_ph_'+n);
+      if(fileInput)fileInput.value='';
+      const existingUrl=existingImages[n-1]||'';
+      if(existingUrl&&previewImg){previewImg.src=existingUrl;previewWrap.style.display='block';placeholder.style.display='none';}
+      else if(previewWrap){previewWrap.style.display='none';if(placeholder)placeholder.style.display='block';}
+    }
+    document.getElementById('lmp_img_status').style.display='none';
+    document.getElementById('listMpModal').dataset.existingImgs=existingImages.join(',');
+    document.getElementById('listMpModal').dataset.propId=propId;
+    openModal('listMpModal');
+  } else {
+    try{
+      const tok=localStorage.getItem('landlordToken')||localStorage.getItem('token')||'';
+      const r=await fetch(`/api/landlord/properties/${propId}/marketplace`,{method:'PATCH',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok},body:JSON.stringify({listOnMarketplace:false})});
+      const d=await r.json();
+      if(d.success){
+        const prop=properties.find(x=>(x._id===propId||x.id===propId));
+        if(prop)prop.listOnMarketplace=false;
+        if(currentProp)currentProp.listOnMarketplace=false;
+        const mpBtn=document.getElementById('pd_marketplace_btn');
+        if(mpBtn){mpBtn.textContent='🏬 List on Marketplace';mpBtn.style.background='var(--bg3)';mpBtn.style.color='var(--text2)';mpBtn.style.border='1px solid var(--border)';mpBtn.onclick=()=>toggleMarketplace(propId,true);}
+        toast('Removed from marketplace','success');
+      }else{toast(d.error,'error');}
+    }catch(e){toast(e.message,'error');}
+  }
+}
+
+function lmpPreviewImage(input,slot){
+  if(!input.files||!input.files[0])return;
+  const n=slot||1;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    const previewImg=document.getElementById('lmp_img_preview_'+n);
+    const previewWrap=document.getElementById('lmp_img_preview_wrap_'+n);
+    const placeholder=document.getElementById('lmp_img_ph_'+n);
+    if(previewImg)previewImg.src=e.target.result;
+    if(previewWrap)previewWrap.style.display='block';
+    if(placeholder)placeholder.style.display='none';
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+async function doListOnMarketplace(){
+  const modal=document.getElementById('listMpModal');
+  const propId=modal.dataset.propId;
+  if(!propId)return;
+  const name=document.getElementById('lmp_name').value.trim();
+  const loc=document.getElementById('lmp_loc').value.trim();
+  const rent=document.getElementById('lmp_rent').value.trim();
+  const deposit=document.getElementById('lmp_deposit').value.trim();
+  const subcategory=document.getElementById('lmp_subcategory').value;
+  const bedrooms=document.getElementById('lmp_bedrooms').value.trim();
+  const roomsRemaining=document.getElementById('lmp_rooms_remaining').value.trim();
+  const amenities=document.getElementById('lmp_amenities').value.trim();
+  const desc=document.getElementById('lmp_desc').value.trim();
+  if(!name){toast('Property name is required','error');return;}
+  if(!loc){toast('Location is required','error');return;}
+  if(!rent){toast('Monthly rent is required','error');return;}
+  const tok=localStorage.getItem('landlordToken')||localStorage.getItem('token')||'';
+  const imgStatus=document.getElementById('lmp_img_status');
+  const uploadedUrls=[];
+  for(let n=1;n<=3;n++){
+    const imgFile=document.getElementById('lmp_image_'+n)?.files[0];
+    if(!imgFile)continue;
+    imgStatus.style.display='block';
+    try{
+      const formData=new FormData();
+      formData.append('image',imgFile);
+      const uploadRes=await fetch('/api/upload/listing-image',{method:'POST',headers:{'Authorization':'Bearer '+tok},body:formData});
+      const uploadData=await uploadRes.json();
+      if(uploadData.success&&uploadData.url)uploadedUrls.push(uploadData.url);
+      else toast('Photo '+ n +' upload failed','error');
+    }catch(e){toast('Photo '+ n +' error: '+e.message,'error');}
+  }
+  imgStatus.style.display='none';
+  const existingImgs=(modal.dataset.existingImgs||'').split(',').filter(Boolean);
+  const allImages=uploadedUrls.length?uploadedUrls:existingImgs;
+  const imageUrl=allImages[0]||'';
+  try{
+    const payload={listOnMarketplace:true,name,location:loc,rent:parseInt(rent),subcategory,bedrooms,amenities,description:desc};
+    if(deposit)payload.deposit=parseInt(deposit);
+    if(roomsRemaining)payload.roomsRemaining=parseInt(roomsRemaining);
+    if(imageUrl)payload.imageUrl=imageUrl;
+    if(allImages.length)payload.images=allImages;
+    const r=await fetch(`/api/landlord/properties/${propId}/marketplace`,{method:'PATCH',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok},body:JSON.stringify(payload)});
+    const d=await r.json();
+    if(d.success){
+      const prop=properties.find(x=>(x._id===propId||x.id===propId));
+      const updates={listOnMarketplace:false,marketplaceStatus:'pending',name,location:loc,rent:parseInt(rent),subcategory,bedrooms,amenities,description:desc,deposit:deposit?parseInt(deposit):undefined,roomsRemaining:roomsRemaining?parseInt(roomsRemaining):undefined,imageUrl,images:allImages};
+      if(prop)Object.assign(prop,updates);
+      if(currentProp)Object.assign(currentProp,updates);
+      const mpBtn=document.getElementById('pd_marketplace_btn');
+      if(mpBtn){mpBtn.textContent='⏳ Pending Approval';mpBtn.style.background='var(--amber-dim)';mpBtn.style.color='var(--amber)';mpBtn.style.border='1px solid rgba(245,166,35,.3)';mpBtn.onclick=()=>toggleMarketplace(propId,false);}
+      closeModal('listMpModal');
+      toast('⏳ Submitted! Admin will review and approve your listing.','success');
+    }else{toast(d.error,'error');}
+  }catch(e){toast(e.message,'error');}
+}
+
+async function aiGeneratePropDesc(){
+  const name=document.getElementById('ap_name').value.trim();
+  const loc=document.getElementById('ap_loc').value.trim();
+  const rent=document.getElementById('ap_rent').value.trim();
+  const bedrooms=document.getElementById('ap_bedrooms')?.value.trim()||'';
+  const amenities=document.getElementById('ap_amenities')?.value.trim()||'';
+  if(!name||!loc){toast('Enter property name and location first.','warning');return;}
+  const statusEl=document.getElementById('ap_desc_status');
+  statusEl.style.display='block';
+  try{
+    const tok=localStorage.getItem('landlordToken')||localStorage.getItem('token')||'';
+    const res=await fetch('/api/ai/property-description',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok},body:JSON.stringify({name,location:loc,rent,bedrooms,amenities})});
+    const data=await res.json();
+    if(data.success&&data.description){document.getElementById('ap_desc').value=data.description;toast('AI description generated!','success');}
+    else{toast(data.error||'AI could not generate description','error');}
+  }catch(e){toast('AI error: '+e.message,'error');}
+  statusEl.style.display='none';
+}
+async function aiGenerateLmpDesc(){
+  const name=document.getElementById('lmp_name').value.trim();
+  const loc=document.getElementById('lmp_loc').value.trim();
+  const rent=document.getElementById('lmp_rent').value.trim();
+  const bedrooms=document.getElementById('lmp_bedrooms').value.trim();
+  const amenities=document.getElementById('lmp_amenities').value.trim();
+  if(!name||!loc){toast('Enter property name and location first.','warning');return;}
+  const statusEl=document.getElementById('lmp_desc_status');
+  statusEl.style.display='block';
+  try{
+    const tok=localStorage.getItem('landlordToken')||localStorage.getItem('token')||'';
+    const res=await fetch('/api/ai/property-description',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok},body:JSON.stringify({name,location:loc,rent,bedrooms,amenities})});
+    const data=await res.json();
+    if(data.success&&data.description){document.getElementById('lmp_desc').value=data.description;toast('AI description generated!','success');}
+    else{toast(data.error||'AI could not generate description','error');}
+  }catch(e){toast('AI error: '+e.message,'error');}
+  statusEl.style.display='none';
+}
+async function aiAutoReplyAnnouncement(){
+  const statusEl=document.getElementById('ann_ai_status');
+  const title=document.getElementById('ann_title').value.trim();
+  const propName=currentProp?currentProp.name:'';
+  if(!title){toast('Enter an announcement title first.','warning');return;}
+  statusEl.style.display='block';
+  try{
+    const tok=localStorage.getItem('landlordToken')||localStorage.getItem('token')||'';
+    const res=await fetch('/api/ai/announcement',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok},body:JSON.stringify({title,propertyName:propName})});
+    const data=await res.json();
+    if(data.success&&data.message){document.getElementById('ann_body').value=data.message;toast('AI message written!','success');}
+    else{toast(data.error||'AI could not write the announcement','error');}
+  }catch(e){toast('AI error: '+e.message,'error');}
+  statusEl.style.display='none';
+}
+
+async function refreshPropertyData(){
+  if(!currentProp)return;
+  const id=currentProp._id||currentProp.id;
+  try{
+    const lid=localStorage.getItem('landlordId')||'';
+    const [tD,pD,rD,aD,prD,wdD]=await Promise.allSettled([getPropertyTenants(id),getPropertyPayments(id),getPropertyMaintenance(id),apiFetch(`/api/landlord/properties/${id}/announcements`),apiFetch(`/api/landlord/properties/${id}/pending-requests`),lid?apiFetch('/api/landlord/withdrawals/'+lid):Promise.resolve({withdrawals:[]})]);
+    tenants=tD.status==='fulfilled'?(tD.value||[]):[];
+    payments=pD.status==='fulfilled'?(pD.value||[]):[];
+    requests=rD.status==='fulfilled'?(rD.value||[]):[];
+    announcements=aD.status==='fulfilled'?(aD.value.announcements||[]):[];
+    pendingRequests=prD.status==='fulfilled'?(prD.value.requests||[]):[];
+    landlordWithdrawals=wdD.status==='fulfilled'?(wdD.value.withdrawals||[]):[];
+    updateStats();buildActivity();renderPvTenantList();renderPvMaintList();renderPendingPanel();
+    // update sub label
+    const openReqs=requests.filter(r=>r.status!=='resolved').length;
+    const subEl=document.getElementById('pd_sub_lbl');
+    if(subEl)subEl.textContent=(currentProp.location||'')+' · '+openReqs+' open request'+(openReqs!==1?'s':'');
+  }catch(e){toast('Failed to load data: '+e.message,'error');}
+}
+function updateStats(){
+  const now=new Date(),thisMonth=now.getMonth(),thisYear=now.getFullYear();
+  const isOk=p=>p&&(p.status==='completed'||p.status==='paid'||p.status==='success');
+  const revThisMonth=payments.filter(p=>isOk(p)&&p.createdAt&&new Date(p.createdAt).getMonth()===thisMonth&&new Date(p.createdAt).getFullYear()===thisYear).reduce((s,p)=>s+(p.amount||0),0);
+  const revTotal=payments.filter(isOk).reduce((s,p)=>s+(p.amount||0),0);
+  const pendingReq=requests.filter(r=>r.status!=='resolved').length;
+  const units=currentProp.units||0;
+  setOccupancy(tenants.length,units);
+  buildRevenueChart();
+  const expectedThisMonth=tenants.reduce((s,t)=>s+(t.monthlyRent||0),0);
+  const outstanding=Math.max(0,expectedThisMonth-revThisMonth);
+  const collectedPct=expectedThisMonth>0?Math.round((revThisMonth/expectedThisMonth)*100):0;
+  document.getElementById('sum_revenue').textContent='KES '+revThisMonth.toLocaleString();
+  document.getElementById('sum_rev_sub').textContent=collectedPct+'% of expected ('+new Date().toLocaleString('default',{month:'long'})+')';
+  document.getElementById('sum_rev_sub').className='kpi-delta'+(collectedPct>=80?' up':collectedPct>=50?'':' down');
+  document.getElementById('sum_expected').textContent='KES '+expectedThisMonth.toLocaleString();
+  document.getElementById('sum_expected_sub').textContent='from '+tenants.length+' tenant'+(tenants.length!==1?'s':'');
+  document.getElementById('sum_pending').textContent='KES '+outstanding.toLocaleString();
+  document.getElementById('sum_pend_sub').textContent=outstanding>0?tenants.filter(t=>{const tid=t.tenantId||t.id||t._id||'';const ps=getMonthlyPayStatus(tid,t.monthlyRent||0);return ps.status!=='paid';}).length+' tenant(s) behind':'All tenants current';
+  document.getElementById('sum_pend_sub').className='kpi-delta'+(outstanding>0?' down':' up');
+  // hidden compat elements
+  document.getElementById('gc_requests').textContent=pendingReq;
+  document.getElementById('gc_req_badge').textContent=pendingReq+' open';
+  document.getElementById('gc_revenue').textContent='KES '+revThisMonth.toLocaleString();
+  document.getElementById('gc_pay_badge').textContent=payments.length+' records';
+  document.getElementById('gc_pending_sub').textContent=outstanding>0?'KES '+outstanding.toLocaleString()+' outstanding':'all clear';
+  document.getElementById('gc_ann').textContent=announcements.length;
+  document.getElementById('gc_ann_badge').textContent=announcements.length+' sent';
+  const isOkW=p=>p&&(p.status==='completed'||p.status==='paid');
+  const grossTotal=payments.filter(isOkW).reduce((s,p)=>s+(p.amount||0),0);
+  const withdrawnSoFar=landlordWithdrawals.filter(w=>w.status==='pending'||w.status==='completed').reduce((s,w)=>s+(w.requested_amount||0),0);
+  const balance=Math.max(0,grossTotal-withdrawnSoFar);
+  document.getElementById('gc_balance').textContent='KES '+balance.toLocaleString();
+  // Notification badges
+  const badge=document.getElementById('dsBadge');
+  if(badge){if(pendingReq>0){badge.textContent=pendingReq;badge.style.display='';}else{badge.style.display='none';}}
+  const notifDot=document.getElementById('notifDotTop');
+  if(notifDot)notifDot.style.display=pendingReq>0?'':'none';
+  // Remind all button
+  const remindBtn=document.getElementById('remindAllBtn');
+  if(remindBtn)remindBtn.style.display=outstanding>0?'':'none';
+  // Tenant count tag
+  const tct=document.getElementById('tenantCountTag');
+  if(tct)tct.textContent=tenants.length+' of '+(units||0)+' units occupied · '+now.toLocaleString('default',{month:'long',year:'numeric'});
+}
+function getMonthlyPayStatus(tenantId,rent){
+  const now=new Date(),thisMonth=now.getMonth(),thisYear=now.getFullYear();
+  const isOk=p=>p&&(p.status==='completed'||p.status==='paid'||p.status==='success');
+  const paid=payments.filter(p=>isOk(p)&&String(p.tenantId||p.tenant_id||'')===String(tenantId)&&p.createdAt&&new Date(p.createdAt).getMonth()===thisMonth&&new Date(p.createdAt).getFullYear()===thisYear).reduce((s,p)=>s+(p.amount||0),0);
+  const balance=Math.max(0,rent-paid);
+  return{paid,balance,status:paid>=rent?'paid':paid>0?'partial':'unpaid'};
+}
+
+function renderTenantsModal(){
+  const el=document.getElementById('tenantsList'),sub=document.getElementById('tm_sub');
+  if(!currentProp)return;
+  sub.textContent=tenants.length+' of '+(currentProp.units||0)+' units occupied';
+  if(!tenants.length){el.innerHTML='<p style="color:var(--text3);font-size:13px;text-align:center;padding:24px;">No tenants yet. Share the property code to invite them.</p>';return;}
+  el.innerHTML=tenants.map(t=>{
+    const tid=t.tenantId||t.id||t._id||'';const rent=(t.monthlyRent||0).toLocaleString();const linked=t.linkedDate?fmt(t.linkedDate):'—';
+    const safeName=esc(t.fullName||'').replace(/'/g,"\\'");
+    const msgBtn=tid?`<button class="btn btn-primary btn-xs" onclick="openChat('${tid}','${safeName}')">💬 Chat</button>`:'';
+    const editRentBtn=tid?`<button class="btn btn-xs" style="background:var(--amber-dim);color:var(--amber);border:1px solid rgba(245,166,35,.2);" onclick="doEditRent('${tid}','${safeName}',${t.monthlyRent||0})">Edit Rent</button>`:'';
+    const removeBtn=tid?`<button class="btn btn-xs" style="background:var(--rose-dim);color:var(--rose);border:1px solid rgba(224,92,122,.2);" onclick="doRemoveTenant('${tid}','${safeName}')">Remove</button>`:'';
+    return`<div class="m-row"><div><div class="m-name">${esc(t.fullName)}</div><div class="m-sub">KES ${rent}/mo${t.phone?' · '+esc(t.phone):''} · Joined ${linked}</div></div><div style="display:flex;gap:6px;flex-shrink:0;">${msgBtn}${editRentBtn}${removeBtn}</div></div>`;
+  }).join('');
+}
+
+let _pmFilter='all';
+function setPmFilter(f){
+  _pmFilter=f;
+  ['all','completed','pending'].forEach(t=>{
+    const btn=document.getElementById('pm_tab_'+t);
+    if(!btn)return;
+    btn.style.background=t===f?'var(--amber-dim)':'var(--bg3)';
+    btn.style.color=t===f?'var(--amber)':'var(--text3)';
+    btn.style.borderColor=t===f?'rgba(245,166,35,.2)':'var(--border)';
+  });
+  _renderPmList();
+}
+function renderPaymentsModal(){
+  _pmFilter='all';setPmFilter('all');
+  const statsEl=document.getElementById('pm_stats');
+  const isOk=p=>p&&(p.status==='completed'||p.status==='paid'||p.status==='success');
+  const sorted=payments.slice().sort((a,b)=>new Date(b.createdAt||b.paidAt||0)-new Date(a.createdAt||a.paidAt||0));
+  const now=new Date();const thisMonth=now.getMonth(),thisYear=now.getFullYear();
+  const monthTotal=sorted.filter(p=>isOk(p)&&p.createdAt&&new Date(p.createdAt).getMonth()===thisMonth&&new Date(p.createdAt).getFullYear()===thisYear).reduce((s,p)=>s+(p.amount||0),0);
+  const allTotal=sorted.filter(isOk).reduce((s,p)=>s+(p.amount||0),0);
+  const pendingCnt=sorted.filter(p=>!isOk(p)).length;
+  if(statsEl)statsEl.innerHTML=`<div style="flex:1;background:var(--green-dim);border:1px solid rgba(62,207,142,.2);border-radius:10px;padding:10px 12px;min-width:0;"><div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.05em;">Total Collected</div><div style="font-size:17px;font-weight:800;color:var(--green);">KES ${allTotal.toLocaleString()}</div></div><div style="flex:1;background:var(--amber-dim);border:1px solid rgba(245,166,35,.2);border-radius:10px;padding:10px 12px;min-width:0;"><div style="font-size:10px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.05em;">This Month</div><div style="font-size:17px;font-weight:800;color:var(--amber);">KES ${monthTotal.toLocaleString()}</div></div><div style="flex:1;background:var(--rose-dim);border:1px solid rgba(224,92,122,.2);border-radius:10px;padding:10px 12px;min-width:0;"><div style="font-size:10px;font-weight:700;color:var(--rose);text-transform:uppercase;letter-spacing:.05em;">Pending</div><div style="font-size:17px;font-weight:800;color:var(--rose);">${pendingCnt}</div></div>`;
+}
+function _renderPmList(){
+  const el=document.getElementById('paymentsList');
+  const isOk=p=>p&&(p.status==='completed'||p.status==='paid'||p.status==='success');
+  const sorted=payments.slice().sort((a,b)=>new Date(b.createdAt||b.paidAt||0)-new Date(a.createdAt||a.paidAt||0));
+  const filtered=_pmFilter==='all'?sorted:_pmFilter==='completed'?sorted.filter(isOk):sorted.filter(p=>!isOk(p));
+  if(!filtered.length){el.innerHTML='<p style="color:var(--text3);font-size:13px;text-align:center;padding:28px;">'+(payments.length?'No payments match this filter.':'No payment records yet.')+'</p>';return;}
+  const deposits=filtered.filter(p=>p.paymentType==='deposit');
+  const rents=filtered.filter(p=>p.paymentType!=='deposit');
+  function renderRow(p){
+    const s=p.status||'pending';const ok=isOk(p);const bc=ok?'resolved':s==='pending'?'pending':'in_progress';
+    const tName=esc(p.tenantName||p.tenantFullName||'Tenant');
+    const tEmail=esc(p.tenantEmail||p.buyer_email||'');
+    const ref=esc(p.reference||('BC'+String(p._id||'').slice(-8).toUpperCase()));
+    const payDate=p.paidAt||p.createdAt;
+    const isDeposit=p.paymentType==='deposit';
+    const typeLabel=isDeposit?'Security Deposit':p.paymentType==='partial'?'Partial':'Full';
+    const typeBg=isDeposit?'background:var(--blue-dim);color:var(--blue);border-radius:4px;padding:1px 6px;font-weight:700;':'background:var(--bg3);color:var(--text3);border-radius:4px;padding:1px 5px;';
+    const propName=currentProp?currentProp.name||'Rent Payment':'Rent Payment';
+    const codeTag=isDeposit&&p.property_code?`<span style="font-family:monospace;font-weight:700;color:var(--blue);letter-spacing:2px;font-size:11px;background:var(--blue-dim);border-radius:4px;padding:1px 6px;"> ${esc(p.property_code)}</span>`:'';
+    const rcptParams=new URLSearchParams({type:isDeposit?'deposit':'rent',amount:p.amount||0,ref,desc:propName,property:propName,payType:p.paymentType||'full',date:payDate||new Date().toISOString(),name:tName,phone:p.phone||p.tenantPhone||''});
+    return`<div style="padding:13px 0;border-bottom:1px solid var(--border);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:16px;font-weight:800;color:var(--text);">KES ${(p.amount||0).toLocaleString()}</div>
+          <div style="font-size:13px;font-weight:600;color:var(--text2);margin-top:2px;">${tName}</div>
+          ${tEmail?`<div style="font-size:11px;color:var(--text3);margin-top:1px;">✉ ${tEmail}</div>`:''}
+          <div style="font-size:11px;color:var(--text3);margin-top:4px;display:flex;flex-wrap:wrap;gap:5px;">
+            <span>${payDate?fmtDt(payDate):'—'}</span>
+            <span>${ref}</span>
+            <span style="${typeBg}">${typeLabel}</span>
+            ${codeTag}
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;">
+          <span class="status-badge ${bc}">${ok?'Paid':s.replace('_',' ')}</span>
+          <a href="receipt.html?${rcptParams.toString()}" target="_blank" style="display:inline-flex;align-items:center;gap:3px;padding:4px 9px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);border-radius:7px;font-size:11px;font-weight:700;text-decoration:none;">Receipt</a>
+        </div>
+      </div>
+    </div>`;
+  }
+  let html='';
+  if(deposits.length){
+    html+=`<div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.08em;padding:10px 0 6px;border-bottom:1px solid var(--blue-dim);margin-bottom:2px;">Security Deposits (${deposits.length})</div>`;
+    html+=deposits.map(renderRow).join('');
+  }
+  if(rents.length){
+    html+=`<div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.08em;padding:${deposits.length?'14px':'10px'} 0 6px;border-bottom:1px solid var(--green-dim);margin-bottom:2px;">Rent Payments (${rents.length})</div>`;
+    html+=rents.map(renderRow).join('');
+  }
+  el.innerHTML=html;
+}
+function renderRequestsModal(){
+  const el=document.getElementById('requestsList'),sub=document.getElementById('req_sub');
+  const pending=requests.filter(r=>r.status!=='resolved').length;
+  sub.textContent=requests.length+' total · '+pending+' open';
+  if(!requests.length){el.innerHTML='<p style="color:var(--text3);font-size:13px;text-align:center;padding:24px;">No maintenance requests yet.</p>';return;}
+  el.innerHTML=requests.map(r=>{
+    const s=r.status||'pending';const bc=s==='resolved'?'resolved':s==='in_progress'?'in_progress':'pending';
+    const ip=s==='pending'?`<button class="btn btn-amber btn-xs" onclick="doUpdateRequest('${r.id||r._id}','in_progress')">In Progress</button>`:'';
+    const res2=s!=='resolved'?`<button class="btn btn-green btn-xs" onclick="doUpdateRequest('${r.id||r._id}','resolved')">✅ Resolve</button>`:'';
+    return`<div style="padding:12px 0;border-bottom:1px solid var(--border)"><div style="font-size:13px;color:var(--text2);font-weight:500">${esc(r.description)}</div><div style="font-size:12px;color:var(--text3);margin-top:2px">From ${esc(r.tenantName||'Unknown')}${r.tenantPhone?' · '+esc(r.tenantPhone):''} · ${fmt(r.createdAt)}</div><span class="status-badge ${bc}">${s.replace('_',' ')}</span>${(ip||res2)?'<div style="display:flex;gap:6px;margin-top:8px">'+ip+res2+'</div>':''}</div>`;
+  }).join('');
+}
+async function doUpdateRequest(id,status){
+  try{await updateMaintenanceStatus(id,status);toast('Marked '+status.replace('_',' '),'success');await refreshPropertyData();renderRequestsModal();renderPvMaintList();}catch(e){toast(e.message,'error');}
+}
+function renderAnnModal(){
+  const el=document.getElementById('annList');
+  if(!announcements.length){el.innerHTML='<p style="color:var(--text3);font-size:13px;text-align:center;padding:16px;">No announcements yet.</p>';return;}
+  el.innerHTML=announcements.map(a=>`<div class="ann-card"><h4>${esc(a.title)}</h4><div class="ann-body">${esc(a.body)}</div><div class="ann-meta">${fmtDt(a.createdAt)}</div></div>`).join('');
+}
+async function doPostAnnouncement(){
+  if(!currentProp)return;
+  const title=(document.getElementById('ann_title').value||'').trim(),body=(document.getElementById('ann_body').value||'').trim();
+  if(!title||!body){toast('Add a title and message.','warning');return;}
+  const id=currentProp._id||currentProp.id;
+  try{await apiFetch(`/api/landlord/properties/${id}/announcements`,{method:'POST',body:JSON.stringify({title,body})});document.getElementById('ann_title').value='';document.getElementById('ann_body').value='';toast('Announcement sent!','success');await refreshPropertyData();renderAnnModal();}catch(e){toast(e.message,'error');}
+}
+async function renderNotifModal(){
+  const el=document.getElementById('notifList');
+  el.innerHTML='<div class="loading-hint">Loading…</div>';
+  const landlordId=localStorage.getItem('landlordId')||'';
+  let wdNotifs=[];
+  if(landlordId){
+    try{
+      const d=await apiFetch('/api/landlord/notifications/'+landlordId);
+      wdNotifs=d.notifications||[];
+      apiFetch('/api/landlord/notifications/'+landlordId+'/read-all',{method:'PUT'}).catch(()=>{});
+    }catch(e){}
+  }
+  const pending=requests.filter(r=>r.status!=='resolved');
+  if(!pending.length&&!wdNotifs.length){el.innerHTML='<p style="text-align:center;padding:28px;color:var(--text3);">✅ All clear — no pending alerts.</p>';return;}
+  let html='';
+  if(wdNotifs.length){
+    html+=`<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">💸 Withdrawals</div>`;
+    const typeColors={withdrawal_submitted:'var(--blue)',withdrawal_approved:'var(--green)',withdrawal_rejected:'var(--rose)'};
+    html+=wdNotifs.map(n=>`<div style="padding:10px 12px;border-radius:10px;margin-bottom:6px;background:${n.read?'var(--bg3)':'var(--amber-dim)'};border:1px solid ${n.read?'var(--border)':'rgba(245,166,35,.2)'};"><div style="display:flex;gap:8px;align-items:flex-start;"><div style="width:8px;height:8px;border-radius:50%;margin-top:4px;flex-shrink:0;background:${typeColors[n.type]||'var(--text3)'}"></div><div><div style="font-size:13px;font-weight:600;color:var(--text);">${esc(n.title||'')}</div><div style="font-size:12px;color:var(--text2);margin-top:2px;line-height:1.4;">${esc(n.message||'')}</div><div style="font-size:11px;color:var(--text3);margin-top:4px;">${n.created_at?fmt(n.created_at):''}</div></div></div></div>`).join('');
+  }
+  if(pending.length){
+    html+=`<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;margin-top:${wdNotifs.length?'14px':'4px'};">🔧 Maintenance Requests (${pending.length})</div>`;
+    html+=pending.map(r=>`<div style="padding:10px 0;border-bottom:1px solid var(--border)"><div style="font-size:13px;color:var(--text2);font-weight:500">${esc(r.description)}</div><div style="font-size:12px;color:var(--text3);margin-top:2px">From ${esc(r.tenantName||'Unknown')} · ${fmt(r.createdAt)}</div><span class="status-badge pending">${(r.status||'pending').replace('_',' ')}</span></div>`).join('');
+  }
+  el.innerHTML=html;
+}
+function openChat(tenantId,tenantName){
+  chatTenantIdLocal=tenantId;
+  document.getElementById('chatTitle').textContent='💬 Chat with '+tenantName;
+  document.getElementById('chatSub').textContent=tenantName;
+  closeModal('tenantsModal');openModal('chatModal');loadChatMessages();
+}
+async function loadChatMessages(){
+  if(!currentProp||!chatTenantIdLocal)return;
+  const propId=currentProp._id||currentProp.id;
+  const el=document.getElementById('chatThread');el.innerHTML='<div style="color:var(--text3);text-align:center;font-size:13px;padding:16px">Loading…</div>';
+  try{
+    const d=await apiFetch(`/api/landlord/properties/${propId}/messages?tenantId=${chatTenantIdLocal}`);
+    const msgs=d.messages||[];
+    if(!msgs.length){el.innerHTML='<div style="color:var(--text3);text-align:center;font-size:13px;padding:20px">No messages yet. Say hi!</div>';return;}
+    el.innerHTML=msgs.map(m=>{
+      const mine=m.sender==='landlord';
+      return`<div class="bubble ${mine?'landlord':'tenant'}">${esc(m.text)}<span class="ts">${fmtDt(m.createdAt)}</span></div>`;
+    }).join('');
+    el.scrollTop=el.scrollHeight;
+  }catch(e){el.innerHTML='<div style="color:var(--rose);text-align:center;font-size:13px;padding:16px">Failed to load messages.</div>';}
+}
+async function doSendChat(){
+  if(!currentProp||!chatTenantIdLocal)return;
+  const input=document.getElementById('chatInput');
+  const msg=(input.value||'').trim();
+  if(!msg)return;
+  input.value='';
+  const propId=currentProp._id||currentProp.id;
+  try{
+    await apiFetch(`/api/landlord/properties/${propId}/messages`,{method:'POST',body:JSON.stringify({tenantId:chatTenantIdLocal,text:msg})});
+    await loadChatMessages();
+  }catch(e){toast(e.message,'error');}
+}
+function renderPendingPanel(){
+  const panel=document.getElementById('pendingPanel'),list=document.getElementById('pendingList'),tag=document.getElementById('pendingCountTag');
+  if(!pendingRequests.length){panel.style.display='none';return;}
+  panel.style.display='';
+  tag.textContent=pendingRequests.length+' pending';
+  list.innerHTML=pendingRequests.map(r=>{
+    const tid=r.tenantId,color=avColor(r.fullName||'?'),name=r.fullName||'Unknown';
+    const safeName=esc(name).replace(/'/g,"\\'");
+    return`<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(245,166,35,.1);">
+      <div class="av" style="background:${color};flex-shrink:0;">${initials(name)}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:14px;font-weight:700;color:var(--text);">${esc(name)}</div>
+        <div style="font-size:12px;color:var(--amber);">${esc(r.email||'')}${r.phone?' · '+esc(r.phone):''}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px;">KES ${(r.monthlyRent||0).toLocaleString()}/mo · Requested ${r.requestedAt?fmt(r.requestedAt):'—'}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0;">
+        <button class="btn btn-xs" style="background:var(--green-dim);color:var(--green);border:1px solid rgba(62,207,142,.2);" onclick="doApproveRequest('${tid}','${safeName}')">Approve</button>
+        <button class="btn btn-xs" style="background:var(--rose-dim);color:var(--rose);border:1px solid rgba(224,92,122,.2);" onclick="doRejectRequest('${tid}','${safeName}')">Reject</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+async function doApproveRequest(tenantId,tenantName){
+  if(!currentProp)return;
+  const propId=currentProp._id||currentProp.id;
+  if(!await bConfirm(`Approve ${tenantName} to join this property?`,{icon:'',okLabel:'Approve',title:'Approve Tenant'}))return;
+  try{await apiFetch(`/api/landlord/properties/${propId}/tenants/${tenantId}/approve`,{method:'POST'});toast(`${tenantName} has been approved!`,'success');await refreshPropertyData();}catch(e){toast(e.message,'error');}
+}
+async function doRejectRequest(tenantId,tenantName){
+  if(!currentProp)return;
+  const propId=currentProp._id||currentProp.id;
+  if(!await bConfirm(`Reject ${tenantName}'s join request?`,{icon:'',okLabel:'Reject',title:'Reject Request',danger:true}))return;
+  try{await apiFetch(`/api/landlord/properties/${propId}/tenants/${tenantId}/reject`,{method:'POST'});toast(`Request from ${tenantName} has been rejected.`,'info');await refreshPropertyData();}catch(e){toast(e.message,'error');}
+}
+async function doEditRent(tenantId,tenantName,currentRent){
+  if(!currentProp)return;
+  const propId=currentProp._id||currentProp.id;
+  const val=await bPrompt(`Set monthly rent for ${tenantName}:`,String(currentRent),'Enter new rent amount (KES)');
+  if(val===null)return;
+  const rent=parseFloat(val);
+  if(!rent||rent<=0){toast('Please enter a valid rent amount.','warning');return;}
+  try{await apiFetch(`/api/landlord/properties/${propId}/tenants/${tenantId}`,{method:'PATCH',body:JSON.stringify({monthlyRent:rent})});toast(`Rent updated to KES ${rent.toLocaleString()} for ${tenantName}.`,'success');await refreshPropertyData();renderTenantsModal();}catch(e){toast(e.message,'error');}
+}
+async function doRemoveTenant(tenantId,tenantName){
+  if(!currentProp)return;
+  const propId=currentProp._id||currentProp.id;
+  if(!await bConfirm(`Remove ${tenantName} from this property?\n\nThey will lose access and you can re-invite them using the property code.`,{icon:'',okLabel:'Remove Tenant',title:'Remove Tenant',danger:true}))return;
+  try{await apiFetch(`/api/landlord/properties/${propId}/tenants/${tenantId}`,{method:'DELETE'});toast(`${tenantName} has been removed from the property.`,'success');await refreshPropertyData();renderTenantsModal();}catch(e){toast(e.message,'error');}
+}
+function buildActivity(){
+  activityLog=[];
+  payments.slice(0,4).forEach(p=>activityLog.push({icon:'💳',text:'KES '+(p.amount||0).toLocaleString()+' payment — '+(p.tenantName||'tenant'),detail:p.status||'recorded',time:p.createdAt?timeAgo(p.createdAt):'',t:p.createdAt}));
+  tenants.slice(0,3).forEach(t=>activityLog.push({icon:'👤',text:(t.fullName||'New tenant')+' linked to property',detail:'Monthly rent: KES '+(t.monthlyRent||0).toLocaleString(),time:t.linkedDate?timeAgo(t.linkedDate):'',t:t.linkedDate}));
+  requests.filter(r=>r.status!=='resolved').slice(0,3).forEach(r=>activityLog.push({icon:'🔧',text:'Request: '+(r.description||'').slice(0,55),detail:'From '+(r.tenantName||'tenant')+' · '+(r.status||'pending').replace('_',' '),time:r.createdAt?timeAgo(r.createdAt):'',t:r.createdAt}));
+  activityLog.sort((a,b)=>new Date(b.t||0)-new Date(a.t||0));
+  loadActivity();
+}
+function loadActivity(){
+  const el=document.getElementById('activityList');
+  if(!activityLog.length){el.innerHTML='<div class="feed-empty">No recent activity yet. Activity will appear as tenants pay rent or submit requests.</div>';return;}
+  el.innerHTML=activityLog.slice(0,8).map(a=>`<div class="feed-item"><div class="feed-dot">${a.icon}</div><div class="feed-body"><div class="feed-text">${esc(a.text)}</div><div class="feed-detail">${esc(a.detail)}</div></div><div class="feed-time">${esc(a.time)}</div></div>`).join('');
+}
+function copyCode(){const c=currentProp?currentProp.code:'';if(!c)return;navigator.clipboard.writeText(c).then(()=>toast('Code copied: '+c,'success')).catch(()=>toast('Code: '+c,'info'));}
+function shareCode(){const c=currentProp?currentProp.code:'';if(!c)return;if(navigator.share)navigator.share({title:'BConnect Property Code',text:'Your property code: '+c});else copyCode();}
+async function doAddProperty(){
+  const name=document.getElementById('ap_name').value.trim(),loc=document.getElementById('ap_loc').value.trim(),units=document.getElementById('ap_units').value.trim(),rent=document.getElementById('ap_rent').value.trim();
+  const bedrooms=document.getElementById('ap_bedrooms')?.value.trim()||'';
+  const amenities=document.getElementById('ap_amenities')?.value.trim()||'';
+  const desc=document.getElementById('ap_desc')?.value.trim()||'';
+  const listOnMarketplace=document.getElementById('ap_marketplace')?.checked||false;
+  if(!name){toast('Enter a property name.','warning');return;}if(!loc){toast('Enter a location.','warning');return;}if(!units||parseInt(units)<1){toast('Enter valid unit count.','warning');return;}if(!rent||parseInt(rent)<1){toast('Enter a valid monthly rent amount.','warning');return;}
+  try{const d=await createProperty(name,loc,units,parseInt(rent),{bedrooms,amenities,description:desc,listOnMarketplace});closeModal('addPropModal');['ap_name','ap_loc','ap_units','ap_rent','ap_bedrooms','ap_amenities','ap_desc'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});const mpEl=document.getElementById('ap_marketplace');if(mpEl)mpEl.checked=false;updateLocalRole('landlord');const mpMsg=listOnMarketplace?' Listed on marketplace!':'';toast('"'+name+'" added! Code: '+d.property.code+(mpMsg),'success');await loadDashboard();}catch(e){toast(e.message,'error');}
+}
+async function doSendReminder(tid,tenantName,status,balance){
+  if(!currentProp){toast('No property selected','warning');return;}
+  const propId=currentProp._id||currentProp.id;
+  const msg=`Hi ${tenantName}, this is a reminder that your rent payment for ${currentProp.name} is ${status==='partial'?'partially paid (KES '+balance+' remaining)':'due'}. Please make payment via M-Pesa. Thank you.`;
+  try{
+    await apiFetch(`/api/landlord/properties/${propId}/messages`,{method:'POST',body:JSON.stringify({tenantId:tid,text:msg})});
+    toast(`Reminder sent to ${tenantName}`,'success');
+  }catch(e){toast('Failed to send reminder: '+e.message,'error');}
+}
+async function doRemindAllUnpaid(){
+  if(!currentProp){toast('No property selected','warning');return;}
+  const unpaid=tenants.filter(t=>{
+    const tid=t.tenantId||t.id||t._id||'';
+    const ps=getMonthlyPayStatus(tid,t.monthlyRent||0);
+    return ps.status!=='paid';
+  });
+  if(!unpaid.length){toast('All tenants have paid this month!','success');return;}
+  if(!await bConfirm(`Send payment reminders to ${unpaid.length} tenant(s) who haven't fully paid this month?`,{icon:'',okLabel:'Send Reminders',title:'Remind All Unpaid'}))return;
+  let sent=0,failed=0;
+  for(const t of unpaid){
+    const tid=t.tenantId||t.id||t._id||'';
+    const ps=getMonthlyPayStatus(tid,t.monthlyRent||0);
+    try{await doSendReminder(tid,t.fullName||'Tenant',ps.status,ps.balance);sent++;}catch(_){failed++;}
+  }
+  toast(`Reminders sent: ${sent} success${failed?' · '+failed+' failed':''}`,failed?'warning':'success');
+}
+function openTenantPayHist(tenantId, tenantName){
+  document.getElementById('tph_title').textContent='💳 Payment History — '+tenantName;
+  document.getElementById('tph_sub').textContent='All rent payments recorded for this tenant';
+  document.getElementById('tph_summary').innerHTML='';
+  document.getElementById('tph_body').innerHTML='<tr><td colspan="4"><div class="loading-hint">Loading…</div></td></tr>';
+  document.getElementById('tenantPayHistModal').classList.add('active');
+  const tenantPayments=payments.filter(p=>{
+    const pid=String(p.tenantId||p.tenant_id||'');
+    return pid===String(tenantId);
+  }).sort((a,b)=>new Date(b.createdAt||b.paidAt||b.created_at||0)-new Date(a.createdAt||a.paidAt||a.created_at||0));
+  const isOk=p=>p&&(p.status==='completed'||p.status==='paid'||p.status==='success');
+  const totalPaid=tenantPayments.filter(isOk).reduce((s,p)=>s+(p.amount||0),0);
+  const totalPending=tenantPayments.filter(p=>!isOk(p)).reduce((s,p)=>s+(p.amount||0),0);
+  const summaryEl=document.getElementById('tph_summary');
+  summaryEl.innerHTML=
+    `<div style="flex:1;min-width:120px;background:var(--green-dim);border:1px solid rgba(62,207,142,.2);border-radius:10px;padding:10px 12px;">
+       <div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.05em;">Total Paid</div>
+       <div style="font-size:17px;font-weight:800;color:var(--green);">KES ${totalPaid.toLocaleString()}</div>
+       <div style="font-size:11px;color:var(--green);opacity:.7;">${tenantPayments.filter(isOk).length} payment(s)</div>
+     </div>`+
+    (totalPending>0?
+    `<div style="flex:1;min-width:120px;background:var(--amber-dim);border:1px solid rgba(245,166,35,.2);border-radius:10px;padding:10px 12px;">
+       <div style="font-size:10px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.05em;">Pending</div>
+       <div style="font-size:17px;font-weight:800;color:var(--amber);">KES ${totalPending.toLocaleString()}</div>
+       <div style="font-size:11px;color:var(--amber);opacity:.7;">${tenantPayments.filter(p=>!isOk(p)).length} unpaid</div>
+     </div>`:'')+
+    `<div style="flex:1;min-width:120px;background:var(--blue-dim);border:1px solid rgba(79,142,247,.2);border-radius:10px;padding:10px 12px;">
+       <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.05em;">Records</div>
+       <div style="font-size:17px;font-weight:800;color:var(--blue);">${tenantPayments.length}</div>
+       <div style="font-size:11px;color:var(--blue);opacity:.7;">total entries</div>
+     </div>`;
+  const tbody=document.getElementById('tph_body');
+  if(!tenantPayments.length){
+    tbody.innerHTML=`<tr><td colspan="4"><div class="t-empty"><div class="ei">💳</div><p>No payment records found for this tenant.</p></div></td></tr>`;
+    return;
+  }
+  const statusBadge=s=>{
+    const ok=s==='completed'||s==='paid'||s==='success';
+    const warn=s==='pending';
+    if(ok)return`<span class="status-badge paid">Paid</span>`;
+    if(warn)return`<span class="status-badge pending">Pending</span>`;
+    return`<span class="status-badge" style="background:var(--bg3);color:var(--text3);">${esc(s||'—')}</span>`;
+  };
+  tbody.innerHTML=tenantPayments.map(p=>{
+    const date=fmtDt(p.createdAt||p.paidAt||p.created_at)||'—';
+    const amount='KES '+(p.amount||0).toLocaleString();
+    const ref=esc(p.mpesaCode||p.transactionId||p.transaction_id||p.mpesa_code||'—');
+    return`<tr>
+      <td style="color:var(--text3);white-space:nowrap;">${esc(date)}</td>
+      <td style="font-weight:700;color:var(--text);">${esc(amount)}</td>
+      <td>${statusBadge(p.status)}</td>
+      <td style="font-size:12px;color:var(--text3);font-family:monospace;">${ref}</td>
+    </tr>`;
+  }).join('');
+}
+
+// Render tenants table (hidden, for modal compat)
+function renderTenantsTable(){renderPvTenantList();}
+
+async function loadLandlordNotifCount(){
+  const landlordId=localStorage.getItem('landlordId')||'';
+  if(!landlordId)return;
+  try{
+    const d=await apiFetch('/api/landlord/notifications/'+landlordId);
+    const unread=(d.notifications||[]).filter(n=>!n.read).length;
+    const badge=document.getElementById('dsBadge');
+    if(badge){const total=unread+(requests.filter(r=>r.status!=='resolved').length);if(total>0){badge.textContent=total;badge.style.display='';}else{badge.style.display='none';}}
+  }catch(e){}
+}
+
+async function saveLandlordProfile2(){return saveLandlordProfile();}
+</script>
+</body>
+</html>
