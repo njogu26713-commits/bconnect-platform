@@ -59,7 +59,7 @@
     /*  Badges  */
     .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700; }
     .badge-purple { background:#ede9fe; color:#6d28d9; }
-    .badge-blue   { background:#dbeafe; color:#1d4ed8; }
+    .badge-blue   { background:#dbeafe; color:#1e3a8a; }
     .badge-green  { background:#dcfce7; color:#15803d; }
     .badge-orange { background:#ffedd5; color:#c2410c; }
     .badge-gray   { background:#f3f4f6; color:#4b5563; }
@@ -76,7 +76,7 @@
     .btn-danger:hover { background:#fecaca; }
     .btn-success { background:#dcfce7; color:#15803d; }
     .btn-success:hover { background:#bbf7d0; }
-    .btn-blue { background:#dbeafe; color:#1d4ed8; }
+    .btn-blue { background:#dbeafe; color:#1e3a8a; }
     .btn-blue:hover { background:#bfdbfe; }
     /*  Toast  */
     #toast { position:fixed; bottom:24px; right:24px; z-index:9999; padding:12px 20px; border-radius:10px; color:#fff; font-weight:600; font-size:14px; display:none; box-shadow:0 4px 20px rgba(0,0,0,.2); }
@@ -358,7 +358,7 @@
         <div class="label">Products in DB</div>
         <div class="value" id="db-products">-</div>
       </div>
-      <div class="db-card" style="background:linear-gradient(135deg,#2563eb,#1d4ed8)">
+      <div class="db-card" style="background:linear-gradient(135deg,#1e3a8a,#162d6b)">
         <div class="label">Services in DB</div>
         <div class="value" id="db-services">-</div>
       </div>
@@ -680,7 +680,7 @@
           <div class="label">Total Landlords</div>
           <div class="value" id="ll-count">-</div>
         </div>
-        <div class="db-card" style="background:linear-gradient(135deg,#2563eb,#1d4ed8)">
+        <div class="db-card" style="background:linear-gradient(135deg,#1e3a8a,#162d6b)">
           <div class="label">Total Properties</div>
           <div class="value" id="ll-props">-</div>
         </div>
@@ -809,7 +809,7 @@
         <div class="label">Total Revenue</div>
         <div class="value" id="pay-revenue">-</div>
       </div>
-      <div class="db-card" style="background:linear-gradient(135deg,#2563eb,#1d4ed8)">
+      <div class="db-card" style="background:linear-gradient(135deg,#1e3a8a,#162d6b)">
         <div class="label" id="pay-tab-label-product">Products</div>
         <div class="value" id="pay-stat-product">-</div>
       </div>
@@ -837,7 +837,7 @@
         <div class="label">Promotions</div>
         <div class="value" id="pay-stat-promotion">-</div>
       </div>
-      <div class="db-card" style="background:linear-gradient(135deg,#4f46e5,#4338ca)">
+      <div class="db-card" style="background:linear-gradient(135deg,#1e3a8a,#162d6b)">
         <div class="label">Premium Listing</div>
         <div class="value" id="pay-stat-premium_listing">-</div>
       </div>
@@ -1578,7 +1578,7 @@
           <!-- Persistent action bar -->
           <div id="wa-action-bar" style="display:none;border-top:1px solid #e5e7eb;margin-top:16px;padding-top:14px">
             <div style="display:flex;gap:8px">
-              <button onclick="waReconnect()" id="wa-reconnect-btn" style="flex:1;background:#dbeafe;color:#1d4ed8;border:none;border-radius:8px;padding:8px;font-size:12px;font-weight:700;cursor:pointer">🔄 Reconnect</button>
+              <button onclick="waReconnect()" id="wa-reconnect-btn" style="flex:1;background:#dbeafe;color:#1e3a8a;border:none;border-radius:8px;padding:8px;font-size:12px;font-weight:700;cursor:pointer">🔄 Reconnect</button>
               <button onclick="waChangeNumber()" id="wa-change-btn" style="flex:1;background:#f3f4f6;color:#374151;border:none;border-radius:8px;padding:8px;font-size:12px;font-weight:600;cursor:pointer">📱 Change Number</button>
             </div>
             <div id="wa-action-status" style="font-size:11px;color:#6b7280;margin-top:6px;min-height:1em;text-align:center"></div>
@@ -1725,7 +1725,7 @@
             <button onclick="clearEmailLog()" style="font-size:11px;color:#9ca3af;border:none;background:none;cursor:pointer;font-weight:600">Clear</button>
           </div>
           <div id="emailLogPanel" style="max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:6px">
-            <div style="padding:8px 12px;border-radius:8px;font-size:12.5px;background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;display:flex;gap:8px;align-items:flex-start">
+            <div style="padding:8px 12px;border-radius:8px;font-size:12.5px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;display:flex;gap:8px;align-items:flex-start">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
               <span>Ready — pick a template and enter a recipient.</span>
             </div>
@@ -2821,7 +2821,7 @@ async function loadTenants() {
       <div class="tenant-card stat-card" style="padding:0;overflow:hidden">
         <!-- Tenant header -->
         <div style="padding:14px 20px;background:#f8fafc;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-          <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#1d4ed8);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:800;flex-shrink:0">
+          <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#1e3a8a,#162d6b);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:800;flex-shrink:0">
             ${(t.fullName || '?')[0].toUpperCase()}
           </div>
           <div style="flex:1">
@@ -2900,7 +2900,7 @@ function listingRow(item) {
     <td>${statusBadge(item.active !== false)}</td>
     <td>${paidBadge}</td>
     <td style="display:flex;gap:5px;padding:10px 12px;flex-wrap:wrap">
-      <button class="btn btn-sm" style="background:#3b82f6;color:#fff" onclick="openEditListing('${item._id}','${item._t}',decodeURIComponent('${encodeURIComponent(JSON.stringify(item))}'))">Edit</button>
+      <button class="btn btn-sm" style="background:#1e3a8a;color:#fff" onclick="openEditListing('${item._id}','${item._t}',decodeURIComponent('${encodeURIComponent(JSON.stringify(item))}'))">Edit</button>
       <button class="btn btn-sm btn-gray" onclick="toggleListing('${item._id}','${item._t}',${item.active === false})">${item.active === false ? 'Show' : 'Hide'}</button>
       <button class="btn btn-sm btn-danger" onclick="deleteListing('${item._id}','${item._t}')">Delete</button>
     </td>
@@ -3062,7 +3062,7 @@ function renderFeatGrid() {
         </button>
         <div style="display:flex;gap:5px">
           <button onclick="featEdit('${sid}')"
-            style="flex:1;padding:5px;font-size:11px;font-weight:600;border:none;border-radius:7px;cursor:pointer;background:#3b82f6;color:#fff"> Edit</button>
+            style="flex:1;padding:5px;font-size:11px;font-weight:600;border:none;border-radius:7px;cursor:pointer;background:#1e3a8a;color:#fff"> Edit</button>
           <button onclick="featToggleActive('${sid}')"
             style="flex:1;padding:5px;font-size:11px;font-weight:600;border:none;border-radius:7px;cursor:pointer;background:#f3f4f6;color:#374151">${isHidden ? ' Show' : ' Hide'}</button>
           <button onclick="featDelete('${sid}')"
@@ -3525,7 +3525,7 @@ function renderLandlords(list) {
           ${badge(ll.totalProperties + ' Propert' + (ll.totalProperties === 1 ? 'y' : 'ies'), 'blue')}
           ${badge(ll.totalTenants + ' Tenant' + (ll.totalTenants === 1 ? '' : 's'), 'purple')}
           ${ll.totalRevenue > 0 ? `<span style="background:#dcfce7;color:#15803d;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700">KSh ${Number(ll.totalRevenue).toLocaleString('en-KE')} collected</span>` : ''}
-          ${ll.currentBalance > 0 ? `<span style="background:#eff6ff;color:#1d4ed8;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700">Balance: KSh ${Number(ll.currentBalance).toLocaleString('en-KE')}</span>` : ''}
+          ${ll.currentBalance > 0 ? `<span style="background:#eff6ff;color:#1e3a8a;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700">Balance: KSh ${Number(ll.currentBalance).toLocaleString('en-KE')}</span>` : ''}
           ${ll.totalWithdrawn > 0 ? `<span style="background:#fef9c3;color:#713f12;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700">Withdrawn: KSh ${Number(ll.totalWithdrawn).toLocaleString('en-KE')}</span>` : ''}
           <span style="font-size:11px;color:#9ca3af">Joined ${dt(ll.createdAt)}</span>
         </div>
@@ -3540,7 +3540,7 @@ function renderLandlords(list) {
             <div style="padding:12px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:#fafafa">
               <span style="font-size:16px"></span>
               <div style="flex:1;min-width:0">
-                <span style="font-size:14px;font-weight:700;color:#1d4ed8">${prop.name}</span>
+                <span style="font-size:14px;font-weight:700;color:#1e3a8a">${prop.name}</span>
                 ${prop.location ? `<span style="font-size:12px;color:#9ca3af;margin-left:8px"> ${prop.location}</span>` : ''}
               </div>
               <code style="background:#ede9fe;color:#6d28d9;padding:4px 12px;border-radius:8px;font-size:13px;font-weight:700;letter-spacing:1px">${prop.code}</code>
@@ -3573,7 +3573,7 @@ function renderLandlords(list) {
                           <td style="padding-left:50px;font-weight:700;color:#111827">${t.fullName}</td>
                           <td style="color:#6b7280;font-size:12px">${t.email}</td>
                           <td style="color:#6b7280;font-size:12px">${t.phone || '—'}</td>
-                          <td style="color:#1d4ed8;font-weight:700">KSh ${Number(t.monthlyRent||0).toLocaleString('en-KE')}</td>
+                          <td style="color:#1e3a8a;font-weight:700">KSh ${Number(t.monthlyRent||0).toLocaleString('en-KE')}</td>
                           <td style="text-align:center">${badge(t.paymentsCount, 'blue')}</td>
                           <td style="color:#059669;font-weight:700">KSh ${Number(t.totalPaid||0).toLocaleString('en-KE')}</td>
                           <td style="color:#9ca3af;font-size:12px">${t.lastPayment ? dt(t.lastPayment) : '—'}</td>
@@ -3776,7 +3776,7 @@ function renderSellers(list) {
           ${badge('seller', 'blue')}
           ${s.orderCount ? badge(s.orderCount + ' sale' + (s.orderCount===1?'':'s'), 'green') : ''}
           ${s.totalEarnings > 0 ? `<span style="background:#dcfce7;color:#15803d;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700">${money(s.totalEarnings)} earned</span>` : ''}
-          ${s.currentBalance > 0 ? `<span style="background:#eff6ff;color:#1d4ed8;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700">Balance: ${money(s.currentBalance)}</span>` : ''}
+          ${s.currentBalance > 0 ? `<span style="background:#eff6ff;color:#1e3a8a;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700">Balance: ${money(s.currentBalance)}</span>` : ''}
           ${s.totalWithdrawn > 0 ? `<span style="background:#fef9c3;color:#713f12;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700">Withdrawn: ${money(s.totalWithdrawn)}</span>` : ''}
           <span style="font-size:11px;color:#9ca3af">Joined ${joined}</span>
         </div>
@@ -4037,7 +4037,7 @@ function renderCalendar(rows) {
               <tr style="${rowBg}">
                 <td>
                   <div style="display:flex;align-items:center;gap:10px">
-                    <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#1d4ed8);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:800;flex-shrink:0">${(t.tenantName||'?')[0].toUpperCase()}</div>
+                    <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#1e3a8a,#162d6b);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:800;flex-shrink:0">${(t.tenantName||'?')[0].toUpperCase()}</div>
                     <div>
                       <div style="font-weight:700;color:#111827">${t.tenantName}</div>
                       <div style="font-size:11px;color:#9ca3af">${t.tenantEmail}</div>
@@ -4045,7 +4045,7 @@ function renderCalendar(rows) {
                   </div>
                 </td>
                 <td style="color:#6b7280;font-size:12px">${t.tenantPhone||'—'}</td>
-                <td style="font-weight:700;color:#1d4ed8">${KSh(t.monthlyRent)}</td>
+                <td style="font-weight:700;color:#1e3a8a">${KSh(t.monthlyRent)}</td>
                 <td style="font-weight:700;color:${t.amountPaid > 0 ? '#059669' : '#9ca3af'}">${t.amountPaid > 0 ? KSh(t.amountPaid) : '—'}</td>
                 <td style="color:#6b7280;font-size:12px">${dt2(t.paidAt)}</td>
                 <td style="font-size:12px;color:#6b7280">${t.paymentMethod ? (t.paymentMethod === 'mpesa' ? ' M-Pesa' : t.paymentMethod === 'cash' ? ' Cash' : ' Bank') : '—'}</td>
@@ -4337,7 +4337,7 @@ function renderPayTab(cat) {
       <td style="font-family:monospace;font-size:11px;color:#6b7280">${(p.id||'').slice(-10)}</td>
       <td><b>${p.buyerName||'—'}</b><br><span style="font-size:11px;color:#9ca3af">${p.buyerEmail||''}</span></td>
       <td style="font-weight:600">${p.propertyName||'—'}</td>
-      <td><span style="font-family:monospace;font-weight:700;color:#1d4ed8;letter-spacing:2px;font-size:13px">${p.propertyCode||'—'}</span></td>
+      <td><span style="font-family:monospace;font-weight:700;color:#1e3a8a;letter-spacing:2px;font-size:13px">${p.propertyCode||'—'}</span></td>
       <td style="color:#059669;font-weight:700">${KSh(p.amount)}</td>
       <td>${badge(p.status||'pending', p.status==='completed'?'green':'orange')}</td>
       <td style="color:#9ca3af;font-size:12px">${dt(p.date)}</td>
@@ -4835,7 +4835,7 @@ function addEmailLog(type, msg) {
 
 function clearEmailLog() {
   const panel = document.getElementById('emailLogPanel');
-  if (panel) panel.innerHTML = `<div style="padding:8px 12px;border-radius:8px;font-size:12.5px;background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;display:flex;gap:8px;align-items:flex-start"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><span>Log cleared.</span></div>`;
+  if (panel) panel.innerHTML = `<div style="padding:8px 12px;border-radius:8px;font-size:12.5px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;display:flex;gap:8px;align-items:flex-start"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><span>Log cleared.</span></div>`;
 }
 
 async function sendTestEmail() {
@@ -4993,7 +4993,7 @@ async function loadWithdrawals() {
     const sc = w.status === 'completed' ? 'resolved' : w.status === 'rejected' ? 'rejected' : 'pending';
     const isSeller = w._type === 'seller';
     const typeBadge = isSeller
-      ? `<span style="background:#eff6ff;color:#1d4ed8;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;border:1px solid #bfdbfe;">Seller</span>`
+      ? `<span style="background:#eff6ff;color:#1e3a8a;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;border:1px solid #bfdbfe;">Seller</span>`
       : `<span style="background:#f5f3ff;color:#6d28d9;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;border:1px solid #ddd6fe;">Landlord</span>`;
     const fromCell = isSeller
       ? (w.sellerId ? String(w.sellerId).slice(-6) : '—')
@@ -5676,13 +5676,13 @@ function botRenderSearch(query, data) {
   if (data.tenants?.length) {
     data.tenants.forEach(t => {
       let html = `<div style="font-size:13px">
-        <div style="font-weight:800;font-size:15px;color:#1d4ed8;margin-bottom:6px"> Tenant: ${t.fullName}</div>
+        <div style="font-weight:800;font-size:15px;color:#1e3a8a;margin-bottom:6px"> Tenant: ${t.fullName}</div>
         <div style="color:#6b7280;margin-bottom:4px"> ${t.email}${t.phone ? ' &nbsp;·&nbsp;  ' + t.phone : ''}</div>`;
 
       if (t.linkedProperties?.length) {
         t.linkedProperties.forEach(lp => {
           html += `<div style="background:#f0f9ff;border-left:3px solid #2563eb;padding:8px 10px;border-radius:4px;margin:8px 0">
-            <b> ${lp.propertyName}</b> &nbsp;<code style="background:#dbeafe;color:#1d4ed8;padding:1px 6px;border-radius:4px;font-size:11px">${lp.propertyCode}</code><br>
+            <b> ${lp.propertyName}</b> &nbsp;<code style="background:#dbeafe;color:#1e3a8a;padding:1px 6px;border-radius:4px;font-size:11px">${lp.propertyCode}</code><br>
              ${lp.location} &nbsp;·&nbsp; Landlord: <b>${lp.landlordName}</b>${lp.landlordPhone !== '—' ? ' (' + lp.landlordPhone + ')' : ''}<br>
             Monthly Rent: <b style="color:#059669">${KSh(lp.monthlyRent)}</b> &nbsp;·&nbsp;
             Paid ${lp.paymentsCount} time(s) &nbsp;·&nbsp; Total: <b style="color:#059669">${KSh(lp.totalPaid)}</b><br>
@@ -5759,7 +5759,7 @@ function botRenderSearch(query, data) {
     data.properties.forEach(p => {
       sections.push(`<div style="font-size:13px">
         <div style="font-weight:800;font-size:15px;color:#2563eb;margin-bottom:4px"> Property: ${p.name}</div>
-        <div><code style="background:#dbeafe;color:#1d4ed8;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:700">${p.code||'—'}</code></div>
+        <div><code style="background:#dbeafe;color:#1e3a8a;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:700">${p.code||'—'}</code></div>
         ${p.location ? `<div style="color:#6b7280;margin-top:4px"> ${p.location}</div>` : ''}
         ${p.type ? `<div style="color:#6b7280">Type: ${p.type}</div>` : ''}
         ${p.price||p.rent ? `<div style="color:#059669;font-weight:700">KSh ${Number(p.price||p.rent).toLocaleString('en-KE')}</div>` : ''}

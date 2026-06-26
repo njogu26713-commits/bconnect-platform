@@ -223,7 +223,7 @@
         if (response.ok) {
           const profileData = await response.json();
           document.getElementById('page-title').textContent = 'Profile Already Exists';
-          document.getElementById('profile-status').innerHTML = '<div style="background: #f0fdf4; border: 2px solid #16a34a; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;"><p style="color: #16a34a; font-weight: 600; margin: 0 0 0.5rem 0;"> Profile exists!</p><button type="button" onclick="window.location.href=\'website.html\'" style="background: #3b82f6; color: white; padding: 0.5rem 1rem; width: auto; border: none; cursor: pointer; border-radius: 6px; margin-right: 0.5rem;">Return Home</button><button type="button" onclick="toggleEditMode()" style="background: #3ba55d; color: white; padding: 0.5rem 1rem; width: auto; border: none; cursor: pointer; border-radius: 6px;">Edit</button></div>';
+          document.getElementById('profile-status').innerHTML = '<div style="background: #f0fdf4; border: 2px solid #16a34a; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;"><p style="color: #16a34a; font-weight: 600; margin: 0 0 0.5rem 0;"> Profile exists!</p><button type="button" onclick="window.location.href=\'website.html\'" style="background: #1e3a8a; color: white; padding: 0.5rem 1rem; width: auto; border: none; cursor: pointer; border-radius: 6px; margin-right: 0.5rem;">Return Home</button><button type="button" onclick="toggleEditMode()" style="background: #3ba55d; color: white; padding: 0.5rem 1rem; width: auto; border: none; cursor: pointer; border-radius: 6px;">Edit</button></div>';
           const sections = document.querySelectorAll('.section, button[onclick*="handleCreateAccount"]');
           sections.forEach(s => s.style.display = 'none');
         }

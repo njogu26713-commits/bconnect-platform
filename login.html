@@ -54,7 +54,7 @@ body {
 .left {
   flex: 1;
   position: relative;
-  background: linear-gradient(145deg, #1e3fbe 0%, #3b67f5 45%, #6f42f5 100%);
+  background: linear-gradient(145deg, #1e3a8a 0%, #1e3a8a 45%, #162d6b 100%);
   color: white;
   display: flex;
   flex-direction: column;
@@ -204,7 +204,7 @@ body {
   outline: none;
 }
 .login-field input:focus {
-  border-color: #3b67f5; background: #fff;
+  border-color: #1e3a8a; background: #fff;
   box-shadow: 0 0 0 3px rgba(59,103,245,.12);
 }
 .login-field input::placeholder { color: #9ca3af; }
@@ -218,7 +218,7 @@ body {
   text-align: right; margin-top: -6px; margin-bottom: 18px;
 }
 .forgot-inline a {
-  font-size: .82rem; color: #3b67f5; text-decoration: none; font-weight: 600;
+  font-size: .82rem; color: #1e3a8a; text-decoration: none; font-weight: 600;
 }
 .forgot-inline a:hover { text-decoration: underline; }
 
@@ -228,12 +228,12 @@ body {
   padding: 14px;
   border-radius: 12px;
   border: none;
-  background: linear-gradient(135deg, #3b67f5, #6f42f5);
+  background: linear-gradient(135deg, #1e3a8a, #162d6b);
   color: white;
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 10px 28px rgba(59,103,245,0.28);
+  box-shadow: 0 10px 28px rgba(30,58,138,0.28);
   transition: opacity 0.2s ease, transform 0.15s ease;
   display: flex; align-items: center; justify-content: center; gap: 8px;
 }
@@ -252,7 +252,7 @@ body {
   color: #6b7280;
 }
 .signup-row a {
-  color: #3b67f5; font-weight: 700; text-decoration: none;
+  color: #1e3a8a; font-weight: 700; text-decoration: none;
 }
 .signup-row a:hover { text-decoration: underline; }
 
@@ -418,7 +418,7 @@ body {
 
 .reg-hero {
   flex-shrink: 0;
-  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #2c5edc 100%);
+  background: #1e3a8a;
   padding: 24px 28px 20px;
   position: relative;
   overflow: hidden;
@@ -497,7 +497,7 @@ body {
   box-shadow: 0 0 0 3px rgba(79,70,229,.15);
 }
 .reg-role-card:has(input:checked) .role-icon-wrap {
-  background: #4f46e5; color: #fff;
+  background: #1e3a8a; color: #fff;
 }
 .role-icon-wrap {
   width: 34px; height: 34px; border-radius: 8px;
@@ -699,7 +699,7 @@ body {
         <div style="font-size:.82rem;color:#6b7280;line-height:1.5">Enter the 6-digit code shown below to continue.</div>
       </div>
       <div id="twoFaCodeHintLogin" style="display:none;background:#f0f9ff;border:1.5px dashed #3b82f6;border-radius:10px;padding:12px 14px;text-align:center;margin-bottom:14px">
-        <div style="font-size:.75rem;color:#1d4ed8;font-weight:700;margin-bottom:3px">Your verification code</div>
+        <div style="font-size:.75rem;color:#1e3a8a;font-weight:700;margin-bottom:3px">Your verification code</div>
         <div id="twoFaCodeValueLogin" style="font-size:1.9rem;font-weight:900;letter-spacing:.18em;color:#1e40af"></div>
         <div style="font-size:.7rem;color:#64748b;margin-top:4px">Expires in 10 minutes</div>
       </div>
@@ -829,7 +829,7 @@ body {
   <div class="modal-content" style="max-width:420px;border-radius:24px;overflow:hidden;padding:0;display:flex;flex-direction:column;">
 
     <!-- Gradient hero header -->
-    <div class="reg-hero" style="background:linear-gradient(135deg,#1e3fbe 0%,#3b67f5 55%,#6f42f5 100%);">
+    <div class="reg-hero" style="background:linear-gradient(135deg,#162d6b 0%,#1e3a8a 55%,#162d6b 100%);">
       <span class="reg-close" onclick="closeModal()">&times;</span>
       <div class="reg-brand">
         <div class="reg-brand-mark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="6" cy="6" r="2.5" fill="#fff"/><circle cx="6" cy="18" r="2.5" fill="#fff"/><circle cx="18" cy="12" r="2.5" fill="#fff"/><circle cx="6" cy="12" r="1.8" fill="rgba(255,255,255,0.6)"/><line x1="6" y1="6" x2="6" y2="18" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/><line x1="6" y1="6" x2="18" y2="12" stroke="rgba(255,255,255,0.9)" stroke-width="1.5"/><line x1="6" y1="18" x2="18" y2="12" stroke="rgba(255,255,255,0.9)" stroke-width="1.5"/></svg></div>
@@ -873,7 +873,7 @@ body {
 <div id="resendVerifyModal" class="modal" style="display:none;">
   <div class="modal-content" style="max-width:420px;border-radius:24px;overflow:hidden;padding:0;display:flex;flex-direction:column;">
 
-    <div class="reg-hero" style="background:linear-gradient(135deg,#0d9488 0%,#0891b2 55%,#4f46e5 100%);">
+    <div class="reg-hero" style="background:linear-gradient(135deg,#0d9488 0%,#0891b2 100%);">
       <span class="reg-close" onclick="closeResendVerifyModal()">&times;</span>
       <div class="reg-brand">
         <div class="reg-brand-mark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="6" cy="6" r="2.5" fill="#fff"/><circle cx="6" cy="18" r="2.5" fill="#fff"/><circle cx="18" cy="12" r="2.5" fill="#fff"/><circle cx="6" cy="12" r="1.8" fill="rgba(255,255,255,0.6)"/><line x1="6" y1="6" x2="6" y2="18" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/><line x1="6" y1="6" x2="18" y2="12" stroke="rgba(255,255,255,0.9)" stroke-width="1.5"/><line x1="6" y1="18" x2="18" y2="12" stroke="rgba(255,255,255,0.9)" stroke-width="1.5"/></svg></div>

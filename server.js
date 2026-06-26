@@ -79,6 +79,13 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
+// Allow iframe embedding (for Replit preview pane)
+app.use((req, res, next) => {
+  res.removeHeader('X-Frame-Options');
+  res.setHeader('Content-Security-Policy', "frame-ancestors *");
+  next();
+});
+
 // Debug middleware - log all requests
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
@@ -175,7 +182,7 @@ app.get('/api/files/:id', async (req, res) => {
 
 // ============ HOME PAGE ROUTE ============
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/pre-home.html');
+  res.sendFile(__dirname + '/website.html');
 });
 
 app.get('/home', (req, res) => {

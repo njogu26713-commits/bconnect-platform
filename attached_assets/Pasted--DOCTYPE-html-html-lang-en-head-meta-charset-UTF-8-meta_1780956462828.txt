@@ -1,4 +1,9 @@
-<!DOCTYPE html>
+
+  --white: #ffffff;
+  --sage: #4a7c6f;
+  --sage-light: #eaf3f0;
+  --sage-mid: #c4ddd8;
+  --amber: #c97d2e;<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -11,11 +16,6 @@
 :root {
   --cream: #f9f6f1;
   --cream2: #f2ede4;
-  --white: #ffffff;
-  --sage: #4a7c6f;
-  --sage-light: #eaf3f0;
-  --sage-mid: #c4ddd8;
-  --amber: #c97d2e;
   --amber-light: #fdf3e7;
   --amber-mid: #f0c990;
   --rose: #c0504a;
