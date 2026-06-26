@@ -12,18 +12,18 @@
   --bg:#e4e9ff;
   --bg2:#ffffff;
   --bg3:#d8d0fd;
-  --border:rgba(79,70,229,.22);
-  --amber:#4f46e5;
-  --amber-dim:rgba(79,70,229,.15);
-  --amber-glow:rgba(79,70,229,.38);
+  --border:rgba(30,58,138,.22);
+  --amber:#1e3a8a;
+  --amber-dim:rgba(30,58,138,.15);
+  --amber-glow:rgba(30,58,138,.38);
   --teal:#0284c7;
   --teal-dim:rgba(2,132,199,.16);
   --rose:#ef4444;
   --rose-dim:rgba(239,68,68,.16);
   --green:#059669;
   --green-dim:rgba(5,150,105,.16);
-  --blue:#4f46e5;
-  --blue-dim:rgba(79,70,229,.16);
+  --blue:#1e3a8a;
+  --blue-dim:rgba(30,58,138,.16);
   --purple:#7c3aed;
   --text:#111827;
   --text2:#374151;
@@ -48,7 +48,7 @@ body{min-height:100vh;display:flex;overflow-x:hidden;}
 .auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:24px;}
 .auth-card{background:var(--bg2);border-radius:24px;padding:42px 36px;width:100%;max-width:420px;box-shadow:0 8px 40px rgba(37,99,235,.1);border:1px solid var(--border);}
 .auth-brand{display:flex;align-items:center;gap:12px;margin-bottom:28px;}
-.auth-logo{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#4f46e5,#6366f1);display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;font-weight:900;}
+.auth-logo{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#1e3a8a,#2d53b8);display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;font-weight:900;}
 .auth-app-name{font-size:1.05rem;font-weight:700;color:var(--text);}
 .auth-app-sub{font-size:11px;color:var(--text3);margin-top:1px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;}
 .auth-h{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--text);margin-bottom:6px;}
@@ -135,10 +135,10 @@ body.sb-open .sb-overlay{display:block;}
 .topbar{
   position:sticky;top:0;z-index:200;background:var(--bg2);height:56px;
   padding:0 14px;display:flex;align-items:center;justify-content:space-between;
-  border-bottom:1px solid var(--border);box-shadow:0 1px 6px rgba(79,70,229,.08);
+  border-bottom:1px solid var(--border);box-shadow:0 1px 6px rgba(30,58,138,.08);
 }
 .tb-brand{display:flex;align-items:center;gap:10px;}
-.tb-logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#4f46e5,#6366f1);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;}
+.tb-logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#1e3a8a,#2d53b8);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;}
 .tb-title{font-size:.95rem;font-weight:700;color:var(--text);}
 .tb-right{display:flex;align-items:center;gap:8px;}
 .notif-btn{position:relative;width:34px;height:34px;border-radius:9px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;}
@@ -158,7 +158,7 @@ body.sb-open .sb-overlay{display:block;}
 /* ── WELCOME ── */
 .welcome-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 24px;background:var(--bg);}
 .welcome-inner{text-align:center;max-width:420px;}
-.welcome-icon{width:80px;height:80px;border-radius:22px;background:linear-gradient(135deg,#4f46e5,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:38px;margin:0 auto 24px;box-shadow:0 16px 48px rgba(79,70,229,.28);}
+.welcome-icon{width:80px;height:80px;border-radius:22px;background:linear-gradient(135deg,#1e3a8a,#1e40af);display:flex;align-items:center;justify-content:center;font-size:38px;margin:0 auto 24px;box-shadow:0 16px 48px rgba(30,58,138,.28);}
 .welcome-inner h2{font-family:'Playfair Display',serif;font-size:1.9rem;color:var(--text);margin-bottom:10px;}
 .welcome-inner p{color:var(--text2);font-size:1rem;max-width:380px;margin:0 auto 32px;line-height:1.6;}
 .welcome-btns{display:flex;flex-direction:column;gap:10px;max-width:340px;margin:0 auto;}
@@ -230,7 +230,7 @@ body.sb-open .sb-overlay{display:block;}
 .bar-wrap{width:100%;flex:1;display:flex;align-items:flex-end;}
 .bar{width:100%;border-radius:5px 5px 0 0;transition:opacity var(--transition);cursor:pointer;}
 .bar:hover{opacity:.75;}
-.bar.amber{background:linear-gradient(180deg,var(--amber) 0%,rgba(99,102,241,.35) 100%);}
+.bar.amber{background:linear-gradient(180deg,var(--amber) 0%,rgba(30,58,138,.35) 100%);}
 .bar.dim{background:var(--bg3);}
 .bar-lbl{font-size:.6rem;color:var(--text3);}
 
@@ -286,7 +286,7 @@ body.sb-open .sb-overlay{display:block;}
 /* ── HERO BANNER (property card) ── */
 .hero-banner{
   border-radius:var(--card-radius);padding:24px 26px 22px;margin-bottom:20px;
-  background:linear-gradient(135deg,#1e1b4b 0%,#4f46e5 55%,#6366f1 100%);
+  background:linear-gradient(135deg,#1e1b4b 0%,#1e3a8a 55%,#2d53b8 100%);
   border:none;position:relative;overflow:hidden;
 }
 .hero-banner::before{content:'';position:absolute;top:-60px;right:-50px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.05);}
@@ -332,8 +332,8 @@ body.sb-open .sb-overlay{display:block;}
 .loading-hint{color:var(--text3);font-size:.825rem;text-align:center;padding:24px;}
 
 /* ── PENDING JOIN REQUESTS ── */
-.pend-panel{background:rgba(79,70,229,.04);border:1px solid rgba(79,70,229,.18);border-radius:var(--card-radius);overflow:hidden;margin-bottom:18px;}
-.pend-panel .panel-head{border-bottom-color:rgba(79,70,229,.12);background:transparent;}
+.pend-panel{background:rgba(30,58,138,.04);border:1px solid rgba(30,58,138,.18);border-radius:var(--card-radius);overflow:hidden;margin-bottom:18px;}
+.pend-panel .panel-head{border-bottom-color:rgba(30,58,138,.12);background:transparent;}
 
 /* ── TENANTS TABLE (modal) ── */
 .t-table{width:100%;border-collapse:collapse;}
@@ -368,7 +368,7 @@ body.sb-open .sb-overlay{display:block;}
 .ann-card .ann-meta{font-size:11px;color:var(--text3);margin-top:6px;}
 
 /* ── CODE DISPLAY ── */
-.code-display{background:var(--amber-dim);border:1px solid rgba(79,70,229,.2);border-radius:14px;padding:20px;text-align:center;margin-bottom:18px;}
+.code-display{background:var(--amber-dim);border:1px solid rgba(30,58,138,.2);border-radius:14px;padding:20px;text-align:center;margin-bottom:18px;}
 .code-display .cd-lbl{font-size:10px;color:var(--amber);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
 .code-display .cd-code{font-size:2.2rem;font-weight:900;color:var(--amber);letter-spacing:5px;}
 
@@ -386,7 +386,7 @@ body.sb-open .sb-overlay{display:block;}
 .wd-info{background:var(--green-dim);border-radius:12px;padding:14px;margin-bottom:16px;border:1px solid rgba(62,207,142,.2);}
 .wd-info .wd-lbl{font-size:11px;color:var(--green);font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;}
 .wd-info .wd-val{font-size:24px;font-weight:800;color:var(--green);}
-.wd-preview{display:none;background:var(--amber-dim);border-radius:10px;padding:12px;margin:10px 0;border:1px solid rgba(79,70,229,.2);}
+.wd-preview{display:none;background:var(--amber-dim);border-radius:10px;padding:12px;margin:10px 0;border:1px solid rgba(30,58,138,.2);}
 .wd-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;color:var(--text2);}
 
 /* ── EMPTY STATE ── */
@@ -902,7 +902,7 @@ body.sb-open .sb-overlay{display:block;}
     <input class="field" id="ap_amenities" placeholder="Amenities (e.g. parking, water, security)"/>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;margin-top:4px;">
       <span style="font-size:12px;font-weight:600;color:var(--text3);">Description (optional)</span>
-      <button type="button" onclick="aiGeneratePropDesc()" style="display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:7px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;">✨ AI Write</button>
+      <button type="button" onclick="aiGeneratePropDesc()" style="display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#7c3aed,#1e3a8a);color:#fff;border:none;border-radius:7px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;">✨ AI Write</button>
     </div>
     <textarea class="field" id="ap_desc" placeholder="Describe the property…" rows="3" style="resize:vertical;margin:0;"></textarea>
     <div id="ap_desc_status" style="display:none;font-size:11px;color:#9b6dff;margin-top:3px;">✨ AI is writing your description…</div>
@@ -951,7 +951,7 @@ body.sb-open .sb-overlay{display:block;}
     <input class="field" id="lmp_amenities" placeholder="Amenities (e.g. parking, water, security)"/>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;margin-top:4px;">
       <span style="font-size:12px;font-weight:600;color:var(--text3);">Description</span>
-      <button type="button" onclick="aiGenerateLmpDesc()" style="display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:7px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;">✨ AI Write</button>
+      <button type="button" onclick="aiGenerateLmpDesc()" style="display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#7c3aed,#1e3a8a);color:#fff;border:none;border-radius:7px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;">✨ AI Write</button>
     </div>
     <textarea class="field" id="lmp_desc" placeholder="Describe the property for potential tenants…" rows="3" style="resize:vertical;margin:0;"></textarea>
     <div id="lmp_desc_status" style="display:none;font-size:11px;color:#9b6dff;margin-top:3px;">✨ AI is writing your description…</div>
@@ -1039,7 +1039,7 @@ body.sb-open .sb-overlay{display:block;}
       <input class="field" id="ann_title" placeholder="Title (e.g. Water shutdown Saturday)" style="margin:0;"/>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;">
         <span style="font-size:12px;font-weight:600;color:var(--text3);">Message</span>
-        <button type="button" onclick="aiAutoReplyAnnouncement()" style="display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:7px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;">✨ AI Write</button>
+        <button type="button" onclick="aiAutoReplyAnnouncement()" style="display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#7c3aed,#1e3a8a);color:#fff;border:none;border-radius:7px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;">✨ AI Write</button>
       </div>
       <textarea class="field" id="ann_body" placeholder="Message to your tenants…" rows="3" style="resize:vertical;margin:0;"></textarea>
       <div id="ann_ai_status" style="display:none;font-size:11px;color:#9b6dff;">✨ AI is writing your message…</div>

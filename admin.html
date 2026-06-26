@@ -58,7 +58,7 @@
     .tbl tr:hover td { background:#faf5ff; }
     /*  Badges  */
     .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700; }
-    .badge-purple { background:#ede9fe; color:#6d28d9; }
+    .badge-purple { background:#dbeafe; color:#6d28d9; }
     .badge-blue   { background:#dbeafe; color:#1e3a8a; }
     .badge-green  { background:#dcfce7; color:#15803d; }
     .badge-orange { background:#ffedd5; color:#c2410c; }
@@ -107,7 +107,7 @@
     .bot-msg.bot  { align-self:flex-start; background:#f3f4f6; color:#111827; border-radius:14px 14px 14px 4px; padding:10px 14px; }
     .bot-msg.user { align-self:flex-end; background:#7c3aed; color:#fff; border-radius:14px 14px 4px 14px; padding:10px 14px; }
     .chip { font-size:11px; font-weight:600; padding:5px 10px; border-radius:20px; border:1px solid #d1d5db; cursor:pointer; background:#fff; color:#374151; transition:all .2s; }
-    .chip:hover { background:#ede9fe; border-color:#7c3aed; color:#6d28d9; }
+    .chip:hover { background:#dbeafe; border-color:#7c3aed; color:#6d28d9; }
     .bot-typing { display:flex; gap:4px; padding:6px 0; }
     .bot-typing span { width:8px; height:8px; border-radius:50%; background:#9ca3af; animation:bounce 1.2s infinite; }
     .bot-typing span:nth-child(2) { animation-delay:.2s; }
@@ -154,14 +154,14 @@
       [style*="grid-template-columns:repeat(3,1fr)"] { grid-template-columns:1fr !important; }
     }
   @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.8;transform:scale(1.08)} }
-  .ai-panel{background:linear-gradient(135deg,#faf5ff,#f0fdf4);border:1.5px solid #ede9fe;border-radius:14px;padding:20px}
+  .ai-panel{background:linear-gradient(135deg,#faf5ff,#f0fdf4);border:1.5px solid #dbeafe;border-radius:14px;padding:20px}
   .ai-panel-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-  .ai-panel-icon{width:36px;height:36px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+  .ai-panel-icon{width:36px;height:36px;background:linear-gradient(135deg,#7c3aed,#1e3a8a);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
   .ai-panel h4{margin:0;font-size:14px;font-weight:800;color:#111827}
   .ai-panel p.sub{margin:0;font-size:12px;color:#6b7280;margin-top:2px}
   .ai-result{background:#fff;border-radius:10px;border:1px solid #e5e7eb;padding:14px 16px;font-size:13px;line-height:1.75;color:#374151;min-height:56px;white-space:pre-wrap;margin-top:12px;display:none}
   .ai-result.vis{display:block}
-  .ai-btn{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:9px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer;transition:opacity .2s;letter-spacing:.3px}
+  .ai-btn{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#7c3aed,#1e3a8a);color:#fff;border:none;border-radius:9px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer;transition:opacity .2s;letter-spacing:.3px}
   /* AI Usage Dashboard */
   .ai-usage-card{background:#fff;border:1.5px solid #e5e7eb;border-radius:16px;padding:20px 22px;margin-top:20px}
   .ai-usage-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
@@ -429,7 +429,7 @@
     <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px" id="users-role-summary">
       <div class="db-card" style="background:linear-gradient(135deg,#10b981,#059669)"><div class="label">Buyers</div><div class="value" id="usr-buyers-count">—</div></div>
       <div class="db-card" style="background:linear-gradient(135deg,#0ea5e9,#0284c7)"><div class="label">Sellers</div><div class="value" id="usr-sellers-count">—</div></div>
-      <div class="db-card" style="background:linear-gradient(135deg,#6366f1,#4f46e5)"><div class="label">Tenants</div><div class="value" id="usr-tenants-count">—</div></div>
+      <div class="db-card" style="background:linear-gradient(135deg,#2d53b8,#1e3a8a)"><div class="label">Tenants</div><div class="value" id="usr-tenants-count">—</div></div>
       <div class="db-card" style="background:linear-gradient(135deg,#f59e0b,#d97706)"><div class="label">Landlords</div><div class="value" id="usr-landlords-count">—</div></div>
       <div class="db-card" style="background:linear-gradient(135deg,#ec4899,#db2777)"><div class="label">Organizers</div><div class="value" id="usr-organizers-count">—</div></div>
     </div>
@@ -457,7 +457,7 @@
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">
       <div class="db-card" style="background:linear-gradient(135deg,#f59e0b,#d97706)"><div class="label">Pending Verification</div><div class="value" id="unv-pending">—</div></div>
       <div class="db-card" style="background:linear-gradient(135deg,#dc2626,#b91c1c)"><div class="label">Link Expired</div><div class="value" id="unv-expired">—</div></div>
-      <div class="db-card" style="background:linear-gradient(135deg,#7c3aed,#4f46e5)"><div class="label">Registered Today</div><div class="value" id="unv-today">—</div></div>
+      <div class="db-card" style="background:linear-gradient(135deg,#7c3aed,#1e3a8a)"><div class="label">Registered Today</div><div class="value" id="unv-today">—</div></div>
     </div>
     <div class="stat-card" style="padding:0;overflow:hidden">
       <div style="overflow-x:auto">
@@ -510,7 +510,7 @@
       </div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px">
-      <div class="db-card" style="background:linear-gradient(135deg,#6366f1,#4f46e5)"><div class="label">Total Tenants</div><div class="value" id="tm-count">—</div></div>
+      <div class="db-card" style="background:linear-gradient(135deg,#2d53b8,#1e3a8a)"><div class="label">Total Tenants</div><div class="value" id="tm-count">—</div></div>
       <div class="db-card" style="background:linear-gradient(135deg,#059669,#047857)"><div class="label">Linked to Properties</div><div class="value" id="tm-linked">—</div></div>
       <div class="db-card" style="background:linear-gradient(135deg,#0ea5e9,#0284c7)"><div class="label">Total Rent Paid</div><div class="value" id="tm-paid">—</div></div>
     </div>
@@ -528,7 +528,7 @@
       <div id="merge-modal-cards" style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px"></div>
       <div style="display:flex;gap:10px;justify-content:flex-end">
         <button class="btn btn-gray" onclick="document.getElementById('merge-modal').style.display='none'">Cancel</button>
-        <button class="btn btn-primary" id="merge-confirm-btn" style="background:linear-gradient(135deg,#7c3aed,#4f46e5)">Merge</button>
+        <button class="btn btn-primary" id="merge-confirm-btn" style="background:linear-gradient(135deg,#7c3aed,#1e3a8a)">Merge</button>
       </div>
     </div>
   </div>
@@ -1227,7 +1227,7 @@
           <div>
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
               <label style="font-size:12px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.5px">Message</label>
-              <button onclick="toggleAiPanel()" id="bc-ai-toggle" style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;transition:opacity .2s" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
+              <button onclick="toggleAiPanel()" id="bc-ai-toggle" style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#7c3aed,#1e3a8a);color:#fff;border:none;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;transition:opacity .2s" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
                 <i data-lucide="sparkles" style="width:13px;height:13px"></i> Write with AI
               </button>
             </div>
@@ -1237,14 +1237,14 @@
               <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
                 <i data-lucide="sparkles" style="width:16px;height:16px;color:#7c3aed"></i>
                 <span style="font-size:13px;font-weight:700;color:#5b21b6">AI Email Writer</span>
-                <span style="font-size:11px;color:#8b5cf6;margin-left:auto">Powered by Gemini</span>
+                <span style="font-size:11px;color:#1e40af;margin-left:auto">Powered by Gemini</span>
               </div>
               <textarea id="bc-ai-prompt" rows="3" placeholder="Describe the email you want to send&#10;e.g. &quot;Remind landlords to verify their properties before the end of month. Keep it friendly.&quot;" style="width:100%;border:1.5px solid #c4b5fd;border-radius:8px;padding:10px 12px;font-size:13px;font-family:inherit;resize:vertical;outline:none;background:#fff;box-sizing:border-box;color:#111827" onfocus="this.style.borderColor='#7c3aed'" onblur="this.style.borderColor='#c4b5fd'"></textarea>
               <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
                 <button onclick="generateAiEmail()" id="bc-ai-gen-btn" style="display:inline-flex;align-items:center;gap:6px;background:#7c3aed;color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .2s" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
                   <i data-lucide="zap" style="width:13px;height:13px"></i> Generate Email
                 </button>
-                <span id="bc-ai-status" style="font-size:12px;color:#8b5cf6;display:none"></span>
+                <span id="bc-ai-status" style="font-size:12px;color:#1e40af;display:none"></span>
               </div>
               <!-- Generated result -->
               <div id="bc-ai-result" style="display:none;margin-top:14px;border-top:1px solid #ddd6fe;padding-top:14px">
@@ -1298,11 +1298,11 @@
                 <p style="margin:4px 0 0;font-size:11px;color:#9ca3af">MP4, WebM · Max 50 MB · Sent as email attachment</p>
               </div>
               <div id="bc-video-preview" style="display:none;flex-direction:column;align-items:center;gap:8px">
-                <div style="display:flex;align-items:center;gap:10px;background:#ede9fe;border-radius:8px;padding:10px 14px">
+                <div style="display:flex;align-items:center;gap:10px;background:#dbeafe;border-radius:8px;padding:10px 14px">
                   <i data-lucide="film" style="width:22px;height:22px;color:#7c3aed;flex-shrink:0"></i>
                   <div style="text-align:left">
                     <p id="bc-video-name" style="margin:0;font-size:13px;color:#374151;font-weight:700"></p>
-                    <p id="bc-video-size" style="margin:2px 0 0;font-size:11px;color:#8b5cf6"></p>
+                    <p id="bc-video-size" style="margin:2px 0 0;font-size:11px;color:#1e40af"></p>
                   </div>
                   <button onclick="event.stopPropagation();bcClearVideo()" style="margin-left:auto;background:#fee2e2;border:none;color:#dc2626;border-radius:6px;padding:3px 10px;font-size:11px;cursor:pointer;font-weight:700;flex-shrink:0">Remove</button>
                 </div>
@@ -1335,7 +1335,7 @@
 
       <!-- Right panel -->
       <div style="display:flex;flex-direction:column;gap:16px">
-        <div class="stat-card" style="border:1px solid #ede9fe;padding:20px">
+        <div class="stat-card" style="border:1px solid #dbeafe;padding:20px">
           <b style="font-size:13px;color:#7c3aed;display:block;margin-bottom:12px"> User Counts</b>
           <div id="bc-stats" style="display:flex;flex-direction:column;gap:8px">
             <div style="color:#9ca3af;font-size:13px">Loading…</div>
@@ -1405,7 +1405,7 @@
   <!--  ADMIN BOT  -->
   <div id="bot" class="section">
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:6px">
-      <div style="width:48px;height:48px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;box-shadow:0 4px 14px rgba(124,58,237,.35)"></div>
+      <div style="width:48px;height:48px;background:linear-gradient(135deg,#7c3aed,#1e3a8a);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;box-shadow:0 4px 14px rgba(124,58,237,.35)"></div>
       <div>
         <h2 style="font-size:22px;font-weight:800;color:#111827;margin:0">BConnect AI Assistant</h2>
         <p style="color:#6b7280;font-size:13px;margin:0">Powered by Gemini · Ask anything about your platform</p>
@@ -1415,8 +1415,8 @@
     <div style="display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start;margin-top:20px">
 
       <!-- Chat area -->
-      <div class="stat-card" style="padding:0;overflow:hidden;display:flex;flex-direction:column;height:600px;border:1.5px solid #ede9fe;box-shadow:0 4px 24px rgba(124,58,237,.08)">
-        <div style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;padding:14px 18px;display:flex;align-items:center;gap:10px">
+      <div class="stat-card" style="padding:0;overflow:hidden;display:flex;flex-direction:column;height:600px;border:1.5px solid #dbeafe;box-shadow:0 4px 24px rgba(124,58,237,.08)">
+        <div style="background:linear-gradient(135deg,#7c3aed,#1e3a8a);color:#fff;padding:14px 18px;display:flex;align-items:center;gap:10px">
           <div style="width:36px;height:36px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0"></div>
           <div>
             <b style="font-size:14px;display:block">BConnect AI</b>
@@ -1436,13 +1436,13 @@
         </div>
         <div style="display:flex;padding:10px 14px;border-top:1px solid #f3f4f6;gap:8px;background:#fff">
           <input id="bot-input" class="bot-input" style="flex:1;border:1.5px solid #e5e7eb;border-radius:24px;padding:10px 18px;font-size:13px;outline:none;font-family:inherit;transition:border-color .2s" onfocus="this.style.borderColor='#7c3aed'" onblur="this.style.borderColor='#e5e7eb'" placeholder="Ask me anything about BConnect..." onkeydown="if(event.key==='Enter')botSend()">
-          <button onclick="botSend()" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:50%;width:40px;height:40px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(124,58,237,.4)"></button>
+          <button onclick="botSend()" style="background:linear-gradient(135deg,#7c3aed,#1e3a8a);color:#fff;border:none;border-radius:50%;width:40px;height:40px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(124,58,237,.4)"></button>
         </div>
       </div>
 
       <!-- Right panel -->
       <div style="display:flex;flex-direction:column;gap:14px">
-        <div class="stat-card" style="border:1px solid #ede9fe">
+        <div class="stat-card" style="border:1px solid #dbeafe">
           <b style="font-size:13px;color:#7c3aed;display:block;margin-bottom:10px"> Quick Actions</b>
           <div style="display:flex;flex-direction:column;gap:7px">
             <button class="btn btn-gray" style="justify-content:flex-start;width:100%;font-size:12px" onclick="botSend('Show dashboard stats')"> Platform overview</button>
@@ -1644,7 +1644,7 @@
           <div style="font-size:12px;font-weight:700;color:#374151;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Recipient</div>
           <!-- Selected user pill -->
           <div id="emailSelectedUser" style="display:none;align-items:center;gap:10px;background:#f5f3ff;border:1.5px solid #7c3aed;border-radius:8px;padding:8px 12px;margin-bottom:8px">
-            <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#4f46e5);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:800;flex-shrink:0" id="emailUserAvatar">?</div>
+            <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#1e3a8a);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:800;flex-shrink:0" id="emailUserAvatar">?</div>
             <div style="flex:1;min-width:0">
               <div id="emailUserName" style="font-size:13px;font-weight:700;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
               <div id="emailUserEmail" style="font-size:11.5px;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
@@ -1665,7 +1665,7 @@
               <div id="emailUserDropdown" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid #e5e7eb;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:200;max-height:220px;overflow-y:auto"></div>
             </div>
             <button onclick="sendTestEmail()" id="emailSendBtn"
-              style="padding:9px 20px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;flex-shrink:0">
+              style="padding:9px 20px;background:linear-gradient(135deg,#7c3aed,#1e3a8a);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;flex-shrink:0">
               <i id="emailSendIcon" data-lucide="send" style="width:15px;height:15px"></i><span id="emailSendText">Send</span>
             </button>
           </div>
@@ -1817,7 +1817,7 @@
     <div class="form-group">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
         <label style="margin:0">Description</label>
-        <button type="button" onclick="generateListingDescription()" id="btn-gen-desc" style="font-size:11px;font-weight:700;padding:4px 12px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:6px;cursor:pointer;white-space:nowrap">✨ AI Generate</button>
+        <button type="button" onclick="generateListingDescription()" id="btn-gen-desc" style="font-size:11px;font-weight:700;padding:4px 12px;background:linear-gradient(135deg,#7c3aed,#1e3a8a);color:#fff;border:none;border-radius:6px;cursor:pointer;white-space:nowrap">✨ AI Generate</button>
       </div>
       <textarea id="l-desc" class="form-input" rows="3" style="resize:vertical"></textarea>
       <div id="ai-desc-status" style="font-size:11px;color:#7c3aed;margin-top:4px;display:none"></div>
@@ -2327,7 +2327,7 @@ function runDashSearch(q) {
     if (userHits.length) {
       rows.push(`<div style="padding:8px 14px;font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.5px;background:#f9fafb">Users</div>`);
       userHits.forEach(u => rows.push(`<div onclick="showSection('users')" style="padding:10px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #f3f4f6" onmouseover="this.style.background='#f5f3ff'" onmouseout="this.style.background=''">
-        <div style="width:28px;height:28px;border-radius:50%;background:#ede9fe;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#7c3aed">${(u.full_name||'U').charAt(0)}</div>
+        <div style="width:28px;height:28px;border-radius:50%;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#7c3aed">${(u.full_name||'U').charAt(0)}</div>
         <div><div style="font-weight:600;font-size:13px">${u.full_name||'—'}</div><div style="font-size:11px;color:#6b7280">${u.email}</div></div>
         <span style="margin-left:auto">${roleBadge(u.role)}</span>
       </div>`));
@@ -2556,7 +2556,7 @@ function renderTenantsMgmt(list) {
     return `
     <div class="tenant-card stat-card" style="padding:0;overflow:hidden">
       <div style="padding:14px 20px;background:#f8fafc;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-        <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#4f46e5);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:800;flex-shrink:0">${(t.fullName||'?')[0].toUpperCase()}</div>
+        <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#2d53b8,#1e3a8a);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:800;flex-shrink:0">${(t.fullName||'?')[0].toUpperCase()}</div>
         <div style="flex:1">
           <b style="font-size:15px;color:#111827">${t.fullName}</b>
           <div style="font-size:12px;color:#6b7280">${t.email} ${t.phone ? '• ' + t.phone : ''}</div>
@@ -2622,10 +2622,10 @@ function renderDuplicatesBanner(groups) {
             <div>
               <div style="font-weight:700;color:#111827;font-size:13px">${group[0].email}</div>
               <div style="font-size:12px;color:#6b7280;margin-top:3px">
-                ${group.map(t => `<span style="margin-right:12px"><b>${t.fullName}</b> — joined ${t.createdAt ? new Date(t.createdAt).toLocaleDateString('en-KE') : '?'}${t.profileId ? ' <span style="color:#6366f1;font-size:10px">[profile linked]</span>' : ''}</span>`).join('')}
+                ${group.map(t => `<span style="margin-right:12px"><b>${t.fullName}</b> — joined ${t.createdAt ? new Date(t.createdAt).toLocaleDateString('en-KE') : '?'}${t.profileId ? ' <span style="color:#2d53b8;font-size:10px">[profile linked]</span>' : ''}</span>`).join('')}
               </div>
             </div>
-            <button class="btn btn-sm" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;white-space:nowrap"
+            <button class="btn btn-sm" style="background:linear-gradient(135deg,#7c3aed,#1e3a8a);color:#fff;white-space:nowrap"
               onclick='openMergeModal(${JSON.stringify(group)})'>
               Merge Duplicates
             </button>
@@ -2663,7 +2663,7 @@ function onMergeSelect(keepId, allIds, idx) {
     el.style.borderColor = i === idx ? '#7c3aed' : '#e5e7eb';
     el.style.background  = i === idx ? '#f5f3ff' : '#fff';
     el.querySelector('span').textContent = i === idx ? 'KEEP' : 'DELETE';
-    el.querySelector('span').style.background = i === idx ? '#ede9fe' : '#fee2e2';
+    el.querySelector('span').style.background = i === idx ? '#dbeafe' : '#fee2e2';
     el.querySelector('span').style.color = i === idx ? '#6d28d9' : '#b91c1c';
   });
 }
@@ -3513,8 +3513,8 @@ function renderLandlords(list) {
     <div class="landlord-block stat-card" style="padding:0;overflow:hidden">
 
       <!-- Landlord header -->
-      <div style="padding:16px 22px;background:linear-gradient(90deg,#f5f3ff,#fff);border-bottom:2px solid #ede9fe;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-        <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#4f46e5);display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;font-weight:800;flex-shrink:0">
+      <div style="padding:16px 22px;background:linear-gradient(90deg,#f5f3ff,#fff);border-bottom:2px solid #dbeafe;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+        <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#1e3a8a);display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;font-weight:800;flex-shrink:0">
           ${(ll.fullName || '?')[0].toUpperCase()}
         </div>
         <div style="flex:1;min-width:0">
@@ -3543,7 +3543,7 @@ function renderLandlords(list) {
                 <span style="font-size:14px;font-weight:700;color:#1e3a8a">${prop.name}</span>
                 ${prop.location ? `<span style="font-size:12px;color:#9ca3af;margin-left:8px"> ${prop.location}</span>` : ''}
               </div>
-              <code style="background:#ede9fe;color:#6d28d9;padding:4px 12px;border-radius:8px;font-size:13px;font-weight:700;letter-spacing:1px">${prop.code}</code>
+              <code style="background:#dbeafe;color:#6d28d9;padding:4px 12px;border-radius:8px;font-size:13px;font-weight:700;letter-spacing:1px">${prop.code}</code>
               ${badge(prop.type, 'blue')}
               ${prop.units ? `<span style="font-size:12px;color:#6b7280">${prop.units} units</span>` : ''}
               ${prop.propRevenue > 0 ? `<span style="font-size:12px;color:#059669;font-weight:700">KSh ${Number(prop.propRevenue).toLocaleString('en-KE')} collected</span>` : ''}
@@ -3657,8 +3657,8 @@ function renderTsPinned() {
     const name = s ? (s.full_name || s.name || s.email || 'Unknown') : id;
     const av = s?.avatar_url;
     const avHtml = av
-      ? `<img src="${av}" style="width:34px;height:34px;border-radius:50%;object-fit:cover;flex-shrink:0" onerror="this.outerHTML='<span style=\\'width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px;flex-shrink:0\\'>${name.charAt(0).toUpperCase()}</span>'">`
-      : `<span style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px;flex-shrink:0">${name.charAt(0).toUpperCase()}</span>`;
+      ? `<img src="${av}" style="width:34px;height:34px;border-radius:50%;object-fit:cover;flex-shrink:0" onerror="this.outerHTML='<span style=\\'width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#2d53b8,#1e40af);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px;flex-shrink:0\\'>${name.charAt(0).toUpperCase()}</span>'">`
+      : `<span style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#2d53b8,#1e40af);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px;flex-shrink:0">${name.charAt(0).toUpperCase()}</span>`;
     const listings = s ? `${s.productCount || 0} listing${(s.productCount || 0) !== 1 ? 's' : ''}` : '';
     return `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:#fff;border:1.5px solid #e5e7eb;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.05)">
       <span style="font-size:12px;font-weight:700;color:#9ca3af;width:18px;flex-shrink:0">#${idx+1}</span>
@@ -3685,14 +3685,14 @@ function renderTsGrid(sellers) {
     const name = s.full_name || s.name || s.business_name || s.email || 'Unknown';
     const av = s.avatar_url;
     const avHtml = av
-      ? `<img src="${av}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;margin-bottom:8px" onerror="this.outerHTML='<div style=\\'width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px;margin-bottom:8px\\'>${name.charAt(0).toUpperCase()}</div>'">`
-      : `<div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px;margin-bottom:8px">${name.charAt(0).toUpperCase()}</div>`;
+      ? `<img src="${av}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;margin-bottom:8px" onerror="this.outerHTML='<div style=\\'width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#2d53b8,#1e40af);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px;margin-bottom:8px\\'>${name.charAt(0).toUpperCase()}</div>'">`
+      : `<div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#2d53b8,#1e40af);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px;margin-bottom:8px">${name.charAt(0).toUpperCase()}</div>`;
     return `<div style="background:#fff;border:2px solid ${isPinned ? '#7c3aed' : '#e5e7eb'};border-radius:12px;padding:14px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;box-shadow:0 1px 4px rgba(0,0,0,.06)">
       ${avHtml}
       <div style="font-size:12px;font-weight:700;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%">${name}</div>
       <div style="font-size:11px;color:#6b7280;margin-bottom:6px">${s.productCount || 0} listings</div>
       ${isPinned
-        ? `<button onclick="tsUnpin('${id}')" style="width:100%;padding:5px;font-size:11px;font-weight:700;border:none;border-radius:7px;cursor:pointer;background:#ede9fe;color:#6d28d9">✓ Pinned</button>`
+        ? `<button onclick="tsUnpin('${id}')" style="width:100%;padding:5px;font-size:11px;font-weight:700;border:none;border-radius:7px;cursor:pointer;background:#dbeafe;color:#6d28d9">✓ Pinned</button>`
         : `<button onclick="tsPin('${id}')" style="width:100%;padding:5px;font-size:11px;font-weight:700;border:none;border-radius:7px;cursor:pointer;background:#7c3aed;color:#fff" ${_tsPinnedIds.length >= 5 ? 'disabled title="Max 5 sellers"' : ''}>+ Pin as Top Seller</button>`
       }
     </div>`;
@@ -4002,7 +4002,7 @@ function renderCalendar(rows) {
         <span style="font-size:20px"></span>
         <div style="flex:1">
           <span style="font-size:15px;font-weight:800;color:#111827">${prop.name}</span>
-          <span style="margin-left:10px;background:#ede9fe;color:#6d28d9;padding:2px 10px;border-radius:8px;font-size:12px;font-weight:700;font-family:monospace">${prop.code}</span>
+          <span style="margin-left:10px;background:#dbeafe;color:#6d28d9;padding:2px 10px;border-radius:8px;font-size:12px;font-weight:700;font-family:monospace">${prop.code}</span>
         </div>
         <div style="font-size:12px;color:#6b7280">Landlord: <b>${prop.landlordName}</b></div>
         <div style="display:flex;gap:6px">
@@ -4736,7 +4736,7 @@ function searchEmailUsers(q) {
   }
 
   const roleBadge = r => {
-    const colors = { landlord:'#ede9fe:#6d28d9', buyer:'#dbeafe:#1d4ed8', seller:'#dcfce7:#15803d', tenant:'#fef9c3:#a16207' };
+    const colors = { landlord:'#dbeafe:#6d28d9', buyer:'#dbeafe:#1e3a8a', seller:'#dcfce7:#15803d', tenant:'#fef9c3:#a16207' };
     const [bg, col] = (colors[r] || '#f3f4f6:#374151').split(':');
     return `<span style="background:${bg};color:${col};font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px;text-transform:capitalize">${r||'user'}</span>`;
   };
@@ -4746,7 +4746,7 @@ function searchEmailUsers(q) {
       style="padding:10px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #f3f4f6;transition:background .15s"
       onmouseover="this.style.background='#f5f3ff';_emailDropdownIndex=${i}"
       onmouseout="this.style.background=''">
-      <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#4f46e5);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:800;flex-shrink:0">
+      <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#1e3a8a);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:800;flex-shrink:0">
         ${(u.full_name||u.email||'?')[0].toUpperCase()}
       </div>
       <div style="flex:1;min-width:0">
@@ -4821,7 +4821,7 @@ function addEmailLog(type, msg) {
   const colors = {
     success: { bg: '#f0fdf4', border: '#bbf7d0', color: '#15803d' },
     error:   { bg: '#fef2f2', border: '#fecaca', color: '#b91c1c' },
-    info:    { bg: '#eff6ff', border: '#bfdbfe', color: '#1d4ed8' }
+    info:    { bg: '#eff6ff', border: '#bfdbfe', color: '#1e3a8a' }
   };
   const panel = document.getElementById('emailLogPanel');
   if (!panel) return;
@@ -5362,7 +5362,7 @@ async function loadSubmissions() {
     <tr>
       <td>
         <div style="display:flex;align-items:center;gap:10px;">
-          ${img ? `<img src="${img}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;border:1px solid #e5e7eb;" onerror="this.style.display='none'">` : `<div style="width:40px;height:40px;border-radius:8px;background:${isHousing?'#ede9fe':'#f3f4f6'};display:flex;align-items:center;justify-content:center;font-size:18px;">${isHousing?'🏠':''}</div>`}
+          ${img ? `<img src="${img}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;border:1px solid #e5e7eb;" onerror="this.style.display='none'">` : `<div style="width:40px;height:40px;border-radius:8px;background:${isHousing?'#dbeafe':'#f3f4f6'};display:flex;align-items:center;justify-content:center;font-size:18px;">${isHousing?'🏠':''}</div>`}
           <div>
             <div style="font-weight:600;font-size:14px;">${s.title || s.name || '—'}</div>
             <div style="font-size:11px;color:#9ca3af;">${s.location || ''}</div>
@@ -5706,7 +5706,7 @@ function botRenderSearch(query, data) {
       if (ll.properties?.length) {
         ll.properties.forEach(p => {
           html += `<div style="background:#faf5ff;border-left:3px solid #7c3aed;padding:8px 10px;border-radius:4px;margin:6px 0">
-            <b>${p.name}</b> &nbsp;<code style="background:#ede9fe;color:#6d28d9;padding:1px 6px;border-radius:4px;font-size:11px">${p.code}</code><br>
+            <b>${p.name}</b> &nbsp;<code style="background:#dbeafe;color:#6d28d9;padding:1px 6px;border-radius:4px;font-size:11px">${p.code}</code><br>
              ${p.location||'—'} &nbsp;·&nbsp; ${p.tenantsCount} tenant(s) &nbsp;·&nbsp; Revenue: <b style="color:#059669">${KSh(p.revenue)}</b>
           </div>`;
         });
@@ -5808,7 +5808,7 @@ async function loadEvents() {
     const img = (ev.images && ev.images[0]) || ev.imageUrl || ev.image_url || '';
     return `<tr>
       <td style="display:flex;align-items:center;gap:10px;padding:12px 16px">
-        ${img ? `<img src="${img}" style="width:40px;height:32px;object-fit:cover;border-radius:6px;border:1px solid #e5e7eb">` : '<div style="width:40px;height:32px;background:#ede9fe;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px"></div>'}
+        ${img ? `<img src="${img}" style="width:40px;height:32px;object-fit:cover;border-radius:6px;border:1px solid #e5e7eb">` : '<div style="width:40px;height:32px;background:#dbeafe;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px"></div>'}
         <div><div style="font-weight:600;font-size:13px;color:#111827">${ev.title||'—'}</div><div style="font-size:11px;color:#9ca3af">${ev.organizer||''}</div></div>
       </td>
       <td style="font-size:12px;color:#374151">${fmtDate(ev.event_date)}</td>
@@ -5838,14 +5838,14 @@ async function loadTickets() {
   }
   const fmtDate = d => d ? new Date(d).toLocaleDateString('en-KE', {day:'2-digit',month:'short',year:'numeric'}) : '—';
   document.getElementById('tickets-tbody').innerHTML = tickets.map(t => `<tr>
-    <td><code style="background:#ede9fe;color:#6d28d9;padding:3px 8px;border-radius:5px;font-size:12px;font-weight:700">${t.ticket_code||'—'}</code></td>
+    <td><code style="background:#dbeafe;color:#6d28d9;padding:3px 8px;border-radius:5px;font-size:12px;font-weight:700">${t.ticket_code||'—'}</code></td>
     <td style="font-size:13px;font-weight:600">${t.event_title||'—'}</td>
     <td style="font-size:12px;color:#374151">${t.buyer_name||'—'}<br><span style="color:#9ca3af">${t.buyer_phone||t.buyer_email||''}</span></td>
     <td style="text-align:center;font-weight:700">${t.quantity||1}</td>
     <td style="font-weight:700;color:#059669">${t.total_amount ? 'Ksh ' + Number(t.total_amount).toLocaleString() : 'FREE'}</td>
     <td><span class="badge badge-green">${t.status||'confirmed'}</span></td>
     <td style="font-size:12px;color:#9ca3af">${fmtDate(t.created_at)}</td>
-    <td><a href="/verify-ticket.html?code=${encodeURIComponent(t.ticket_code||'')}" target="_blank" class="btn btn-sm" style="background:#ede9fe;color:#6d28d9;text-decoration:none;font-size:11px"> Verify</a></td>
+    <td><a href="/verify-ticket.html?code=${encodeURIComponent(t.ticket_code||'')}" target="_blank" class="btn btn-sm" style="background:#dbeafe;color:#6d28d9;text-decoration:none;font-size:11px"> Verify</a></td>
   </tr>`).join('');
 }
 
@@ -5954,7 +5954,7 @@ async function runAiSection(endpoint, panelId, extraData = {}) {
   if (!out) return;
   if (btn) { btn.disabled = true; btn.innerHTML = '⏳ Analyzing…'; }
   out.style.display = 'block';
-  out.innerHTML = '<div class="spinner" style="display:inline-block;width:20px;height:20px;border:2px solid #ede9fe;border-top-color:#7c3aed;border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle"></div> <span style="color:#7c3aed;font-size:13px;font-weight:600">AI is thinking…</span>';
+  out.innerHTML = '<div class="spinner" style="display:inline-block;width:20px;height:20px;border:2px solid #dbeafe;border-top-color:#7c3aed;border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle"></div> <span style="color:#7c3aed;font-size:13px;font-weight:600">AI is thinking…</span>';
   try {
     const res = await fetch(endpoint, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(extraData) });
     const data = await res.json();
@@ -6088,7 +6088,7 @@ function filterSellerDropdown(q) {
     return `<div onclick="selectSeller('${id}','${name.replace(/'/g,"\\'")}','${email}')"
       style="padding:10px 14px;cursor:pointer;border-bottom:1px solid #f3f4f6;display:flex;gap:10px;align-items:center"
       onmouseover="this.style.background='#f5f3ff'" onmouseout="this.style.background=''">
-      <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">${name.charAt(0).toUpperCase()}</div>
+      <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#1e3a8a);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">${name.charAt(0).toUpperCase()}</div>
       <div>
         <div style="font-size:13px;font-weight:600;color:#111827">${name}</div>
         <div style="font-size:11px;color:#6b7280">${email} · <span style="color:${roleColor};font-weight:600">${role}</span></div>
@@ -6179,7 +6179,7 @@ function renderUnverified(list) {
     const id = u._id ? u._id.toString() : '';
     return `<tr>
       <td><strong>${name}</strong></td>
-      <td style="color:#4f46e5">${email}</td>
+      <td style="color:#1e3a8a">${email}</td>
       <td>${phone}</td>
       <td>${reg}</td>
       <td>${expiryStr}</td>

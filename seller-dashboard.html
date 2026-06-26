@@ -342,24 +342,24 @@ tbody tr:last-child td { border-bottom: none; }
 .type-tab.active{background:#7c3aed;border-color:#7c3aed;color:#fff;}
 /* ── Variant Card Builder ── */
 .vq-preset {
-  background:#e0e7ff; border:1.5px solid #c7d2fe; border-radius:20px;
+  background:#dbeafe; border:1.5px solid #93c5fd; border-radius:20px;
   padding:4px 13px; font-size:11px; font-weight:700; cursor:pointer;
-  color:#3730a3; transition:all .15s;
+  color:#162d6e; transition:all .15s;
 }
-.vq-preset:hover { background:#1e3a8a; color:#fff; border-color:#4f46e5; }
+.vq-preset:hover { background:#1e3a8a; color:#fff; border-color:#1e3a8a; }
 
 .vc-card {
   display:flex; gap:12px; align-items:flex-start;
-  background:#fff; border:1.5px solid #e0e7ff;
+  background:#fff; border:1.5px solid #dbeafe;
   border-radius:12px; padding:12px; transition:border-color .15s;
   position:relative;
 }
-.vc-card:hover { border-color:#a5b4fc; }
+.vc-card:hover { border-color:#60a5fa; }
 
 .vc-img-wrap {
   width:72px; height:72px; border-radius:9px; flex-shrink:0;
-  background:linear-gradient(135deg,#e0e7ff,#f0f4ff);
-  border:1.5px solid #c7d2fe; overflow:hidden;
+  background:linear-gradient(135deg,#dbeafe,#f0f4ff);
+  border:1.5px solid #93c5fd; overflow:hidden;
   display:flex; align-items:center; justify-content:center;
   position:relative;
 }
@@ -371,12 +371,12 @@ tbody tr:last-child td { border-bottom: none; }
 
 .vc-body { flex:1; min-width:0; }
 .vc-name-input {
-  width:100%; border:1.5px solid #e0e7ff; border-radius:8px;
+  width:100%; border:1.5px solid #dbeafe; border-radius:8px;
   padding:7px 10px; font-size:13px; font-weight:700; color:#111827;
   background:#fafbff; margin-bottom:7px; box-sizing:border-box;
   outline:none; transition:border-color .15s;
 }
-.vc-name-input:focus { border-color:#4f46e5; background:#fff; }
+.vc-name-input:focus { border-color:#1e3a8a; background:#fff; }
 .vc-name-input::placeholder { color:#9ca3af; font-weight:400; font-size:12px; }
 
 .vc-fields-row {
@@ -384,26 +384,26 @@ tbody tr:last-child td { border-bottom: none; }
 }
 .vc-field-label { font-size:9px; color:#9ca3af; font-weight:700; text-transform:uppercase; letter-spacing:.04em; margin-bottom:2px; }
 .vc-field-input {
-  width:100%; border:1px solid #e0e7ff; border-radius:6px;
+  width:100%; border:1px solid #dbeafe; border-radius:6px;
   padding:5px 7px; font-size:12px; color:#374151; background:#fafafa;
   box-sizing:border-box; outline:none; transition:border-color .15s;
 }
-.vc-field-input:focus { border-color:#4f46e5; background:#fff; }
+.vc-field-input:focus { border-color:#1e3a8a; background:#fff; }
 .vc-field-input.price-field { font-weight:700; color:#059669; }
 
 .vc-img-url {
-  width:100%; border:1px dashed #c7d2fe; border-radius:6px;
+  width:100%; border:1px dashed #93c5fd; border-radius:6px;
   padding:5px 8px; font-size:11px; color:#6b7280; background:#f8f9ff;
   box-sizing:border-box; outline:none; transition:border-color .15s;
 }
-.vc-img-url:focus { border-color:#4f46e5; }
+.vc-img-url:focus { border-color:#1e3a8a; }
 
 .vc-actions { display:flex; flex-direction:column; gap:4px; flex-shrink:0; }
 .vc-btn-dup {
-  background:#e0e7ff; border:none; border-radius:6px;
+  background:#dbeafe; border:none; border-radius:6px;
   padding:6px 8px; cursor:pointer; font-size:12px; transition:background .15s;
 }
-.vc-btn-dup:hover { background:#c7d2fe; }
+.vc-btn-dup:hover { background:#93c5fd; }
 .vc-btn-del {
   background:#fee2e2; border:none; border-radius:6px;
   padding:6px 8px; cursor:pointer; font-size:12px; color:#dc2626; transition:background .15s;
@@ -527,9 +527,9 @@ tbody tr:last-child td { border-bottom: none; }
       </div>
 
       <div class="card">
-        <div class="card-bg-dot" style="background:#6366f1;"></div>
-        <div class="card-icon" style="background:#ede9fe;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+        <div class="card-bg-dot" style="background:#2d53b8;"></div>
+        <div class="card-icon" style="background:#dbeafe;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2d53b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
         </div>
         <div class="card-label">Products Listed</div>
         <div class="card-value" id="statProducts">0</div>
@@ -703,7 +703,7 @@ tbody tr:last-child td { border-bottom: none; }
       <div class="form-group">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
           <label class="form-label" style="margin-bottom:0">Description</label>
-          <button type="button" onclick="aiGenerateDesc('fDescription','fTitle','fCategory','fPrice','fLocation')" style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:7px;padding:4px 11px;font-size:11px;font-weight:700;cursor:pointer;" title="Generate description with AI">✨ AI Write</button>
+          <button type="button" onclick="aiGenerateDesc('fDescription','fTitle','fCategory','fPrice','fLocation')" style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#7c3aed,#1e3a8a);color:#fff;border:none;border-radius:7px;padding:4px 11px;font-size:11px;font-weight:700;cursor:pointer;" title="Generate description with AI">✨ AI Write</button>
         </div>
         <textarea class="form-textarea" id="fDescription" placeholder="Describe your listing in detail…"></textarea>
         <div id="fDescAiStatus" style="display:none;font-size:11px;color:#7c3aed;margin-top:3px;">✨ AI is writing your description…</div>
@@ -724,7 +724,7 @@ tbody tr:last-child td { border-bottom: none; }
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
           <label class="form-label" style="margin-bottom:0">Photos <span style="font-size:11px;color:#6b7280;font-weight:500">(up to 4)</span></label>
           <div style="display:flex;gap:6px">
-            <button type="button" onclick="aiGenerateImage()" style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#0ea5e9,#6366f1);color:#fff;border:none;border-radius:7px;padding:4px 11px;font-size:11px;font-weight:700;cursor:pointer;" title="Generate image with AI">🖼 AI Image</button>
+            <button type="button" onclick="aiGenerateImage()" style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#0ea5e9,#2d53b8);color:#fff;border:none;border-radius:7px;padding:4px 11px;font-size:11px;font-weight:700;cursor:pointer;" title="Generate image with AI">🖼 AI Image</button>
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
@@ -757,7 +757,7 @@ tbody tr:last-child td { border-bottom: none; }
           <div style="display:flex;gap:6px">
             <label for="fVideoUpload" style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#059669,#047857);color:#fff;border:none;border-radius:7px;padding:4px 11px;font-size:11px;font-weight:700;cursor:pointer;">📁 Upload</label>
             <input type="file" id="fVideoUpload" accept="video/*" style="display:none" onchange="sellerUploadVideo(this)">
-            <button type="button" onclick="aiGenerateVideo()" style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:7px;padding:4px 11px;font-size:11px;font-weight:700;cursor:pointer;" title="Generate a promo video with AI">🎬 AI Video</button>
+            <button type="button" onclick="aiGenerateVideo()" style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#7c3aed,#1e3a8a);color:#fff;border:none;border-radius:7px;padding:4px 11px;font-size:11px;font-weight:700;cursor:pointer;" title="Generate a promo video with AI">🎬 AI Video</button>
           </div>
         </div>
         <input class="form-input" id="fVideoUrl" placeholder="Video URL — paste link, upload, or AI generate above" oninput="previewVideoUrl('fVideoUrl','fVideoPreviewWrap','fVideoPreview')">
@@ -768,28 +768,28 @@ tbody tr:last-child td { border-bottom: none; }
       </div>
 
       <!-- VARIANTS TOGGLE -->
-      <div class="form-group" style="background:#f0f4ff;border:1.5px solid #c7d2fe;border-radius:10px;padding:12px 14px;margin-bottom:0;">
+      <div class="form-group" style="background:#f0f4ff;border:1.5px solid #93c5fd;border-radius:10px;padding:12px 14px;margin-bottom:0;">
         <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin:0;">
-          <input type="checkbox" id="enableVariants" onchange="toggleVariants(this)" style="width:16px;height:16px;accent-color:#4f46e5;cursor:pointer;">
-          <span style="font-size:13px;font-weight:700;color:#3730a3;">This product has variants <span style="font-weight:400;color:#6b7280;">(sizes, colors, types with different prices)</span></span>
+          <input type="checkbox" id="enableVariants" onchange="toggleVariants(this)" style="width:16px;height:16px;accent-color:#1e3a8a;cursor:pointer;">
+          <span style="font-size:13px;font-weight:700;color:#162d6e;">This product has variants <span style="font-weight:400;color:#6b7280;">(sizes, colors, types with different prices)</span></span>
         </label>
       </div>
 
       <!-- VARIANTS BUILDER PANEL -->
-      <div id="variantsSection" style="display:none;border:1.5px solid #c7d2fe;border-radius:14px;padding:18px;background:#f8f9ff;margin-top:0;">
+      <div id="variantsSection" style="display:none;border:1.5px solid #93c5fd;border-radius:14px;padding:18px;background:#f8f9ff;margin-top:0;">
 
         <!-- Header -->
         <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
           <div>
-            <div style="font-size:13px;font-weight:800;color:#3730a3;">Variant Builder</div>
+            <div style="font-size:13px;font-weight:800;color:#162d6e;">Variant Builder</div>
             <div style="font-size:11px;color:#6b7280;margin-top:2px;">List each type, size or option with its own price &amp; image — e.g. Big / Bigger / Biggest</div>
           </div>
-          <button type="button" onclick="addVariantRow()" style="background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">+ Add Variant</button>
+          <button type="button" onclick="addVariantRow()" style="background:linear-gradient(135deg,#1e3a8a,#7c3aed);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">+ Add Variant</button>
         </div>
 
         <!-- Quick Add panel -->
-        <div style="background:#fff;border:1px solid #e0e7ff;border-radius:10px;padding:12px 14px;margin-bottom:14px;">
-          <div style="font-size:10px;font-weight:700;color:#4f46e5;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em;">⚡ Quick Add</div>
+        <div style="background:#fff;border:1px solid #dbeafe;border-radius:10px;padding:12px 14px;margin-bottom:14px;">
+          <div style="font-size:10px;font-weight:700;color:#1e3a8a;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em;">⚡ Quick Add</div>
           <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">
             <button type="button" class="vq-preset" onclick="quickAddPreset('sizes')">👕 Clothing Sizes</button>
             <button type="button" class="vq-preset" onclick="quickAddPreset('colors')">🎨 Colours</button>
@@ -799,7 +799,7 @@ tbody tr:last-child td { border-bottom: none; }
           <div style="display:flex;gap:6px;align-items:center;">
             <input id="customVariantNames" type="text"
               placeholder="Custom — e.g.  Big, Bigger, Biggest  or  50kg, 100kg, 200kg"
-              style="flex:1;border:1px solid #c7d2fe;border-radius:7px;padding:6px 10px;font-size:12px;min-width:0;outline:none;">
+              style="flex:1;border:1px solid #93c5fd;border-radius:7px;padding:6px 10px;font-size:12px;min-width:0;outline:none;">
             <button type="button" onclick="quickAddCustom()" style="background:#059669;color:#fff;border:none;border-radius:7px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">Generate</button>
           </div>
           <div style="font-size:10px;color:#9ca3af;margin-top:4px;">Separate names with commas — each becomes its own variant card</div>
@@ -872,7 +872,7 @@ tbody tr:last-child td { border-bottom: none; }
         <div class="form-group">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
             <label class="form-label" style="margin-bottom:0">Description *</label>
-            <button type="button" onclick="svcAiDesc()" style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:7px;padding:4px 11px;font-size:11px;font-weight:700;cursor:pointer;">✨ AI Write</button>
+            <button type="button" onclick="svcAiDesc()" style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#7c3aed,#1e3a8a);color:#fff;border:none;border-radius:7px;padding:4px 11px;font-size:11px;font-weight:700;cursor:pointer;">✨ AI Write</button>
           </div>
           <textarea class="form-textarea" id="svcDescription" rows="4" placeholder="Describe exactly what you do, your experience, and why clients should choose you…"></textarea>
           <div id="svcDescAiStatus" style="display:none;font-size:11px;color:#7c3aed;margin-top:3px;">✨ AI is writing your description…</div>
@@ -1156,7 +1156,7 @@ tbody tr:last-child td { border-bottom: none; }
     <div class="form-group">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
         <label class="form-label" style="margin-bottom:0">Description</label>
-        <button type="button" onclick="aiGenerateDesc('modalDescription','modalTitle','modalCategory','modalPrice','modalLocation')" style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:7px;padding:4px 11px;font-size:11px;font-weight:700;cursor:pointer;">✨ AI Write</button>
+        <button type="button" onclick="aiGenerateDesc('modalDescription','modalTitle','modalCategory','modalPrice','modalLocation')" style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#7c3aed,#1e3a8a);color:#fff;border:none;border-radius:7px;padding:4px 11px;font-size:11px;font-weight:700;cursor:pointer;">✨ AI Write</button>
       </div>
       <textarea class="form-textarea" id="modalDescription"></textarea>
       <div id="modalDescAiStatus" style="display:none;font-size:11px;color:#7c3aed;margin-top:3px;">✨ AI is writing your description…</div>
@@ -1407,7 +1407,7 @@ function updateSubcategoryField(subId, catId, currentVal) {
 //  AUTH 
 const token = localStorage.getItem('token') || localStorage.getItem('authToken') || localStorage.getItem('auth_token') || '';
 if (!token) {
-  document.body.innerHTML = `<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f4f6fb 0%,#ede9fe 100%);font-family:'DM Sans',sans-serif;padding:16px;">
+  document.body.innerHTML = `<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f4f6fb 0%,#dbeafe 100%);font-family:'DM Sans',sans-serif;padding:16px;">
     <div style="background:#fff;border:1px solid #e8ecf5;border-radius:24px;padding:48px 36px;max-width:420px;width:100%;text-align:center;box-shadow:0 12px 48px rgba(124,58,237,.12);">
       <div style="font-size:52px;margin-bottom:16px;"></div>
       <h2 style="font-size:22px;font-weight:800;color:#0a0f1e;margin-bottom:8px;">Seller Access Required</h2>
@@ -1553,7 +1553,7 @@ function renderCategoryBreakdown(cats) {
     return;
   }
   const maxCount = Math.max(...cats.map(c => c.count), 1);
-  const colors = ['#00e676','#6366f1','#f59e0b','#ec4899','#3b82f6','#10b981'];
+  const colors = ['#00e676','#2d53b8','#f59e0b','#ec4899','#3b82f6','#10b981'];
   el.innerHTML = cats.slice(0, 5).map((c, i) => {
     const pct = Math.round((c.count / maxCount) * 100);
     return `
@@ -1740,8 +1740,8 @@ function previewImage() {
   ].filter(Boolean);
   wrap.innerHTML = urls.map((u, i) =>
     `<div style="position:relative;display:inline-block;">
-      <img class="img-thumb" src="${u}" onerror="this.parentElement.remove()" style="width:72px;height:72px;border-radius:8px;object-fit:cover;border:2px solid ${i===0?'#6366f1':'#e5e7eb'};">
-      ${i===0?'<span style="position:absolute;bottom:3px;left:50%;transform:translateX(-50%);background:#6366f1;color:#fff;font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;">MAIN</span>':''}
+      <img class="img-thumb" src="${u}" onerror="this.parentElement.remove()" style="width:72px;height:72px;border-radius:8px;object-fit:cover;border:2px solid ${i===0?'#2d53b8':'#e5e7eb'};">
+      ${i===0?'<span style="position:absolute;bottom:3px;left:50%;transform:translateX(-50%);background:#2d53b8;color:#fff;font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;">MAIN</span>':''}
     </div>`
   ).join('');
 }
@@ -3194,9 +3194,9 @@ function _renderPromoVideo({ title, price, imgUrl, description, category }) {
         const bh = Math.round(44*S), br = Math.round(22*S);
         const bx = cx - bw/2, by = cy - Math.round(170*S);
         const bg1 = ctx.createLinearGradient(bx, by, bx+bw, by);
-        bg1.addColorStop(0, '#7c3aed'); bg1.addColorStop(1, '#4f46e5');
+        bg1.addColorStop(0, '#7c3aed'); bg1.addColorStop(1, '#1e3a8a');
         ctx.fillStyle = bg1; _rr(bx, by, bw, bh, br); ctx.fill();
-        ctx.fillStyle = '#e0e7ff'; ctx.shadowBlur = 0;
+        ctx.fillStyle = '#dbeafe'; ctx.shadowBlur = 0;
         ctx.fillText(bTxt, cx, by + bh * 0.70);
 
         // Title — large, centered, slides in from left
@@ -3348,7 +3348,7 @@ function _renderPromoVideo({ title, price, imgUrl, description, category }) {
 
       // Button gradient
       const bg = ctx.createLinearGradient(bx, by, bx+bw, by+bh);
-      bg.addColorStop(0, '#7c3aed'); bg.addColorStop(0.5, '#6d28d9'); bg.addColorStop(1, '#4f46e5');
+      bg.addColorStop(0, '#7c3aed'); bg.addColorStop(0.5, '#6d28d9'); bg.addColorStop(1, '#1e3a8a');
       ctx.fillStyle = bg; _rr(bx, by, bw, bh, br); ctx.fill();
       ctx.shadowBlur = 0;
 
@@ -3380,7 +3380,7 @@ function _renderPromoVideo({ title, price, imgUrl, description, category }) {
       // Central glow
       const cx = W/2, cy = H/2 + slideY*0.2;
       const og = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.round(350*S));
-      og.addColorStop(0, 'rgba(124,58,237,.38)'); og.addColorStop(0.45, 'rgba(79,70,229,.12)'); og.addColorStop(1, 'transparent');
+      og.addColorStop(0, 'rgba(124,58,237,.38)'); og.addColorStop(0.45, 'rgba(30,58,138,.12)'); og.addColorStop(1, 'transparent');
       ctx.fillStyle = og; ctx.fillRect(0, 0, W, H);
 
       // Badge image
@@ -3744,7 +3744,7 @@ function _showAiImagePicker(urls, loading) {
         `).join('')}
       </div>
       ${!loading ? `<div style="margin-top:14px;text-align:center">
-        <button onclick="aiGenerateImage()" style="background:linear-gradient(135deg,#0ea5e9,#6366f1);color:#fff;border:none;border-radius:8px;padding:7px 18px;font-size:12px;font-weight:700;cursor:pointer">🔄 Generate 3 more options</button>
+        <button onclick="aiGenerateImage()" style="background:linear-gradient(135deg,#0ea5e9,#2d53b8);color:#fff;border:none;border-radius:8px;padding:7px 18px;font-size:12px;font-weight:700;cursor:pointer">🔄 Generate 3 more options</button>
       </div>` : ''}
     </div>
   `;

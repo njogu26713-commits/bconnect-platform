@@ -9,7 +9,7 @@
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --primary:#7c3aed;--primary-light:#8b5cf6;--teal:#0d9488;
+  --primary:#7c3aed;--primary-light:#1e40af;--teal:#0d9488;
   --amber:#f59e0b;--red:#ef4444;--white:#fff;
   --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;
   --gray-400:#9ca3af;--gray-500:#6b7280;--gray-700:#374151;--gray-900:#111827;
@@ -41,7 +41,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:#ffffff;min-height:
 .sidebar-title{font-size:.7rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.06em;padding:.5rem .75rem 1rem}
 .sidebar-item{display:flex;align-items:center;gap:.75rem;padding:.7rem .9rem;border-radius:.75rem;font-size:.88rem;font-weight:600;color:var(--gray-700);cursor:pointer;transition:all .2s;margin-bottom:.15rem;background:none;border:none;width:100%;text-align:left}
 .sidebar-item:hover{background:var(--gray-100);color:var(--primary)}
-.sidebar-item.active{background:#ede9fe;color:var(--primary)}
+.sidebar-item.active{background:#dbeafe;color:var(--primary)}
 .sidebar-item span.icon{font-size:1.1rem}
 hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
 .main{flex:1;padding:1.75rem 2rem;min-width:0}
@@ -61,7 +61,7 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
 .events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem}
 .e-card{background:var(--white);border-radius:1.25rem;box-shadow:var(--shadow-sm);overflow:hidden;cursor:pointer;border:1.5px solid transparent;transition:transform .25s,box-shadow .25s,border-color .25s;position:relative}
 .e-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:var(--primary)}
-.e-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;z-index:2;background:linear-gradient(90deg,#7c3aed,#8b5cf6)}
+.e-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;z-index:2;background:linear-gradient(90deg,#7c3aed,#1e40af)}
 .e-card-img-wrap{position:relative;overflow:hidden;height:180px}
 .e-card-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
 .e-card:hover .e-card-img-wrap img{transform:scale(1.06)}
@@ -117,7 +117,7 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
 .detail-info-row{display:flex;align-items:flex-start;gap:.6rem;font-size:.88rem;color:var(--gray-700)}
 .detail-info-row .lbl{font-weight:700;min-width:70px;color:var(--gray-900)}
 .detail-desc{font-family:Inter,system-ui,-apple-system,sans-serif;font-size:.92rem;font-weight:600;color:var(--gray-700);line-height:1.8;margin-bottom:1.2rem;white-space:pre-wrap;word-break:break-word}
-.ticket-box{background:linear-gradient(135deg,#ede9fe,#f5f3ff);border:1.5px solid #c4b5fd;border-radius:1rem;padding:1.2rem;margin-bottom:1rem}
+.ticket-box{background:linear-gradient(135deg,#dbeafe,#f5f3ff);border:1.5px solid #c4b5fd;border-radius:1rem;padding:1.2rem;margin-bottom:1rem}
 .ticket-price-big{font-size:2rem;font-weight:800;color:var(--primary);margin-bottom:.25rem}
 .ticket-price-big.free{color:#059669}
 .ticket-avail{font-size:.82rem;color:var(--gray-500);margin-bottom:.9rem}
@@ -164,7 +164,7 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
 .sm-close{background:var(--gray-100);border:none;border-radius:50%;width:32px;height:32px;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--gray-500);transition:background .2s}
 .sm-close:hover{background:var(--gray-200)}
 .sm-body{padding:20px 24px 0}
-.sm-info-box{background:#ede9fe;border:1.5px solid #c4b5fd;border-radius:12px;padding:12px 14px;margin-bottom:18px;display:flex;gap:10px;align-items:flex-start}
+.sm-info-box{background:#dbeafe;border:1.5px solid #c4b5fd;border-radius:12px;padding:12px 14px;margin-bottom:18px;display:flex;gap:10px;align-items:flex-start}
 .sm-info-box p{font-size:.82rem;color:#5b21b6;line-height:1.5;margin:0}
 .sm-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .sm-group{margin-bottom:14px}
@@ -226,7 +226,7 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
 }
 .bc-skel::before {
   content:''; position:absolute; top:0; left:0; right:0; height:4px; z-index:10;
-  background:linear-gradient(90deg,#7c3aed,#8b5cf6);
+  background:linear-gradient(90deg,#7c3aed,#1e40af);
 }
 .bc-skel-img-wrap { position:relative; width:100%; min-height:180px; overflow:hidden; }
 .bc-skel-img-fill { position:absolute; inset:0; border-radius:0; }
@@ -365,7 +365,7 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
         <div class="modal-share-row" id="modal-share-row">
           <button class="share-modal-btn" style="background:#25d366;color:#fff" onclick="modalShareWhatsApp()"> WhatsApp</button>
           <button class="share-modal-btn" style="background:#000;color:#fff" onclick="modalShareTwitter()"> Twitter / X</button>
-          <button class="share-modal-btn" style="background:#ede9fe;color:#6d28d9" onclick="modalCopyLink()"> Copy Link</button>
+          <button class="share-modal-btn" style="background:#dbeafe;color:#6d28d9" onclick="modalCopyLink()"> Copy Link</button>
         </div>
         <p class="detail-desc" id="modal-desc"></p>
 
@@ -412,7 +412,7 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
 
           <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-top:.9rem">
             <button onclick="downloadTicketQR()" style="display:inline-flex;align-items:center;gap:6px;background:#15803d;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:.82rem;font-weight:700;cursor:pointer"> Save QR</button>
-            <a id="verify-ticket-link" href="/verify-ticket.html" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#ede9fe;color:#6d28d9;border-radius:8px;padding:8px 16px;font-size:.82rem;font-weight:700;text-decoration:none"> View Details</a>
+            <a id="verify-ticket-link" href="/verify-ticket.html" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#dbeafe;color:#6d28d9;border-radius:8px;padding:8px 16px;font-size:.82rem;font-weight:700;text-decoration:none"> View Details</a>
           </div>
           <p style="margin-top:.7rem">Show this QR code at the venue entrance.</p>
         </div>
@@ -440,7 +440,7 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
       <div style="font-size:3rem;margin-bottom:12px">🎉</div>
       <h3>Event Submitted for Review!</h3>
       <p>Our team will review your event and publish it within 24 hours. You'll be contacted via the email you provided.</p>
-      <button onclick="closeSubmitModal()" style="margin-top:20px;padding:11px 28px;background:linear-gradient(135deg,#7c3aed,#8b5cf6);color:#fff;border:none;border-radius:9px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit">Done</button>
+      <button onclick="closeSubmitModal()" style="margin-top:20px;padding:11px 28px;background:linear-gradient(135deg,#7c3aed,#1e40af);color:#fff;border:none;border-radius:9px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit">Done</button>
     </div>
 
     <!-- Form State -->

@@ -5,10 +5,10 @@
 
 /* ── Design tokens (override any per-page values) ────── */
 :root {
-  --primary:        #4f46e5;
-  --primary-light:  #6366f1;
-  --primary-dark:   #3730a3;
-  --secondary:      #8b5cf6;
+  --primary:        #1e3a8a;
+  --primary-light:  #2d53b8;
+  --primary-dark:   #162d6e;
+  --secondary:      #1e40af;
   --teal:           #0d9488;
   --amber:          #f59e0b;
   --amber-dark:     #b45309;
@@ -52,7 +52,7 @@ textarea:focus,
 select:focus {
   outline: none;
   border-color: var(--primary) !important;
-  box-shadow: 0 0 0 3px rgba(79,70,229,.12) !important;
+  box-shadow: 0 0 0 3px rgba(30,58,138,.12) !important;
 }
 
 /* ── Consistent button base ──────────────────────────── */
@@ -75,7 +75,7 @@ button.btn {
 .btn:active { transform: translateY(1px); }
 
 .btn-primary  { background: var(--primary);  color: #fff; }
-.btn-primary:hover  { background: var(--primary-dark); box-shadow: 0 4px 12px rgba(79,70,229,.35); }
+.btn-primary:hover  { background: var(--primary-dark); box-shadow: 0 4px 12px rgba(30,58,138,.35); }
 .btn-secondary{ background: var(--secondary); color: #fff; }
 .btn-outline  { background: transparent; border: 1.5px solid var(--primary); color: var(--primary); }
 .btn-outline:hover { background: var(--primary); color: #fff; }
@@ -99,7 +99,7 @@ button.btn {
   font-size: .78rem;
   font-weight: 600;
 }
-.badge-primary  { background: #eef2ff; color: var(--primary); }
+.badge-primary  { background: #dbeafe; color: var(--primary); }
 .badge-green    { background: #d1fae5; color: #065f46; }
 .badge-amber    { background: #fef3c7; color: var(--amber-dark); }
 .badge-red      { background: #fee2e2; color: #991b1b; }
