@@ -45,10 +45,8 @@ run = ["node", "server.js"]
 [userenv]
 
 [userenv.shared]
-MONGODB_URI = "mongodb+srv://githinjib242_db_user:Ob9prYWMawQl12GE@bconnect.uul7mgb.mongodb.net/?appName=bconnect"
 PORT = "5000"
 NODE_ENV = "development"
-JWT_SECRET = "bconnect_super_secret_key_2024"
 ALLOWED_ORIGINS = "*"
 WHATSAPP_BOT_ENABLED = "true"
 WHATSAPP_PHONE_NUMBER = "254118234849"
