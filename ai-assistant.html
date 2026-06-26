@@ -29,7 +29,7 @@
     /* ── HEADER ─────────────────────────────────────────────────────── */
     .header {
       position: sticky; top: 0; z-index: 100;
-      background: linear-gradient(135deg, #5b4de8, #7c3aed, #1e40af);
+      background: linear-gradient(135deg, #5b4de8, #1e3a8a, #1e40af);
       color: #fff;
       padding: 0 20px;
       height: 62px;
@@ -46,7 +46,7 @@
     .bot-avatar::after {
       content: ''; position: absolute; bottom: -2px; right: -2px;
       width: 11px; height: 11px; background: #4ade80;
-      border-radius: 50%; border: 2px solid #6d28d9;
+      border-radius: 50%; border: 2px solid #162d6e;
     }
     .header-info h1 { font-size: 15px; font-weight: 700; letter-spacing: -.2px; }
     .header-info p { font-size: 11px; opacity: .75; margin-top: 1px; }
@@ -147,7 +147,7 @@
     .bubble em { font-style: italic; }
     .bubble a { color: #1e3a8a; font-weight: 600; text-decoration: none; }
     .bubble a:hover { text-decoration: underline; }
-    .msg-row.user .bubble a { color: #c4b5fd; }
+    .msg-row.user .bubble a { color: #93c5fd; }
     .bubble ul { margin: 6px 0 6px 18px; }
     .bubble ol { margin: 6px 0 6px 18px; }
     .bubble li { margin-bottom: 3px; }
@@ -183,7 +183,7 @@
     .r-badge { font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 700; }
     .r-badge.product { background: #dbeafe; color: #1e3a8a; }
     .r-badge.service { background: #d1fae5; color: #065f46; }
-    .r-badge.housing { background: #fef3c7; color: #92400e; }
+    .r-badge.housing { background: #fef3c7; color: #0d1f4e; }
     .r-price { font-weight: 800; color: var(--brand); font-size: 13px; }
 
     /* Suggestion chips */
@@ -275,12 +275,12 @@
     /* ── VIDEO BUTTON ─────────────────────────────────────────────────── */
     .vid-btn {
       display: inline-flex; align-items: center; gap: 6px;
-      background: linear-gradient(135deg, #7c3aed, #1e3a8a);
+      background: linear-gradient(135deg, #1e3a8a, #1e3a8a);
       color: #fff; border: none; border-radius: 20px;
       padding: 7px 16px; font-size: 12px; font-weight: 700;
       cursor: pointer; margin: 8px 0 2px;
       transition: opacity .2s, transform .15s;
-      box-shadow: 0 3px 10px rgba(124,58,237,.35);
+      box-shadow: 0 3px 10px rgba(30,58,138,.35);
     }
     .vid-btn:hover { opacity: .88; transform: translateY(-1px); }
     .vid-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
@@ -618,7 +618,7 @@ function _renderTutorialVideo(topic, steps) {
       g.addColorStop(1, `hsl(260,62%,9%)`);
       ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
       const o1 = ctx.createRadialGradient(W*0.12,H*0.28,0, W*0.12,H*0.28, Math.round(370*S));
-      o1.addColorStop(0,'rgba(124,58,237,.24)'); o1.addColorStop(1,'transparent');
+      o1.addColorStop(0,'rgba(30,58,138,.24)'); o1.addColorStop(1,'transparent');
       ctx.fillStyle = o1; ctx.fillRect(0,0,W,H);
       const o2 = ctx.createRadialGradient(W*0.88,H*0.72,0, W*0.88,H*0.72, Math.round(280*S));
       o2.addColorStop(0,'rgba(249,115,22,.15)'); o2.addColorStop(1,'transparent');
@@ -651,7 +651,7 @@ function _renderTutorialVideo(topic, steps) {
       const tw = ctx.measureText('BConnect').width + Math.round(50*S);
       ctx.fillStyle = 'rgba(0,0,0,.55)'; _rr(px,py,tw,ph,pr); ctx.fill();
       const wg = ctx.createLinearGradient(px,0,px+tw,0);
-      wg.addColorStop(0,'#fb923c'); wg.addColorStop(1,'#c084fc');
+      wg.addColorStop(0,'#fb923c'); wg.addColorStop(1,'#2d53b8');
       ctx.fillStyle = wg; ctx.fillText('BConnect', px+Math.round(25*S), py+ph*0.68);
       ctx.restore();
     }
@@ -667,7 +667,7 @@ function _renderTutorialVideo(topic, steps) {
       ctx.font = `900 ${Math.round(108*S)}px Inter,system-ui,sans-serif`;
       const bg = ctx.createLinearGradient(W*0.15,0,W*0.85,0);
       bg.addColorStop(0,'#fb923c'); bg.addColorStop(0.5,'#e879f9'); bg.addColorStop(1,'#818cf8');
-      ctx.fillStyle = bg; ctx.shadowColor = 'rgba(124,58,237,.7)'; ctx.shadowBlur = Math.round(34*S);
+      ctx.fillStyle = bg; ctx.shadowColor = 'rgba(30,58,138,.7)'; ctx.shadowBlur = Math.round(34*S);
       ctx.fillText('BConnect', W/2, H/2-Math.round(20*S)); ctx.restore();
       ctx.font = `500 ${Math.round(36*S)}px Inter,system-ui,sans-serif`;
       ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.shadowBlur = 0;
@@ -741,9 +741,9 @@ function _renderTutorialVideo(topic, steps) {
       const numR = Math.round(72*S);
       const numX = cardX + Math.round(80*S), numY = cardY + Math.round(90*S);
       const ng = ctx.createLinearGradient(numX-numR,numY-numR,numX+numR,numY+numR);
-      ng.addColorStop(0,'#7c3aed'); ng.addColorStop(1,'#1e3a8a');
+      ng.addColorStop(0,'#1e3a8a'); ng.addColorStop(1,'#1e3a8a');
       ctx.fillStyle = ng;
-      ctx.shadowColor = 'rgba(124,58,237,.7)'; ctx.shadowBlur = Math.round(28*S);
+      ctx.shadowColor = 'rgba(30,58,138,.7)'; ctx.shadowBlur = Math.round(28*S);
       ctx.beginPath(); ctx.arc(numX,numY,numR,0,Math.PI*2); ctx.fill();
       ctx.shadowBlur = 0;
       ctx.font = `900 ${Math.round(64*S)}px Inter,system-ui,sans-serif`;
@@ -779,7 +779,7 @@ function _renderTutorialVideo(topic, steps) {
       ctx.fillStyle = 'rgba(167,139,250,.18)';
       _rr(cardX, barY, barW, barH2, barH2/2); ctx.fill();
       const fillG = ctx.createLinearGradient(cardX,barY,cardX+barW*prog,barY);
-      fillG.addColorStop(0,'#7c3aed'); fillG.addColorStop(1,'#818cf8');
+      fillG.addColorStop(0,'#1e3a8a'); fillG.addColorStop(1,'#818cf8');
       ctx.fillStyle = fillG;
       _rr(cardX, barY, barW*prog, barH2, barH2/2); ctx.fill();
 
@@ -796,7 +796,7 @@ function _renderTutorialVideo(topic, steps) {
       ov.addColorStop(0,'rgba(3,0,18,.92)'); ov.addColorStop(1,'rgba(8,3,36,.97)');
       ctx.fillStyle = ov; ctx.fillRect(0, slideY, W, H);
       const og = ctx.createRadialGradient(W/2,H/2,0, W/2,H/2, Math.round(340*S));
-      og.addColorStop(0,'rgba(124,58,237,.35)'); og.addColorStop(1,'transparent');
+      og.addColorStop(0,'rgba(30,58,138,.35)'); og.addColorStop(1,'transparent');
       ctx.fillStyle = og; ctx.fillRect(0,0,W,H);
       ctx.textAlign = 'center';
       ctx.font = `900 ${Math.round(80*S)}px Inter,system-ui,sans-serif`;

@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{--primary:#7c3aed;--primary-light:#1e40af;--success:#059669;--warning:#d97706;--danger:#dc2626;--gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-400:#9ca3af;--gray-500:#6b7280;--gray-700:#374151;--gray-900:#111827;--white:#fff}
+:root{--primary:#1e3a8a;--primary-light:#1e40af;--success:#059669;--warning:#162d6e;--danger:#dc2626;--gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-400:#9ca3af;--gray-500:#6b7280;--gray-700:#374151;--gray-900:#111827;--white:#fff}
 body{font-family:'Inter',-apple-system,sans-serif;background:#ffffff;min-height:100vh;color:var(--gray-900)}
 .navbar{background:var(--white);border-bottom:1px solid var(--gray-200);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .nav-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.15rem;color:#1e3a8a;text-decoration:none}
@@ -29,7 +29,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:#ffffff;min-height:
 .field{width:100%;padding:13px 16px;border:2px solid var(--gray-200);border-radius:12px;font-size:.95rem;font-family:inherit;outline:none;transition:border-color .2s;margin-bottom:14px}
 .field:focus{border-color:var(--primary)}
 .btn-primary{width:100%;padding:14px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:var(--white);border:none;border-radius:12px;font-size:1rem;font-weight:800;cursor:pointer;transition:all .2s;font-family:inherit}
-.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,58,237,.4)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(30,58,138,.4)}
 .btn-primary:disabled{background:var(--gray-400);cursor:not-allowed;transform:none;box-shadow:none}
 .login-note{font-size:.8rem;color:var(--gray-400);text-align:center;margin-top:16px;line-height:1.5}
 
@@ -47,7 +47,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:#ffffff;min-height:
 .btn-back{background:var(--gray-100);color:var(--gray-700)}
 .btn-back:hover{background:var(--gray-200)}
 .btn-scan-btn{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:var(--white);padding:10px 18px;border-radius:10px;font-size:.85rem;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;gap:7px}
-.btn-scan-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(124,58,237,.4)}
+.btn-scan-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(30,58,138,.4)}
 
 /*  Event cards  */
 .events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
@@ -80,8 +80,8 @@ body{font-family:'Inter',-apple-system,sans-serif;background:#ffffff;min-height:
 .tickets-table tr:hover td{background:var(--gray-50)}
 .badge{display:inline-block;padding:3px 9px;border-radius:9999px;font-size:.7rem;font-weight:700}
 .badge-confirmed{background:#dcfce7;color:#15803d}
-.badge-used{background:#fef3c7;color:#92400e}
-.ticket-code{font-family:monospace;font-size:.82rem;color:#6d28d9;font-weight:700;background:#dbeafe;padding:2px 8px;border-radius:6px;white-space:nowrap}
+.badge-used{background:#fef3c7;color:#0d1f4e}
+.ticket-code{font-family:monospace;font-size:.82rem;color:#162d6e;font-weight:700;background:#dbeafe;padding:2px 8px;border-radius:6px;white-space:nowrap}
 
 /*  QR Scanner  */
 .scanner-wrap{background:var(--white);border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.06);padding:24px;max-width:500px;margin:0 auto}
@@ -95,14 +95,14 @@ body{font-family:'Inter',-apple-system,sans-serif;background:#ffffff;min-height:
 .or-div{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--gray-400);font-size:.8rem;font-weight:600}
 .or-div::before,.or-div::after{content:'';flex:1;height:1px;background:var(--gray-200)}
 .btn-cam{width:100%;padding:12px;background:#ffffff;color:var(--gray-700);border:2px dashed var(--gray-300);border-radius:11px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
-.btn-cam:hover{border-color:var(--primary);color:var(--primary);background:#faf5ff}
+.btn-cam:hover{border-color:var(--primary);color:var(--primary);background:#f0f5ff}
 #org-cam-wrap{display:none;margin-top:14px;border-radius:12px;overflow:hidden;position:relative;background:#000}
 #org-cam-wrap video{width:100%;display:block;max-height:240px;object-fit:cover}
 #org-scan-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
 #org-scan-box{width:160px;height:160px;border:3px solid var(--primary);border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,.45)}
 .scan-result{margin-top:16px;border-radius:14px;padding:20px;display:none}
 .scan-valid{background:linear-gradient(135deg,#dcfce7,#f0fdf4);border:2px solid #86efac}
-.scan-used{background:linear-gradient(135deg,#fef3c7,#fffbeb);border:2px solid #fbbf24}
+.scan-used{background:linear-gradient(135deg,#fef3c7,#f0f5ff);border:2px solid #2d53b8}
 .scan-invalid{background:linear-gradient(135deg,#fee2e2,#fff5f5);border:2px solid #fca5a5}
 .scan-result-icon{font-size:2rem;text-align:center;margin-bottom:8px}
 .scan-result-status{font-weight:800;font-size:1rem;text-align:center;margin-bottom:14px}
@@ -111,7 +111,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:#ffffff;min-height:
 .scan-detail-label{color:var(--gray-500);font-weight:600}
 .scan-detail-value{font-weight:700;text-align:right}
 .btn-mark{width:100%;margin-top:10px;padding:11px;background:linear-gradient(135deg,var(--primary),var(--primary-light));border:none;color:var(--white);border-radius:10px;font-weight:800;cursor:pointer;font-size:.88rem;font-family:inherit;transition:all .2s}
-.btn-mark:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(124,58,237,.4)}
+.btn-mark:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(30,58,138,.4)}
 .btn-mark-again{width:100%;margin-top:8px;padding:10px;background:var(--white);border:2px solid #86efac;color:#15803d;border-radius:10px;font-weight:700;cursor:pointer;font-size:.83rem;font-family:inherit}
 
 /*  Tabs  */
@@ -131,14 +131,14 @@ body{font-family:'Inter',-apple-system,sans-serif;background:#ffffff;min-height:
 
 <nav class="navbar">
   <a class="nav-brand" href="website.html">
-    <div class="nav-brand-mark" style="background:linear-gradient(135deg,#f97316,#a855f7);box-shadow:0 3px 10px rgba(168,85,247,.35)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="6" cy="6" r="2.5" fill="#fff"/><circle cx="6" cy="18" r="2.5" fill="#fff"/><circle cx="18" cy="12" r="2.5" fill="#fff"/><circle cx="6" cy="12" r="1.8" fill="rgba(255,255,255,0.6)"/><line x1="6" y1="6" x2="6" y2="18" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/><line x1="6" y1="6" x2="18" y2="12" stroke="rgba(255,255,255,0.9)" stroke-width="1.5"/><line x1="6" y1="18" x2="18" y2="12" stroke="rgba(255,255,255,0.9)" stroke-width="1.5"/></svg></div>
+    <div class="nav-brand-mark" style="background:linear-gradient(135deg,#1e3a8a,#2d53b8);box-shadow:0 3px 10px rgba(30,58,138,.35)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="6" cy="6" r="2.5" fill="#fff"/><circle cx="6" cy="18" r="2.5" fill="#fff"/><circle cx="18" cy="12" r="2.5" fill="#fff"/><circle cx="6" cy="12" r="1.8" fill="rgba(255,255,255,0.6)"/><line x1="6" y1="6" x2="6" y2="18" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/><line x1="6" y1="6" x2="18" y2="12" stroke="rgba(255,255,255,0.9)" stroke-width="1.5"/><line x1="6" y1="18" x2="18" y2="12" stroke="rgba(255,255,255,0.9)" stroke-width="1.5"/></svg></div>
     <div>
       <div>bConnect</div>
       <div class="nav-title">Organizer Portal</div>
     </div>
   </a>
   <div class="nav-right" id="nav-right" style="display:none">
-    <span id="nav-organizer-name" style="font-size:.85rem;font-weight:700;color:#6d28d9"></span>
+    <span id="nav-organizer-name" style="font-size:.85rem;font-weight:700;color:#162d6e"></span>
     <button class="btn-logout" onclick="logout()">Logout</button>
   </div>
 </nav>
@@ -233,7 +233,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:#ffffff;min-height:
     </div>
     <div style="max-width:460px;margin:0 auto;">
       <div style="display:flex;align-items:center;gap:18px;background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:20px 22px;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,.06)">
-        <div id="orgProfAvatar" style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#f97316,#a855f7);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;flex-shrink:0">O</div>
+        <div id="orgProfAvatar" style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#1e3a8a,#2d53b8);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;flex-shrink:0">O</div>
         <div>
           <div id="orgProfName" style="font-size:17px;font-weight:800;color:#111">—</div>
           <div style="font-size:12px;color:#9ca3af;margin-top:3px;font-weight:600;letter-spacing:.04em;text-transform:uppercase">Event Organizer · BConnect</div>
@@ -274,7 +274,7 @@ let orgCamActive = false, orgCamStream = null, orgScanInterval = null;
 function showToast(msg, type) {
   let t = document.getElementById('org-toast');
   if (!t) { t = document.createElement('div'); t.id = 'org-toast'; t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);padding:13px 24px;border-radius:14px;font-size:.9rem;font-weight:700;z-index:99999;transition:transform .35s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.2);max-width:90vw;text-align:center;pointer-events:none;font-family:inherit'; document.body.appendChild(t); }
-  const bg = { error:'#dc2626', success:'#059669', warning:'#d97706', info:'#2563eb' };
+  const bg = { error:'#dc2626', success:'#059669', warning:'#162d6e', info:'#2563eb' };
   t.style.background = bg[type] || bg.success; t.style.color = '#fff';
   t.textContent = msg; t.style.transform = 'translateX(-50%) translateY(0)';
   clearTimeout(t._tmr); t._tmr = setTimeout(() => { t.style.transform = 'translateX(-50%) translateY(120px)'; }, 4000);
@@ -481,22 +481,22 @@ function showScanResult(code, data) {
     const alreadyUsed = t.status === 'used';
     const cls = alreadyUsed ? 'scan-used' : 'scan-valid';
     const icon = alreadyUsed ? '' : '';
-    const statusText = alreadyUsed ? '<span style="color:#92400e">Already Scanned — Entry Was Used</span>' : '<span style="color:#15803d">Valid Ticket — Entry Granted</span>';
+    const statusText = alreadyUsed ? '<span style="color:#0d1f4e">Already Scanned — Entry Was Used</span>' : '<span style="color:#15803d">Valid Ticket — Entry Granted</span>';
     const fmtDate = d => d ? new Date(d).toLocaleDateString('en-KE',{day:'numeric',month:'short',year:'numeric'}) : '—';
     const markBtn = alreadyUsed
-      ? `<div style="background:#fef3c7;border:1.5px solid #fbbf24;border-radius:10px;padding:10px;text-align:center;font-size:.82rem;font-weight:700;color:#78350f;margin-top:10px"> Already scanned.</div>`
+      ? `<div style="background:#fef3c7;border:1.5px solid #2d53b8;border-radius:10px;padding:10px;text-align:center;font-size:.82rem;font-weight:700;color:#78350f;margin-top:10px"> Already scanned.</div>`
       : `<button class="btn-mark" id="org-mark-btn" onclick="orgMarkAsUsed('${t.ticket_code}')"> Mark as Used (Grant Entry)</button>`;
     el.className = 'scan-result ' + cls;
     el.innerHTML = `
       <div class="scan-result-icon">${icon}</div>
       <div class="scan-result-status">${statusText}</div>
-      <div class="scan-detail-row"><span class="scan-detail-label">Ticket</span><span class="scan-detail-value" style="font-family:monospace;color:#6d28d9">${t.ticket_code}</span></div>
+      <div class="scan-detail-row"><span class="scan-detail-label">Ticket</span><span class="scan-detail-value" style="font-family:monospace;color:#162d6e">${t.ticket_code}</span></div>
       <div class="scan-detail-row"><span class="scan-detail-label">Event</span><span class="scan-detail-value">${t.event_title}</span></div>
       <div class="scan-detail-row"><span class="scan-detail-label">Date</span><span class="scan-detail-value">${fmtDate(t.event_date)}</span></div>
       <div class="scan-detail-row"><span class="scan-detail-label">Buyer</span><span class="scan-detail-value">${t.buyer_name}</span></div>
       <div class="scan-detail-row"><span class="scan-detail-label">Phone</span><span class="scan-detail-value">${t.buyer_phone || '—'}</span></div>
       <div class="scan-detail-row"><span class="scan-detail-label">Qty</span><span class="scan-detail-value">${t.quantity} ticket${t.quantity > 1 ? 's' : ''}</span></div>
-      <div class="scan-detail-row"><span class="scan-detail-label">Status</span><span class="scan-detail-value" style="text-transform:capitalize;color:${alreadyUsed ? '#d97706' : '#15803d'}">${t.status}</span></div>
+      <div class="scan-detail-row"><span class="scan-detail-label">Status</span><span class="scan-detail-value" style="text-transform:capitalize;color:${alreadyUsed ? '#162d6e' : '#15803d'}">${t.status}</span></div>
       ${markBtn}
       <button class="btn-mark-again" onclick="resetScan()"> Scan Another Ticket</button>`;
   } else {
@@ -526,7 +526,7 @@ async function orgMarkAsUsed(code) {
         showToast(' Ticket verified & entry granted!', 'success');
         if (orgName) refreshEvents();
       } else if (data.alreadyUsed) {
-        btn.style.cssText = 'width:100%;margin-top:10px;padding:11px;background:#d97706;border:none;color:#fff;border-radius:10px;font-weight:800;font-size:.88rem;cursor:default;font-family:inherit';
+        btn.style.cssText = 'width:100%;margin-top:10px;padding:11px;background:#162d6e;border:none;color:#fff;border-radius:10px;font-weight:800;font-size:.88rem;cursor:default;font-family:inherit';
         btn.textContent = ' Already scanned before';
         showToast(' Ticket already used', 'warning');
       } else {

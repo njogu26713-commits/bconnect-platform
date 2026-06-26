@@ -43,8 +43,8 @@
       font-family:inherit;
       transition:all .2s;
     }
-    .btn-print  { background:#7c3aed; color:white; }
-    .btn-print:hover  { background:#6d28d9; transform:translateY(-2px); box-shadow:0 6px 20px rgba(124,58,237,.35); }
+    .btn-print  { background:#1e3a8a; color:white; }
+    .btn-print:hover  { background:#162d6e; transform:translateY(-2px); box-shadow:0 6px 20px rgba(30,58,138,.35); }
     .btn-back   { background:white; color:#475569; border:1.5px solid #e2e8f0; }
     .btn-back:hover  { background:#f8fafc; }
     .btn-share  { background:#0ea5e9; color:white; }
@@ -62,7 +62,7 @@
 
     /* Header stripe */
     .receipt-header {
-      background:linear-gradient(135deg, #7c3aed 0%, #5b21b6 50%, #4c1d95 100%);
+      background:linear-gradient(135deg, #1e3a8a 0%, #5b21b6 50%, #162d6e 100%);
       padding:40px 40px 36px;
       color:white;
       position:relative;
@@ -99,7 +99,7 @@
     .brand-icon {
       width:48px;
       height:48px;
-      background:linear-gradient(135deg,#fbbf24,#f59e0b,#ef4444);
+      background:linear-gradient(135deg,#2d53b8,#1e3a8a,#ef4444);
       border-radius:14px;
       display:flex;
       align-items:center;
@@ -163,7 +163,7 @@
     .amount-currency {
       font-size:24px;
       font-weight:700;
-      color:#7c3aed;
+      color:#1e3a8a;
       vertical-align:super;
       margin-right:4px;
     }
@@ -249,12 +249,12 @@
     }
     .detail-value.mono {
       font-family:'Courier New',monospace;
-      color:#7c3aed;
+      color:#1e3a8a;
       font-size:13px;
       letter-spacing:1px;
     }
     .detail-value.green { color:#16a34a; }
-    .detail-value.amber { color:#d97706; }
+    .detail-value.amber { color:#162d6e; }
     .detail-value.red   { color:#dc2626; }
 
     /* QR placeholder */
@@ -285,7 +285,7 @@
       text-align:center;
       border-top:1px solid #e2e8f0;
     }
-    .footer-logo { font-size:16px; font-weight:900; color:#7c3aed; margin-bottom:4px; }
+    .footer-logo { font-size:16px; font-weight:900; color:#1e3a8a; margin-bottom:4px; }
     .footer-text { font-size:11px; color:#94a3b8; line-height:1.6; }
     .footer-trust {
       display:flex;
@@ -331,7 +331,7 @@
 <!-- Action buttons -->
 <div class="actions-bar">
   <button class="btn-action btn-back" id="backBtn" onclick="goBack()">← Back</button>
-  <div id="autoReturnBadge" style="display:none;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#7c3aed;background:rgba(124,58,237,.08);padding:8px 16px;border-radius:50px;border:1.5px solid rgba(124,58,237,.2);">
+  <div id="autoReturnBadge" style="display:none;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#1e3a8a;background:rgba(30,58,138,.08);padding:8px 16px;border-radius:50px;border:1.5px solid rgba(30,58,138,.2);">
     <span></span> Returning in <span id="autoReturnCount">3</span>s…
   </div>
   <div style="display:flex;gap:10px;flex-wrap:wrap;">
@@ -513,7 +513,7 @@ if (type === 'rent') {
   document.getElementById('statusText').textContent = 'PENDING REVIEW';
   document.getElementById('statusPill').style.background = '#fef9c3';
   document.getElementById('statusPill').style.color = '#713f12';
-  document.getElementById('statusPill').querySelector('.status-dot').style.background = '#d97706';
+  document.getElementById('statusPill').querySelector('.status-dot').style.background = '#162d6e';
 } else {
   document.getElementById('rcptTitle').textContent = 'Payment Successful';
   document.getElementById('rcptSub').textContent   = 'Your transaction has been confirmed';

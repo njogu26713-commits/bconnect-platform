@@ -9,8 +9,8 @@
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --primary:#7c3aed;--primary-light:#1e40af;--teal:#0d9488;
-  --amber:#f59e0b;--red:#ef4444;--white:#fff;
+  --primary:#1e3a8a;--primary-light:#1e40af;--teal:#0d9488;
+  --amber:#1e3a8a;--red:#ef4444;--white:#fff;
   --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;
   --gray-400:#9ca3af;--gray-500:#6b7280;--gray-700:#374151;--gray-900:#111827;
   --shadow-sm:0 1px 4px rgba(0,0,0,.07);--shadow-md:0 4px 16px rgba(0,0,0,.10);--shadow-lg:0 12px 32px rgba(0,0,0,.15);
@@ -19,7 +19,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:#ffffff;min-height:
 
 /*  HERO BANNER  */
 .hero{
-  background:linear-gradient(135deg,#1e1b4b 0%,#4c1d95 40%,#7c3aed 100%);
+  background:linear-gradient(135deg,#0d1f4e 0%,#162d6e 40%,#1e3a8a 100%);
   color:#fff;padding:48px 24px 36px;text-align:center;position:relative;overflow:hidden;
 }
 .hero::before{
@@ -33,7 +33,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:#ffffff;min-height:
 .hero-search{display:flex;gap:.6rem;max-width:500px;margin:0 auto}
 .hero-search input{flex:1;padding:.75rem 1.1rem;border-radius:12px;border:none;font-size:.95rem;outline:none;font-family:inherit}
 .hero-search button{padding:.75rem 1.4rem;background:var(--amber);color:#fff;border:none;border-radius:12px;font-size:.9rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .2s}
-.hero-search button:hover{background:#d97706;transform:translateY(-1px)}
+.hero-search button:hover{background:#162d6e;transform:translateY(-1px)}
 
 /*  LAYOUT  */
 .page-layout{display:flex;min-height:calc(100vh - 57px)}
@@ -61,7 +61,7 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
 .events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem}
 .e-card{background:var(--white);border-radius:1.25rem;box-shadow:var(--shadow-sm);overflow:hidden;cursor:pointer;border:1.5px solid transparent;transition:transform .25s,box-shadow .25s,border-color .25s;position:relative}
 .e-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:var(--primary)}
-.e-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;z-index:2;background:linear-gradient(90deg,#7c3aed,#1e40af)}
+.e-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;z-index:2;background:linear-gradient(90deg,#1e3a8a,#1e40af)}
 .e-card-img-wrap{position:relative;overflow:hidden;height:180px}
 .e-card-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
 .e-card:hover .e-card-img-wrap img{transform:scale(1.06)}
@@ -75,11 +75,11 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
 .e-card-price{font-size:.95rem;font-weight:800;color:var(--primary)}
 .e-card-price.free{color:#059669}
 .e-card-cta{background:var(--primary);color:#fff;border:none;padding:.3rem .75rem;border-radius:.55rem;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .2s}
-.e-card-cta:hover{background:#6d28d9;transform:scale(1.05)}
+.e-card-cta:hover{background:#162d6e;transform:scale(1.05)}
 .e-card-cta.sold{background:var(--gray-400);cursor:not-allowed}
 .tickets-left{font-size:.7rem;color:var(--gray-500);margin-top:.3rem}
 .tickets-left.low{color:#dc2626;font-weight:700}
-.e-days-chip{display:inline-flex;align-items:center;background:#fef3c7;color:#92400e;font-size:.68rem;font-weight:700;padding:.18rem .5rem;border-radius:9999px;border:1px solid #fde68a}
+.e-days-chip{display:inline-flex;align-items:center;background:#fef3c7;color:#0d1f4e;font-size:.68rem;font-weight:700;padding:.18rem .5rem;border-radius:9999px;border:1px solid #fde68a}
 .e-days-chip.ended{background:#fee2e2;color:#991b1b;border-color:#fca5a5}
 .e-share-btn{position:absolute;top:.5rem;right:.5rem;z-index:4;background:rgba(255,255,255,.92);border:none;border-radius:50%;width:2.1rem;height:2.1rem;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.9rem;box-shadow:0 2px 8px rgba(0,0,0,.18);transition:all .2s;backdrop-filter:blur(6px)}
 .e-share-btn:hover{background:#fff;transform:scale(1.12);box-shadow:0 4px 14px rgba(0,0,0,.22)}
@@ -117,7 +117,7 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
 .detail-info-row{display:flex;align-items:flex-start;gap:.6rem;font-size:.88rem;color:var(--gray-700)}
 .detail-info-row .lbl{font-weight:700;min-width:70px;color:var(--gray-900)}
 .detail-desc{font-family:Inter,system-ui,-apple-system,sans-serif;font-size:.92rem;font-weight:600;color:var(--gray-700);line-height:1.8;margin-bottom:1.2rem;white-space:pre-wrap;word-break:break-word}
-.ticket-box{background:linear-gradient(135deg,#dbeafe,#f5f3ff);border:1.5px solid #c4b5fd;border-radius:1rem;padding:1.2rem;margin-bottom:1rem}
+.ticket-box{background:linear-gradient(135deg,#dbeafe,#f5f3ff);border:1.5px solid #93c5fd;border-radius:1rem;padding:1.2rem;margin-bottom:1rem}
 .ticket-price-big{font-size:2rem;font-weight:800;color:var(--primary);margin-bottom:.25rem}
 .ticket-price-big.free{color:#059669}
 .ticket-avail{font-size:.82rem;color:var(--gray-500);margin-bottom:.9rem}
@@ -126,12 +126,12 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
 .qty-btn{background:var(--white);border:1.5px solid var(--gray-200);border-radius:.5rem;width:2rem;height:2rem;font-size:1.1rem;font-weight:700;cursor:pointer;transition:border-color .2s;display:flex;align-items:center;justify-content:center}
 .qty-btn:hover{border-color:var(--primary)}
 .qty-display{font-size:1.1rem;font-weight:800;min-width:24px;text-align:center}
-.btn-buy{width:100%;padding:1rem;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:.9rem;font-size:1rem;font-weight:800;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(124,58,237,.35)}
-.btn-buy:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(124,58,237,.4)}
+.btn-buy{width:100%;padding:1rem;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:.9rem;font-size:1rem;font-weight:800;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(30,58,138,.35)}
+.btn-buy:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(30,58,138,.4)}
 .btn-buy:disabled{background:var(--gray-400);cursor:not-allowed;box-shadow:none;transform:none}
 
 /*  MPESA SPINNER  */
-.mpesa-spinner{width:18px;height:18px;border:2.5px solid #ddd6fe;border-top-color:#7c3aed;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+.mpesa-spinner{width:18px;height:18px;border:2.5px solid #dbeafe;border-top-color:#1e3a8a;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /*  SUCCESS TICKET  */
@@ -148,10 +148,10 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
 /*  SUBMIT EVENT BUTTON  */
 .submit-event-btn{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.18);color:#fff;border:1.5px solid rgba(255,255,255,.35);border-radius:10px;padding:.55rem 1.2rem;font-size:.83rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;backdrop-filter:blur(4px);text-decoration:none;margin-left:.6rem}
 .submit-event-btn:hover{background:rgba(255,255,255,.28);border-color:rgba(255,255,255,.55);transform:translateY(-1px)}
-.sidebar-submit-btn{display:flex;align-items:center;gap:.7rem;width:100%;margin-top:.5rem;padding:.75rem .9rem;border-radius:.75rem;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;color:#fff;background:linear-gradient(135deg,var(--primary),var(--primary-light));border:none;transition:all .2s;box-shadow:0 3px 12px rgba(124,58,237,.3)}
-.sidebar-submit-btn:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(124,58,237,.4)}
-.sec-submit-btn{display:inline-flex;align-items:center;gap:.5rem;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:.65rem;padding:.45rem 1rem;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;box-shadow:0 2px 8px rgba(124,58,237,.25)}
-.sec-submit-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(124,58,237,.4)}
+.sidebar-submit-btn{display:flex;align-items:center;gap:.7rem;width:100%;margin-top:.5rem;padding:.75rem .9rem;border-radius:.75rem;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;color:#fff;background:linear-gradient(135deg,var(--primary),var(--primary-light));border:none;transition:all .2s;box-shadow:0 3px 12px rgba(30,58,138,.3)}
+.sidebar-submit-btn:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(30,58,138,.4)}
+.sec-submit-btn{display:inline-flex;align-items:center;gap:.5rem;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:.65rem;padding:.45rem 1rem;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;box-shadow:0 2px 8px rgba(30,58,138,.25)}
+.sec-submit-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(30,58,138,.4)}
 
 /*  SUBMIT EVENT MODAL  */
 .submit-modal-overlay{display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;padding:0}
@@ -164,7 +164,7 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
 .sm-close{background:var(--gray-100);border:none;border-radius:50%;width:32px;height:32px;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--gray-500);transition:background .2s}
 .sm-close:hover{background:var(--gray-200)}
 .sm-body{padding:20px 24px 0}
-.sm-info-box{background:#dbeafe;border:1.5px solid #c4b5fd;border-radius:12px;padding:12px 14px;margin-bottom:18px;display:flex;gap:10px;align-items:flex-start}
+.sm-info-box{background:#dbeafe;border:1.5px solid #93c5fd;border-radius:12px;padding:12px 14px;margin-bottom:18px;display:flex;gap:10px;align-items:flex-start}
 .sm-info-box p{font-size:.82rem;color:#5b21b6;line-height:1.5;margin:0}
 .sm-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .sm-group{margin-bottom:14px}
@@ -180,9 +180,9 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
 .sm-actions{display:flex;gap:10px;padding:14px 24px 0}
 .sm-actions .btn-cancel{flex:0 0 auto;padding:11px 20px;border-radius:9px;border:1.5px solid var(--gray-200);background:#fff;font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit;color:var(--gray-700);transition:all .2s}
 .sm-actions .btn-cancel:hover{border-color:var(--gray-400)}
-.sm-actions .btn-submit{flex:1;padding:12px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;font-size:.9rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s;box-shadow:0 3px 12px rgba(124,58,237,.3);display:flex;align-items:center;justify-content:center;gap:7px}
-.sm-actions .btn-submit:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(124,58,237,.4)}
-.sm-actions .btn-submit:disabled{background:#c4b5fd;cursor:not-allowed;transform:none;box-shadow:none}
+.sm-actions .btn-submit{flex:1;padding:12px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;font-size:.9rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s;box-shadow:0 3px 12px rgba(30,58,138,.3);display:flex;align-items:center;justify-content:center;gap:7px}
+.sm-actions .btn-submit:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(30,58,138,.4)}
+.sm-actions .btn-submit:disabled{background:#93c5fd;cursor:not-allowed;transform:none;box-shadow:none}
 .submit-success-box{display:none;text-align:center;padding:32px 24px}
 .submit-success-box h3{font-size:1.1rem;font-weight:800;color:#059669;margin-bottom:8px}
 .submit-success-box p{font-size:.88rem;color:var(--gray-500);line-height:1.5}
@@ -205,8 +205,8 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
 .mob-nav-bar { display:none; position:fixed; bottom:0; left:0; right:0; background:#fff; border-top:1px solid #e5e7eb; z-index:300; padding:6px 0 env(safe-area-inset-bottom,0); }
 .mob-nav-bar-inner { display:flex; justify-content:space-around; }
 .mob-nav-a { display:flex; flex-direction:column; align-items:center; gap:2px; color:#6b7280; font-size:10px; font-weight:600; text-decoration:none; padding:6px 8px; flex:1; font-family:'DM Sans',sans-serif; transition:color .15s; }
-.mob-nav-a.active { color:#f97316; }
-.mob-nav-a.active svg { stroke:#f97316 !important; }
+.mob-nav-a.active { color:#1e3a8a; }
+.mob-nav-a.active svg { stroke:#1e3a8a !important; }
 .mob-nav-a svg { stroke:#6b7280; }
 
 /* ══ BConnect Branded Skeleton — Event Cards ══ */
@@ -226,7 +226,7 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
 }
 .bc-skel::before {
   content:''; position:absolute; top:0; left:0; right:0; height:4px; z-index:10;
-  background:linear-gradient(90deg,#7c3aed,#1e40af);
+  background:linear-gradient(90deg,#1e3a8a,#1e40af);
 }
 .bc-skel-img-wrap { position:relative; width:100%; min-height:180px; overflow:hidden; }
 .bc-skel-img-fill { position:absolute; inset:0; border-radius:0; }
@@ -297,7 +297,7 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
       <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
       Submit Your Event
     </button>
-    <a href="organizer-dashboard.html" style="display:flex;align-items:center;gap:8px;margin-top:10px;padding:11px 14px;background:linear-gradient(135deg,#f97316,#a855f7);color:#fff;border-radius:10px;font-size:.83rem;font-weight:700;text-decoration:none;transition:opacity .2s" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
+    <a href="organizer-dashboard.html" style="display:flex;align-items:center;gap:8px;margin-top:10px;padding:11px 14px;background:linear-gradient(135deg,#1e3a8a,#2d53b8);color:#fff;border-radius:10px;font-size:.83rem;font-weight:700;text-decoration:none;transition:opacity .2s" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       Organizer Login
     </a>
@@ -365,7 +365,7 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
         <div class="modal-share-row" id="modal-share-row">
           <button class="share-modal-btn" style="background:#25d366;color:#fff" onclick="modalShareWhatsApp()"> WhatsApp</button>
           <button class="share-modal-btn" style="background:#000;color:#fff" onclick="modalShareTwitter()"> Twitter / X</button>
-          <button class="share-modal-btn" style="background:#dbeafe;color:#6d28d9" onclick="modalCopyLink()"> Copy Link</button>
+          <button class="share-modal-btn" style="background:#dbeafe;color:#162d6e" onclick="modalCopyLink()"> Copy Link</button>
         </div>
         <p class="detail-desc" id="modal-desc"></p>
 
@@ -382,7 +382,7 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
             <label style="font-size:.78rem;font-weight:600;color:var(--gray-600);display:block;margin-bottom:4px"> M-Pesa Phone Number</label>
             <input id="mpesa-phone" type="tel" placeholder="e.g. 0712 345678"
               style="width:100%;padding:10px 12px;border:1.5px solid #d1d5db;border-radius:10px;font-size:.95rem;outline:none;box-sizing:border-box"
-              onfocus="this.style.borderColor='#7c3aed'" onblur="this.style.borderColor='#d1d5db'">
+              onfocus="this.style.borderColor='#1e3a8a'" onblur="this.style.borderColor='#d1d5db'">
             <p style="font-size:.72rem;color:var(--gray-400);margin:4px 0 0">You will receive an M-Pesa prompt on this number</p>
           </div>
           <button class="btn-buy" id="btn-buy" onclick="buyTicket()"> Get Tickets</button>
@@ -392,7 +392,7 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
           <div style="font-size:2.2rem;margin-bottom:.5rem"></div>
           <h3 style="margin:0 0 .4rem;color:#1e293b">Check your phone!</h3>
           <p style="font-size:.88rem;color:#64748b;margin:0 0 1rem">An M-Pesa payment request has been sent. Enter your PIN to complete the booking.</p>
-          <div style="display:flex;align-items:center;justify-content:center;gap:8px;color:#7c3aed;font-size:.85rem;font-weight:600">
+          <div style="display:flex;align-items:center;justify-content:center;gap:8px;color:#1e3a8a;font-size:.85rem;font-weight:600">
             <div class="mpesa-spinner"></div>
             <span id="mpesa-status-text">Waiting for payment…</span>
           </div>
@@ -412,7 +412,7 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
 
           <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-top:.9rem">
             <button onclick="downloadTicketQR()" style="display:inline-flex;align-items:center;gap:6px;background:#15803d;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:.82rem;font-weight:700;cursor:pointer"> Save QR</button>
-            <a id="verify-ticket-link" href="/verify-ticket.html" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#dbeafe;color:#6d28d9;border-radius:8px;padding:8px 16px;font-size:.82rem;font-weight:700;text-decoration:none"> View Details</a>
+            <a id="verify-ticket-link" href="/verify-ticket.html" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#dbeafe;color:#162d6e;border-radius:8px;padding:8px 16px;font-size:.82rem;font-weight:700;text-decoration:none"> View Details</a>
           </div>
           <p style="margin-top:.7rem">Show this QR code at the venue entrance.</p>
         </div>
@@ -427,7 +427,7 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
     <div class="sm-handle"></div>
     <div class="sm-header">
       <h3>
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg>
         Submit Your Event
       </h3>
       <button class="sm-close" onclick="closeSubmitModal()">
@@ -440,14 +440,14 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
       <div style="font-size:3rem;margin-bottom:12px">🎉</div>
       <h3>Event Submitted for Review!</h3>
       <p>Our team will review your event and publish it within 24 hours. You'll be contacted via the email you provided.</p>
-      <button onclick="closeSubmitModal()" style="margin-top:20px;padding:11px 28px;background:linear-gradient(135deg,#7c3aed,#1e40af);color:#fff;border:none;border-radius:9px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit">Done</button>
+      <button onclick="closeSubmitModal()" style="margin-top:20px;padding:11px 28px;background:linear-gradient(135deg,#1e3a8a,#1e40af);color:#fff;border:none;border-radius:9px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit">Done</button>
     </div>
 
     <!-- Form State -->
     <div id="submit-form-body">
       <div class="sm-body">
         <div class="sm-info-box">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           <p>Submit your event for admin review. Once approved, it will appear live on the events page. Fill in as much detail as possible.</p>
         </div>
 
@@ -547,7 +547,7 @@ function showToast(msg, type) {
     t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);padding:13px 24px;border-radius:14px;font-size:.9rem;font-weight:700;z-index:99999;transition:transform .35s cubic-bezier(.34,1.56,.64,1);white-space:pre-wrap;box-shadow:0 8px 24px rgba(0,0,0,.2);max-width:90vw;text-align:center;pointer-events:none;font-family:inherit';
     document.body.appendChild(t);
   }
-  const bg = { error:'#dc2626', success:'#059669', warning:'#d97706', info:'#2563eb' };
+  const bg = { error:'#dc2626', success:'#059669', warning:'#162d6e', info:'#2563eb' };
   t.style.background = bg[type] || bg.error;
   t.style.color = '#fff';
   t.textContent = msg;

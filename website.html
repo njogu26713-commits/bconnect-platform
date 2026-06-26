@@ -20,7 +20,7 @@
       --primary-bg: #f0f9ff;
       --secondary: #1e40af;
       --success: #10b981;
-      --warning: #f59e0b;
+      --warning: #1e3a8a;
       --danger: #ef4444;
       --white: #ffffff;
       --gray-50: #f9fafb;
@@ -534,14 +534,14 @@
     .mc-cd-badge {
       position: absolute; bottom: 0.55rem; left: 0.55rem; z-index: 4;
       display: inline-flex; align-items: center; gap: 4px;
-      background: linear-gradient(135deg,#7c3aed,#f59e0b);
+      background: linear-gradient(135deg,#1e3a8a,#1e3a8a);
       color: #fff; font-size: 0.67rem; font-weight: 800;
       padding: 0.28rem 0.65rem; border-radius: 9999px;
       box-shadow: 0 3px 10px rgba(0,0,0,0.35);
       letter-spacing: 0.02em; white-space: nowrap;
     }
     .mc-cd-badge.mc-cd-soon {
-      background: linear-gradient(135deg,#dc2626,#f97316);
+      background: linear-gradient(135deg,#dc2626,#1e3a8a);
       animation: cd-pulse 1.6s ease-in-out infinite;
     }
     .mc-cd-badge.mc-cd-urgent {
@@ -677,7 +677,7 @@
     }
     .feat-card-star {
       position: absolute; top: 0.45rem; left: 0.45rem;
-      background: linear-gradient(135deg, #f59e0b, #d97706);
+      background: linear-gradient(135deg, #1e3a8a, #162d6e);
       color: #fff; font-size: 0.58rem; font-weight: 700;
       padding: 0.15rem 0.45rem; border-radius: 9999px;
       letter-spacing: 0.04em; text-transform: uppercase;
@@ -1163,7 +1163,7 @@
     
     .overview-item.orders { 
       background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 100%);
-      color: #92400e; 
+      color: #0d1f4e; 
     }
     
     .rent-item {
@@ -2191,20 +2191,20 @@
       </section>
 
       <!-- ROLE DASHBOARD BANNER (shown when user has an auto-assigned role) -->
-      <div id="role-banner" style="display:none;margin-bottom:18px;background:linear-gradient(135deg,#7c3aed,#1e3a8a);border-radius:14px;padding:16px 20px;display:none;align-items:center;gap:14px;box-shadow:0 4px 18px rgba(124,58,237,.25)">
+      <div id="role-banner" style="display:none;margin-bottom:18px;background:linear-gradient(135deg,#1e3a8a,#1e3a8a);border-radius:14px;padding:16px 20px;display:none;align-items:center;gap:14px;box-shadow:0 4px 18px rgba(30,58,138,.25)">
         <div id="role-banner-icon" style="font-size:28px;flex-shrink:0"></div>
         <div style="flex:1;min-width:0">
           <div id="role-banner-title" style="font-size:14px;font-weight:800;color:#fff;margin-bottom:2px"></div>
           <div id="role-banner-sub" style="font-size:12px;color:rgba(255,255,255,.78)"></div>
         </div>
-        <a id="role-banner-btn" href="#" style="flex-shrink:0;background:#fff;color:#7c3aed;border-radius:9px;padding:8px 18px;font-size:13px;font-weight:800;text-decoration:none;white-space:nowrap;transition:opacity .2s" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">Go to Dashboard →</a>
+        <a id="role-banner-btn" href="#" style="flex-shrink:0;background:#fff;color:#1e3a8a;border-radius:9px;padding:8px 18px;font-size:13px;font-weight:800;text-decoration:none;white-space:nowrap;transition:opacity .2s" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">Go to Dashboard →</a>
         <button onclick="document.getElementById('role-banner').style.display='none'" style="flex-shrink:0;background:rgba(255,255,255,.18);border:none;color:#fff;border-radius:6px;padding:4px 8px;font-size:16px;cursor:pointer;line-height:1">✕</button>
       </div>
 
       <!-- FEATURED LISTINGS -->
       <div class="featured-section">
         <div class="section-header">
-          <h3 class="section-title"><i data-lucide="star" style="width:18px;height:18px;color:#f59e0b;vertical-align:-3px;margin-right:6px"></i>Featured Listings</h3>
+          <h3 class="section-title"><i data-lucide="star" style="width:18px;height:18px;color:#1e3a8a;vertical-align:-3px;margin-right:6px"></i>Featured Listings</h3>
           <a class="see-all" onclick="navigateTo('products.html')">See All →</a>
         </div>
         <div class="featured-scroll-wrap">
@@ -2234,12 +2234,12 @@
           <p>Browse marketplace</p>
         </div>
 
-        <div class="user-card seller" onclick="handleSellerClick()"><i data-lucide="tag" style="width:28px;height:28px;margin-bottom:.5rem;color:#d97706"></i>
+        <div class="user-card seller" onclick="handleSellerClick()"><i data-lucide="tag" style="width:28px;height:28px;margin-bottom:.5rem;color:#162d6e"></i>
           <h3> I want to Sell</h3>
           <p>List your products</p>
         </div>
 
-        <div class="user-card service" onclick="navigateTo('services.html')"><i data-lucide="wrench" style="width:28px;height:28px;margin-bottom:.5rem;color:#7c3aed"></i>
+        <div class="user-card service" onclick="navigateTo('services.html')"><i data-lucide="wrench" style="width:28px;height:28px;margin-bottom:.5rem;color:#1e3a8a"></i>
           <h3> I need a Service</h3>
           <p>Book services</p>
         </div>
@@ -2605,7 +2605,7 @@
         return CATS[0];
       }
 
-      const TYPE_COLOR = { Property:'#1e3a8a', Service:'#10b981', Product:'#0ea5e9', Banner:'#7c3aed', Event:'#f59e0b' };
+      const TYPE_COLOR = { Property:'#1e3a8a', Service:'#10b981', Product:'#0ea5e9', Banner:'#1e3a8a', Event:'#1e3a8a' };
       const TYPE_BADGE = { Property:'FOR RENT', Service:'SERVICE', Product:'FOR SALE', Banner:'FEATURED', Event:' TICKETS' };
 
       function buildEventCountdown(eventDate) {
@@ -3414,7 +3414,7 @@
             </div>
           </form>
           <p style="text-align:center;margin-top:16px;font-size:13px;color:#6b7280;">
-            Don't have an account? <a href="#" onclick="showSellerView('register-form');return false;" style="color:#7c3aed;font-weight:600;">Create one →</a>
+            Don't have an account? <a href="#" onclick="showSellerView('register-form');return false;" style="color:#1e3a8a;font-weight:600;">Create one →</a>
           </p>
         </div>
 
@@ -3471,7 +3471,7 @@
             </div>
           </form>
           <p style="text-align:center;margin-top:14px;font-size:13px;color:#6b7280;">
-            Already have an account? <a href="#" onclick="showSellerView('login-form');return false;" style="color:#7c3aed;font-weight:600;">Login →</a>
+            Already have an account? <a href="#" onclick="showSellerView('login-form');return false;" style="color:#1e3a8a;font-weight:600;">Login →</a>
           </p>
         </div>
 
@@ -3542,15 +3542,15 @@
         <div style="display:flex;flex-direction:column;gap:12px">
 
           <div onclick="navigateTo('seller-dashboard.html');closeModal('dashboard-picker-modal')"
-            style="display:flex;align-items:center;gap:16px;padding:16px 18px;border-radius:12px;border:2px solid #fde68a;background:#fffbeb;cursor:pointer;transition:all .2s"
-            onmouseover="this.style.borderColor='#f59e0b';this.style.background='#fef3c7'"
-            onmouseout="this.style.borderColor='#fde68a';this.style.background='#fffbeb'">
-            <div style="width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🏪</div>
+            style="display:flex;align-items:center;gap:16px;padding:16px 18px;border-radius:12px;border:2px solid #fde68a;background:#f0f5ff;cursor:pointer;transition:all .2s"
+            onmouseover="this.style.borderColor='#1e3a8a';this.style.background='#fef3c7'"
+            onmouseout="this.style.borderColor='#fde68a';this.style.background='#f0f5ff'">
+            <div style="width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#1e3a8a,#162d6e);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🏪</div>
             <div>
-              <div style="font-size:15px;font-weight:800;color:#92400e;margin-bottom:2px">Seller Dashboard</div>
-              <div style="font-size:12.5px;color:#b45309">Manage your listings, orders & earnings</div>
+              <div style="font-size:15px;font-weight:800;color:#0d1f4e;margin-bottom:2px">Seller Dashboard</div>
+              <div style="font-size:12.5px;color:#162d6e">Manage your listings, orders & earnings</div>
             </div>
-            <div style="margin-left:auto;color:#d97706;font-size:18px">›</div>
+            <div style="margin-left:auto;color:#162d6e;font-size:18px">›</div>
           </div>
 
           <div onclick="navigateTo('tenant-dashboard.html');closeModal('dashboard-picker-modal')"

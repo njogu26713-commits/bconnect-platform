@@ -10,7 +10,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --teal:#0d9488;--teal-dk:#0f766e;--teal-lt:#ccfbf1;--teal-bg:#f0fdfa;
-  --blue:#3b82f6;--amber:#f59e0b;--red:#ef4444;--purple:#1e40af;--green:#10b981;
+  --blue:#3b82f6;--amber:#1e3a8a;--red:#ef4444;--purple:#1e40af;--green:#10b981;
   --ink:#0f172a;--ink2:#334155;--muted:#64748b;
   --border:#e2e8f0;--bg:#f8fafc;--card:#fff;
   --r:16px;--rs:10px;
@@ -27,7 +27,7 @@ html,body{height:100%;font-family:'Inter',system-ui,sans-serif;color:var(--ink);
 .toast .t-msg{flex:1;line-height:1.4;}
 .toast.success{background:#059669;}
 .toast.error{background:#dc2626;}
-.toast.warning{background:#d97706;}
+.toast.warning{background:#162d6e;}
 .toast.info{background:#0ea5e9;}
 .t-close{background:rgba(255,255,255,.2);border:none;color:#fff;width:20px;height:20px;border-radius:50%;font-size:10px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
 
@@ -38,7 +38,7 @@ html,body{height:100%;font-family:'Inter',system-ui,sans-serif;color:var(--ink);
   box-shadow:0 12px 48px rgba(13,148,136,.14),0 2px 8px rgba(0,0,0,.06);
   border:1px solid rgba(13,148,136,.14);}
 .auth-brand{display:flex;align-items:center;gap:12px;margin-bottom:26px;}
-.auth-logo-box{width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,var(--teal),#0891b2);
+.auth-logo-box{width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,var(--teal),#1e3a8a);
   display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;}
 .auth-app{font-size:1rem;font-weight:900;color:var(--ink);}
 .auth-sub-lbl{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-top:1px;}
@@ -55,7 +55,7 @@ html,body{height:100%;font-family:'Inter',system-ui,sans-serif;color:var(--ink);
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 18px;
   border-radius:var(--rs);border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;
   transition:all .15s;text-decoration:none;white-space:nowrap;}
-.btn-teal{background:linear-gradient(135deg,var(--teal),#0891b2);color:#fff;box-shadow:0 3px 10px rgba(13,148,136,.3);}
+.btn-teal{background:linear-gradient(135deg,var(--teal),#1e3a8a);color:#fff;box-shadow:0 3px 10px rgba(13,148,136,.3);}
 .btn-teal:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(13,148,136,.4);}
 .btn-ghost{background:var(--bg);color:var(--muted);border:1.5px solid var(--border);}
 .btn-ghost:hover{color:var(--ink);border-color:var(--teal);background:var(--teal-bg);}
@@ -83,7 +83,7 @@ html,body{height:100%;font-family:'Inter',system-ui,sans-serif;color:var(--ink);
   position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.25);flex-shrink:0;
 }
 .tb-left{display:flex;align-items:center;gap:10px;}
-.tb-logo{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--teal),#0891b2);
+.tb-logo{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--teal),#1e3a8a);
   display:flex;align-items:center;justify-content:center;color:#fff;}
 .tb-title{font-size:.95rem;font-weight:800;color:#fff;}
 .tb-chip{background:rgba(13,148,136,.3);color:#99f6e4;font-size:9px;font-weight:700;
@@ -136,7 +136,7 @@ html,body{height:100%;font-family:'Inter',system-ui,sans-serif;color:var(--ink);
 /* ─── HERO CARD ──────────────────────────────────────────────────── */
 .hero-card{
   border-radius:22px;padding:22px 22px 20px;margin-bottom:16px;
-  background:linear-gradient(135deg,#0f766e 0%,#0891b2 100%);
+  background:linear-gradient(135deg,#0f766e 0%,#1e3a8a 100%);
   color:#fff;position:relative;overflow:hidden;box-shadow:var(--shadow-lg);
 }
 .hc-bg1{position:absolute;top:-50px;right:-30px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.06);}
@@ -159,7 +159,7 @@ html,body{height:100%;font-family:'Inter',system-ui,sans-serif;color:var(--ink);
 .hc-bar-nums{font-size:12px;font-weight:800;}
 .hc-track{height:8px;background:rgba(255,255,255,.2);border-radius:99px;overflow:hidden;}
 .hc-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#34d399,#10b981);transition:width .6s cubic-bezier(.4,0,.2,1);}
-.hc-fill.partial{background:linear-gradient(90deg,#fbbf24,#f59e0b);}
+.hc-fill.partial{background:linear-gradient(90deg,#2d53b8,#1e3a8a);}
 
 /* ─── STAT CARDS ─────────────────────────────────────────────────── */
 .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
@@ -167,7 +167,7 @@ html,body{height:100%;font-family:'Inter',system-ui,sans-serif;color:var(--ink);
 .sc-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:4px;}
 .sc-val{font-size:1.1rem;font-weight:800;line-height:1;margin-bottom:3px;}
 .sc-val.teal{color:var(--teal-dk);}
-.sc-val.amber{color:#d97706;}
+.sc-val.amber{color:#162d6e;}
 .sc-val.blue{color:#2563eb;}
 .sc-val.red{color:#dc2626;}
 .sc-hint{font-size:10px;color:var(--muted);}
@@ -195,7 +195,7 @@ html,body{height:100%;font-family:'Inter',system-ui,sans-serif;color:var(--ink);
 .ac-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:2px;}
 .ac-val{font-size:1.3rem;font-weight:800;line-height:1.1;margin-bottom:2px;}
 .ac-val.teal{color:var(--teal-dk);}
-.ac-val.amber{color:#d97706;}
+.ac-val.amber{color:#162d6e;}
 .ac-val.blue{color:#2563eb;}
 .ac-sub{font-size:11px;color:var(--muted);margin-bottom:12px;flex:1;}
 .ac-footer{margin-top:auto;}
@@ -263,7 +263,7 @@ html,body{height:100%;font-family:'Inter',system-ui,sans-serif;color:var(--ink);
 .chat-input-row input:focus{outline:none;border-color:var(--teal);}
 
 /* ─── PROFILE ────────────────────────────────────────────────────── */
-.profile-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--teal),#0891b2);
+.profile-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--teal),#1e3a8a);
   display:flex;align-items:center;justify-content:center;color:#fff;font-size:28px;font-weight:900;margin:0 auto 12px;box-shadow:0 6px 20px rgba(13,148,136,.3);}
 .profile-name{font-size:1.1rem;font-weight:800;text-align:center;color:var(--ink);margin-bottom:3px;}
 .profile-email{font-size:13px;color:var(--muted);text-align:center;margin-bottom:20px;}
@@ -359,7 +359,7 @@ html,body{height:100%;font-family:'Inter',system-ui,sans-serif;color:var(--ink);
   }
   .ds-brand-icon{
     width:36px;height:36px;border-radius:10px;
-    background:linear-gradient(135deg,var(--teal),#0891b2);
+    background:linear-gradient(135deg,var(--teal),#1e3a8a);
     display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;
   }
   .ds-brand-title{font-size:.95rem;font-weight:800;color:#fff;line-height:1.1;}
@@ -383,7 +383,7 @@ html,body{height:100%;font-family:'Inter',system-ui,sans-serif;color:var(--ink);
   }
   .ds-avatar{
     width:34px;height:34px;border-radius:10px;
-    background:linear-gradient(135deg,var(--teal),#0891b2);
+    background:linear-gradient(135deg,var(--teal),#1e3a8a);
     display:flex;align-items:center;justify-content:center;
     color:#fff;font-size:13px;font-weight:800;flex-shrink:0;
   }
@@ -546,7 +546,7 @@ html,body{height:100%;font-family:'Inter',system-ui,sans-serif;color:var(--ink);
       <button class="ds-nav-btn" id="sn-messages" onclick="navTo('sMessages')">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         Messages
-        <span id="snMsgDot" style="display:none;margin-left:auto;width:8px;height:8px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span>
+        <span id="snMsgDot" style="display:none;margin-left:auto;width:8px;height:8px;border-radius:50%;background:#1e3a8a;flex-shrink:0;"></span>
       </button>
       <div class="ds-nav-lbl">Account</div>
       <button class="ds-nav-btn" id="sn-profile" onclick="navTo('sProfile')">
@@ -633,10 +633,10 @@ html,body{height:100%;font-family:'Inter',system-ui,sans-serif;color:var(--ink);
       </div>
 
       <!-- Pending approval state -->
-      <div class="no-prop" id="pendingBox" style="display:none;background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px solid #fbbf24;">
+      <div class="no-prop" id="pendingBox" style="display:none;background:linear-gradient(135deg,#f0f5ff,#fef3c7);border:2px solid #2d53b8;">
         <div style="width:56px;height:56px;border-radius:50%;background:#fef3c7;display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 14px;">⏳</div>
         <h4 style="color:#78350f;">Waiting for Approval</h4>
-        <p style="color:#92400e;">Your join request has been sent to the landlord. You'll have full access once they approve it.</p>
+        <p style="color:#0d1f4e;">Your join request has been sent to the landlord. You'll have full access once they approve it.</p>
         <div id="pendingBoxCode" style="display:inline-block;margin-top:12px;font-size:13px;font-weight:700;background:#fde68a;color:#78350f;border-radius:8px;padding:5px 14px;letter-spacing:.05em;">—</div>
       </div>
 
@@ -762,7 +762,7 @@ html,body{height:100%;font-family:'Inter',system-ui,sans-serif;color:var(--ink);
             <div class="ac-val purple">—</div>
             <div class="ac-sub">Message your landlord</div>
             <div class="ac-footer">
-              <button class="btn btn-sm" style="background:#f5f3ff;color:#5b21b6;border:1px solid #ddd6fe;" onclick="event.stopPropagation();navTo('sMessages')">
+              <button class="btn btn-sm" style="background:#f5f3ff;color:#5b21b6;border:1px solid #dbeafe;" onclick="event.stopPropagation();navTo('sMessages')">
                 <i data-lucide="send" style="width:12px;height:12px"></i> Open Chat
               </button>
             </div>
@@ -923,7 +923,7 @@ html,body{height:100%;font-family:'Inter',system-ui,sans-serif;color:var(--ink);
             <i data-lucide="chevron-right" style="width:14px;height:14px;color:var(--muted);flex-shrink:0;align-self:center"></i>
           </div>
           <div class="act-row" style="cursor:pointer;" onclick="window.location.href='support.html'">
-            <div class="act-icon" style="background:#f5f3ff;color:#7c3aed;"><i data-lucide="life-buoy" style="width:16px;height:16px"></i></div>
+            <div class="act-icon" style="background:#f5f3ff;color:#1e3a8a;"><i data-lucide="life-buoy" style="width:16px;height:16px"></i></div>
             <div class="act-body"><div class="act-text">Support Center</div><div class="act-meta">Get help &amp; contact support</div></div>
             <i data-lucide="chevron-right" style="width:14px;height:14px;color:var(--muted);flex-shrink:0;align-self:center"></i>
           </div>
