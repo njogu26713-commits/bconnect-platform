@@ -850,6 +850,49 @@
       transform: translateX(4px);
     }
     
+    /* ===== LIVE PROPERTY SEARCH ===== */
+    .prop-search-section { margin: 0 0 2rem; }
+    .prop-search-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .prop-filters { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
+    .prop-filter-input {
+      flex: 1; min-width: 140px; padding: 0.55rem 0.85rem;
+      border: 1.5px solid #e5e7eb; border-radius: 0.65rem;
+      font-size: 0.84rem; color: #111827; background: #fff;
+      outline: none; transition: border-color .2s;
+    }
+    .prop-filter-input:focus { border-color: #1e3a8a; }
+    .prop-filter-select {
+      padding: 0.55rem 0.85rem; border: 1.5px solid #e5e7eb;
+      border-radius: 0.65rem; font-size: 0.84rem; color: #111827;
+      background: #fff; outline: none; cursor: pointer; transition: border-color .2s;
+    }
+    .prop-filter-select:focus { border-color: #1e3a8a; }
+    .prop-price-wrap { display: flex; align-items: center; gap: 0.4rem; }
+    .prop-price-wrap span { font-size: 0.78rem; color: #9ca3af; white-space: nowrap; }
+    .prop-price-wrap .prop-filter-input { min-width: 90px; max-width: 110px; }
+    .prop-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1rem; }
+    .prop-card {
+      background: #fff; border-radius: 1rem; overflow: hidden;
+      border: 1px solid #e9ecf0; box-shadow: 0 2px 10px rgba(0,0,0,.07);
+      cursor: pointer; transition: transform .2s, box-shadow .2s;
+      animation: propCardIn .3s ease both;
+    }
+    .prop-card:hover { transform: translateY(-3px); box-shadow: 0 6px 22px rgba(30,58,138,.13); }
+    @keyframes propCardIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .prop-card-img { width: 100%; height: 130px; object-fit: cover; background: #f3f4f6; display: block; }
+    .prop-card-img-ph { width: 100%; height: 130px; background: linear-gradient(135deg,#e8edf5,#dde5f5); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+    .prop-card-body { padding: 0.75rem; }
+    .prop-card-title { font-size: 0.88rem; font-weight: 700; color: #111827; margin: 0 0 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .prop-card-loc { font-size: 0.76rem; color: #6b7280; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 3px; }
+    .prop-card-price { font-size: 1rem; font-weight: 800; color: #1e3a8a; }
+    .prop-card-meta { font-size: 0.72rem; color: #9ca3af; margin-top: 3px; }
+    .prop-empty { text-align: center; padding: 2rem; color: #9ca3af; font-size: 0.9rem; grid-column: 1/-1; }
+    .prop-skel { background: #f3f4f6; border-radius: 1rem; height: 200px; animation: skelPulse 1.4s ease-in-out infinite; }
+    @keyframes skelPulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+
     /* ===== TOP SELLERS FEED ===== */
     .listings {
       display: flex;
@@ -2213,6 +2256,34 @@
         <button onclick="document.getElementById('role-banner').style.display='none'" style="flex-shrink:0;background:rgba(255,255,255,.18);border:none;color:#fff;border-radius:6px;padding:4px 8px;font-size:16px;cursor:pointer;line-height:1">✕</button>
       </div>
 
+      <!-- LIVE PROPERTY SEARCH -->
+      <div class="prop-search-section">
+        <div class="prop-search-head">
+          <h3 class="section-title"><i data-lucide="home" style="width:18px;height:18px;color:#1e3a8a;vertical-align:-3px;margin-right:6px"></i>Find a Property</h3>
+          <a class="see-all" onclick="navigateTo('housing.html')">See All →</a>
+        </div>
+        <div class="prop-filters">
+          <input class="prop-filter-input" id="prop-search" type="text" placeholder="Search by name or location…" autocomplete="off">
+          <select class="prop-filter-select" id="prop-type">
+            <option value="all">All Types</option>
+            <option value="house">House</option>
+            <option value="apartment">Apartment</option>
+            <option value="bedsitter">Bedsitter</option>
+            <option value="studio">Studio</option>
+            <option value="single">Single Room</option>
+          </select>
+          <div class="prop-price-wrap">
+            <input class="prop-filter-input" id="prop-min" type="number" placeholder="Min KSh" min="0">
+            <span>–</span>
+            <input class="prop-filter-input" id="prop-max" type="number" placeholder="Max KSh" min="0">
+          </div>
+        </div>
+        <div class="prop-results" id="prop-results">
+          <div class="prop-skel"></div><div class="prop-skel"></div><div class="prop-skel"></div>
+          <div class="prop-skel"></div><div class="prop-skel"></div><div class="prop-skel"></div>
+        </div>
+      </div>
+
       <!-- FEATURED LISTINGS -->
       <div class="featured-section">
         <div class="section-header">
@@ -3022,6 +3093,91 @@
         });
       }, { threshold: 0.5 });
       statEls.forEach(el => statObserver.observe(el));
+
+      // ── LIVE PROPERTY SEARCH ──────────────────────────────────
+      (function() {
+        const resultsEl = document.getElementById('prop-results');
+        const searchEl  = document.getElementById('prop-search');
+        const typeEl    = document.getElementById('prop-type');
+        const minEl     = document.getElementById('prop-min');
+        const maxEl     = document.getElementById('prop-max');
+        let debounceTimer = null;
+        let lastQuery = null;
+
+        function fmt(n) {
+          return 'KSh ' + Number(n).toLocaleString();
+        }
+
+        function renderCards(props) {
+          if (!props.length) {
+            resultsEl.innerHTML = '<div class="prop-empty">🏠 No properties found. Try different filters.</div>';
+            return;
+          }
+          resultsEl.innerHTML = props.slice(0, 6).map((p, i) => {
+            const img = p.image_url || (p.images && p.images[0]) || '';
+            const imgEl = img
+              ? `<img class="prop-card-img" src="${img}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" loading="lazy"><div class="prop-card-img-ph" style="display:none">🏠</div>`
+              : `<div class="prop-card-img-ph">🏠</div>`;
+            const price = p.price || p.rent || 0;
+            const beds  = p.bedrooms ? `${p.bedrooms} bed · ` : '';
+            const type  = p.property_type || p.subcategory || '';
+            return `<div class="prop-card" style="animation-delay:${i * 0.05}s" onclick='openListingModal(${JSON.stringify(JSON.stringify(p))})'>
+              ${imgEl}
+              <div class="prop-card-body">
+                <div class="prop-card-title">${p.title || p.name || 'Property'}</div>
+                <div class="prop-card-loc"><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>${p.location || 'Kenya'}</div>
+                <div class="prop-card-price">${price ? fmt(price) + '/mo' : 'Price on request'}</div>
+                <div class="prop-card-meta">${beds}${type}</div>
+              </div>
+            </div>`;
+          }).join('');
+        }
+
+        function renderSkeletons() {
+          resultsEl.innerHTML = Array(6).fill('<div class="prop-skel"></div>').join('');
+        }
+
+        async function fetchProperties() {
+          const search = searchEl.value.trim();
+          const type   = typeEl.value;
+          const min    = minEl.value ? Number(minEl.value) : null;
+          const max    = maxEl.value ? Number(maxEl.value) : null;
+
+          const key = `${search}|${type}|${min}|${max}`;
+          if (key === lastQuery) return;
+          lastQuery = key;
+
+          const params = new URLSearchParams();
+          if (search) params.set('search', search);
+          if (type && type !== 'all') params.set('type', type);
+
+          renderSkeletons();
+          try {
+            const r = await fetch('/api/housing?' + params.toString());
+            const data = await r.json();
+            let props = data.properties || [];
+            if (min !== null) props = props.filter(p => (p.price || p.rent || 0) >= min);
+            if (max !== null) props = props.filter(p => (p.price || p.rent || 0) <= max);
+            renderCards(props);
+          } catch(e) {
+            resultsEl.innerHTML = '<div class="prop-empty">Could not load properties. Please try again.</div>';
+          }
+        }
+
+        function debounce() {
+          clearTimeout(debounceTimer);
+          debounceTimer = setTimeout(fetchProperties, 380);
+        }
+
+        searchEl.addEventListener('input', debounce);
+        typeEl.addEventListener('change', fetchProperties);
+        minEl.addEventListener('input', debounce);
+        maxEl.addEventListener('input', debounce);
+
+        // Initial load
+        fetchProperties();
+      })();
+      // ─────────────────────────────────────────────────────────
 
       // Auto-open seller modal if redirected from seller-dashboard "Login Required" screen
       const openCreate = sessionStorage.getItem('openSellerModal');
