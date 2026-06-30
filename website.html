@@ -2628,25 +2628,27 @@
       wrap.appendChild(loader);
 
       function revealImage() {
-        // Phase 1 — smoothly fade out arcs over 300 ms
+        // Phase 1 — fade arcs out smoothly over 300 ms
         const ring = loader.querySelector('.bc-loader-ring');
         if (ring) {
           ring.style.transition = 'opacity 300ms ease-out';
           ring.style.opacity    = '0';
         }
-        // Phase 2 — fade + blur + shrink the loader overlay (1.5 s)
+
+        // Phase 2 — bring image ABOVE the loader and fade it in
         setTimeout(() => {
-          loader.style.transition = 'opacity 1.5s ease, filter 1.5s ease, transform 1.5s ease';
-          loader.style.opacity    = '0';
-          loader.style.filter     = 'blur(6px)';
-          loader.style.transform  = 'scale(0.9)';
-          // Phase 3 — reveal image with zoom (600 ms)
+          if (getComputedStyle(img).position === 'static') img.style.position = 'relative';
+          img.style.zIndex     = '20';
+          img.style.transition = 'opacity 600ms ease, transform 600ms ease';
+          img.style.opacity    = '1';
+          img.style.transform  = 'scale(1)';
+
+          // Phase 3 — once image is fully opaque, snap the loader away
           setTimeout(() => {
-            loader.remove();
-            img.style.transition = 'opacity 600ms ease, transform 600ms ease';
-            img.style.opacity    = '1';
-            img.style.transform  = 'scale(1)';
-          }, 1500);
+            loader.style.transition = 'opacity 150ms ease';
+            loader.style.opacity    = '0';
+            setTimeout(() => loader.remove(), 150);
+          }, 600);
         }, 300);
       }
 

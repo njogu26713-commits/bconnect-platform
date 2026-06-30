@@ -2041,27 +2041,28 @@ function attachBcLoader(img) {
   wrap.appendChild(loader);
 
   function revealImage() {
-    // Phase 1 — smoothly fade out the arcs over 300 ms (premium deceleration feel)
+    // Phase 1 — fade arcs out smoothly over 300 ms
     const ring = loader.querySelector('.bc-loader-ring');
     if (ring) {
       ring.style.transition = 'opacity 300ms ease-out';
       ring.style.opacity    = '0';
     }
 
-    // Phase 2 — fade + blur + shrink the full loader overlay (1.5 s)
+    // Phase 2 — after arcs settle, bring image ABOVE the loader and fade it in
     setTimeout(() => {
-      loader.style.transition = 'opacity 1.5s ease, filter 1.5s ease, transform 1.5s ease';
-      loader.style.opacity    = '0';
-      loader.style.filter     = 'blur(6px)';
-      loader.style.transform  = 'scale(0.9)';
+      // Ensure image is positioned so z-index takes effect
+      if (getComputedStyle(img).position === 'static') img.style.position = 'relative';
+      img.style.zIndex     = '20';
+      img.style.transition = 'opacity 600ms ease, transform 600ms ease';
+      img.style.opacity    = '1';
+      img.style.transform  = 'scale(1)';
 
-      // Phase 3 — after loader is gone, fade image in with zoom
+      // Phase 3 — once image is fully opaque, snap the loader away
       setTimeout(() => {
-        loader.remove();
-        img.style.transition = 'opacity 600ms ease, transform 600ms ease';
-        img.style.opacity    = '1';
-        img.style.transform  = 'scale(1)';
-      }, 1500);
+        loader.style.transition = 'opacity 150ms ease';
+        loader.style.opacity    = '0';
+        setTimeout(() => loader.remove(), 150);
+      }, 600);
     }, 300);
   }
 
