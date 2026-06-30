@@ -1,0 +1,28 @@
+/* ============================================================
+   BConnect Global Theme — white + dark navy, system sans-serif
+   Loaded on every page before any page-specific styles.
+   ============================================================ */
+
+/* --- Font stack -------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+body, input, button, select, textarea {
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont,
+               'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* --- CSS variables (can be overridden per-page if needed) --- */
+:root {
+  --bc-navy:        #0f1e3d;
+  --bc-navy-mid:    #1e3a8a;
+  --bc-navy-light:  #dbeafe;
+  --bc-white:       #ffffff;
+  --bc-surface:     #f8fafc;
+  --bc-muted:       #64748b;
+  --bc-border:      #e2e8f0;
+  --bc-text:        #0f1e3d;
+  --bc-radius:      12px;
+}
+
+/* --- Remove any stray Google-font text rendering quirks ----- */
+body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }

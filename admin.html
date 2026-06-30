@@ -8,36 +8,36 @@
   <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
   <style>
     #bc-editor .ql-toolbar { border-radius: 8px 8px 0 0; border-color: #d1d5db; background: #f9fafb; }
-    #bc-editor .ql-container { border-radius: 0 0 8px 8px; border-color: #d1d5db; font-size: 14px; font-family: 'Segoe UI', sans-serif; min-height: 180px; }
+    #bc-editor .ql-container { border-radius: 0 0 8px 8px; border-color: #d1d5db; font-size: 14px; font-family: Inter, system-ui, -apple-system, sans-serif; min-height: 180px; }
     #bc-editor.focused .ql-toolbar, #bc-editor.focused .ql-container { border-color: #1e3a8a; }
     #bc-editor .ql-editor { min-height: 180px; }
   </style>
   <style>
     /*  Layout  */
-    body { margin:0; font-family:'Segoe UI',sans-serif; background:#f3f4f6; }
+    body { margin:0; font-family:Inter,system-ui,-apple-system,sans-serif; background:#f3f4f6; }
     .sidebar {
       position:fixed; top:0; left:0; width:240px; height:100vh;
-      background:linear-gradient(180deg,#0f0f1a 0%,#3b0764 100%);
+      background:#0f1e3d;
       color:#fff; display:flex; flex-direction:column;
       overflow-y:auto; z-index:100; padding:0;
     }
     .sidebar-logo { padding:24px 20px 12px; border-bottom:1px solid rgba(255,255,255,.1); }
     .sidebar-logo h1 { margin:0; font-size:22px; font-weight:700; color:#fff; }
-    .sidebar-logo p  { margin:2px 0 0; font-size:11px; color:#93c5fd; }
+    .sidebar-logo p  { margin:2px 0 0; font-size:11px; color:rgba(255,255,255,.5); }
     .sidebar-nav { padding:12px 0; flex:1; }
     .nav-item {
       display:flex; align-items:center; gap:10px;
       padding:10px 20px; margin:2px 8px; border-radius:8px;
-      color:#d8b4fe; font-size:13.5px; font-weight:500;
+      color:rgba(255,255,255,.7); font-size:13.5px; font-weight:500;
       cursor:pointer; text-decoration:none; transition:all .2s;
       border:none; background:transparent; width:calc(100% - 16px);
       text-align:left;
     }
-    .nav-item:hover { background:rgba(167,139,250,.2); color:#fff; }
+    .nav-item:hover { background:rgba(255,255,255,.1); color:#fff; }
     .nav-item.active { background:#1e3a8a; color:#fff; }
     .nav-item .icon { font-size:16px; width:20px; flex-shrink:0; }
     .sidebar-footer { padding:16px 20px; border-top:1px solid rgba(255,255,255,.1); }
-    .sidebar-footer p { margin:0; font-size:11px; color:#a78bfa; }
+    .sidebar-footer p { margin:0; font-size:11px; color:rgba(255,255,255,.5); }
     .sidebar-footer b { color:#fff; font-size:13px; }
     .main { margin-left:240px; min-height:100vh; padding:28px; }
     /*  Sections  */
@@ -192,6 +192,7 @@
   .ai-input-sm:focus{border-color:#1e3a8a}
 </style>
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<link rel="stylesheet" href="/theme.css">
 </head>
 <body>
 

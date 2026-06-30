@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Service — BConnect</title>
 <link rel="icon" href="/favicon.ico">
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
@@ -25,7 +24,7 @@
   --shadow:0 4px 24px rgba(30,58,138,.10);
 }
 
-body{ font-family:'DM Sans',system-ui,sans-serif; background:var(--surface); color:var(--text); min-height:100vh; }
+body{ font-family:Inter,system-ui,-apple-system,sans-serif; background:var(--surface); color:var(--text); min-height:100vh; }
 
 /* ── BREADCRUMB ── */
 .bc-breadcrumb{ padding:14px 48px; font-size:.8rem; color:var(--muted); display:flex; gap:6px; align-items:center; max-width:1180px; margin:0 auto; }
@@ -69,14 +68,14 @@ body{ font-family:'DM Sans',system-ui,sans-serif; background:var(--surface); col
 
 /* ── TITLE / RATING ── */
 .svc-category{ font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--indigo); background:var(--indigo-light); border-radius:20px; padding:3px 10px; display:inline-block; margin-bottom:10px; }
-.svc-title{ font-family:'DM Serif Display',serif; font-size:2rem; line-height:1.2; color:var(--indigo-deep); margin-bottom:8px; }
+.svc-title{ font-family:Inter,system-ui,-apple-system,sans-serif; font-size:2rem; line-height:1.2; color:var(--indigo-deep); margin-bottom:8px; }
 .stars-row{ display:flex; align-items:center; gap:6px; margin-bottom:18px; }
 .stars-row .s{ color:var(--gold); font-size:1rem; letter-spacing:1px; }
 .stars-row .count{ font-size:.8rem; color:var(--muted); }
 
 /* ── PRICE ── */
 .price-row{ display:flex; align-items:baseline; gap:10px; margin-bottom:20px; }
-.price-main{ font-family:'DM Serif Display',serif; font-size:2rem; color:var(--indigo-deep); }
+.price-main{ font-family:Inter,system-ui,-apple-system,sans-serif; font-size:2rem; color:var(--indigo-deep); }
 .price-type-label{ font-size:.85rem; font-weight:600; color:var(--muted); align-self:center; }
 
 /* ── SERVICE META GRID ── */
@@ -117,7 +116,7 @@ body{ font-family:'DM Sans',system-ui,sans-serif; background:var(--surface); col
 
 /* ── ACTIONS ── */
 .actions{ display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
-.btn{ width:100%; padding:14px 20px; border-radius:10px; font-family:'DM Sans',sans-serif; font-size:.95rem; font-weight:600; cursor:pointer; border:none; transition:all .2s; display:flex; align-items:center; justify-content:center; gap:8px; }
+.btn{ width:100%; padding:14px 20px; border-radius:10px; font-family:Inter,system-ui,-apple-system,sans-serif; font-size:.95rem; font-weight:600; cursor:pointer; border:none; transition:all .2s; display:flex; align-items:center; justify-content:center; gap:8px; }
 .btn-book{ background:linear-gradient(135deg,var(--indigo) 0%,var(--teal) 100%); color:#fff; box-shadow:0 4px 14px rgba(30,58,138,.35); }
 .btn-book:hover{ transform:translateY(-1px); box-shadow:0 6px 20px rgba(30,58,138,.45); }
 .btn-wa{ background:#25d366; color:#fff; box-shadow:0 4px 14px rgba(37,211,102,.30); }
@@ -128,7 +127,7 @@ body{ font-family:'DM Sans',system-ui,sans-serif; background:var(--surface); col
 /* ── RELATED ── */
 .more-section{ grid-column:1/-1; padding-top:8px; border-top:1.5px solid var(--border); margin-top:16px; }
 .more-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; padding-top:24px; }
-.more-header h2{ font-family:'DM Serif Display',serif; font-size:1.4rem; color:var(--indigo-deep); }
+.more-header h2{ font-family:Inter,system-ui,-apple-system,sans-serif; font-size:1.4rem; color:var(--indigo-deep); }
 .more-header a{ font-size:.85rem; color:var(--indigo); text-decoration:none; }
 .more-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
 .more-card{ background:#fff; border-radius:var(--radius); border:1.5px solid var(--border); overflow:hidden; transition:box-shadow .2s,transform .2s; cursor:pointer; text-decoration:none; color:inherit; display:block; }
@@ -161,6 +160,7 @@ body{ font-family:'DM Sans',system-ui,sans-serif; background:var(--surface); col
   .svc-meta-grid{ grid-template-columns:1fr; }
 }
 </style>
+<link rel="stylesheet" href="/theme.css">
 </head>
 <body>
 
