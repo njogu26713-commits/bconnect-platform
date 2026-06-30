@@ -430,7 +430,9 @@ body {
 .bc-loader-logo {
   position:absolute; top:50%; left:50%;
   transform:translate(-50%,-50%);
-  width:26px; height:26px; object-fit:contain; pointer-events:none; user-select:none;
+  font-family:system-ui,sans-serif; font-size:22px; font-weight:900;
+  color:#1e3a8a; line-height:1; pointer-events:none; user-select:none;
+  letter-spacing:-.5px;
 }
 .bc-arc-1 { animation:bc-rot-cw  2.4s linear infinite; transform-origin:50% 50%; transform-box:view-box; }
 .bc-arc-2 { animation:bc-rot-ccw 1.7s linear infinite; transform-origin:50% 50%; transform-box:view-box; }
@@ -1696,7 +1698,7 @@ function skelCards(n) {
               <g class="bc-arc-2"><circle cx="45" cy="45" r="25" stroke="#1e3a8a" stroke-width="2.5" stroke-dasharray="55 102" stroke-linecap="round" opacity=".7"/></g>
               <g class="bc-arc-3"><circle cx="45" cy="45" r="17" stroke="#1e3a8a" stroke-width="2" stroke-dasharray="35 72" stroke-linecap="round" opacity=".45"/></g>
             </svg>
-            <img class="bc-loader-logo" src="/bconnect-badge-nobg.png" alt="">
+            <span class="bc-loader-logo">B</span>
           </div>
         </div>
         <div class="bc-skel-pill bc-sk"></div>
@@ -2011,7 +2013,7 @@ const BC_LOADER_HTML = `
         <g class="bc-arc-2"><circle cx="45" cy="45" r="25" stroke="#1e3a8a" stroke-width="2.5" stroke-dasharray="55 102" stroke-linecap="round" opacity=".7"/></g>
         <g class="bc-arc-3"><circle cx="45" cy="45" r="17" stroke="#1e3a8a" stroke-width="2" stroke-dasharray="35 72" stroke-linecap="round" opacity=".45"/></g>
       </svg>
-      <img class="bc-loader-logo" src="/bconnect-badge-nobg.png" alt="" draggable="false">
+      <span class="bc-loader-logo">B</span>
     </div>
   </div>`;
 
