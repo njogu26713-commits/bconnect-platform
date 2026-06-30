@@ -415,6 +415,27 @@ body {
 }
 .p-card:hover .p-card-img-wrap img { transform:scale(1.06); }
 
+/* ── BConnect Premium Arc Loader ── */
+@keyframes bc-rot-cw  { to { transform: rotate(360deg);  } }
+@keyframes bc-rot-ccw { to { transform: rotate(-360deg); } }
+.bc-img-loader {
+  position:absolute; inset:0; background:#fff;
+  display:flex; align-items:center; justify-content:center;
+  z-index:10; will-change:opacity,transform,filter;
+}
+.bc-loader-ring {
+  position:relative; width:80px; height:80px; flex-shrink:0;
+}
+.bc-loader-ring > svg { position:absolute; top:0; left:0; }
+.bc-loader-logo {
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  width:26px; height:26px; object-fit:contain; pointer-events:none; user-select:none;
+}
+.bc-arc-1 { animation:bc-rot-cw  2.4s linear infinite; transform-origin:50% 50%; transform-box:view-box; }
+.bc-arc-2 { animation:bc-rot-ccw 1.7s linear infinite; transform-origin:50% 50%; transform-box:view-box; }
+.bc-arc-3 { animation:bc-rot-cw  3.2s linear infinite; transform-origin:50% 50%; transform-box:view-box; }
+
 .p-card-badge {
   position:absolute; top:.45rem; left:.45rem; z-index:3;
   color:var(--white); font-size:.58rem; font-weight:700;
@@ -1668,9 +1689,17 @@ function skelCards(n) {
   return Array.from({length:n}, (_,i) => `
     <div class="bc-skel" style="animation-delay:${i*0.1}s">
       <div class="bc-skel-img-wrap">
-        <div class="bc-skel-img-fill bc-sk"></div>
+        <div class="bc-img-loader">
+          <div class="bc-loader-ring">
+            <svg width="80" height="80" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g class="bc-arc-1"><circle cx="45" cy="45" r="33" stroke="#1e3a8a" stroke-width="3" stroke-dasharray="65 142" stroke-linecap="round"/></g>
+              <g class="bc-arc-2"><circle cx="45" cy="45" r="25" stroke="#1e3a8a" stroke-width="2.5" stroke-dasharray="55 102" stroke-linecap="round" opacity=".7"/></g>
+              <g class="bc-arc-3"><circle cx="45" cy="45" r="17" stroke="#1e3a8a" stroke-width="2" stroke-dasharray="35 72" stroke-linecap="round" opacity=".45"/></g>
+            </svg>
+            <img class="bc-loader-logo" src="/bconnect-badge-nobg.png" alt="">
+          </div>
+        </div>
         <div class="bc-skel-pill bc-sk"></div>
-        <img src="/bconnect-badge-nobg.png" class="bc-skel-logo" alt="">
       </div>
       <div class="bc-skel-body">
         <div class="bc-skel-vbadge bc-sk"></div>
@@ -1973,6 +2002,92 @@ function renderGrid(items, grouped) {
   if (window.lucide) lucide.createIcons();
 }
 
+/* ── BConnect arc-loader HTML fragment (reused per card) ── */
+const BC_LOADER_HTML = `
+  <div class="bc-img-loader">
+    <div class="bc-loader-ring">
+      <svg width="80" height="80" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g class="bc-arc-1"><circle cx="45" cy="45" r="33" stroke="#1e3a8a" stroke-width="3" stroke-dasharray="65 142" stroke-linecap="round"/></g>
+        <g class="bc-arc-2"><circle cx="45" cy="45" r="25" stroke="#1e3a8a" stroke-width="2.5" stroke-dasharray="55 102" stroke-linecap="round" opacity=".7"/></g>
+        <g class="bc-arc-3"><circle cx="45" cy="45" r="17" stroke="#1e3a8a" stroke-width="2" stroke-dasharray="35 72" stroke-linecap="round" opacity=".45"/></g>
+      </svg>
+      <img class="bc-loader-logo" src="/bconnect-badge-nobg.png" alt="" draggable="false">
+    </div>
+  </div>`;
+
+/**
+ * Attaches the BConnect premium arc loader to a product card image.
+ * - Shows the arc loader while the image is fetching.
+ * - On load: decelerates arcs (300 ms), then fades/blurs/shrinks the loader
+ *   out over 1.5 s, then fades the image in over 600 ms with a slight zoom.
+ * - Re-attaches automatically if the src changes (e.g. onerror fallback).
+ */
+function attachBcLoader(img) {
+  if (!img) return;
+  const wrap = img.parentElement;
+  if (!wrap) return;
+
+  // Hide image until we reveal it
+  img.style.opacity    = '0';
+  img.style.transform  = 'scale(1.05)';
+  img.style.transition = 'none';
+
+  // Insert loader
+  const tmp    = document.createElement('div');
+  tmp.innerHTML = BC_LOADER_HTML.trim();
+  const loader = tmp.firstElementChild;
+  wrap.appendChild(loader);
+
+  function revealImage() {
+    // Phase 1 — smoothly fade out the arcs over 300 ms (premium deceleration feel)
+    const ring = loader.querySelector('.bc-loader-ring');
+    if (ring) {
+      ring.style.transition = 'opacity 300ms ease-out';
+      ring.style.opacity    = '0';
+    }
+
+    // Phase 2 — fade + blur + shrink the full loader overlay (1.5 s)
+    setTimeout(() => {
+      loader.style.transition = 'opacity 1.5s ease, filter 1.5s ease, transform 1.5s ease';
+      loader.style.opacity    = '0';
+      loader.style.filter     = 'blur(6px)';
+      loader.style.transform  = 'scale(0.9)';
+
+      // Phase 3 — after loader is gone, fade image in with zoom
+      setTimeout(() => {
+        loader.remove();
+        img.style.transition = 'opacity 600ms ease, transform 600ms ease';
+        img.style.opacity    = '1';
+        img.style.transform  = 'scale(1)';
+      }, 1500);
+    }, 300);
+  }
+
+  function handleError() {
+    // onerror attribute will set a fallback src — wait for that to load
+    const onFallbackLoad = () => revealImage();
+    img.addEventListener('load', onFallbackLoad, { once: true });
+    // Safety: if fallback also fails, just show the (broken) image
+    const bail = setTimeout(() => {
+      img.removeEventListener('load', onFallbackLoad);
+      loader.remove();
+      img.style.transition = 'opacity 300ms ease';
+      img.style.opacity    = '1';
+      img.style.transform  = 'scale(1)';
+    }, 5000);
+    img.addEventListener('load', () => clearTimeout(bail), { once: true });
+  }
+
+  if (img.complete && img.naturalWidth > 0) {
+    revealImage();
+  } else if (img.complete && img.naturalWidth === 0) {
+    handleError();
+  } else {
+    img.addEventListener('load',  revealImage,   { once: true });
+    img.addEventListener('error', handleError,   { once: true });
+  }
+}
+
 function buildCard(p, idx) {
   const img      = p.image_url || p.imageUrl || (p.images && p.images[0]) || p.image || FALLBACK_IMG;
   const title    = p.title || p.name || 'Product';
@@ -2004,6 +2119,9 @@ function buildCard(p, idx) {
         <button class="p-card-cta"><i data-lucide="package" style="width:12px;height:12px;vertical-align:-2px;margin-right:3px"></i> Order</button>
       </div>
     </div>`;
+
+  // Attach the BConnect arc loader to the product image
+  attachBcLoader(card.querySelector('.p-card-img-wrap img'));
 
   card.querySelector('.p-card-cta').addEventListener('click', e => {
     e.stopPropagation();
