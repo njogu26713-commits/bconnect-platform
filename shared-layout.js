@@ -197,13 +197,43 @@
         rightGroup.appendChild(settingsBtn);
       }
 
-      // Sign In button — always rendered synchronously, hidden only when logged in
+      // Auth buttons — always rendered synchronously, hidden only when logged in
+      var authBtns = document.createElement('div');
+      authBtns.id = 'bc-auth-btns';
+      authBtns.setAttribute('style',
+        'display:' + (token ? 'none' : 'inline-flex') + ';' +
+        'align-items:center;gap:8px'
+      );
+
+      var registerBtn = document.createElement('a');
+      registerBtn.id = 'bc-register-btn';
+      registerBtn.href = 'create-profile.html';
+      registerBtn.setAttribute('style',
+        'display:inline-flex;align-items:center;gap:6px;' +
+        'padding:9px 18px;border-radius:10px;' +
+        'background:transparent;color:#1e3a8a;' +
+        'font-size:.9rem;font-weight:700;' +
+        'text-decoration:none;white-space:nowrap;' +
+        'font-family:Inter,system-ui,sans-serif;' +
+        'border:2px solid #1e3a8a;' +
+        'transition:background .2s,color .2s'
+      );
+      registerBtn.innerHTML =
+        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>' +
+        '<circle cx="9" cy="7" r="4"/>' +
+        '<line x1="19" y1="8" x2="19" y2="14"/>' +
+        '<line x1="22" y1="11" x2="16" y2="11"/></svg>' +
+        'Register';
+      registerBtn.addEventListener('mouseenter', function() { this.style.background = '#1e3a8a'; this.style.color = '#fff'; });
+      registerBtn.addEventListener('mouseleave', function() { this.style.background = 'transparent'; this.style.color = '#1e3a8a'; });
+      authBtns.appendChild(registerBtn);
+
       var signinBtn = document.createElement('a');
       signinBtn.id = 'bc-signin-btn';
       signinBtn.href = 'login.html';
       signinBtn.setAttribute('style',
-        'display:' + (token ? 'none' : 'inline-flex') + ';' +
-        'align-items:center;gap:6px;' +
+        'display:inline-flex;align-items:center;gap:6px;' +
         'padding:9px 20px;border-radius:10px;' +
         'background:#1e3a8a;color:#fff;' +
         'font-size:.9rem;font-weight:700;' +
@@ -220,7 +250,9 @@
         'Sign In';
       signinBtn.addEventListener('mouseenter', function() { this.style.background = '#1e40af'; });
       signinBtn.addEventListener('mouseleave', function() { this.style.background = '#1e3a8a'; });
-      rightGroup.appendChild(signinBtn);
+      authBtns.appendChild(signinBtn);
+
+      rightGroup.appendChild(authBtns);
 
       // Profile avatar slot — replaced by profile-widget.js when logged in
       var profileSlot = document.createElement('div');

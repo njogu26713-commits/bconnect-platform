@@ -328,14 +328,14 @@
   function installWidget(el) {
     var token = getToken();
     if (!token) {
-      // Not logged in — ensure the Sign In button in the header is visible
-      var btn = document.getElementById('bc-signin-btn');
-      if (btn) btn.style.display = 'inline-flex';
+      // Not logged in — ensure auth buttons are visible
+      var ab = document.getElementById('bc-auth-btns');
+      if (ab) ab.style.display = 'inline-flex';
       return;
     }
-    // Logged in — hide Sign In button and show profile widget
-    var btn = document.getElementById('bc-signin-btn');
-    if (btn) btn.style.display = 'none';
+    // Logged in — hide auth buttons and show profile widget
+    var ab = document.getElementById('bc-auth-btns');
+    if (ab) ab.style.display = 'none';
     var user  = getUser();
     var p     = _profile || {};
     var name  = p.name || (user && (user.name || user.full_name)) || '';
