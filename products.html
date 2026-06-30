@@ -2017,72 +2017,110 @@ const BC_LOADER_HTML = `
     </div>
   </div>`;
 
+/** Returns true only for non-empty, non-placeholder URL strings. */
+function isValidImgUrl(url) {
+  if (!url || typeof url !== 'string') return false;
+  const t = url.trim();
+  if (!t || t === 'null' || t === 'undefined') return false;
+  return t.startsWith('http') || t.startsWith('/') || t.startsWith('blob:') || t.startsWith('data:');
+}
+
 /**
- * Attaches the BConnect premium arc loader to a product card image.
- * - Shows the arc loader while the image is fetching.
- * - On load: decelerates arcs (300 ms), then fades/blurs/shrinks the loader
- *   out over 1.5 s, then fades the image in over 600 ms with a slight zoom.
- * - Re-attaches automatically if the src changes (e.g. onerror fallback).
+ * Attaches the BConnect arc loader to a card image wrapper.
+ *
+ * Behaviour:
+ * • No <img> is rendered until a valid URL is confirmed fully loaded.
+ * • Invalid / missing URL → loader spins indefinitely (no bail timeout).
+ * • Background preload via new Image() — browser never shows a broken icon.
+ * • On preload success → loader fades out over 1.5 s → image fades in.
+ * • On preload failure → tries FALLBACK_IMG once → shows "No Image Available".
  */
-function attachBcLoader(img) {
-  if (!img) return;
-  const wrap = img.parentElement;
+function attachBcLoader(wrap, url) {
   if (!wrap) return;
 
-  img.style.opacity    = '0';
-  img.style.transform  = 'scale(1.05)';
-  img.style.transition = 'none';
-
+  // Insert the arc loader; it lives until a good image is ready
   const tmp = document.createElement('div');
   tmp.innerHTML = BC_LOADER_HTML.trim();
   const loader = tmp.firstElementChild;
   wrap.appendChild(loader);
 
-  let resolved = false;
-  let triedFallback = false;
+  let revealed = false;
 
-  // Guaranteed bail — loader never spins forever
-  const bail = setTimeout(() => revealImage(), 8000);
+  /* ---------- helpers ---------- */
 
-  function revealImage() {
-    if (resolved) return;
-    resolved = true;
-    clearTimeout(bail);
-    const ring = loader.querySelector('.bc-loader-ring');
-    if (ring) { ring.style.transition = 'opacity 300ms ease-out'; ring.style.opacity = '0'; }
+  function revealWithImg(src) {
+    if (revealed) return;
+    revealed = true;
+
+    // Create img hidden, attach to wrap (CSS positions it absolute/inset)
+    const img = document.createElement('img');
+    img.alt   = '';
+    img.style.cssText = 'opacity:0;transition:none;';
+    wrap.appendChild(img);
+    img.src = src; // already cached by new Image() probe
+
+    // Fade loader out slowly (1.5 s)
+    loader.style.transition = 'opacity 1.5s ease';
+    loader.style.opacity    = '0';
+
     setTimeout(() => {
-      if (getComputedStyle(img).position === 'static') img.style.position = 'relative';
-      img.style.zIndex     = '20';
+      loader.remove();
+
+      // Fade image in with a subtle zoom
+      img.style.transform  = 'scale(1.05)';
       img.style.transition = 'opacity 600ms ease, transform 600ms ease';
-      img.style.opacity    = '1';
-      img.style.transform  = 'scale(1)';
-      setTimeout(() => {
-        loader.style.transition = 'opacity 150ms ease';
-        loader.style.opacity    = '0';
-        setTimeout(() => loader.remove(), 150);
-      }, 600);
-    }, 300);
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        img.style.opacity   = '1';
+        img.style.transform = 'scale(1)';
+
+        // Restore CSS-managed transitions so card hover-zoom works normally
+        setTimeout(() => {
+          img.style.transition = '';
+          img.style.transform  = '';
+        }, 650);
+      }));
+    }, 1500);
   }
 
-  function tryFallback() {
-    if (triedFallback) { revealImage(); return; }
-    triedFallback = true;
-    const fb = typeof FALLBACK_IMG !== 'undefined' ? FALLBACK_IMG : '';
-    if (fb) {
-      img.src = fb;
-      img.addEventListener('load',  revealImage,  { once: true });
-      img.addEventListener('error', revealImage,  { once: true });
-    } else {
-      revealImage();
-    }
+  function showPlaceholder() {
+    if (revealed) return;
+    revealed = true;
+
+    loader.style.transition = 'opacity 400ms ease';
+    loader.style.opacity    = '0';
+    setTimeout(() => {
+      loader.remove();
+      const ph = document.createElement('div');
+      ph.style.cssText = 'position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#f1f5f9;color:#94a3b8;gap:6px;';
+      ph.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+        <span style="font-size:.68rem;font-weight:600;letter-spacing:.02em;">No Image Available</span>`;
+      wrap.appendChild(ph);
+    }, 400);
   }
 
-  if (img.complete) {
-    img.naturalWidth > 0 ? revealImage() : tryFallback();
-    return;
+  function tryLoad(src, isFallback) {
+    const probe  = new Image();
+    probe.onload = () => revealWithImg(src);
+    probe.onerror = () => {
+      if (!isFallback && isValidImgUrl(FALLBACK_IMG)) {
+        tryLoad(FALLBACK_IMG, true);
+      } else {
+        showPlaceholder();
+      }
+    };
+    probe.src = src;
   }
-  img.addEventListener('load',  revealImage,  { once: true });
-  img.addEventListener('error', tryFallback,  { once: true });
+
+  /* ---------- entry point ---------- */
+
+  // Invalid URL → keep loader spinning indefinitely (no bail)
+  if (!isValidImgUrl(url)) return;
+
+  tryLoad(url, false);
 }
 
 function buildCard(p, idx) {
