@@ -327,6 +327,28 @@ body { font-family:'Inter',-apple-system,sans-serif; background:#ffffff; min-hei
   object-fit:contain; z-index:12; pointer-events:none;
   opacity:.2; filter:grayscale(1);
 }
+/* ── BConnect Premium Arc Loader ── */
+@keyframes bc-rot-cw  { to { transform: rotate(360deg);  } }
+@keyframes bc-rot-ccw { to { transform: rotate(-360deg); } }
+.bc-img-loader {
+  position:absolute; inset:0; background:#fff;
+  display:flex; align-items:center; justify-content:center;
+  z-index:10; will-change:opacity,transform,filter;
+}
+.bc-loader-ring {
+  position:relative; width:80px; height:80px; flex-shrink:0;
+}
+.bc-loader-ring > svg { position:absolute; top:0; left:0; }
+.bc-loader-logo {
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  font-family:system-ui,sans-serif; font-size:22px; font-weight:900;
+  color:#1e3a8a; line-height:1; pointer-events:none; user-select:none;
+  letter-spacing:-.5px;
+}
+.bc-arc-1 { animation:bc-rot-cw  2.4s linear infinite; transform-origin:50% 50%; transform-box:view-box; }
+.bc-arc-2 { animation:bc-rot-ccw 1.7s linear infinite; transform-origin:50% 50%; transform-box:view-box; }
+.bc-arc-3 { animation:bc-rot-cw  3.2s linear infinite; transform-origin:50% 50%; transform-box:view-box; }
 .bc-skel-pill  { position:absolute; top:8px; left:8px; width:52px; height:18px; border-radius:999px; z-index:11; }
 .bc-skel-body  { padding:.65rem .85rem .75rem; }
 .bc-skel-vbadge { width:100px; height:16px; border-radius:99px; margin-bottom:.28rem; }
@@ -500,8 +522,17 @@ function skelCards(n) {
     <div class="bc-skel" style="animation-delay:${i*0.1}s">
       <div class="bc-skel-img-wrap">
         <div class="bc-skel-img-fill bc-sk"></div>
+        <div class="bc-img-loader">
+          <div class="bc-loader-ring">
+            <svg width="80" height="80" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g class="bc-arc-1"><circle cx="45" cy="45" r="33" stroke="#1e3a8a" stroke-width="3" stroke-dasharray="65 142" stroke-linecap="round"/></g>
+              <g class="bc-arc-2"><circle cx="45" cy="45" r="25" stroke="#1e3a8a" stroke-width="2.5" stroke-dasharray="55 102" stroke-linecap="round" opacity=".7"/></g>
+              <g class="bc-arc-3"><circle cx="45" cy="45" r="17" stroke="#1e3a8a" stroke-width="2" stroke-dasharray="35 72" stroke-linecap="round" opacity=".45"/></g>
+            </svg>
+            <span class="bc-loader-logo">B</span>
+          </div>
+        </div>
         <div class="bc-skel-pill bc-sk"></div>
-        <img src="/bconnect-badge-nobg.png" class="bc-skel-logo" alt="">
       </div>
       <div class="bc-skel-body">
         <div class="bc-skel-vbadge bc-sk"></div>
@@ -638,6 +669,56 @@ function renderServices(items) {
   if (window.lucide) lucide.createIcons();
 }
 
+const BC_LOADER_HTML = `
+  <div class="bc-img-loader">
+    <div class="bc-loader-ring">
+      <svg width="80" height="80" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g class="bc-arc-1"><circle cx="45" cy="45" r="33" stroke="#1e3a8a" stroke-width="3" stroke-dasharray="65 142" stroke-linecap="round"/></g>
+        <g class="bc-arc-2"><circle cx="45" cy="45" r="25" stroke="#1e3a8a" stroke-width="2.5" stroke-dasharray="55 102" stroke-linecap="round" opacity=".7"/></g>
+        <g class="bc-arc-3"><circle cx="45" cy="45" r="17" stroke="#1e3a8a" stroke-width="2" stroke-dasharray="35 72" stroke-linecap="round" opacity=".45"/></g>
+      </svg>
+      <span class="bc-loader-logo">B</span>
+    </div>
+  </div>`;
+
+function attachBcLoader(img) {
+  if (!img) return;
+  const wrap = img.parentElement;
+  if (!wrap) return;
+  img.style.opacity    = '0';
+  img.style.transform  = 'scale(1.05)';
+  img.style.transition = 'none';
+  const tmp = document.createElement('div');
+  tmp.innerHTML = BC_LOADER_HTML.trim();
+  const loader = tmp.firstElementChild;
+  wrap.appendChild(loader);
+  function revealImage() {
+    const ring = loader.querySelector('.bc-loader-ring');
+    if (ring) { ring.style.transition = 'opacity 300ms ease-out'; ring.style.opacity = '0'; }
+    setTimeout(() => {
+      if (getComputedStyle(img).position === 'static') img.style.position = 'relative';
+      img.style.zIndex     = '20';
+      img.style.transition = 'opacity 600ms ease, transform 600ms ease';
+      img.style.opacity    = '1';
+      img.style.transform  = 'scale(1)';
+      setTimeout(() => {
+        loader.style.transition = 'opacity 150ms ease';
+        loader.style.opacity    = '0';
+        setTimeout(() => loader.remove(), 150);
+      }, 600);
+    }, 300);
+  }
+  function handleError() {
+    const onFallbackLoad = () => revealImage();
+    img.addEventListener('load', onFallbackLoad, { once: true });
+    const bail = setTimeout(() => { img.removeEventListener('load', onFallbackLoad); revealImage(); }, 3000);
+    img.addEventListener('load', () => clearTimeout(bail), { once: true });
+  }
+  if (img.complete && img.naturalWidth > 0) { revealImage(); return; }
+  img.addEventListener('load',  revealImage,  { once: true });
+  img.addEventListener('error', handleError, { once: true });
+}
+
 function buildCard(s, idx) {
   const img      = s.image_url || s.imageUrl || (s.images && s.images[0]) || s.image || FALLBACK_IMG;
   const title    = s.title || s.name || 'Service';
@@ -674,6 +755,7 @@ function buildCard(s, idx) {
       </div>
     </div>`;
 
+  attachBcLoader(card.querySelector('.s-card-img-wrap img'));
   card.querySelector('.s-card-cta').addEventListener('click', e => {
     e.stopPropagation();
     const sid = s._id || s.id || '';
