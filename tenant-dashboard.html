@@ -250,7 +250,7 @@ body.auth-mode .main{margin-left:0;}
   border-radius:12px;padding:20px;color:#fff;
   margin-bottom:14px;position:relative;overflow:hidden;
 }
-.lease-banner::after{content:'🏠';position:absolute;right:14px;bottom:-4px;font-size:3.2rem;opacity:.13;}
+.lease-banner::after{content:'';position:absolute;right:14px;bottom:-4px;font-size:3.2rem;opacity:.13;}
 .lb-label{font-size:.63rem;text-transform:uppercase;letter-spacing:1.2px;opacity:.6;margin-bottom:4px;}
 .lb-addr{font-size:.92rem;font-weight:600;line-height:1.4;margin-bottom:12px;}
 .lp-row{display:flex;justify-content:space-between;font-size:.68rem;opacity:.65;margin-bottom:5px;}
@@ -482,17 +482,17 @@ body.auth-mode .main{margin-left:0;}
   <!-- Overview -->
   <div class="nav-group">
     <div class="nav-label">Overview</div>
-    <button class="nav-item active" onclick="window.scrollTo(0,0)"><span class="ni">🏠</span><span>Dashboard</span></button>
-    <button class="nav-item" onclick="openModal('payHistModal')"><span class="ni">💳</span><span>Rent &amp; Payments</span></button>
-    <button class="nav-item" onclick="openModal('profileModal')"><span class="ni">👤</span><span>My Profile</span></button>
+    <button class="nav-item active" onclick="window.scrollTo(0,0)"><span class="ni"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span><span>Dashboard</span></button>
+    <button class="nav-item" onclick="openModal('payHistModal')"><span class="ni"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span>Rent &amp; Payments</span></button>
+    <button class="nav-item" onclick="openModal('profileModal')"><span class="ni"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><span>My Profile</span></button>
   </div>
 
   <!-- Support -->
   <div class="nav-group">
     <div class="nav-label">Support</div>
-    <button class="nav-item" onclick="openModal('requestsModal')"><span class="ni">🔧</span><span>Maintenance</span><span class="nbadge" id="maintBadge" style="display:none">0</span></button>
+    <button class="nav-item" onclick="openModal('requestsModal')"><span class="ni"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span><span>Maintenance</span><span class="nbadge" id="maintBadge" style="display:none">0</span></button>
     <button class="nav-item" onclick="openModal('annModal')"><span class="ni">📢</span><span>Notices</span><span class="nbadge" id="dsBadge" style="display:none">0</span></button>
-    <button class="nav-item" onclick="openModal('chatModal')"><span class="ni">💬</span><span>Messages</span></button>
+    <button class="nav-item" onclick="openModal('chatModal')"><span class="ni"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span><span>Messages</span></button>
     <button class="nav-item" onclick="openModal('linkPropModal')"><span class="ni">🔗</span><span>Link Property</span></button>
   </div>
 
@@ -513,7 +513,7 @@ body.auth-mode .main{margin-left:0;}
   <div class="auth-screen">
     <div class="auth-box">
       <div class="auth-logo-row">
-        <div class="auth-logo">🏠</div>
+        <div class="auth-logo"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
         <div><div style="font-family:Inter,system-ui,-apple-system,sans-serif;font-size:1.1rem;color:var(--text)">BConnect</div><div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Tenant Portal</div></div>
       </div>
       <div class="auth-title" style="margin-bottom:6px;">Welcome back</div>
@@ -531,7 +531,7 @@ body.auth-mode .main{margin-left:0;}
   <div class="auth-screen">
     <div class="auth-box">
       <div class="auth-logo-row">
-        <div class="auth-logo">🏠</div>
+        <div class="auth-logo"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
         <div><div style="font-family:Inter,system-ui,-apple-system,sans-serif;font-size:1.1rem;">Create Account</div></div>
       </div>
       <p class="auth-sub">Set up your BConnect tenant account in minutes.</p>
@@ -550,7 +550,7 @@ body.auth-mode .main{margin-left:0;}
   <div class="auth-screen">
     <div class="auth-box">
       <div class="auth-logo-row">
-        <div class="auth-logo">🏠</div>
+        <div class="auth-logo"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
         <div><div style="font-family:Inter,system-ui,-apple-system,sans-serif;font-size:1.1rem;">Welcome Back</div></div>
       </div>
       <p class="auth-sub">Sign in to your tenant account.</p>
@@ -571,7 +571,7 @@ body.auth-mode .main{margin-left:0;}
 
     <!-- No Property -->
     <div id="noPropState" class="no-prop-box" style="display:none;">
-      <div class="npb-icon">🏢</div>
+      <div class="npb-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 22V12h6v10"/><path d="M9 7h.01"/><path d="M9 11h.01"/><path d="M15 7h.01"/><path d="M15 11h.01"/></svg></div>
       <div class="npb-title">No Property Linked Yet</div>
       <p class="npb-sub">Ask your landlord for a property code to connect your unit.</p>
       <button class="btn btn-primary" onclick="openModal('linkPropModal')">Link My Property</button>
@@ -589,7 +589,7 @@ body.auth-mode .main{margin-left:0;}
 
       <!-- Rejected Notice -->
       <div id="rejectedNotice" class="pending-notice" style="display:none;background:linear-gradient(135deg,var(--red-light),#ffe4e4);border-color:rgba(229,57,53,.3);">
-        <div class="pn-icon">❌</div>
+        <div class="pn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
         <h3 style="color:#7f1d1d;">Join Request Rejected</h3>
         <p style="color:#991b1b;">The landlord has declined your request. Remove it and try a different code.</p>
         <div class="pn-code" id="rej_code" style="background:rgba(229,57,53,.12);color:#991b1b;">—</div>
@@ -603,11 +603,11 @@ body.auth-mode .main{margin-left:0;}
         </div>
         <div class="top-actions">
           <div class="icon-btn" onclick="openModal('annModal')" title="Notices">
-            🔔
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
             <span class="dot-badge" id="notifBadge" style="display:none;"></span>
           </div>
-          <div class="icon-btn" onclick="openModal('chatModal')" title="Messages">💬</div>
-          <button class="pay-btn" onclick="openModal('payModal')">💳 Pay Rent</button>
+          <div class="icon-btn" onclick="openModal('chatModal')" title="Messages"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          <button class="pay-btn" onclick="openModal('payModal')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Pay Rent</button>
         </div>
       </div>
 
@@ -639,7 +639,7 @@ body.auth-mode .main{margin-left:0;}
         <!-- Mini Stat: Balance Due -->
         <div class="mini-stat" id="balanceStat" onclick="openModal('payModal')">
           <div class="ms-top">
-            <div class="ms-icon" style="background:var(--sky-light);">💳</div>
+            <div class="ms-icon" style="background:var(--sky-light);"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
             <span class="trend warn" id="balanceTrend">Due</span>
           </div>
           <div>
@@ -652,7 +652,7 @@ body.auth-mode .main{margin-left:0;}
         <!-- Mini Stat: Total Paid -->
         <div class="mini-stat" onclick="openModal('payHistModal')">
           <div class="ms-top">
-            <div class="ms-icon" style="background:var(--green-light);">✅</div>
+            <div class="ms-icon" style="background:var(--green-light);"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
             <span class="trend good">On track</span>
           </div>
           <div>
@@ -722,17 +722,17 @@ body.auth-mode .main{margin-left:0;}
             <div style="font-family:Inter,system-ui,-apple-system,sans-serif;font-size:.95rem;color:var(--text);margin-bottom:8px;">Quick Actions</div>
             <div class="docs-list">
               <div class="doc-row" onclick="openModal('payModal')">
-                <div class="doc-icon">💳</div>
+                <div class="doc-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
                 <div class="doc-name">Pay Rent</div>
                 <span class="doc-dl">→</span>
               </div>
               <div class="doc-row" onclick="openModal('newRequestModal')">
-                <div class="doc-icon">🔧</div>
+                <div class="doc-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
                 <div class="doc-name">Submit Maintenance Request</div>
                 <span class="doc-dl">→</span>
               </div>
               <div class="doc-row" onclick="openModal('chatModal')">
-                <div class="doc-icon">💬</div>
+                <div class="doc-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
                 <div class="doc-name">Message Landlord</div>
                 <span class="doc-dl">→</span>
               </div>
@@ -803,7 +803,7 @@ body.auth-mode .main{margin-left:0;}
   <div class="modal-sheet" style="max-width:420px">
     <div class="sheet-handle"></div>
     <button class="modal-close-btn" onclick="closeModal('profileModal')">×</button>
-    <h3 style="margin-bottom:4px">👤 My Profile</h3>
+    <h3 style="margin-bottom:4px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> My Profile</h3>
     <p class="modal-sub">Your tenant account details</p>
     <div style="display:flex;align-items:center;gap:14px;margin:18px 0;">
       <div id="tProfAvatar">T</div>
@@ -815,11 +815,11 @@ body.auth-mode .main{margin-left:0;}
     </div>
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:4px 0;margin-bottom:14px;">
       <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid var(--border)">
-        <span style="font-size:13px;color:var(--muted)">📱 Phone</span>
+        <span style="font-size:13px;color:var(--muted)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg> Phone</span>
         <span id="tProfPhone" style="font-size:13px;font-weight:600;color:var(--text)">—</span>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid var(--border)">
-        <span style="font-size:13px;color:var(--muted)">🚪 Unit</span>
+        <span style="font-size:13px;color:var(--muted)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V8a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v12"/><path d="M2 20h20"/><path d="M14 12h.01"/></svg> Unit</span>
         <span id="tProfUnit" style="font-size:13px;font-weight:600;color:var(--text)">—</span>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid var(--border)">
@@ -860,7 +860,7 @@ body.auth-mode .main{margin-left:0;}
     <div class="sheet-handle"></div>
     <button class="modal-close-btn" onclick="closeModal('payModal')">×</button>
     <div id="pay_step1">
-      <h3>💳 Pay Rent</h3>
+      <h3><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Pay Rent</h3>
       <p class="modal-sub" id="pay_sub">Choose your payment amount.</p>
       <div class="pay-amount-banner">
         <div class="pab-label">Monthly Rent</div>
@@ -869,12 +869,12 @@ body.auth-mode .main{margin-left:0;}
       </div>
       <div style="display:flex;gap:10px;margin-bottom:14px;">
         <button id="payTypeFullBtn" class="pay-type-btn active" onclick="setPayType('full')">
-          <span style="font-size:18px;">💰</span>
+          <span style="font-size:18px;"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
           <span style="font-weight:700;font-size:13px;">Full Amount</span>
           <span id="payTypeFullAmt" style="font-size:12px;color:var(--muted);">KES 0</span>
         </button>
         <button id="payTypePartBtn" class="pay-type-btn" onclick="setPayType('partial')">
-          <span style="font-size:18px;">✂️</span>
+          <span style="font-size:18px;"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg></span>
           <span style="font-weight:700;font-size:13px;">Partial</span>
           <span style="font-size:12px;color:var(--muted);">Enter amount</span>
         </button>
@@ -888,14 +888,14 @@ body.auth-mode .main{margin-left:0;}
       <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:12px;">Secure M-Pesa STK push on confirmation</p>
     </div>
     <div id="pay_step2" style="display:none;text-align:center;padding:24px 0;">
-      <div style="margin-bottom:14px;font-size:48px;">📱</div>
+      <div style="margin-bottom:14px;"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
       <h3 style="margin-bottom:6px;">Processing Payment</h3>
       <p class="modal-sub" id="pay_processing_msg">Sending M-Pesa STK push…</p>
       <div style="margin:24px auto;width:40px;height:40px;border:4px solid var(--border);border-top-color:var(--sky);border-radius:50%;animation:spin .8s linear infinite;"></div>
     </div>
     <div id="pay_step3" style="display:none;">
       <div style="text-align:center;margin-bottom:16px;">
-        <div style="font-size:52px;margin-bottom:8px;">✅</div>
+        <div style="margin-bottom:8px;"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
         <h3 style="color:var(--green);margin:8px 0 4px;">Payment Successful!</h3>
         <p class="modal-sub">Your payment has been recorded.</p>
       </div>
@@ -916,7 +916,7 @@ body.auth-mode .main{margin-left:0;}
   <div class="modal-sheet">
     <div class="sheet-handle"></div>
     <button class="modal-close-btn" onclick="closeModal('payHistModal')">×</button>
-    <h3>💳 Payment History</h3>
+    <h3><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Payment History</h3>
     <p class="modal-sub" id="ph_hist_sub">All your rent payments</p>
     <div id="ph_stats" style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;"></div>
     <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;">
@@ -933,7 +933,7 @@ body.auth-mode .main{margin-left:0;}
   <div class="modal-sheet">
     <div class="sheet-handle"></div>
     <button class="modal-close-btn" onclick="closeModal('requestsModal')">×</button>
-    <h3>🔧 My Requests</h3>
+    <h3><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> My Requests</h3>
     <p class="modal-sub">Your maintenance and repair requests</p>
     <button class="btn btn-amber btn-sm" style="margin-bottom:14px;" onclick="closeModal('requestsModal');openModal('newRequestModal')">+ New Request</button>
     <div id="myRequestsList"><div class="act-empty">Loading…</div></div>
@@ -945,7 +945,7 @@ body.auth-mode .main{margin-left:0;}
   <div class="modal-sheet">
     <div class="sheet-handle"></div>
     <button class="modal-close-btn" onclick="closeModal('newRequestModal')">×</button>
-    <h3>🔧 Submit a Request</h3>
+    <h3><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> Submit a Request</h3>
     <p class="modal-sub">Describe the issue — your landlord will be notified immediately.</p>
     <textarea class="field" id="req_text" rows="4" placeholder="e.g. The kitchen tap is leaking…" style="resize:vertical;"></textarea>
     <select class="field" id="req_priority" style="margin-top:0;">
@@ -963,7 +963,7 @@ body.auth-mode .main{margin-left:0;}
   <div class="modal-sheet">
     <div class="sheet-handle"></div>
     <button class="modal-close-btn" onclick="closeModal('chatModal')">×</button>
-    <h3>💬 Message Landlord</h3>
+    <h3><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Message Landlord</h3>
     <p class="modal-sub" id="chat_sub">Property thread</p>
     <div class="chat-thread" id="chatThread"></div>
     <div class="chat-input-row">
@@ -1371,7 +1371,7 @@ function renderDashMaintenance(){
     const s=r.status||'pending';
     const cls=s==='resolved'?'ms-done':s==='in_progress'||s==='in-progress'?'ms-prog':'ms-open';
     const label=s==='resolved'?'Resolved':s==='in_progress'||s==='in-progress'?'In Progress':'Open';
-    const icon=s==='resolved'?'✅':s==='in_progress'||s==='in-progress'?'🔄':'🔧';
+    const icon=s==='resolved'?'✓':s==='in_progress'||s==='in-progress'?'↺':'⚙';
     const iconBg=s==='resolved'?'var(--green-light)':s==='in_progress'||s==='in-progress'?'var(--sky-light)':'var(--gold-light)';
     return`<div class="maint-item" onclick="openModal('requestsModal')">
       <div class="maint-icon" style="background:${iconBg}">${icon}</div>
