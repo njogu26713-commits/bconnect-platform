@@ -344,6 +344,7 @@
         if (n.id === 'bc-header' || n.id === 'bc-footer') return;
         if (n.closest && (n.closest('#bc-header') || n.closest('#bc-footer'))) return;
         if (n.closest && (n.closest('.sidebar') || n.closest('aside'))) return;
+        if (n.closest && (n.closest('main') || n.closest('.main') || n.closest('.dashboard-body') || n.closest('.content-area'))) return;
         n.parentNode && n.parentNode.removeChild(n);
       });
     });
