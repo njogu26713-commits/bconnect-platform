@@ -2310,13 +2310,31 @@
           <div class="mc-track-wrap">
             <div class="mc-track" id="mc-track">
               <div class="mc-skel" id="mc-skel-1">
+                <div class="bc-img-loader">
+                  <div class="bc-loader-ring">
+                    <svg width="80" height="80" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <g class="bc-arc-1"><circle cx="45" cy="45" r="33" stroke="#1e3a8a" stroke-width="3" stroke-dasharray="65 142" stroke-linecap="round"/></g>
+                      <g class="bc-arc-2"><circle cx="45" cy="45" r="25" stroke="#1e3a8a" stroke-width="2.5" stroke-dasharray="55 102" stroke-linecap="round" opacity=".7"/></g>
+                      <g class="bc-arc-3"><circle cx="45" cy="45" r="17" stroke="#1e3a8a" stroke-width="2" stroke-dasharray="35 72" stroke-linecap="round" opacity=".45"/></g>
+                    </svg>
+                    <span class="bc-loader-logo">B</span>
+                  </div>
+                </div>
                 <div class="mc-skel-pill"></div>
-                <img src="/bconnect-badge-nobg.png" class="mc-skel-badge" alt="">
                 <div class="mc-skel-overlay"><div class="mc-skel-title"></div></div>
               </div>
               <div class="mc-skel" id="mc-skel-2" style="animation-delay:.15s">
+                <div class="bc-img-loader">
+                  <div class="bc-loader-ring">
+                    <svg width="80" height="80" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <g class="bc-arc-1"><circle cx="45" cy="45" r="33" stroke="#1e3a8a" stroke-width="3" stroke-dasharray="65 142" stroke-linecap="round"/></g>
+                      <g class="bc-arc-2"><circle cx="45" cy="45" r="25" stroke="#1e3a8a" stroke-width="2.5" stroke-dasharray="55 102" stroke-linecap="round" opacity=".7"/></g>
+                      <g class="bc-arc-3"><circle cx="45" cy="45" r="17" stroke="#1e3a8a" stroke-width="2" stroke-dasharray="35 72" stroke-linecap="round" opacity=".45"/></g>
+                    </svg>
+                    <span class="bc-loader-logo">B</span>
+                  </div>
+                </div>
                 <div class="mc-skel-pill"></div>
-                <img src="/bconnect-badge-nobg.png" class="mc-skel-badge" alt="">
                 <div class="mc-skel-overlay"><div class="mc-skel-title"></div></div>
               </div>
             </div>
@@ -2861,6 +2879,7 @@
               <div style="color:#fef9c3;font-size:0.9rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 4px rgba(0,0,0,.4);">${s.title}</div>
             </div>
           </div>`;
+        attachBcLoader(card.querySelector('.mc-card-img img'));
         return card;
       }
 
@@ -2879,6 +2898,7 @@
               <div style="color:#fef9c3;font-size:0.9rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 4px rgba(0,0,0,.4);">${title}</div>
             </div>
           </div>`;
+        attachBcLoader(card.querySelector('.mc-card-img img'));
         return card;
       }
 
@@ -3137,7 +3157,7 @@
           return `
             <div class="feat-card" onclick="openListingModal('${data}')">
               <div class="feat-card-img-wrap">
-                <img src="${img}" alt="${title}" loading="lazy" decoding="async" onload="this.classList.add('img-loaded')" onerror="this.classList.add('img-loaded')">
+                <img src="${img}" alt="${title}" loading="lazy" decoding="async">
                 <span class="feat-card-star"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Featured</span>
               </div>
               <div class="feat-card-body">
@@ -3149,6 +3169,7 @@
               </div>
             </div>`;
         }).join('');
+        row.querySelectorAll('.feat-card-img-wrap img').forEach(img => attachBcLoader(img));
       } catch (e) {
         row.innerHTML = '<div class="feat-empty">Could not load featured listings.</div>';
       }
