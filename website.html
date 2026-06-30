@@ -154,6 +154,68 @@
       max-width: 100%;
     }
     
+    /* ── Site Navbar ── */
+    .site-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: #fff; border-bottom: 1px solid #e5e7eb;
+      box-shadow: 0 1px 8px rgba(30,58,138,.07);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 1.25rem; height: 58px; gap: 1rem;
+    }
+    .site-nav-brand {
+      display: flex; align-items: center; gap: .55rem;
+      text-decoration: none; flex-shrink: 0;
+    }
+    .site-nav-brand img { width: 34px; height: 34px; object-fit: contain; }
+    .site-nav-brand span { font-size: 1.1rem; font-weight: 800; color: #1e3a8a; letter-spacing: -.3px; }
+    .site-nav-links {
+      display: flex; align-items: center; gap: .15rem;
+      list-style: none; margin: 0; padding: 0;
+    }
+    .site-nav-links a {
+      display: block; padding: .45rem .75rem; border-radius: .6rem;
+      font-size: .85rem; font-weight: 600; color: #374151;
+      text-decoration: none; transition: background .15s, color .15s;
+      white-space: nowrap;
+    }
+    .site-nav-links a:hover, .site-nav-links a.active { background: #eff4ff; color: #1e3a8a; }
+    .site-nav-right { display: flex; align-items: center; gap: .6rem; flex-shrink: 0; }
+    .nav-signin-btn {
+      display: flex; align-items: center; gap: .4rem;
+      padding: .45rem 1.1rem; border-radius: .65rem;
+      background: #1e3a8a; color: #fff; font-size: .85rem; font-weight: 700;
+      border: none; cursor: pointer; text-decoration: none;
+      transition: background .2s, transform .15s;
+    }
+    .nav-signin-btn:hover { background: #162d6e; transform: translateY(-1px); }
+    .nav-user-pill {
+      display: flex; align-items: center; gap: .5rem;
+      padding: .35rem .75rem .35rem .45rem;
+      border-radius: 9999px; background: #f0f4ff;
+      border: 1.5px solid #dbe5ff; cursor: pointer;
+      font-size: .83rem; font-weight: 700; color: #1e3a8a;
+      transition: background .15s;
+    }
+    .nav-user-pill:hover { background: #e0e9ff; }
+    .nav-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: linear-gradient(135deg,#2d53b8,#1e40af);
+      color: #fff; font-size: .78rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .nav-hamburger {
+      display: none; background: none; border: none;
+      cursor: pointer; padding: .4rem; color: #374151;
+    }
+    @media (max-width: 700px) {
+      .site-nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+    }
+    @media (max-width: 480px) {
+      .site-nav-brand span { display: none; }
+    }
+
     /* Ticker Strip */
     .ticker-wrap {
       overflow: hidden;
@@ -2110,6 +2172,40 @@
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 </head>
 <body>
+
+  <!-- SITE NAVBAR -->
+  <nav class="site-nav" id="site-nav">
+    <a class="site-nav-brand" href="/">
+      <img src="/bconnect-badge-nobg.png" alt="BConnect">
+      <span>BConnect</span>
+    </a>
+
+    <ul class="site-nav-links">
+      <li><a href="/" class="active">Home</a></li>
+      <li><a href="housing.html">Housing</a></li>
+      <li><a href="products.html">Marketplace</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="events.html">Events</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+
+    <div class="site-nav-right">
+      <!-- Shown when logged OUT -->
+      <a id="nav-signin" class="nav-signin-btn" href="#" onclick="openNavSignIn(event)">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        Sign In
+      </a>
+      <!-- Shown when logged IN -->
+      <div id="nav-user" class="nav-user-pill" style="display:none" onclick="window.location.href='profile.html'">
+        <div class="nav-avatar" id="nav-avatar">?</div>
+        <span id="nav-username">Account</span>
+      </div>
+      <button class="nav-hamburger" onclick="toggleMobileNav()" aria-label="Menu">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </nav>
+
   <div class="flex min-h-screen">
 
     <!-- MAIN CONTENT -->
@@ -3022,6 +3118,51 @@
         });
       }, { threshold: 0.5 });
       statEls.forEach(el => statObserver.observe(el));
+
+      // ── NAVBAR AUTH STATE ──────────────────────────────────────
+      (function updateNavbar() {
+        const token = localStorage.getItem('auth_token') || localStorage.getItem('token') || sessionStorage.getItem('auth_token');
+        const signinEl = document.getElementById('nav-signin');
+        const userEl   = document.getElementById('nav-user');
+        const avatarEl = document.getElementById('nav-avatar');
+        const nameEl   = document.getElementById('nav-username');
+        if (token) {
+          try {
+            const p = JSON.parse(localStorage.getItem('userProfile') || '{}');
+            const name = p.full_name || p.name || p.email || 'Account';
+            const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+            if (avatarEl) avatarEl.textContent = initials || '👤';
+            if (nameEl)   nameEl.textContent   = name.split(' ')[0];
+          } catch(_) {}
+          if (signinEl) signinEl.style.display = 'none';
+          if (userEl)   userEl.style.display   = 'flex';
+        } else {
+          if (signinEl) signinEl.style.display = 'flex';
+          if (userEl)   userEl.style.display   = 'none';
+        }
+      })();
+
+      function openNavSignIn(e) {
+        e.preventDefault();
+        // Reuse the existing seller/auth modal if available, otherwise navigate
+        const modal = document.getElementById('seller-modal');
+        if (modal) {
+          modal.style.display = 'flex';
+          showSellerView('login-form');
+        } else {
+          window.location.href = 'login.html';
+        }
+      }
+
+      function toggleMobileNav() {
+        const links = document.querySelector('.site-nav-links');
+        if (!links) return;
+        const open = links.style.display === 'flex';
+        links.style.cssText = open
+          ? ''
+          : 'display:flex;flex-direction:column;position:absolute;top:58px;left:0;right:0;background:#fff;border-bottom:1px solid #e5e7eb;padding:.6rem 1.25rem .9rem;gap:.2rem;z-index:99;box-shadow:0 4px 16px rgba(30,58,138,.1)';
+      }
+      // ──────────────────────────────────────────────────────────
 
       // Auto-open seller modal if redirected from seller-dashboard "Login Required" screen
       const openCreate = sessionStorage.getItem('openSellerModal');
