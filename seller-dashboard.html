@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BConnect — Seller Dashboard</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+
+
+
 <style>
 :root {
   --ink: #0f1e3d;
@@ -32,23 +32,23 @@
   --radius: 16px;
 }
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: var(--surface); color: var(--ink); display: flex; min-height: 100vh; overflow-x: hidden; }
+body { font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--surface); color: var(--ink); display: flex; min-height: 100vh; overflow-x: hidden; }
 
 /*  SIDEBAR  */
 .sidebar { width: var(--sidebar-w); min-height: 100vh; background: #0f1e3d; display: flex; flex-direction: column; padding: 32px 20px; position: fixed; top: 0; left: 0; z-index: 100; overflow: hidden; }
 .sidebar::before { content: ''; position: absolute; width: 260px; height: 260px; background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%); top: -60px; left: -60px; pointer-events: none; }
-.logo { font-family: 'Syne', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.5px; margin-bottom: 40px; display: flex; align-items: center; gap: 8px; }
-.logo span { display: inline-block; background: rgba(255,255,255,0.2); color: #fff; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 20px; letter-spacing: 0.5px; font-family: 'DM Sans', sans-serif; }
-.nav-section { font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 1.5px; text-transform: uppercase; margin: 20px 0 8px 12px; }
-.nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 10px; cursor: pointer; color: rgba(255,255,255,0.7); font-size: 14px; font-weight: 400; transition: background 0.18s, color 0.18s; margin-bottom: 2px; text-decoration: none; border: none; background: none; width: 100%; text-align: left; font-family: 'DM Sans', sans-serif; }
+.logo { font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.5px; margin-bottom: 40px; display: flex; align-items: center; gap: 8px; }
+.logo span { display: inline-block; background: rgba(255,255,255,0.2); color: #fff; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 20px; letter-spacing: 0.5px; font-family: Inter, system-ui, -apple-system, sans-serif; }
+.nav-section { font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 1.5px; text-transform: uppercase; margin: 20px 0 8px 12px; }
+.nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 10px; cursor: pointer; color: rgba(255,255,255,0.7); font-size: 14px; font-weight: 400; transition: background 0.18s, color 0.18s; margin-bottom: 2px; text-decoration: none; border: none; background: none; width: 100%; text-align: left; font-family: Inter, system-ui, -apple-system, sans-serif; }
 .nav-item svg { opacity: 0.7; flex-shrink: 0; }
 .nav-item:hover { background: rgba(255,255,255,0.12); color: #fff; }
 .nav-item:hover svg { opacity: 1; }
 .nav-item.active { background: rgba(255,255,255,0.18); color: #fff; font-weight: 600; }
 .nav-item.active svg { opacity: 1; }
-.nav-badge { margin-left: auto; background: rgba(255,255,255,0.25); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 20px; font-family: 'Syne', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; }
+.nav-badge { margin-left: auto; background: rgba(255,255,255,0.25); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 20px; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
 .sidebar-footer { margin-top: auto; padding: 16px 14px; background: rgba(255,255,255,0.1); border-radius: 12px; display: flex; align-items: center; gap: 10px; }
-.s-avatar { width: 36px; height: 36px; background: linear-gradient(135deg, #3b82f6, #1e3a8a); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Syne', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-weight: 700; font-size: 14px; color: #fff; flex-shrink: 0; overflow: hidden; }
+.s-avatar { width: 36px; height: 36px; background: linear-gradient(135deg, #3b82f6, #1e3a8a); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-weight: 700; font-size: 14px; color: #fff; flex-shrink: 0; overflow: hidden; }
 .s-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .user-info { flex: 1; min-width: 0; }
 .user-name { font-size: 13px; color: #fff; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -60,13 +60,13 @@ body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Ro
 
 /*  TOPBAR  */
 .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
-.page-title { font-family: 'Syne', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 700; color: var(--ink); }
+.page-title { font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 22px; font-weight: 700; color: var(--ink); }
 .page-subtitle { font-size: 13px; color: var(--muted); margin-top: 2px; }
 .topbar-right { display: flex; align-items: center; gap: 12px; }
 .search-wrap { display: flex; align-items: center; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 8px 14px; gap: 8px; width: 220px; transition: border-color 0.2s; }
 .search-wrap:focus-within { border-color: var(--accent); }
 .search-wrap svg { color: var(--muted); flex-shrink: 0; }
-.search-wrap input { border: none; outline: none; font-size: 13px; font-family: 'DM Sans', sans-serif; background: transparent; width: 100%; color: var(--ink); }
+.search-wrap input { border: none; outline: none; font-size: 13px; font-family: Inter, system-ui, -apple-system, sans-serif; background: transparent; width: 100%; color: var(--ink); }
 .search-wrap input::placeholder { color: var(--muted); }
 .icon-btn { width: 40px; height: 40px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--muted); transition: border-color 0.2s, color 0.2s; text-decoration: none; }
 .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
@@ -78,7 +78,7 @@ body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Ro
 .card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.07); }
 .card-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
 .card-label { font-size: 12px; color: var(--muted); font-weight: 500; letter-spacing: 0.3px; margin-bottom: 6px; }
-.card-value { font-family: 'Syne', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-size: 24px; font-weight: 700; color: var(--ink); line-height: 1; }
+.card-value { font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 24px; font-weight: 700; color: var(--ink); line-height: 1; }
 .card-change { font-size: 11px; margin-top: 8px; display: flex; align-items: center; gap: 4px; color: var(--muted); }
 .card-change.up { color: #00c45f; }
 .card.accent-card { background: #0f1e3d; border-color: #0f1e3d; }
@@ -93,10 +93,10 @@ body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Ro
 /*  CHART  */
 .chart-panel { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; animation: fadeUp 0.5s 0.25s ease both; }
 .panel-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 22px; }
-.panel-title { font-family: 'Syne', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; color: var(--ink); }
+.panel-title { font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 15px; font-weight: 700; color: var(--ink); }
 .panel-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
 .tab-group { display: flex; gap: 4px; background: var(--surface); border-radius: 8px; padding: 3px; }
-.tab { font-size: 12px; padding: 5px 12px; border-radius: 6px; cursor: pointer; color: var(--muted); font-weight: 500; transition: background 0.18s, color 0.18s; font-family: 'DM Sans', sans-serif; }
+.tab { font-size: 12px; padding: 5px 12px; border-radius: 6px; cursor: pointer; color: var(--muted); font-weight: 500; transition: background 0.18s, color 0.18s; font-family: Inter, system-ui, -apple-system, sans-serif; }
 .tab.active { background: var(--panel); color: var(--ink); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
 .chart-area { width: 100%; height: 180px; position: relative; }
 .chart-svg { width: 100%; height: 140px; display: block; }
@@ -125,8 +125,8 @@ tbody tr:last-child td { border-bottom: none; }
 .product-cell { display: flex; align-items: center; gap: 10px; }
 .product-icon { width: 32px; height: 32px; background: var(--surface); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; overflow: hidden; }
 .product-icon img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
-.buyer-dot { width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; font-family: 'Syne', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; margin-right: 6px; }
-.amount { font-weight: 600; font-family: 'Syne', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-size: 13px; }
+.buyer-dot { width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin-right: 6px; }
+.amount { font-weight: 600; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; }
 .badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
 .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; }
 .badge.delivered, .badge.active { background: var(--delivered); color: var(--delivered-text); }
@@ -135,7 +135,7 @@ tbody tr:last-child td { border-bottom: none; }
 .badge.processing::before, .badge.pending::before { background: var(--pending-text); }
 .badge.cancelled, .badge.rejected { background: var(--cancelled); color: var(--cancelled-text); }
 .badge.cancelled::before, .badge.rejected::before { background: var(--cancelled-text); }
-.action-btn { background: none; border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; font-size: 11px; cursor: pointer; color: var(--muted); font-family: 'DM Sans', sans-serif; font-weight: 500; transition: border-color 0.18s, color 0.18s; }
+.action-btn { background: none; border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; font-size: 11px; cursor: pointer; color: var(--muted); font-family: Inter, system-ui, -apple-system, sans-serif; font-weight: 500; transition: border-color 0.18s, color 0.18s; }
 .action-btn:hover { border-color: var(--accent); color: var(--accent); }
 .action-btn.danger:hover { border-color: #f43f5e; color: #f43f5e; }
 
@@ -150,7 +150,7 @@ tbody tr:last-child td { border-bottom: none; }
 .product-card-img { width: 100%; height: 140px; object-fit: cover; background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 40px; }
 .product-card-img img { width: 100%; height: 100%; object-fit: cover; }
 .product-card-body { padding: 14px; }
-.product-card-title { font-family: 'Syne', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.product-card-title { font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .product-card-price { font-size: 13px; color: var(--accent-dim); font-weight: 600; margin-bottom: 8px; }
 .product-card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
 .product-card-actions { display: flex; gap: 6px; }
@@ -159,15 +159,15 @@ tbody tr:last-child td { border-bottom: none; }
 .modal-overlay { position: fixed; inset: 0; background: rgba(10,15,30,0.6); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center; }
 .modal-overlay.open { display: flex; }
 .modal { background: var(--panel); border-radius: 20px; padding: 32px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; animation: fadeUp 0.3s ease; }
-.modal-title { font-family: 'Syne', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 24px; color: var(--ink); }
+.modal-title { font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 24px; color: var(--ink); }
 .form-group { margin-bottom: 16px; }
 .form-label { font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: 0.4px; text-transform: uppercase; margin-bottom: 6px; display: block; }
-.form-input, .form-select, .form-textarea { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--ink); background: var(--surface); outline: none; transition: border-color 0.2s; }
+.form-input, .form-select, .form-textarea { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px; font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 14px; color: var(--ink); background: var(--surface); outline: none; transition: border-color 0.2s; }
 .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); background: var(--panel); }
 .form-textarea { resize: vertical; min-height: 90px; }
-.btn-primary { background: #0f1e3d; color: #fff; border: none; border-radius: 10px; padding: 11px 22px; font-family: 'Syne', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-weight: 700; font-size: 14px; cursor: pointer; transition: background 0.2s, transform 0.15s; }
+.btn-primary { background: #0f1e3d; color: #fff; border: none; border-radius: 10px; padding: 11px 22px; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-weight: 700; font-size: 14px; cursor: pointer; transition: background 0.2s, transform 0.15s; }
 .btn-primary:hover { background: #1e3a8a; transform: translateY(-1px); }
-.btn-secondary { background: var(--surface); color: var(--ink); border: 1px solid var(--border); border-radius: 10px; padding: 11px 22px; font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 14px; cursor: pointer; transition: border-color 0.2s; }
+.btn-secondary { background: var(--surface); color: var(--ink); border: 1px solid var(--border); border-radius: 10px; padding: 11px 22px; font-family: Inter, system-ui, -apple-system, sans-serif; font-weight: 500; font-size: 14px; cursor: pointer; transition: border-color 0.2s; }
 .btn-secondary:hover { border-color: var(--accent); }
 .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
 .modal-close { float: right; background: none; border: none; cursor: pointer; color: var(--muted); font-size: 20px; line-height: 1; padding: 4px; }
@@ -175,20 +175,20 @@ tbody tr:last-child td { border-bottom: none; }
 /*  EMPTY STATE  */
 .empty-state { text-align: center; padding: 60px 20px; }
 .empty-state-icon { font-size: 48px; margin-bottom: 16px; }
-.empty-state-title { font-family: 'Syne', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+.empty-state-title { font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
 .empty-state-sub { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
 
 /*  TOAST  */
-.toast { position: fixed; bottom: 24px; right: 24px; background: var(--ink); color: #fff; padding: 12px 20px; border-radius: 12px; font-size: 14px; font-family: 'DM Sans', sans-serif; z-index: 9999; transform: translateY(80px); opacity: 0; transition: all 0.3s; }
+.toast { position: fixed; bottom: 24px; right: 24px; background: var(--ink); color: #fff; padding: 12px 20px; border-radius: 12px; font-size: 14px; font-family: Inter, system-ui, -apple-system, sans-serif; z-index: 9999; transform: translateY(80px); opacity: 0; transition: all 0.3s; }
 .toast.show { transform: translateY(0); opacity: 1; }
 .toast.success { border-left: 3px solid var(--accent); }
 .toast.error { border-left: 3px solid #f43f5e; }
 
 /*  SETTINGS  */
 .settings-section { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; margin-bottom: 20px; }
-.settings-title { font-family: 'Syne', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 20px; }
+.settings-title { font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 20px; }
 .avatar-upload { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
-.avatar-lg { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #0f1e3d); display: flex; align-items: center; justify-content: center; font-family: 'Syne', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-weight: 700; font-size: 22px; color: #fff; overflow: hidden; flex-shrink: 0; }
+.avatar-lg { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #0f1e3d); display: flex; align-items: center; justify-content: center; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-weight: 700; font-size: 22px; color: #fff; overflow: hidden; flex-shrink: 0; }
 .avatar-lg img { width: 100%; height: 100%; object-fit: cover; }
 
 /*  SPINNER  */
@@ -197,8 +197,8 @@ tbody tr:last-child td { border-bottom: none; }
 
 /*  MOBILE HAMBURGER  */
 .mob-bar { display: none; align-items: center; justify-content: space-between; padding: 14px 16px; background: #0f1e3d; position: sticky; top: 0; z-index: 200; }
-.mob-logo { font-family: 'Syne', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-size: 18px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; }
-.mob-logo span { background: rgba(255,255,255,0.2); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 20px; font-family: 'DM Sans', sans-serif; }
+.mob-logo { font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 18px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; }
+.mob-logo span { background: rgba(255,255,255,0.2); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 20px; font-family: Inter, system-ui, -apple-system, sans-serif; }
 .ham-btn { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; gap: 4px; padding: 4px; }
 .ham-btn div { width: 22px; height: 2px; background: #fff; border-radius: 2px; transition: all 0.3s; }
 
@@ -209,7 +209,7 @@ tbody tr:last-child td { border-bottom: none; }
 /*  BOTTOM NAV  */
 .mob-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--panel); border-top: 1px solid var(--border); z-index: 200; padding: 8px 0 env(safe-area-inset-bottom, 0); }
 .mob-nav-inner { display: flex; justify-content: space-around; }
-.mob-nav-btn { display: flex; flex-direction: column; align-items: center; gap: 3px; background: none; border: none; cursor: pointer; color: var(--muted); font-size: 10px; font-family: 'DM Sans', sans-serif; font-weight: 500; padding: 6px 10px; border-radius: 10px; transition: color 0.2s; flex: 1; }
+.mob-nav-btn { display: flex; flex-direction: column; align-items: center; gap: 3px; background: none; border: none; cursor: pointer; color: var(--muted); font-size: 10px; font-family: Inter, system-ui, -apple-system, sans-serif; font-weight: 500; padding: 6px 10px; border-radius: 10px; transition: color 0.2s; flex: 1; }
 .mob-nav-btn svg { opacity: 0.6; transition: opacity 0.2s; }
 .mob-nav-btn.active { color: var(--accent); }
 .mob-nav-btn.active svg { opacity: 1; color: var(--accent); stroke: var(--accent); }
@@ -296,19 +296,19 @@ tbody tr:last-child td { border-bottom: none; }
 
 /* Add product section */
 .add-product-wrap { max-width: 640px; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; }
-.add-product-title { font-family: 'Syne', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 24px; }
+.add-product-title { font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 24px; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 
 /* Gig creation form */
 .gig-wrap { max-width: 720px; }
 .gig-form-card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px 28px 24px; margin-bottom: 16px; }
-.gig-form-card h3 { font-family: 'Syne', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 4px; color: var(--ink); display: flex; align-items: center; gap: 8px; }
+.gig-form-card h3 { font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 4px; color: var(--ink); display: flex; align-items: center; gap: 8px; }
 .gig-form-card .gfc-sub { font-size: 12px; color: var(--muted); margin-bottom: 18px; }
 .gig-title-prefix { display: flex; align-items: center; gap: 0; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--surface); }
 .gig-title-prefix span { padding: 10px 14px; font-size: 14px; font-weight: 600; color: var(--muted); background: var(--surface); white-space: nowrap; border-right: 1px solid var(--border); }
-.gig-title-prefix input { flex: 1; padding: 10px 14px; border: none; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--ink); outline: none; }
+.gig-title-prefix input { flex: 1; padding: 10px 14px; border: none; background: transparent; font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 14px; color: var(--ink); outline: none; }
 .pkg-tabs { display: flex; gap: 0; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 18px; }
-.pkg-tab { flex: 1; padding: 10px; text-align: center; font-size: 12px; font-weight: 700; cursor: pointer; border: none; background: var(--surface); color: var(--muted); font-family: 'DM Sans', sans-serif; transition: all .15s; border-right: 1px solid var(--border); }
+.pkg-tab { flex: 1; padding: 10px; text-align: center; font-size: 12px; font-weight: 700; cursor: pointer; border: none; background: var(--surface); color: var(--muted); font-family: Inter, system-ui, -apple-system, sans-serif; transition: all .15s; border-right: 1px solid var(--border); }
 .pkg-tab:last-child { border-right: none; }
 .pkg-tab.active { background: #0f1e3d; color: #fff; }
 .pkg-panel { display: none; }
@@ -321,7 +321,7 @@ tbody tr:last-child td { border-bottom: none; }
 .tag-input-wrap { display: flex; flex-wrap: wrap; gap: 6px; border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; background: var(--surface); min-height: 44px; cursor: text; }
 .gig-tag { display: inline-flex; align-items: center; gap: 5px; background: var(--accent-glow); color: var(--accent); border-radius: 6px; padding: 3px 9px; font-size: 12px; font-weight: 600; }
 .gig-tag button { background: none; border: none; cursor: pointer; color: inherit; font-size: 14px; line-height: 1; padding: 0; }
-.tag-input-wrap input { border: none; outline: none; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--ink); min-width: 120px; flex: 1; }
+.tag-input-wrap input { border: none; outline: none; background: transparent; font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 13px; color: var(--ink); min-width: 120px; flex: 1; }
 @media(max-width:600px) { .pkg-row { grid-template-columns: 1fr; } .faq-item { grid-template-columns: 1fr; } }
 
 /* Service day chips */
@@ -338,7 +338,7 @@ tbody tr:last-child td { border-bottom: none; }
 .status-chip.active-filter { background: var(--delivered); color: var(--delivered-text); border-color: transparent; }
 .status-chip.pending-filter { background: var(--pending); color: var(--pending-text); border-color: transparent; }
 .status-chip.rejected-filter { background: var(--cancelled); color: var(--cancelled-text); border-color: transparent; }
-.type-tab{font-size:12px;padding:6px 14px;border-radius:20px;border:1.5px solid #e8ecf5;background:#fff;cursor:pointer;font-weight:600;color:#8895b3;transition:all .15s;font-family:'DM Sans',sans-serif;}
+.type-tab{font-size:12px;padding:6px 14px;border-radius:20px;border:1.5px solid #e8ecf5;background:#fff;cursor:pointer;font-weight:600;color:#8895b3;transition:all .15s;font-family:Inter,system-ui,-apple-system,sans-serif;}
 .type-tab.active{background:#0f1e3d;border-color:#0f1e3d;color:#fff;}
 /* ── Variant Card Builder ── */
 .vq-preset {
@@ -1407,7 +1407,7 @@ function updateSubcategoryField(subId, catId, currentVal) {
 //  AUTH 
 const token = localStorage.getItem('token') || localStorage.getItem('authToken') || localStorage.getItem('auth_token') || '';
 if (!token) {
-  document.body.innerHTML = `<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f4f6fb 0%,#dbeafe 100%);font-family:'DM Sans',sans-serif;padding:16px;">
+  document.body.innerHTML = `<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f4f6fb 0%,#dbeafe 100%);font-family:Inter,system-ui,-apple-system,sans-serif;padding:16px;">
     <div style="background:#fff;border:1px solid #e8ecf5;border-radius:24px;padding:48px 36px;max-width:420px;width:100%;text-align:center;box-shadow:0 12px 48px rgba(15,30,61,.12);">
       <div style="font-size:52px;margin-bottom:16px;"></div>
       <h2 style="font-size:22px;font-weight:800;color:#0a0f1e;margin-bottom:8px;">Seller Access Required</h2>
@@ -1564,7 +1564,7 @@ function renderCategoryBreakdown(cats) {
         </div>
         <div class="quick-bar-wrap">
           <div class="quick-bar-bg"><div class="quick-bar-fill" style="width:${pct}%;background:${colors[i % colors.length]};"></div></div>
-          <div style="text-align:right;font-size:11px;font-weight:700;font-family:'Syne',sans-serif;margin-top:4px;color:var(--ink);">${pct}%</div>
+          <div style="text-align:right;font-size:11px;font-weight:700;font-family:Inter, system-ui, -apple-system, sans-serif,sans-serif;margin-top:4px;color:var(--ink);">${pct}%</div>
         </div>
       </div>`;
   }).join('');
