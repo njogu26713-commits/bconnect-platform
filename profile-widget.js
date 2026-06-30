@@ -287,13 +287,24 @@
   }
 
   function buildGuestButton() {
-    var btn = document.createElement('button');
-    btn.className = 'bc-pw-ghost';
+    var btn = document.createElement('a');
     btn.id = 'bc-profile-widget';
+    btn.href = 'login.html';
+    btn.setAttribute('style',
+      'display:inline-flex;align-items:center;gap:6px;' +
+      'padding:9px 20px;border-radius:10px;' +
+      'background:#1e3a8a;color:#fff;' +
+      'font-size:.9rem;font-weight:700;' +
+      'text-decoration:none;cursor:pointer;' +
+      'transition:background .2s;white-space:nowrap;' +
+      'font-family:Inter,system-ui,sans-serif;' +
+      'border:none;box-shadow:0 2px 8px rgba(30,58,138,.25)'
+    );
     btn.innerHTML =
       svgIcon('M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2|circle cx=12 cy=7 r=4') +
       '<span>Sign In</span>';
-    btn.addEventListener('click', function () { window.location.href = 'login.html'; });
+    btn.addEventListener('mouseenter', function () { this.style.background = '#1e40af'; });
+    btn.addEventListener('mouseleave', function () { this.style.background = '#1e3a8a'; });
     return btn;
   }
 
