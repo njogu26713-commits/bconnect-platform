@@ -327,13 +327,34 @@
   /* ── Replace all slots ── */
   function installWidget(el) {
     var token = getToken();
+    if (!token) {
+      if (el.id === 'bc-profile-slot') {
+        // Slot already has pre-populated Sign In from shared-layout — leave it
+        if (el.innerHTML && el.innerHTML.trim()) return;
+        // Slot is empty (token was valid at load but server rejected it) — inject button
+        el.innerHTML =
+          '<a href="login.html" style="' +
+            'display:inline-flex;align-items:center;gap:6px;' +
+            'padding:9px 20px;border-radius:10px;' +
+            'background:#1e3a8a;color:#fff;' +
+            'font-size:.9rem;font-weight:700;' +
+            'text-decoration:none;white-space:nowrap;' +
+            'font-family:Inter,system-ui,sans-serif;' +
+            'box-shadow:0 2px 8px rgba(30,58,138,.25)' +
+          '">' +
+          svgIcon('M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2|circle cx=12 cy=7 r=4') +
+          'Sign In</a>';
+        return;
+      }
+      el.replaceWith(buildGuestButton());
+      return;
+    }
     var user  = getUser();
     var p     = _profile || {};
     var name  = p.name || (user && (user.name || user.full_name)) || '';
     var role  = p.role || (user && user.role) || '';
     var av    = p.avatar_url || (user && user.avatar_url) || '';
-    var widget = token ? buildWidget(name, role, av) : buildGuestButton();
-    el.replaceWith(widget);
+    el.replaceWith(buildWidget(name, role, av));
   }
 
   /* ── Main entry ── */
@@ -388,7 +409,10 @@
 
   /* Re-run after shared-layout may have injected its header */
   window.addEventListener('load', function () {
-    if (!document.getElementById('bc-profile-widget')) { init(); }
+    var hasWidget = document.getElementById('bc-profile-widget');
+    var hasSlot   = document.getElementById('bc-profile-slot');
+    var hasSignin = document.getElementById('bc-signin-default');
+    if (!hasWidget && !hasSignin && hasSlot) { init(); }
   });
 
 })();
