@@ -124,7 +124,27 @@
       rightGroup.className = 'bc-right';
 
       // Notification bell — only visible when logged in
-      var token = localStorage.getItem('token') || localStorage.getItem('authToken') || localStorage.getItem('auth_token') || localStorage.getItem('landlordToken');
+      var rawTok = localStorage.getItem('token') || localStorage.getItem('authToken') || localStorage.getItem('auth_token') || localStorage.getItem('landlordToken');
+      var token = null;
+      if (rawTok) {
+        try {
+          var parts = rawTok.split('.');
+          if (parts.length === 3) {
+            var payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+            if (!payload.exp || payload.exp * 1000 > Date.now()) {
+              token = rawTok;
+            } else {
+              // Expired — clear stale auth data immediately
+              ['token','authToken','auth_token','userId','user','userProfile',
+               'landlordToken','landlordId','tenantToken','tenant_token','tenantId'].forEach(function(k) {
+                try { localStorage.removeItem(k); } catch(e) {}
+              });
+            }
+          } else {
+            token = rawTok;
+          }
+        } catch(e) { token = rawTok; }
+      }
       if (token) {
         var bellWrap = document.createElement('div');
         bellWrap.id = 'bc-notif-wrap';
@@ -180,6 +200,20 @@
       // Profile avatar slot — always present, replaced by profile-widget.js
       var profileSlot = document.createElement('div');
       profileSlot.id = 'bc-profile-slot';
+      // Pre-populate with Sign In so there's no blank flash while profile-widget loads
+      if (!token) {
+        profileSlot.innerHTML =
+          '<a href="login.html" id="bc-signin-default" style="' +
+            'display:inline-flex;align-items:center;gap:6px;' +
+            'padding:8px 18px;border-radius:10px;' +
+            'background:#1e3a8a;color:#fff;' +
+            'font-size:.88rem;font-weight:700;' +
+            'text-decoration:none;transition:background .2s;' +
+            'white-space:nowrap' +
+          '">' +
+          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>' +
+          'Sign In</a>';
+      }
       rightGroup.appendChild(profileSlot);
 
       inner.appendChild(rightGroup);

@@ -354,6 +354,14 @@
     if (token) {
       fetchProfile().then(function (p) {
         _profile = p;
+        if (!p) {
+          // Token is invalid/expired — clear stale auth data so Sign In button shows
+          ['token','authToken','auth_token','userId','user','userProfile',
+           'landlordToken','landlordId','tenantToken','tenant_token','tenantId'].forEach(function(k) {
+            try { localStorage.removeItem(k); } catch(e) {}
+          });
+          try { sessionStorage.removeItem('auth_token'); } catch(e) {}
+        }
         run();
       });
     } else {
