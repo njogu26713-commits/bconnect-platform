@@ -207,7 +207,7 @@
 
       var registerBtn = document.createElement('a');
       registerBtn.id = 'bc-register-btn';
-      registerBtn.href = 'create-profile.html';
+      registerBtn.href = 'login.html#signup';
       registerBtn.setAttribute('style',
         'display:inline-flex;align-items:center;gap:6px;' +
         'padding:9px 18px;border-radius:10px;' +
