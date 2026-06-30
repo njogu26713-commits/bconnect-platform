@@ -30,7 +30,7 @@
     '#bc-header *,#bc-footer *{box-sizing:border-box}\n' +
     /* Force header/footer to be full-width blocks regardless of any parent flex/grid layout */
     '#bc-header{display:block!important;width:100%!important;max-width:100%!important;flex:0 0 auto!important;align-self:stretch!important;grid-column:1/-1!important;position:sticky;top:0;z-index:9000;background:#ffffff;border-bottom:1px solid rgba(15,41,114,.08);box-shadow:0 8px 24px rgba(15,41,114,.06)}\n' +
-    '#bc-header .bc-inner{width:100%;max-width:1000px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 24px;flex-wrap:wrap}\n' +
+    '#bc-header .bc-inner{width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 24px;flex-wrap:wrap}\n' +
     '#bc-header .bc-left{display:flex;align-items:center;gap:16px;flex:1;min-width:0}\n' +
     '#bc-header .bc-right{display:flex;align-items:center;gap:8px;flex-shrink:0;margin-left:auto}\n' +
     '#bc-header .bc-brand{display:flex;align-items:center;gap:8px;text-decoration:none;font-family:Inter,system-ui,sans-serif;flex-shrink:0}\n' +
