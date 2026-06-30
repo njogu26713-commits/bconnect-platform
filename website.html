@@ -2092,6 +2092,12 @@
       .quick-actions { gap: 0.75rem; }
     }
 
+    /* Desktop (≥769px) — reduce carousel image size */
+    @media (min-width: 769px) {
+      .mc-card { aspect-ratio: 4 / 3; max-height: 260px; }
+      .feat-card-img-wrap img { height: 140px; }
+    }
+
     /* Phone (≤600px) — single-card carousel */
     @media (max-width: 600px) {
       .main-content { padding: 1rem; }
