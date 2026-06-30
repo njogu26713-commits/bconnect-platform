@@ -119,6 +119,33 @@ body { font-family:'Inter',-apple-system,sans-serif; background:#ffffff; min-hei
 .filter-btn:hover { border-color:#1e3a8a; color:#162d6e; }
 .filter-btn.active { background:#1e3a8a; border-color:#1e3a8a; color:var(--white); }
 
+/* ── Advanced Search Panel ── */
+.adv-search-panel {
+  display:flex; gap:.6rem; flex-wrap:wrap; align-items:center;
+  background:#fff; border:1.5px solid #e5e7eb; border-radius:.9rem;
+  padding:.7rem 1rem; margin-bottom:1.1rem;
+  box-shadow:0 2px 10px rgba(30,58,138,.07);
+}
+.adv-search-input {
+  flex:1; min-width:160px; border:none; outline:none;
+  font-size:.85rem; color:#111827; background:transparent;
+}
+.adv-search-divider { width:1px; height:1.4rem; background:#e5e7eb; flex-shrink:0; }
+.adv-price-wrap { display:flex; align-items:center; gap:.4rem; flex-shrink:0; }
+.adv-price-label { font-size:.75rem; color:#9ca3af; white-space:nowrap; }
+.adv-price-input {
+  width:90px; padding:.3rem .5rem; border:1.5px solid #e5e7eb;
+  border-radius:.5rem; font-size:.82rem; color:#111827;
+  outline:none; transition:border-color .2s;
+}
+.adv-price-input:focus { border-color:#1e3a8a; }
+.adv-search-clear {
+  background:none; border:none; color:#9ca3af; cursor:pointer;
+  font-size:.8rem; padding:.2rem .5rem; border-radius:.4rem;
+  transition:color .15s; white-space:nowrap;
+}
+.adv-search-clear:hover { color:#1e3a8a; }
+
 .sec-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; }
 .sec-title { font-size:1.3rem; font-weight:800; color:var(--gray-900); }
 .count-pill {
@@ -539,6 +566,19 @@ body { font-family:'Inter',-apple-system,sans-serif; background:#ffffff; min-hei
 
   <main class="main">
 
+    <!-- Advanced Search Panel -->
+    <div class="adv-search-panel">
+      <input class="adv-search-input" id="adv-search" type="text" placeholder="🔍  Search by name, location, or type…" autocomplete="off" oninput="advSearch()">
+      <div class="adv-search-divider"></div>
+      <div class="adv-price-wrap">
+        <span class="adv-price-label">KSh</span>
+        <input class="adv-price-input" id="adv-min" type="number" placeholder="Min" min="0" oninput="advSearch()">
+        <span class="adv-price-label">–</span>
+        <input class="adv-price-input" id="adv-max" type="number" placeholder="Max" min="0" oninput="advSearch()">
+      </div>
+      <button class="adv-search-clear" onclick="clearAdvSearch()">✕ Clear</button>
+    </div>
+
     <div class="filter-bar">
       <button class="filter-btn active" onclick="setFilter('', this)">All</button>
       <button class="filter-btn" onclick="setFilter('Single Room', this)"><i data-lucide="door-open" style="width:13px;height:13px;vertical-align:-2px;margin-right:4px"></i> Single Room</button>
@@ -733,10 +773,44 @@ function setFilter(val, btn) {
   activeFilter = val;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  const filtered = val
-    ? allItems.filter(p => (p.subcategory || '').toLowerCase() === val.toLowerCase())
-    : allItems;
-  renderHousing(filtered);
+  advSearch();
+}
+
+function advSearch() {
+  const q   = (document.getElementById('adv-search')?.value || '').toLowerCase().trim();
+  const min = parseFloat(document.getElementById('adv-min')?.value) || 0;
+  const max = parseFloat(document.getElementById('adv-max')?.value) || Infinity;
+  let results = allItems;
+  if (activeFilter) {
+    results = results.filter(p => (p.subcategory || '').toLowerCase() === activeFilter.toLowerCase());
+  }
+  if (q) {
+    results = results.filter(p => {
+      const text = ((p.title||p.name||'')+' '+(p.location||'')+' '+(p.category||'')+' '+(p.description||'')).toLowerCase();
+      return text.includes(q);
+    });
+  }
+  if (min || max < Infinity) {
+    results = results.filter(p => {
+      const price = p.price || p.rent || 0;
+      return price >= min && price <= max;
+    });
+  }
+  renderHousing(results);
+}
+
+function clearAdvSearch() {
+  const s = document.getElementById('adv-search');
+  const mn = document.getElementById('adv-min');
+  const mx = document.getElementById('adv-max');
+  if (s) s.value = '';
+  if (mn) mn.value = '';
+  if (mx) mx.value = '';
+  activeFilter = '';
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  const allBtn = document.querySelector('.filter-btn');
+  if (allBtn) allBtn.classList.add('active');
+  renderHousing(allItems);
 }
 
 let _searchTimer = null;
