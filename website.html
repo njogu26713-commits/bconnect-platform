@@ -3121,11 +3121,34 @@
 
       // ── NAVBAR AUTH STATE ──────────────────────────────────────
       (function updateNavbar() {
-        const token = localStorage.getItem('auth_token') || localStorage.getItem('token') || sessionStorage.getItem('auth_token');
+        const rawToken = localStorage.getItem('auth_token') || localStorage.getItem('token') || sessionStorage.getItem('auth_token');
         const signinEl = document.getElementById('nav-signin');
         const userEl   = document.getElementById('nav-user');
         const avatarEl = document.getElementById('nav-avatar');
         const nameEl   = document.getElementById('nav-username');
+
+        // Validate token: decode JWT payload and check expiry
+        let token = null;
+        if (rawToken) {
+          try {
+            const parts = rawToken.split('.');
+            if (parts.length === 3) {
+              const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+              if (!payload.exp || payload.exp * 1000 > Date.now()) {
+                token = rawToken; // still valid
+              } else {
+                // Expired — clear stale auth data
+                localStorage.removeItem('auth_token');
+                localStorage.removeItem('token');
+                localStorage.removeItem('userProfile');
+                sessionStorage.removeItem('auth_token');
+              }
+            }
+          } catch(_) {
+            token = rawToken; // malformed but keep it, let server decide
+          }
+        }
+
         if (token) {
           try {
             const p = JSON.parse(localStorage.getItem('userProfile') || '{}');
