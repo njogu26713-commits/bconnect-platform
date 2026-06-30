@@ -465,10 +465,22 @@
     }
     .hero-search-btn:hover { background: #162d6b; }
     .hero-stats { display: flex; align-items: center; gap: 1.1rem; }
-    .hero-stat { text-align: center; }
-    .hero-stat-num { display: block; font-size: 1.35rem; font-weight: 800; color: #111827; }
+    .hero-stat { text-align: center; opacity: 0; transform: translateY(16px); animation: statFadeUp 0.55s ease forwards; }
+    .hero-stat:nth-child(1) { animation-delay: 0.1s; }
+    .hero-stat:nth-child(3) { animation-delay: 0.25s; }
+    .hero-stat:nth-child(5) { animation-delay: 0.4s; }
+    @keyframes statFadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .hero-stat-num { display: block; font-size: 1.35rem; font-weight: 800; color: #111827; transition: transform 0.1s; }
+    .hero-stat-num.pop { animation: statPop 0.18s ease; }
+    @keyframes statPop {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.18); color: #1e3a8a; }
+      100% { transform: scale(1); }
+    }
     .hero-stat-label { font-size: 0.72rem; color: #9ca3af; font-weight: 500; }
-    .hero-stat-divider { width: 1px; height: 1.75rem; background: #e5e7eb; }
+    .hero-stat-divider { width: 1px; height: 1.75rem; background: #e5e7eb; opacity: 0; animation: statFadeUp 0.55s ease 0.2s forwards; }
 
     /* Multi-card carousel */
     .hero-right { width: 100%; position: relative; }
@@ -2150,17 +2162,17 @@
           </div>
           <div class="hero-stats">
             <div class="hero-stat">
-              <span class="hero-stat-num" id="stat-properties">120+</span>
+              <span class="hero-stat-num" id="stat-listings" data-target="6" data-suffix="+">0+</span>
               <span class="hero-stat-label">Listings</span>
             </div>
             <div class="hero-stat-divider"></div>
             <div class="hero-stat">
-              <span class="hero-stat-num">300+</span>
+              <span class="hero-stat-num" id="stat-users" data-target="300" data-suffix="+">0+</span>
               <span class="hero-stat-label">Users</span>
             </div>
             <div class="hero-stat-divider"></div>
             <div class="hero-stat">
-              <span class="hero-stat-num">3</span>
+              <span class="hero-stat-num" id="stat-categories" data-target="3" data-suffix="">0</span>
               <span class="hero-stat-label">Categories</span>
             </div>
           </div>
@@ -2977,6 +2989,39 @@
       // Reveal top-bar icons after page is ready (prevents flash on reload)
       var tbIcons = document.querySelector('.top-bar-icons');
       if (tbIcons) tbIcons.style.opacity = '1';
+
+      // Count-up animation for hero stats
+      function animateCountUp(el) {
+        const target = parseInt(el.dataset.target, 10);
+        const suffix = el.dataset.suffix || '';
+        const duration = 900;
+        const start = performance.now();
+        function step(now) {
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const current = Math.floor(eased * target);
+          el.textContent = current + suffix;
+          if (progress < 1) {
+            requestAnimationFrame(step);
+          } else {
+            el.textContent = target + suffix;
+            el.classList.add('pop');
+            el.addEventListener('animationend', () => el.classList.remove('pop'), { once: true });
+          }
+        }
+        requestAnimationFrame(step);
+      }
+      const statEls = document.querySelectorAll('.hero-stat-num[data-target]');
+      const statObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            animateCountUp(entry.target);
+            statObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.5 });
+      statEls.forEach(el => statObserver.observe(el));
 
       // Auto-open seller modal if redirected from seller-dashboard "Login Required" screen
       const openCreate = sessionStorage.getItem('openSellerModal');
