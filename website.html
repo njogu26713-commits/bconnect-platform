@@ -553,13 +553,13 @@
       will-change: transform;
     }
     .mc-card {
-      flex: 0 0 calc(50% - 0.5rem);
+      flex: 0 0 calc(33.333% - 0.667rem);
       border-radius: 1.25rem; overflow: hidden; cursor: pointer;
       box-shadow: 0 6px 28px rgba(0,0,0,0.14);
       transition: transform 0.2s, box-shadow 0.2s;
       background: #f8fafc;
       display: flex; flex-direction: column;
-      aspect-ratio: 3 / 2;
+      aspect-ratio: 1 / 1;
     }
     .mc-card:hover { transform: translateY(-5px); box-shadow: 0 16px 40px rgba(0,0,0,0.22); }
     .mc-card-img {
@@ -667,9 +667,9 @@
     /* ── Carousel branded skeleton ── */
     @keyframes mc-shimmer { 0%{left:-100%} 100%{left:200%} }
     .mc-skel {
-      flex: 0 0 calc(50% - 0.5rem);
+      flex: 0 0 calc(33.333% - 0.667rem);
       border-radius: 1.25rem; overflow: hidden; position: relative;
-      aspect-ratio: 3 / 2; background: #e8eaed;
+      aspect-ratio: 1 / 1; background: #e8eaed;
       box-shadow: 0 6px 28px rgba(0,0,0,0.10);
     }
     .mc-skel::after {
@@ -699,12 +699,12 @@
       height: 13px; border-radius: 5px; width: 70%;
       background: rgba(255,255,255,.3);
     }
-    @media(max-width:900px){ .mc-skel { flex: 0 0 calc(50% - 0.43rem); } }
+    @media(max-width:900px){ .mc-skel { flex: 0 0 calc(33.333% - 0.667rem); } }
     @media(max-width:600px){ .mc-skel { flex: 0 0 calc(100% - 0.85rem); } }
     @media (max-width: 900px) {
       .hero-split { flex-direction: column; min-height: auto; }
       .hero-left { flex: none; max-width: 100%; }
-      .mc-card { flex: 0 0 calc(50% - 0.43rem); }
+      .mc-card { flex: 0 0 calc(33.333% - 0.667rem); }
     }
     @media (max-width: 600px) {
       .mc-card { flex: 0 0 calc(100% - 0.85rem); }
@@ -2883,7 +2883,7 @@
             clearCarouselSkels();
             activeSlides.forEach(s => track.appendChild(buildSliderCard(s)));
             mcTotal   = activeSlides.length;
-            mcVisible = window.innerWidth <= 600 ? 1 : 2;
+            mcVisible = window.innerWidth <= 600 ? 1 : 3;
             mcBuildDots();
             mcBuildClones();
             mcAutoReset();
@@ -2914,7 +2914,7 @@
 
         picks.forEach(item => track.appendChild(buildCard(item)));
         mcTotal   = picks.length;
-        mcVisible = window.innerWidth <= 600 ? 1 : 2;
+        mcVisible = window.innerWidth <= 600 ? 1 : 3;
         mcBuildDots();
         mcBuildClones();
         mcAutoReset();
