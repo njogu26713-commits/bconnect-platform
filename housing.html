@@ -962,7 +962,13 @@ function attachBcLoader(img) {
   tmp.innerHTML = BC_LOADER_HTML.trim();
   const loader = tmp.firstElementChild;
   wrap.appendChild(loader);
+  let resolved = false;
+  let triedFallback = false;
+  const bail = setTimeout(() => revealImage(), 8000);
   function revealImage() {
+    if (resolved) return;
+    resolved = true;
+    clearTimeout(bail);
     const ring = loader.querySelector('.bc-loader-ring');
     if (ring) { ring.style.transition = 'opacity 300ms ease-out'; ring.style.opacity = '0'; }
     setTimeout(() => {
@@ -978,15 +984,19 @@ function attachBcLoader(img) {
       }, 600);
     }, 300);
   }
-  function handleError() {
-    const onFallbackLoad = () => revealImage();
-    img.addEventListener('load', onFallbackLoad, { once: true });
-    const bail = setTimeout(() => { img.removeEventListener('load', onFallbackLoad); revealImage(); }, 3000);
-    img.addEventListener('load', () => clearTimeout(bail), { once: true });
+  function tryFallback() {
+    if (triedFallback) { revealImage(); return; }
+    triedFallback = true;
+    const fb = typeof FALLBACK_IMG !== 'undefined' ? FALLBACK_IMG : '';
+    if (fb) {
+      img.src = fb;
+      img.addEventListener('load',  revealImage, { once: true });
+      img.addEventListener('error', revealImage, { once: true });
+    } else { revealImage(); }
   }
-  if (img.complete && img.naturalWidth > 0) { revealImage(); return; }
-  img.addEventListener('load',  revealImage,  { once: true });
-  img.addEventListener('error', handleError, { once: true });
+  if (img.complete) { img.naturalWidth > 0 ? revealImage() : tryFallback(); return; }
+  img.addEventListener('load',  revealImage, { once: true });
+  img.addEventListener('error', tryFallback, { once: true });
 }
 
 function buildCard(p, idx) {
@@ -1006,7 +1016,7 @@ function buildCard(p, idx) {
   if (propId) card.dataset.propId = propId;
   card.innerHTML = `
     <div class="h-card-img-wrap">
-      <img src="${img}" alt="${title}" onerror="this.src='${FALLBACK_IMG}'">
+      <img src="${img}" alt="${title}">
       <span class="h-card-badge">${sub || 'For Rent'}</span>
       <button class="h-card-fav" onclick="event.stopPropagation();toggleFav(this)"></button>
     </div>

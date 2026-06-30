@@ -2627,23 +2627,22 @@
       const loader = tmp.firstElementChild;
       wrap.appendChild(loader);
 
-      function revealImage() {
-        // Phase 1 — fade arcs out smoothly over 300 ms
-        const ring = loader.querySelector('.bc-loader-ring');
-        if (ring) {
-          ring.style.transition = 'opacity 300ms ease-out';
-          ring.style.opacity    = '0';
-        }
+      let resolved = false;
+      let triedFallback = false;
+      const bail = setTimeout(() => revealImage(), 8000);
 
-        // Phase 2 — bring image ABOVE the loader and fade it in
+      function revealImage() {
+        if (resolved) return;
+        resolved = true;
+        clearTimeout(bail);
+        const ring = loader.querySelector('.bc-loader-ring');
+        if (ring) { ring.style.transition = 'opacity 300ms ease-out'; ring.style.opacity = '0'; }
         setTimeout(() => {
           if (getComputedStyle(img).position === 'static') img.style.position = 'relative';
           img.style.zIndex     = '20';
           img.style.transition = 'opacity 600ms ease, transform 600ms ease';
           img.style.opacity    = '1';
           img.style.transform  = 'scale(1)';
-
-          // Phase 3 — once image is fully opaque, snap the loader away
           setTimeout(() => {
             loader.style.transition = 'opacity 150ms ease';
             loader.style.opacity    = '0';
@@ -2652,27 +2651,20 @@
         }, 300);
       }
 
-      function handleError() {
-        const onFallbackLoad = () => revealImage();
-        img.addEventListener('load', onFallbackLoad, { once: true });
-        const bail = setTimeout(() => {
-          img.removeEventListener('load', onFallbackLoad);
-          loader.remove();
-          img.style.transition = 'opacity 300ms ease';
-          img.style.opacity    = '1';
-          img.style.transform  = 'scale(1)';
-        }, 5000);
-        img.addEventListener('load', () => clearTimeout(bail), { once: true });
+      function tryFallback() {
+        if (triedFallback) { revealImage(); return; }
+        triedFallback = true;
+        const fb = typeof FALLBACK_IMGS !== 'undefined' ? (FALLBACK_IMGS.product || '') : '';
+        if (fb) {
+          img.src = fb;
+          img.addEventListener('load',  revealImage, { once: true });
+          img.addEventListener('error', revealImage, { once: true });
+        } else { revealImage(); }
       }
 
-      if (img.complete && img.naturalWidth > 0) {
-        revealImage();
-      } else if (img.complete && img.naturalWidth === 0) {
-        handleError();
-      } else {
-        img.addEventListener('load',  revealImage,  { once: true });
-        img.addEventListener('error', handleError,  { once: true });
-      }
+      if (img.complete) { img.naturalWidth > 0 ? revealImage() : tryFallback(); return; }
+      img.addEventListener('load',  revealImage,  { once: true });
+      img.addEventListener('error', tryFallback,  { once: true });
     }
 
     // Load Top Sellers — fetches featured sellers (admin-chosen or auto top-5 by listings)
