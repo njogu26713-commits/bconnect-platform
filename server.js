@@ -14,8 +14,6 @@ const os = require('os');
 const { sendEmail, passwordResetEmail, paymentReceiptEmail, bookingConfirmationEmail, landlordPaymentAlertEmail, tenantJoinRequestEmail, welcomeEmail, emailVerificationEmail, depositConfirmationEmail } = require('./email');
 dns.setServers(['8.8.8.8', '1.1.1.1']);
 const OpenAI = require('openai');
-const { createClient } = require('@supabase/supabase-js');
-
 dotenv.config({ override: true });
 
 const {
@@ -30,21 +28,9 @@ const {
   NODE_ENV = 'development',
   PORT = 3000,
   ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8000',
-  SUPABASE_URL,
-  SUPABASE_SERVICE_ROLE_KEY,
-  SUPABASE_ANON_KEY,
   EMAIL_USER,
   EMAIL_PASS
 } = process.env;
-
-// Initialize Supabase client
-let supabase;
-if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
-  supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
-  console.log('[OK] Supabase client initialized');
-} else {
-  console.log('[INFO] Supabase not configured — Supabase-backed endpoints disabled.');
-}
 
 const missingOptionalEnv = [
   ['MPESA_CONSUMER_KEY', MPESA_CONSUMER_KEY],
@@ -1064,12 +1050,6 @@ app.get('/api/health', async (_req, res) => {
       result.status = 'degraded';
     }
   }
-
-  // Supabase
-  result.services.supabase = {
-    configured: Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY),
-    status: (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) ? 'enabled' : 'not_configured'
-  };
 
   // Grok AI
   result.services.gemini = {
@@ -2943,31 +2923,18 @@ app.get('/api/admin/properties', async (req, res) => {
 // Get properties statistics for admin dashboard
 app.get('/api/admin/properties/stats', async (req, res) => {
   try {
-    if (!supabase) {
-      return res.status(500).json({ error: 'Supabase not configured' });
-    }
-    
-    const { data: properties, error } = await supabase
-      .from('properties')
-      .select('*')
-      .limit(1000);
-
-    if (error) throw error;
-    
+    if (!db) return res.status(500).json({ error: 'Database not connected' });
+    const properties = await db.collection('properties').find({}).limit(1000).toArray();
     const stats = {
-      total: properties?.length || 0,
-      available: properties?.filter(item => item.status === 'available').length || 0,
-      rented: properties?.filter(item => item.status === 'rented').length || 0,
-      sold: properties?.filter(item => item.status === 'sold').length || 0
+      total: properties.length,
+      available: properties.filter(item => item.status === 'available').length,
+      rented: properties.filter(item => item.status === 'rented').length,
+      sold: properties.filter(item => item.status === 'sold').length
     };
-
     return res.json({ success: true, stats });
   } catch (error) {
     console.error('Properties stats lookup failed:', error);
-    return res.json({
-      success: true,
-      stats: { total: 0, available: 0, rented: 0, sold: 0 }
-    });
+    return res.json({ success: true, stats: { total: 0, available: 0, rented: 0, sold: 0 } });
   }
 });
 
@@ -2993,19 +2960,14 @@ app.put('/api/admin/properties/:id/status', async (req, res) => {
       updateObject.rejection_reason = null;
     }
 
-    const { data, error } = await supabase
-      .from('properties')
-      .update(updateObject)
-      .eq('id', id)
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Property status update error:', error);
-      return res.status(500).json({ error: 'Unable to update property status' });
-    }
-
-    return res.json({ success: true, property: data });
+    if (!db) return res.status(500).json({ error: 'Database not connected' });
+    let filter;
+    try { filter = { _id: new ObjectId(id) }; } catch { filter = { id }; }
+    const result = await db.collection('properties').findOneAndUpdate(
+      filter, { $set: updateObject }, { returnDocument: 'after' }
+    );
+    if (!result) return res.status(404).json({ error: 'Property not found' });
+    return res.json({ success: true, property: result });
   } catch (error) {
     console.error('Property status update failed:', error);
     return res.status(500).json({ error: 'Property status update failed' });
@@ -3076,63 +3038,19 @@ app.put('/api/admin/users/:id/status', async (req, res) => {
 // Analytics endpoint for admin dashboard
 app.get('/api/admin/analytics', async (req, res) => {
   try {
-    if (!supabase) {
-      return res.status(500).json({ error: 'Supabase not configured' });
-    }
-    
-    // Get page views (simulated - would need actual tracking)
-    const { count: totalPageViews } = await supabase
-      .from('profiles')
-      .select('*', { count: 'exact', head: true });
-    
-    // Get unique visitors (based on profiles)
-    const { data: profiles } = await supabase
-      .from('profiles')
-      .select('id')
-      .limit(1000);
-    const uniqueVisitors = profiles?.length || 0;
-    
-    // Get orders for conversion and revenue calculations
-    const { data: orders } = await supabase
-      .from('orders')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(100);
-    
-    // Calculate conversion rate (orders / visitors)
-    const conversionRate = uniqueVisitors > 0 ? ((orders?.length || 0) / uniqueVisitors * 100).toFixed(1) : 0;
-    
-    // Get revenue by category
-    const { data: housingRevenue } = await supabase
-      .from('orders')
-      .select('total_amount')
-      .eq('status', 'delivered')
-      .eq('category', 'housing');
-    
-    const { data: marketplaceRevenue } = await supabase
-      .from('orders')
-      .select('total_amount')
-      .eq('status', 'delivered')
-      .eq('category', 'marketplace');
-    
-    const { data: servicesRevenue } = await supabase
-      .from('orders')
-      .select('total_amount')
-      .eq('status', 'delivered')
-      .eq('category', 'services');
-    
-    const housingTotal = housingRevenue?.reduce((sum, o) => sum + (o.total_amount || 0), 0) || 0;
-    const marketplaceTotal = marketplaceRevenue?.reduce((sum, o) => sum + (o.total_amount || 0), 0) || 0;
-    const servicesTotal = servicesRevenue?.reduce((sum, o) => sum + (o.total_amount || 0), 0) || 0;
-    
-    // Get category distribution
-    const { data: properties } = await supabase
-      .from('properties')
-      .select('category');
-    
-    const { data: products } = await supabase
-      .from('products')
-      .select('category');
+    if (!db) return res.status(500).json({ error: 'Database not connected' });
+
+    const uniqueVisitors = await db.collection('users').countDocuments({});
+    const orders = await db.collection('orders').find({}).sort({ created_at: -1 }).limit(100).toArray();
+    const conversionRate = uniqueVisitors > 0 ? ((orders.length / uniqueVisitors) * 100).toFixed(1) : 0;
+
+    const allOrders = await db.collection('orders').find({ status: 'delivered' }).toArray();
+    const housingTotal = allOrders.filter(o => o.category === 'housing').reduce((s, o) => s + (o.total_amount || 0), 0);
+    const marketplaceTotal = allOrders.filter(o => o.category === 'marketplace').reduce((s, o) => s + (o.total_amount || 0), 0);
+    const servicesTotal = allOrders.filter(o => o.category === 'services').reduce((s, o) => s + (o.total_amount || 0), 0);
+
+    const properties = await db.collection('properties').find({}, { projection: { category: 1 } }).toArray();
+    const products = await db.collection('products').find({}, { projection: { category: 1 } }).toArray();
     
     const housingCount = properties?.filter(p => p.category === 'housing').length || 0;
     const marketplaceCount = products?.filter(p => p.category === 'marketplace').length || 0;
@@ -4874,50 +4792,36 @@ Return only the category name (services/housing/product) that best fits.`;
 app.get('/api/ai/alerts', async (req, res) => {
   try {
     const alerts = [];
-
-    // Check for new products needing approval
-    const { data: newProducts } = await supabase
-      .from('properties')
-      .select('id, title, category, created_at')
-      .eq('active', false)
-      .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
-      .limit(10);
-
-    if (newProducts && newProducts.length > 0) {
-      alerts.push({
-        type: 'admin',
-        priority: 'medium',
-        title: `${newProducts.length} new items need approval`,
-        message: `New listings: ${newProducts.map(p => p.title).join(', ')}`,
-        action: 'Review in admin dashboard'
-      });
+    if (db) {
+      const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      const newProducts = await db.collection('properties')
+        .find({ active: false, created_at: { $gte: since } })
+        .project({ _id: 1, title: 1, category: 1, created_at: 1 })
+        .limit(10).toArray();
+      if (newProducts.length > 0) {
+        alerts.push({
+          type: 'admin', priority: 'medium',
+          title: `${newProducts.length} new items need approval`,
+          message: `New listings: ${newProducts.map(p => p.title).join(', ')}`,
+          action: 'Review in admin dashboard'
+        });
+      }
+      const trending = await db.collection('properties')
+        .find({ is_trending: true, active: true })
+        .project({ _id: 1, title: 1, category: 1 })
+        .limit(3).toArray();
+      if (trending.length > 0) {
+        alerts.push({
+          type: 'user', priority: 'low',
+          title: 'Trending items this week',
+          message: `Check out: ${trending.map(t => t.title).join(', ')}`,
+          action: 'Browse trending section'
+        });
+      }
     }
-
-    // Check for trending products
-    const { data: trending } = await supabase
-      .from('properties')
-      .select('id, title, category')
-      .eq('is_trending', true)
-      .eq('active', true)
-      .limit(3);
-
-    if (trending && trending.length > 0) {
-      alerts.push({
-        type: 'user',
-        priority: 'low',
-        title: 'Trending items this week',
-        message: `Check out: ${trending.map(t => t.title).join(', ')}`,
-        action: 'Browse trending section'
-      });
-    }
-
-    return res.json({
-      success: true,
-      alerts,
-      timestamp: new Date().toISOString()
-    });
-
+    return res.json({ success: true, alerts, timestamp: new Date().toISOString() });
   } catch (error) {
+    return res.json({ success: true, alerts: [], timestamp: new Date().toISOString() });
   }
 });
 
@@ -6016,17 +5920,13 @@ app.post('/api/profile/save-public', async (req, res) => {
 // Get Current User (requires auth)
 app.get('/api/auth/me', verifyToken, async (req, res) => {
   try {
-    const { data } = await supabase
-      .from('users')
-      .select('*')
-      .eq('id', req.userId)
-      .single();
-
-    if (!data) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    res.json(data);
+    if (!db) return res.status(500).json({ error: 'Database not connected' });
+    let user;
+    try { user = await db.collection('users').findOne({ _id: new ObjectId(req.userId) }); } catch { user = null; }
+    if (!user) user = await db.collection('users').findOne({ id: req.userId });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    const { password, ...safeUser } = user;
+    res.json(safeUser);
   } catch (error) {
     console.error('Error fetching user:', error);
     res.status(500).json({ error: 'Failed to fetch user' });
@@ -6035,10 +5935,7 @@ app.get('/api/auth/me', verifyToken, async (req, res) => {
 
 // Config endpoint (public - for frontend to know the setup)
 app.get('/api/config', (req, res) => {
-  res.json({
-    supabaseUrl: SUPABASE_URL,
-    // Don't expose keys here!
-  });
+  res.json({ status: 'ok' });
 });
 
 // ===== SELLER ITEM SUBMISSION =====
@@ -6060,17 +5957,10 @@ app.post('/api/seller/submit-item', requireAuth, async (req, res) => {
       return res.status(400).json({ error: 'Title, description, and category are required' });
     }
 
-    // Check user's free posts remaining
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('free_posts_used')
-      .eq('id', req.user.id)
-      .single();
-
-    if (profileError) {
-      console.error('Profile fetch error:', profileError);
-      return res.status(500).json({ error: 'Unable to verify user profile' });
-    }
+    if (!db) return res.status(500).json({ error: 'Database not connected' });
+    let userFilter;
+    try { userFilter = { _id: new ObjectId(req.user.id) }; } catch { userFilter = { id: req.user.id }; }
+    const profile = await db.collection('users').findOne(userFilter);
 
     const FREE_POST_LIMIT = 5;
     const freePostsUsed = profile?.free_posts_used || 0;
@@ -6151,65 +6041,43 @@ app.post('/api/seller/submit-item', requireAuth, async (req, res) => {
       };
     }
 
-    const { data, error } = await supabase
-      .from(tableName)
-      .insert(itemData)
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Item submission error:', error);
+    const insertResult = await db.collection(tableName).insertOne({ ...itemData, created_at: new Date(), updated_at: new Date() });
+    if (!insertResult.insertedId) {
       return res.status(500).json({ error: 'Unable to submit item' });
     }
+    const data = { ...itemData, _id: insertResult.insertedId, id: insertResult.insertedId.toString() };
 
     const remainingFreePosts = Math.max(0, FREE_POST_LIMIT - (freePostsUsed + 1));
-    // Update user's free posts count
-    await supabase
-      .from('profiles')
-      .update({ free_posts_used: freePostsUsed + 1 })
-      .eq('id', req.user.id);
+    await db.collection('users').updateOne(userFilter, { $set: { free_posts_used: freePostsUsed + 1 } });
 
-    // Auto-create notification for seller
     try {
-      await supabase.from('notifications').insert({
-        user_id: req.user.id,
-        type: 'submission',
+      await db.collection('notifications').insertOne({
+        user_id: req.user.id, type: 'submission',
         title: 'Item Submitted for Approval',
         message: `Your item "${title}" has been submitted for admin review. You'll be notified once it's approved. Free posts remaining: ${remainingFreePosts}`,
-        data: { item_id: data.id, table: tableName, expiry_date: expiryDate.toISOString() }
+        data: { item_id: data.id, table: tableName, expiry_date: expiryDate.toISOString() },
+        created_at: new Date()
       });
-    } catch (notifError) {
-      console.error('Seller notification error:', notifError);
-    }
+    } catch (notifError) { console.error('Seller notification error:', notifError); }
 
-    // Auto-create admin notification
     try {
-      const { data: adminUsers } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('role', 'admin')
-        .limit(10);
-
-      if (adminUsers && adminUsers.length > 0) {
+      const adminUsers = await db.collection('users').find({ role: 'admin' }).project({ _id: 1 }).limit(10).toArray();
+      if (adminUsers.length > 0) {
         const adminNotifications = adminUsers.map(admin => ({
-          user_id: admin.id,
-          type: 'admin',
+          user_id: admin._id.toString(), type: 'admin',
           title: 'New Item Pending Approval',
           message: `"${title}" in ${itemCategory} category needs review`,
-          data: { item_id: data.id, table: tableName, seller_id: req.user.id }
+          data: { item_id: data.id, table: tableName, seller_id: req.user.id },
+          created_at: new Date()
         }));
-        await supabase.from('notifications').insert(adminNotifications);
+        await db.collection('notifications').insertMany(adminNotifications);
       }
-    } catch (adminNotifError) {
-      console.error('Admin notification error:', adminNotifError);
-    }
+    } catch (adminNotifError) { console.error('Admin notification error:', adminNotifError); }
 
     return res.json({
-      success: true,
-      item: data,
+      success: true, item: data,
       message: `Item submitted successfully! Awaiting admin approval. Free posts remaining: ${remainingFreePosts}`,
-      status: 'pending',
-      expiryDate: expiryDate.toISOString()
+      status: 'pending', expiryDate: expiryDate.toISOString()
     });
   } catch (error) {
     console.error('Item submission endpoint error:', error);
@@ -6235,24 +6103,11 @@ app.post('/api/seller/submit-item-paid', requireAuth, async (req, res) => {
       return res.status(400).json({ error: 'All fields including payment details are required' });
     }
 
-    // Verify payment was successful
-    const { data: order, error: orderError } = await supabase
-      .from('orders')
-      .select('payment_status, amount')
-      .eq('order_id', orderId)
-      .single();
-
-    if (orderError || !order) {
-      return res.status(400).json({ error: 'Payment verification failed' });
-    }
-
-    if (order.payment_status !== 'COMPLETE') {
-      return res.status(400).json({ error: 'Payment not completed yet' });
-    }
-
-    if (parseFloat(order.amount) !== parseFloat(paymentAmount)) {
-      return res.status(400).json({ error: 'Payment amount mismatch' });
-    }
+    if (!db) return res.status(500).json({ error: 'Database not connected' });
+    const order = await db.collection('orders').findOne({ order_id: orderId });
+    if (!order) return res.status(400).json({ error: 'Payment verification failed' });
+    if (order.payment_status !== 'COMPLETE') return res.status(400).json({ error: 'Payment not completed yet' });
+    if (parseFloat(order.amount) !== parseFloat(paymentAmount)) return res.status(400).json({ error: 'Payment amount mismatch' });
 
     // Proceed with paid submission
     const normalizedCategory = category.toString().trim().toLowerCase();
@@ -6311,36 +6166,21 @@ app.post('/api/seller/submit-item-paid', requireAuth, async (req, res) => {
       };
     }
 
-    const { data, error } = await supabase
-      .from(tableName)
-      .insert(itemData)
-      .select()
-      .single();
+    const paidInsert = await db.collection(tableName).insertOne({ ...itemData, created_at: new Date(), updated_at: new Date() });
+    if (!paidInsert.insertedId) return res.status(500).json({ error: 'Unable to submit paid item' });
+    const data = { ...itemData, _id: paidInsert.insertedId, id: paidInsert.insertedId.toString() };
 
-    if (error) {
-      console.error('Paid item submission error:', error);
-      return res.status(500).json({ error: 'Unable to submit paid item' });
-    }
-
-    // Auto-create notification for seller
     try {
-      await supabase.from('notifications').insert({
-        user_id: req.user.id,
-        type: 'submission',
+      await db.collection('notifications').insertOne({
+        user_id: req.user.id, type: 'submission',
         title: 'Paid Item Posted Successfully',
         message: `Your paid item "${title}" has been posted and will be visible for 7 days.`,
-        data: { item_id: data.id, table: tableName, expiry_date: expiryDate.toISOString(), payment_amount: paymentAmount }
+        data: { item_id: data.id, table: tableName, expiry_date: expiryDate.toISOString(), payment_amount: paymentAmount },
+        created_at: new Date()
       });
-    } catch (notifError) {
-      console.error('Seller notification error:', notifError);
-    }
+    } catch (notifError) { console.error('Seller notification error:', notifError); }
 
-    return res.json({
-      success: true,
-      item: data,
-      message: 'Paid item posted successfully!',
-      expiryDate: expiryDate.toISOString()
-    });
+    return res.json({ success: true, item: data, message: 'Paid item posted successfully!', expiryDate: expiryDate.toISOString() });
   } catch (error) {
     console.error('Paid item submission endpoint error:', error);
     return res.status(500).json({ error: 'Server error' });
@@ -6360,55 +6200,32 @@ app.post('/api/seller/renew-item', requireAuth, async (req, res) => {
       return res.status(400).json({ error: 'Invalid table name' });
     }
 
-    // Verify payment was successful
-    const { data: order, error: orderError } = await supabase
-      .from('orders')
-      .select('payment_status, amount')
-      .eq('order_id', orderId)
-      .single();
+    if (!db) return res.status(500).json({ error: 'Database not connected' });
+    const renewOrder = await db.collection('orders').findOne({ order_id: orderId });
+    if (!renewOrder) return res.status(400).json({ error: 'Payment verification failed' });
+    if (renewOrder.payment_status !== 'COMPLETE') return res.status(400).json({ error: 'Payment not completed yet' });
+    if (parseFloat(renewOrder.amount) !== parseFloat(paymentAmount)) return res.status(400).json({ error: 'Payment amount mismatch' });
 
-    if (orderError || !order) {
-      return res.status(400).json({ error: 'Payment verification failed' });
-    }
-
-    if (order.payment_status !== 'COMPLETE') {
-      return res.status(400).json({ error: 'Payment not completed yet' });
-    }
-
-    if (parseFloat(order.amount) !== parseFloat(paymentAmount)) {
-      return res.status(400).json({ error: 'Payment amount mismatch' });
-    }
-
-    // Calculate new expiry date (7 days from now)
     const newExpiryDate = new Date();
     newExpiryDate.setDate(newExpiryDate.getDate() + 7);
 
-    // Update the item
-    const { data, error } = await supabase
-      .from(tableName)
-      .update({
-        active: true,
-        expiry_date: newExpiryDate.toISOString(),
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', itemId)
-      .eq('user_id', req.user.id) // Ensure user owns the item
-      .select()
-      .single();
+    let itemFilter;
+    try { itemFilter = { _id: new ObjectId(itemId), user_id: req.user.id }; } catch { itemFilter = { id: itemId, user_id: req.user.id }; }
+    const renewResult = await db.collection(tableName).findOneAndUpdate(
+      itemFilter,
+      { $set: { active: true, expiry_date: newExpiryDate.toISOString(), updated_at: new Date().toISOString() } },
+      { returnDocument: 'after' }
+    );
+    if (!renewResult) return res.status(404).json({ error: 'Item not found or unauthorized' });
+    const data = renewResult;
 
-    if (error) {
-      console.error('Item renewal error:', error);
-      return res.status(500).json({ error: 'Unable to renew item' });
-    }
-
-    // Auto-create notification for seller
     try {
-      await supabase.from('notifications').insert({
-        user_id: req.user.id,
-        type: 'renewal',
+      await db.collection('notifications').insertOne({
+        user_id: req.user.id, type: 'renewal',
         title: 'Item Renewed Successfully',
         message: `Your item "${data.title || data.name}" has been renewed and will be visible for another 7 days.`,
-        data: { item_id: itemId, table: tableName, expiry_date: newExpiryDate.toISOString(), payment_amount: paymentAmount }
+        data: { item_id: itemId, table: tableName, expiry_date: newExpiryDate.toISOString(), payment_amount: paymentAmount },
+        created_at: new Date()
       });
     } catch (notifError) {
       console.error('Renewal notification error:', notifError);
@@ -6429,24 +6246,12 @@ app.post('/api/seller/renew-item', requireAuth, async (req, res) => {
 // Function to check and deactivate expired items
 async function checkExpiredItems() {
   try {
-    const now = new Date().toISOString();
+    if (!db) return;
     const gracePeriodEnd = new Date();
-    gracePeriodEnd.setDate(gracePeriodEnd.getDate() - 2); // 2-day grace period
-
-    // Update products
-    await supabase
-      .from('products')
-      .update({ active: false })
-      .lt('expiry_date', gracePeriodEnd.toISOString())
-      .eq('active', true);
-
-    // Update properties
-    await supabase
-      .from('properties')
-      .update({ active: false })
-      .lt('expiry_date', gracePeriodEnd.toISOString())
-      .eq('active', true);
-
+    gracePeriodEnd.setDate(gracePeriodEnd.getDate() - 2);
+    const cutoff = gracePeriodEnd.toISOString();
+    await db.collection('products').updateMany({ active: true, expiry_date: { $lt: cutoff } }, { $set: { active: false } });
+    await db.collection('properties').updateMany({ active: true, expiry_date: { $lt: cutoff } }, { $set: { active: false } });
     console.log('Expired items check completed');
   } catch (error) {
     console.error('Error checking expired items:', error);
@@ -6506,66 +6311,35 @@ app.post('/api/seller/boost-trending', requireAuth, async (req, res) => {
       return res.status(400).json({ error: 'Boost duration must be 1-30 days' });
     }
 
-    // Verify payment was successful
-    const { data: order, error: orderError } = await supabase
-      .from('orders')
-      .select('payment_status, amount')
-      .eq('order_id', orderId)
-      .single();
+    if (!db) return res.status(500).json({ error: 'Database not connected' });
+    const boostOrder = await db.collection('orders').findOne({ order_id: orderId });
+    if (!boostOrder) return res.status(400).json({ error: 'Payment verification failed' });
+    if (boostOrder.payment_status !== 'COMPLETE') return res.status(400).json({ error: 'Payment not completed yet' });
+    if (parseFloat(boostOrder.amount) !== parseFloat(paymentAmount)) return res.status(400).json({ error: 'Payment amount mismatch' });
 
-    if (orderError || !order) {
-      return res.status(400).json({ error: 'Payment verification failed' });
-    }
-
-    if (order.payment_status !== 'COMPLETE') {
-      return res.status(400).json({ error: 'Payment not completed yet' });
-    }
-
-    if (parseFloat(order.amount) !== parseFloat(paymentAmount)) {
-      return res.status(400).json({ error: 'Payment amount mismatch' });
-    }
-
-    // Calculate trending expiry date
     const trendingExpiryDate = new Date();
     trendingExpiryDate.setDate(trendingExpiryDate.getDate() + daysToBoost);
 
-    // Update the item
-    const { data, error } = await supabase
-      .from(tableName)
-      .update({
-        is_trending: true,
-        trending_expiry_date: trendingExpiryDate.toISOString(),
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', itemId)
-      .eq('user_id', req.user.id) // Ensure user owns the item
-      .select()
-      .single();
+    let boostFilter;
+    try { boostFilter = { _id: new ObjectId(itemId), user_id: req.user.id }; } catch { boostFilter = { id: itemId, user_id: req.user.id }; }
+    const boostResult = await db.collection(tableName).findOneAndUpdate(
+      boostFilter,
+      { $set: { is_trending: true, trending_expiry_date: trendingExpiryDate.toISOString(), updated_at: new Date().toISOString() } },
+      { returnDocument: 'after' }
+    );
+    if (!boostResult) return res.status(404).json({ error: 'Unable to boost item' });
+    const data = boostResult;
 
-    if (error) {
-      console.error('Trending boost error:', error);
-      return res.status(500).json({ error: 'Unable to boost item' });
-    }
-
-    // Auto-create notification for seller
     try {
-      await supabase.from('notifications').insert({
-        user_id: req.user.id,
-        type: 'boost',
-        title: 'Item Boosted to Trending!',
+      await db.collection('notifications').insertOne({
+        user_id: req.user.id, type: 'boost', title: 'Item Boosted to Trending!',
         message: `Your item "${data.title || data.name}" is now trending and will appear at the top of the homepage for ${daysToBoost} days!`,
-        data: { item_id: itemId, table: tableName, expiry_date: trendingExpiryDate.toISOString() }
+        data: { item_id: itemId, table: tableName, expiry_date: trendingExpiryDate.toISOString() },
+        created_at: new Date()
       });
-    } catch (notifError) {
-      console.error('Boost notification error:', notifError);
-    }
+    } catch (notifError) { console.error('Boost notification error:', notifError); }
 
-    return res.json({
-      success: true,
-      item: data,
-      message: `Item boosted to trending for ${daysToBoost} days!`,
-      trendingExpiryDate: trendingExpiryDate.toISOString()
-    });
+    return res.json({ success: true, item: data, message: `Item boosted to trending for ${daysToBoost} days!`, trendingExpiryDate: trendingExpiryDate.toISOString() });
   } catch (error) {
     console.error('Trending boost endpoint error:', error);
     return res.status(500).json({ error: 'Server error' });
@@ -6575,27 +6349,9 @@ app.post('/api/seller/boost-trending', requireAuth, async (req, res) => {
 // Get seller's submitted items
 app.get('/api/seller/items', requireAuth, async (req, res) => {
   try {
-    // Get from products table
-    const { data: products, error: productsError } = await supabase
-      .from('products')
-      .select('*')
-      .eq('user_id', req.user.id) // Assuming you'll add user_id to products table
-      .order('created_at', { ascending: false });
-
-    // Get from properties table
-    const { data: properties, error: propertiesError } = await supabase
-      .from('properties')
-      .select('*')
-      .eq('user_id', req.user.id) // Assuming you'll add user_id to properties table
-      .order('created_at', { ascending: false });
-
-    if (productsError) {
-      console.error('Products fetch error:', productsError);
-    }
-
-    if (propertiesError) {
-      console.error('Properties fetch error:', propertiesError);
-    }
+    if (!db) return res.json({ success: true, items: [] });
+    const products = await db.collection('products').find({ user_id: req.user.id }).sort({ created_at: -1 }).toArray();
+    const properties = await db.collection('properties').find({ user_id: req.user.id }).sort({ created_at: -1 }).toArray();
 
     const allItems = [
       ...(products || []).map(item => {
@@ -6729,26 +6485,10 @@ app.post('/api/categories', requireAuth, async (req, res) => {
 // Reviews API
 app.get('/api/reviews/:listingId', async (req, res) => {
   try {
+    if (!db) return res.json({ success: true, reviews: [] });
     const { listingId } = req.params;
-
-    const { data, error } = await supabase
-      .from('reviews')
-      .select(`
-        *,
-        profiles:user_id (
-          name,
-          avatar_url
-        )
-      `)
-      .eq('listing_id', listingId)
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('Reviews fetch error:', error);
-      return res.status(500).json({ error: 'Unable to fetch reviews' });
-    }
-
-    return res.json({ success: true, reviews: data || [] });
+    const reviews = await db.collection('reviews').find({ listing_id: listingId }).sort({ created_at: -1 }).toArray();
+    return res.json({ success: true, reviews });
   } catch (error) {
     console.error('Reviews endpoint error:', error);
     return res.status(500).json({ error: 'Server error' });
@@ -6758,32 +6498,12 @@ app.get('/api/reviews/:listingId', async (req, res) => {
 app.post('/api/reviews', requireAuth, async (req, res) => {
   try {
     const { listing_id, rating, comment } = req.body;
-
-    if (!listing_id || !rating) {
-      return res.status(400).json({ error: 'Listing ID and rating are required' });
-    }
-
-    if (rating < 1 || rating > 5) {
-      return res.status(400).json({ error: 'Rating must be between 1 and 5' });
-    }
-
-    const { data, error } = await supabase
-      .from('reviews')
-      .insert({
-        listing_id,
-        reviewer_id: req.user.id,
-        rating,
-        comment
-      })
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Review creation error:', error);
-      return res.status(500).json({ error: 'Unable to create review' });
-    }
-
-    return res.json({ success: true, review: data });
+    if (!listing_id || !rating) return res.status(400).json({ error: 'Listing ID and rating are required' });
+    if (rating < 1 || rating > 5) return res.status(400).json({ error: 'Rating must be between 1 and 5' });
+    if (!db) return res.status(500).json({ error: 'Database not connected' });
+    const doc = { listing_id, reviewer_id: req.user.id, rating, comment, created_at: new Date() };
+    const result = await db.collection('reviews').insertOne(doc);
+    return res.json({ success: true, review: { ...doc, _id: result.insertedId } });
   } catch (error) {
     console.error('Review creation endpoint error:', error);
     return res.status(500).json({ error: 'Server error' });
@@ -6793,28 +6513,12 @@ app.post('/api/reviews', requireAuth, async (req, res) => {
 // Messages API
 app.get('/api/messages', requireAuth, async (req, res) => {
   try {
-    const { data, error } = await supabase
-      .from('messages')
-      .select(`
-        *,
-        sender:profiles!sender_id (
-          name,
-          avatar_url
-        ),
-        receiver:profiles!receiver_id (
-          name,
-          avatar_url
-        )
-      `)
-      .or(`sender_id.eq.${req.user.id},receiver_id.eq.${req.user.id}`)
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('Messages fetch error:', error);
-      return res.status(500).json({ error: 'Unable to fetch messages' });
-    }
-
-    return res.json({ success: true, messages: data || [] });
+    if (!db) return res.json({ success: true, messages: [] });
+    const uid = req.user.id;
+    const messages = await db.collection('messages')
+      .find({ $or: [{ sender_id: uid }, { receiver_id: uid }] })
+      .sort({ created_at: -1 }).toArray();
+    return res.json({ success: true, messages });
   } catch (error) {
     console.error('Messages endpoint error:', error);
     return res.status(500).json({ error: 'Server error' });
@@ -6824,51 +6528,22 @@ app.get('/api/messages', requireAuth, async (req, res) => {
 app.post('/api/messages', requireAuth, async (req, res) => {
   try {
     const { receiver_id, listing_id, subject, content } = req.body;
-
-    if (!receiver_id || !content) {
-      return res.status(400).json({ error: 'Receiver ID and content are required' });
-    }
-
-    const { data, error } = await supabase
-      .from('messages')
-      .insert({
-        sender_id: req.user.id,
-        receiver_id,
-        listing_id,
-        subject,
-        content
-      })
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Message creation error:', error);
-      return res.status(500).json({ error: 'Unable to send message' });
-    }
-
-    // Auto-create notification for receiver
+    if (!receiver_id || !content) return res.status(400).json({ error: 'Receiver ID and content are required' });
+    if (!db) return res.status(500).json({ error: 'Database not connected' });
+    const doc = { sender_id: req.user.id, receiver_id, listing_id, subject, content, created_at: new Date() };
+    const result = await db.collection('messages').insertOne(doc);
+    const msgData = { ...doc, _id: result.insertedId };
     try {
-      const { data: senderData } = await supabase
-        .from('profiles')
-        .select('name')
-        .eq('id', req.user.id)
-        .single();
-
-      const senderName = senderData?.name || 'Someone';
-
-      await supabase.from('notifications').insert({
-        user_id: receiver_id,
-        type: 'message',
-        title: 'New Message',
+      const sender = await db.collection('users').findOne({ _id: new ObjectId(req.user.id) }).catch(() => null);
+      const senderName = sender?.name || 'Someone';
+      await db.collection('notifications').insertOne({
+        user_id: receiver_id, type: 'message', title: 'New Message',
         message: `${senderName} sent you a message${subject ? ` about "${subject}"` : ''}`,
-        data: { message_id: data.id, sender_id: req.user.id, listing_id }
+        data: { message_id: result.insertedId.toString(), sender_id: req.user.id, listing_id },
+        created_at: new Date()
       });
-    } catch (notifError) {
-      console.error('Message notification error:', notifError);
-      // Don't fail message creation if notification fails
-    }
-
-    return res.json({ success: true, message: data });
+    } catch (notifError) { console.error('Message notification error:', notifError); }
+    return res.json({ success: true, message: msgData });
   } catch (error) {
     console.error('Message creation endpoint error:', error);
     return res.status(500).json({ error: 'Server error' });
@@ -6878,27 +6553,9 @@ app.post('/api/messages', requireAuth, async (req, res) => {
 // Favorites API
 app.get('/api/favorites', requireAuth, async (req, res) => {
   try {
-    const { data, error } = await supabase
-      .from('favorites')
-      .select(`
-        *,
-        properties (
-          id,
-          title,
-          price,
-          images,
-          category
-        )
-      `)
-      .eq('user_id', req.user.id)
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('Favorites fetch error:', error);
-      return res.status(500).json({ error: 'Unable to fetch favorites' });
-    }
-
-    return res.json({ success: true, favorites: data || [] });
+    if (!db) return res.json({ success: true, favorites: [] });
+    const favorites = await db.collection('favorites').find({ user_id: req.user.id }).sort({ created_at: -1 }).toArray();
+    return res.json({ success: true, favorites });
   } catch (error) {
     console.error('Favorites endpoint error:', error);
     return res.status(500).json({ error: 'Server error' });
@@ -6908,38 +6565,13 @@ app.get('/api/favorites', requireAuth, async (req, res) => {
 app.post('/api/favorites', requireAuth, async (req, res) => {
   try {
     const { listing_id } = req.body;
-
-    if (!listing_id) {
-      return res.status(400).json({ error: 'Listing ID is required' });
-    }
-
-    // Check if already favorited
-    const { data: existing } = await supabase
-      .from('favorites')
-      .select('id')
-      .eq('user_id', req.user.id)
-      .eq('listing_id', listing_id)
-      .single();
-
-    if (existing) {
-      return res.status(400).json({ error: 'Item already in favorites' });
-    }
-
-    const { data, error } = await supabase
-      .from('favorites')
-      .insert({
-        user_id: req.user.id,
-        listing_id
-      })
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Favorite creation error:', error);
-      return res.status(500).json({ error: 'Unable to add to favorites' });
-    }
-
-    return res.json({ success: true, favorite: data });
+    if (!listing_id) return res.status(400).json({ error: 'Listing ID is required' });
+    if (!db) return res.status(500).json({ error: 'Database not connected' });
+    const existing = await db.collection('favorites').findOne({ user_id: req.user.id, listing_id });
+    if (existing) return res.status(400).json({ error: 'Item already in favorites' });
+    const doc = { user_id: req.user.id, listing_id, created_at: new Date() };
+    const result = await db.collection('favorites').insertOne(doc);
+    return res.json({ success: true, favorite: { ...doc, _id: result.insertedId } });
   } catch (error) {
     console.error('Favorite creation endpoint error:', error);
     return res.status(500).json({ error: 'Server error' });
@@ -6949,18 +6581,8 @@ app.post('/api/favorites', requireAuth, async (req, res) => {
 app.delete('/api/favorites/:listingId', requireAuth, async (req, res) => {
   try {
     const { listingId } = req.params;
-
-    const { error } = await supabase
-      .from('favorites')
-      .delete()
-      .eq('user_id', req.user.id)
-      .eq('listing_id', listingId);
-
-    if (error) {
-      console.error('Favorite deletion error:', error);
-      return res.status(500).json({ error: 'Unable to remove from favorites' });
-    }
-
+    if (!db) return res.status(500).json({ error: 'Database not connected' });
+    await db.collection('favorites').deleteOne({ user_id: req.user.id, listing_id: listingId });
     return res.json({ success: true, message: 'Removed from favorites' });
   } catch (error) {
     console.error('Favorite deletion endpoint error:', error);
@@ -7058,20 +6680,10 @@ app.post('/api/notifications/test', requireAuth, async (req, res) => {
 // Images API
 app.get('/api/images/:listingId', async (req, res) => {
   try {
+    if (!db) return res.json({ success: true, images: [] });
     const { listingId } = req.params;
-
-    const { data, error } = await supabase
-      .from('images')
-      .select('*')
-      .eq('listing_id', listingId)
-      .order('sort_order');
-
-    if (error) {
-      console.error('Images fetch error:', error);
-      return res.status(500).json({ error: 'Unable to fetch images' });
-    }
-
-    return res.json({ success: true, images: data || [] });
+    const images = await db.collection('images').find({ listing_id: listingId }).sort({ sort_order: 1 }).toArray();
+    return res.json({ success: true, images });
   } catch (error) {
     console.error('Images endpoint error:', error);
     return res.status(500).json({ error: 'Server error' });
@@ -7081,30 +6693,11 @@ app.get('/api/images/:listingId', async (req, res) => {
 app.post('/api/images', requireAuth, async (req, res) => {
   try {
     const { listing_id, filename, url, alt_text, is_primary, sort_order } = req.body;
-
-    if (!listing_id || !filename || !url) {
-      return res.status(400).json({ error: 'Listing ID, filename, and URL are required' });
-    }
-
-    const { data, error } = await supabase
-      .from('images')
-      .insert({
-        listing_id,
-        filename,
-        url,
-        alt_text,
-        is_primary: is_primary || false,
-        sort_order: sort_order || 0
-      })
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Image creation error:', error);
-      return res.status(500).json({ error: 'Unable to add image' });
-    }
-
-    return res.json({ success: true, image: data });
+    if (!listing_id || !filename || !url) return res.status(400).json({ error: 'Listing ID, filename, and URL are required' });
+    if (!db) return res.status(500).json({ error: 'Database not connected' });
+    const doc = { listing_id, filename, url, alt_text, is_primary: is_primary || false, sort_order: sort_order || 0, created_at: new Date() };
+    const result = await db.collection('images').insertOne(doc);
+    return res.json({ success: true, image: { ...doc, _id: result.insertedId } });
   } catch (error) {
     console.error('Image creation endpoint error:', error);
     return res.status(500).json({ error: 'Server error' });
@@ -7114,26 +6707,9 @@ app.post('/api/images', requireAuth, async (req, res) => {
 // Transactions API
 app.get('/api/transactions', requireAuth, async (req, res) => {
   try {
-    const { data, error } = await supabase
-      .from('transactions')
-      .select(`
-        *,
-        orders (
-          item,
-          amount,
-          payment_status
-        )
-      `)
-      .eq('user_id', req.user.id)
-      .order('created_at', { ascending: false })
-      .limit(100);
-
-    if (error) {
-      console.error('Transactions fetch error:', error);
-      return res.status(500).json({ error: 'Unable to fetch transactions' });
-    }
-
-    return res.json({ success: true, transactions: data || [] });
+    if (!db) return res.json({ success: true, transactions: [] });
+    const transactions = await db.collection('transactions').find({ user_id: req.user.id }).sort({ created_at: -1 }).limit(100).toArray();
+    return res.json({ success: true, transactions });
   } catch (error) {
     console.error('Transactions endpoint error:', error);
     return res.status(500).json({ error: 'Server error' });
@@ -7143,32 +6719,11 @@ app.get('/api/transactions', requireAuth, async (req, res) => {
 app.post('/api/transactions', requireAuth, async (req, res) => {
   try {
     const { order_id, amount, type, status, payment_method, transaction_ref, metadata } = req.body;
-
-    if (!order_id || !amount || !type || !status) {
-      return res.status(400).json({ error: 'Order ID, amount, type, and status are required' });
-    }
-
-    const { data, error } = await supabase
-      .from('transactions')
-      .insert({
-        order_id,
-        user_id: req.user.id,
-        amount,
-        type,
-        status,
-        payment_method,
-        transaction_ref,
-        metadata
-      })
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Transaction creation error:', error);
-      return res.status(500).json({ error: 'Unable to create transaction' });
-    }
-
-    return res.json({ success: true, transaction: data });
+    if (!order_id || !amount || !type || !status) return res.status(400).json({ error: 'Order ID, amount, type, and status are required' });
+    if (!db) return res.status(500).json({ error: 'Database not connected' });
+    const doc = { order_id, user_id: req.user.id, amount, type, status, payment_method, transaction_ref, metadata, created_at: new Date() };
+    const result = await db.collection('transactions').insertOne(doc);
+    return res.json({ success: true, transaction: { ...doc, _id: result.insertedId } });
   } catch (error) {
     console.error('Transaction creation endpoint error:', error);
     return res.status(500).json({ error: 'Server error' });
@@ -7180,29 +6735,10 @@ app.post('/api/transactions', requireAuth, async (req, res) => {
 // TENANT ENDPOINTS: Get tenant's rent schedule (upcoming and past payments)
 app.get('/api/tenant/rent-schedule', requireAuth, async (req, res) => {
   try {
+    if (!db) return res.json({ success: true, schedules: [] });
     const tenantId = req.user.id;
-
-    const { data: schedules, error } = await supabase
-      .from('rent_schedule')
-      .select(`
-        id,
-        due_date,
-        amount,
-        status,
-        paid_date,
-        rental_agreement_id,
-        properties:property_id (id, title, location),
-        landlords:landlord_id (id, full_name, email, phone)
-      `)
-      .eq('tenant_id', tenantId)
-      .order('due_date', { ascending: false });
-
-    if (error) {
-      console.error('Rent schedule fetch error:', error);
-      return res.status(500).json({ error: 'Unable to fetch rent schedule' });
-    }
-
-    return res.json({ success: true, schedules: schedules || [] });
+    const schedules = await db.collection('rent_schedule').find({ tenant_id: tenantId }).sort({ due_date: -1 }).toArray();
+    return res.json({ success: true, schedules });
   } catch (error) {
     console.error('Rent schedule endpoint error:', error);
     return res.status(500).json({ error: 'Server error' });
@@ -7212,32 +6748,10 @@ app.get('/api/tenant/rent-schedule', requireAuth, async (req, res) => {
 // TENANT ENDPOINTS: Get tenant's payment history
 app.get('/api/tenant/payment-history', requireAuth, async (req, res) => {
   try {
+    if (!db) return res.json({ success: true, payments: [] });
     const tenantId = req.user.id;
-
-    const { data: payments, error } = await supabase
-      .from('payment_receipts')
-      .select(`
-        id,
-        created_at,
-        amount,
-        status,
-        payment_method,
-        mpesa_code,
-        rent_schedule:rent_schedule_id (
-          due_date,
-          status,
-          properties:property_id (title, location)
-        )
-      `)
-      .eq('rent_schedule.tenant_id', tenantId)
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('Payment history fetch error:', error);
-      return res.status(500).json({ error: 'Unable to fetch payment history' });
-    }
-
-    return res.json({ success: true, payments: payments || [] });
+    const payments = await db.collection('payment_receipts').find({ tenant_id: tenantId }).sort({ created_at: -1 }).toArray();
+    return res.json({ success: true, payments });
   } catch (error) {
     console.error('Payment history endpoint error:', error);
     return res.status(500).json({ error: 'Server error' });
@@ -7247,29 +6761,10 @@ app.get('/api/tenant/payment-history', requireAuth, async (req, res) => {
 // TENANT ENDPOINTS: Get tenant's rental agreement details
 app.get('/api/tenant/rental-agreement', requireAuth, async (req, res) => {
   try {
+    if (!db) return res.status(404).json({ error: 'No active rental agreement found' });
     const tenantId = req.user.id;
-
-    const { data: agreement, error } = await supabase
-      .from('rental_agreements')
-      .select(`
-        id,
-        monthly_rent,
-        lease_start,
-        lease_end,
-        payment_due_day,
-        status,
-        properties:property_id (id, title, location, images),
-        landlords:landlord_id (id, full_name, email, phone)
-      `)
-      .eq('tenant_id', tenantId)
-      .eq('status', 'active')
-      .single();
-
-    if (error) {
-      console.error('Rental agreement fetch error:', error);
-      return res.status(404).json({ error: 'No active rental agreement found' });
-    }
-
+    const agreement = await db.collection('rental_agreements').findOne({ tenant_id: tenantId, status: 'active' });
+    if (!agreement) return res.status(404).json({ error: 'No active rental agreement found' });
     return res.json({ success: true, agreement });
   } catch (error) {
     console.error('Rental agreement endpoint error:', error);
@@ -7286,45 +6781,16 @@ app.get('/api/tenant/rental-agreement', requireAuth, async (req, res) => {
 // LANDLORD ENDPOINTS: Get tenant payment status
 app.get('/api/landlord/tenant-payments/:tenantId', requireAuth, async (req, res) => {
   try {
+    if (!db) return res.status(500).json({ error: 'Database not connected' });
     const landlordId = req.user.id;
     const { tenantId } = req.params;
 
-    // Verify the tenant belongs to this landlord
-    const { data: agreement, error: agreementError } = await supabase
-      .from('rental_agreements')
-      .select('id')
-      .eq('landlord_id', landlordId)
-      .eq('tenant_id', tenantId)
-      .single();
+    const agreement = await db.collection('rental_agreements').findOne({ landlord_id: landlordId, tenant_id: tenantId });
+    if (!agreement) return res.status(403).json({ error: 'Unauthorized access' });
 
-    if (agreementError || !agreement) {
-      return res.status(403).json({ error: 'Unauthorized access' });
-    }
-
-    // Get payment history
-    const { data: payments, error } = await supabase
-      .from('rent_schedule')
-      .select(`
-        id,
-        due_date,
-        amount,
-        status,
-        paid_date,
-        properties:property_id (title, location),
-        payment_receipts:id (
-          mpesa_code,
-          created_at,
-          status
-        )
-      `)
-      .eq('tenant_id', tenantId)
-      .eq('landlord_id', landlordId)
-      .order('due_date', { ascending: false });
-
-    if (error) {
-      console.error('Tenant payments fetch error:', error);
-      return res.status(500).json({ error: 'Unable to fetch tenant payments' });
-    }
+    const payments = await db.collection('rent_schedule')
+      .find({ tenant_id: tenantId, landlord_id: landlordId })
+      .sort({ due_date: -1 }).toArray();
 
     // Calculate overview stats
     const stats = {
@@ -7363,27 +6829,9 @@ app.get('/api/landlord/tenant-payments/:tenantId', requireAuth, async (req, res)
 // LANDLORD ENDPOINTS: Get all tenant payments summary
 app.get('/api/landlord/payment-summary', requireAuth, async (req, res) => {
   try {
+    if (!db) return res.status(500).json({ error: 'Database not connected' });
     const landlordId = req.user.id;
-
-    const { data: schedules, error } = await supabase
-      .from('rent_schedule')
-      .select(`
-        id,
-        tenant_id,
-        amount,
-        due_date,
-        status,
-        paid_date,
-        properties:property_id (title),
-        profiles:tenant_id (full_name, email, phone)
-      `)
-      .eq('landlord_id', landlordId)
-      .order('due_date', { ascending: false });
-
-    if (error) {
-      console.error('Payment summary fetch error:', error);
-      return res.status(500).json({ error: 'Unable to fetch payment summary' });
-    }
+    const schedules = await db.collection('rent_schedule').find({ landlord_id: landlordId }).sort({ due_date: -1 }).toArray();
 
     // Calculate statistics
     const today = new Date();
@@ -7434,56 +6882,31 @@ app.get('/api/landlord/payment-summary', requireAuth, async (req, res) => {
 // LANDLORD ENDPOINTS: Mark payment as received (manual entry)
 app.put('/api/landlord/payment/:scheduleId/mark-paid', requireAuth, async (req, res) => {
   try {
+    if (!db) return res.status(500).json({ error: 'Database not connected' });
     const landlordId = req.user.id;
     const { scheduleId } = req.params;
     const { paymentMethod = 'manual', mpesaCode = null } = req.body;
 
-    // Verify schedule belongs to this landlord
-    const { data: schedule, error: scheduleError } = await supabase
-      .from('rent_schedule')
-      .select('id, tenant_id, amount')
-      .eq('id', scheduleId)
-      .eq('landlord_id', landlordId)
-      .single();
+    let schedFilter;
+    try { schedFilter = { _id: new ObjectId(scheduleId), landlord_id: landlordId }; } catch { schedFilter = { id: scheduleId, landlord_id: landlordId }; }
+    const schedule = await db.collection('rent_schedule').findOne(schedFilter);
+    if (!schedule) return res.status(403).json({ error: 'Unauthorized access to this payment' });
 
-    if (scheduleError || !schedule) {
-      return res.status(403).json({ error: 'Unauthorized access to this payment' });
-    }
+    const updated = await db.collection('rent_schedule').findOneAndUpdate(
+      schedFilter,
+      { $set: { status: 'paid', paid_date: new Date().toISOString(), updated_at: new Date().toISOString() } },
+      { returnDocument: 'after' }
+    );
 
-    // Update schedule status
-    const { data: updated, error } = await supabase
-      .from('rent_schedule')
-      .update({
-        status: 'paid',
-        paid_date: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', scheduleId)
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Payment status update error:', error);
-      return res.status(500).json({ error: 'Unable to update payment status' });
-    }
-
-    // Create receipt record if payment method provided
     if (paymentMethod && paymentMethod !== 'manual') {
-      await supabase.from('payment_receipts').insert({
-        rent_schedule_id: scheduleId,
-        transaction_id: `MAN${Date.now()}`,
-        amount: schedule.amount,
-        payment_method: paymentMethod,
-        mpesa_code: mpesaCode,
-        status: 'completed'
+      await db.collection('payment_receipts').insertOne({
+        rent_schedule_id: scheduleId, transaction_id: `MAN${Date.now()}`,
+        amount: schedule.amount, payment_method: paymentMethod,
+        mpesa_code: mpesaCode, status: 'completed', created_at: new Date()
       });
     }
 
-    return res.json({
-      success: true,
-      message: 'Payment marked as received',
-      payment: updated
-    });
+    return res.json({ success: true, message: 'Payment marked as received', payment: updated });
   } catch (error) {
     console.error('Mark paid endpoint error:', error);
     return res.status(500).json({ error: 'Server error' });
@@ -7559,33 +6982,8 @@ app.get('/api/orders', async (req, res) => {
 
     const userId = req.user.id;
 
-    const { data: orders, error } = await supabase
-      .from('orders')
-      .select(`
-        id,
-        order_id,
-        total_amount,
-        status,
-        created_at,
-        order_items (
-          id,
-          product_id,
-          quantity,
-          price,
-          products (
-            id,
-            title,
-            images
-          )
-        )
-      `)
-      .eq('buyer_id', userId)
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('Supabase orders query error:', error);
-      return res.status(500).json({ error: 'Failed to retrieve orders' });
-    }
+    if (!db) return res.json({ success: true, orders: [] });
+    const orders = await db.collection('orders').find({ buyer_id: userId }).sort({ created_at: -1 }).toArray();
 
     // Transform the data to match the frontend format
     const transformedOrders = orders.map(order => {
