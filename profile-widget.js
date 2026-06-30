@@ -328,27 +328,14 @@
   function installWidget(el) {
     var token = getToken();
     if (!token) {
-      if (el.id === 'bc-profile-slot') {
-        // Slot already has pre-populated Sign In from shared-layout — leave it
-        if (el.innerHTML && el.innerHTML.trim()) return;
-        // Slot is empty (token was valid at load but server rejected it) — inject button
-        el.innerHTML =
-          '<a href="login.html" style="' +
-            'display:inline-flex;align-items:center;gap:6px;' +
-            'padding:9px 20px;border-radius:10px;' +
-            'background:#1e3a8a;color:#fff;' +
-            'font-size:.9rem;font-weight:700;' +
-            'text-decoration:none;white-space:nowrap;' +
-            'font-family:Inter,system-ui,sans-serif;' +
-            'box-shadow:0 2px 8px rgba(30,58,138,.25)' +
-          '">' +
-          svgIcon('M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2|circle cx=12 cy=7 r=4') +
-          'Sign In</a>';
-        return;
-      }
-      el.replaceWith(buildGuestButton());
+      // Not logged in — ensure the Sign In button in the header is visible
+      var btn = document.getElementById('bc-signin-btn');
+      if (btn) btn.style.display = 'inline-flex';
       return;
     }
+    // Logged in — hide Sign In button and show profile widget
+    var btn = document.getElementById('bc-signin-btn');
+    if (btn) btn.style.display = 'none';
     var user  = getUser();
     var p     = _profile || {};
     var name  = p.name || (user && (user.name || user.full_name)) || '';

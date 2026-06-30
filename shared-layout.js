@@ -197,23 +197,34 @@
         rightGroup.appendChild(settingsBtn);
       }
 
-      // Profile avatar slot — always present, replaced by profile-widget.js
+      // Sign In button — always rendered synchronously, hidden only when logged in
+      var signinBtn = document.createElement('a');
+      signinBtn.id = 'bc-signin-btn';
+      signinBtn.href = 'login.html';
+      signinBtn.setAttribute('style',
+        'display:' + (token ? 'none' : 'inline-flex') + ';' +
+        'align-items:center;gap:6px;' +
+        'padding:9px 20px;border-radius:10px;' +
+        'background:#1e3a8a;color:#fff;' +
+        'font-size:.9rem;font-weight:700;' +
+        'text-decoration:none;white-space:nowrap;' +
+        'font-family:Inter,system-ui,sans-serif;' +
+        'box-shadow:0 2px 8px rgba(30,58,138,.25);' +
+        'transition:background .2s'
+      );
+      signinBtn.innerHTML =
+        '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>' +
+        '<polyline points="10 17 15 12 10 7"/>' +
+        '<line x1="15" y1="12" x2="3" y2="12"/></svg>' +
+        'Sign In';
+      signinBtn.addEventListener('mouseenter', function() { this.style.background = '#1e40af'; });
+      signinBtn.addEventListener('mouseleave', function() { this.style.background = '#1e3a8a'; });
+      rightGroup.appendChild(signinBtn);
+
+      // Profile avatar slot — replaced by profile-widget.js when logged in
       var profileSlot = document.createElement('div');
       profileSlot.id = 'bc-profile-slot';
-      // Pre-populate with Sign In so there's no blank flash while profile-widget loads
-      if (!token) {
-        profileSlot.innerHTML =
-          '<a href="login.html" id="bc-signin-default" style="' +
-            'display:inline-flex;align-items:center;gap:6px;' +
-            'padding:8px 18px;border-radius:10px;' +
-            'background:#1e3a8a;color:#fff;' +
-            'font-size:.88rem;font-weight:700;' +
-            'text-decoration:none;transition:background .2s;' +
-            'white-space:nowrap' +
-          '">' +
-          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>' +
-          'Sign In</a>';
-      }
       rightGroup.appendChild(profileSlot);
 
       inner.appendChild(rightGroup);
