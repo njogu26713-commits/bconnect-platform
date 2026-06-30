@@ -410,40 +410,21 @@
       if (!data || !data.profile) return;
       var profile = data.profile;
       window.__bcProfileCache = profile;
-      injectAvatarStyle();
 
-      // Remove existing avatar if any
-      var old = document.getElementById('bc-user-avatar');
-      if (old) old.parentNode.removeChild(old);
-
-      // Replace Login link with avatar
-      var nav = document.querySelector('#bc-header nav.bc-nav');
-      if (!nav) return;
-      var loginLink = null;
-      nav.querySelectorAll('a').forEach(function(a) {
-        if (a.href && a.href.indexOf('login.html') !== -1) loginLink = a;
-      });
-      var avatarEl = buildAvatarEl(profile);
-      if (loginLink) {
-        nav.replaceChild(avatarEl, loginLink);
-      } else {
-        nav.appendChild(avatarEl);
-      }
-
-      // Add Seller Dashboard link for sellers
+      // Add Seller Dashboard link to nav for sellers (if not already there)
       if (profile.role === 'seller') {
-        var existing = document.getElementById('bc-seller-dash-link');
-        if (!existing) {
+        var nav = document.querySelector('#bc-header nav.bc-nav');
+        if (nav && !document.getElementById('bc-seller-dash-link')) {
           var dashLink = document.createElement('a');
           dashLink.id = 'bc-seller-dash-link';
           dashLink.href = 'seller-dashboard.html';
-          dashLink.textContent = ' My Dashboard';
+          dashLink.textContent = 'My Dashboard';
           dashLink.style.cssText = 'background:#00e676;color:#0a0f1e!important;font-weight:700;border-radius:10px;padding:8px 14px;';
-          nav.insertBefore(dashLink, avatarEl);
+          nav.appendChild(dashLink);
         }
       }
 
-      // Also update any [data-user-avatar] images on the page
+      // Update any [data-user-avatar] images on the page
       document.querySelectorAll('[data-user-avatar]').forEach(function(el) {
         if (profile.avatar_url) {
           el.src = profile.avatar_url;
