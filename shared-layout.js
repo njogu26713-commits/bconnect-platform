@@ -67,7 +67,7 @@
   }
 
   // Pages that should show the full app nav
-  var APP_PAGES = ['website.html', 'index.html', '', 'products.html', 'services.html', 'housing.html', 'events.html', 'orders.html', 'ai-assistant.html', 'tenant.html', 'tenant-dashboard.html', 'tenant-portal.html', 'landlord.html', 'payrent.html'];
+  var APP_PAGES = ['website.html', 'index.html', '', 'products.html', 'services.html', 'housing.html', 'events.html', 'orders.html', 'ai-assistant.html', 'tenant.html', 'tenant-dashboard.html', 'tenant-portal.html', 'landlord-dashboard.html', 'payrent.html'];
 
   function buildHeader() {
     var page = currentPage();
@@ -283,7 +283,7 @@
           '<a href="products.html">Marketplace</a>' +
           '<a href="services.html">Services</a>' +
           '<a href="housing.html">Housing &amp; Rentals</a>' +
-          '<a href="landlord.html">For Landlords</a>' +
+          '<a href="landlord-dashboard.html">For Landlords</a>' +
           '<a href="tenant-dashboard.html">For Tenants</a>' +
         '</div>' +
         '<div>' +
@@ -511,7 +511,7 @@
     {
       href: 'housing.html',
       label: 'Housing',
-      match: ['housing.html', 'tenant.html', 'tenant-dashboard.html', 'tenant-portal.html', 'landlord.html'],
+      match: ['housing.html', 'tenant.html', 'tenant-dashboard.html', 'tenant-portal.html', 'landlord-dashboard.html'],
       icon: '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>'
     },
     {

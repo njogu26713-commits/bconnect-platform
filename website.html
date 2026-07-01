@@ -2380,7 +2380,7 @@
 
       <!-- USER ACTION CARDS -->
       <div class="user-actions">
-        <div class="user-card landlord" onclick="navigateTo('landlord.html')"><i data-lucide="building" style="width:28px;height:28px;margin-bottom:.5rem;color:#059669"></i>
+        <div class="user-card landlord" onclick="navigateTo('landlord-dashboard.html')"><i data-lucide="building" style="width:28px;height:28px;margin-bottom:.5rem;color:#059669"></i>
           <h3> I'm a Landlord</h3>
           <p>Manage properties & tenants</p>
         </div>
@@ -3590,7 +3590,7 @@
           
           // If user has properties, go to dashboard
           if (data.properties && data.properties.length > 0) {
-            navigateTo('landlord.html');
+            navigateTo('landlord-dashboard.html');
           } else {
             // If no properties, show add property modal
             generatePropertyCode();
@@ -3659,7 +3659,7 @@
           // Close modal and redirect to landlord dashboard
           closeModal('landlord-property-modal');
           bAlert('Property added successfully! Property Code: ' + propertyCode, 'success');
-          navigateTo('landlord.html');
+          navigateTo('landlord-dashboard.html');
         } else {
           const error = await response.json();
           bAlert('Error: ' + (error.message || 'Failed to add property'), 'error');

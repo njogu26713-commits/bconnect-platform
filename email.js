@@ -175,7 +175,7 @@ function landlordPaymentAlertEmail(landlordName, payment) {
       <div class="row"><span class="label">Date & Time</span><span class="val">${dateStr}</span></div>
     </div>
     <p>Log in to your BConnect landlord dashboard to view all payments and manage your properties.</p>
-    <a class="btn" href="https://bconnect.replit.app/landlord.html"> View Dashboard</a>
+    <a class="btn" href="https://bconnect.replit.app/landlord-dashboard.html"> View Dashboard</a>
   `);
   return { text, html };
 }
