@@ -272,6 +272,27 @@ function tenantJoinRequestEmail(landlordName, request) {
   return { text, html };
 }
 
+function organizerApprovalEmail(name, eventTitle, setupUrl) {
+  const text = `Hi ${name},\n\nGreat news! Your event "${eventTitle}" has been approved and is now live on BConnect.\n\nClick the link below to set your password and access your Organizer Dashboard (link expires in 7 days):\n${setupUrl}\n\nYour dashboard lets you track ticket sales, view buyers, and scan QR codes at the gate.\n\nBConnect Team`;
+  const html = baseTemplate('Your Event Is Live! 🎉', `
+    <p>Hi <strong>${name}</strong>,</p>
+    <p>Great news — your event <strong>"${eventTitle}"</strong> has been approved and is now live on BConnect!</p>
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:16px 20px;margin:16px 0;">
+      <p style="margin:0;font-size:14px;color:#15803d;font-weight:700;">✓ Event Published Successfully</p>
+    </div>
+    <p>Click the button below to set your password and access your <strong>Organizer Dashboard</strong>, where you can:</p>
+    <ul style="margin:0 0 16px;padding-left:20px;font-size:14px;color:#374151;line-height:2">
+      <li>Track ticket sales and revenue in real time</li>
+      <li>View buyer details and contact information</li>
+      <li>Scan QR codes at the gate to verify attendees</li>
+    </ul>
+    <a class="btn" href="${setupUrl}">🔐 Set My Password & Open Dashboard</a>
+    <p style="font-size:12px;color:#9ca3af;text-align:center;margin-top:12px">This link expires in <strong>7 days</strong>. Keep it private — it gives direct access to your dashboard.</p>
+    <p style="font-size:13px;color:#6b7280">If you did not submit this event, please contact BConnect support immediately.</p>
+  `);
+  return { text, html };
+}
+
 module.exports = {
   sendEmail,
   passwordResetEmail,
@@ -281,5 +302,6 @@ module.exports = {
   tenantJoinRequestEmail,
   welcomeEmail,
   emailVerificationEmail,
-  depositConfirmationEmail
+  depositConfirmationEmail,
+  organizerApprovalEmail
 };

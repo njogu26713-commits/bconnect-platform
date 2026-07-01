@@ -146,14 +146,18 @@ body{font-family:Inter,system-ui,-apple-system,sans-serif;background:#ffffff;min
 <!-- LOGIN -->
 <div class="login-wrap" id="login-section">
   <div class="login-card">
-    <div class="login-icon"></div>
+    <div class="login-icon">🎟</div>
     <div class="login-title">Organizer Portal</div>
-    <div class="login-sub">Enter your organizer name exactly as you used when creating your events on bConnect.</div>
-    <label class="field-label">Your Organizer Name</label>
-    <input class="field" id="org-name-input" type="text" placeholder="e.g. John Events Kenya" autocomplete="off"
+    <div class="login-sub">Sign in with the email and password you set when your event was approved.</div>
+    <div id="login-msg" style="display:none;padding:10px 14px;border-radius:9px;font-size:.83rem;font-weight:700;margin-bottom:14px;text-align:center"></div>
+    <label class="field-label">Email Address</label>
+    <input class="field" id="org-email-input" type="email" placeholder="your@email.com" autocomplete="email"
+      onkeydown="if(event.key==='Enter')document.getElementById('org-pass-input').focus()">
+    <label class="field-label">Password</label>
+    <input class="field" id="org-pass-input" type="password" placeholder="Your password" autocomplete="current-password"
       onkeydown="if(event.key==='Enter')doLogin()">
-    <button class="btn-primary" id="login-btn" onclick="doLogin()"> Access My Events</button>
-    <div class="login-note">Your name must match the organizer field on your events.<br>Contact bConnect admin if you need help.</div>
+    <button class="btn-primary" id="login-btn" onclick="doLogin()">🔐 Sign In</button>
+    <div class="login-note">Access is by invitation only — you receive your login link by email when your event is approved by BConnect admin.</div>
   </div>
 </div>
 
@@ -280,41 +284,73 @@ function showToast(msg, type) {
   clearTimeout(t._tmr); t._tmr = setTimeout(() => { t.style.transform = 'translateX(-50%) translateY(120px)'; }, 4000);
 }
 
+function showLoginMsg(text, type) {
+  const el = document.getElementById('login-msg');
+  el.textContent = text;
+  el.style.background = type === 'error' ? '#fee2e2' : '#fef9c3';
+  el.style.color = type === 'error' ? '#b91c1c' : '#92400e';
+  el.style.display = 'block';
+}
+
 async function doLogin() {
-  const name = (document.getElementById('org-name-input').value || '').trim();
-  if (!name) { showToast('Please enter your organizer name', 'warning'); document.getElementById('org-name-input').focus(); return; }
+  const email = (document.getElementById('org-email-input').value || '').trim();
+  const password = (document.getElementById('org-pass-input').value || '');
+  if (!email) { showLoginMsg('Please enter your email address', 'warning'); document.getElementById('org-email-input').focus(); return; }
+  if (!password) { showLoginMsg('Please enter your password', 'warning'); document.getElementById('org-pass-input').focus(); return; }
   const btn = document.getElementById('login-btn');
-  btn.disabled = true; btn.textContent = '⏳ Loading…';
+  btn.disabled = true; btn.textContent = '⏳ Signing in…';
+  document.getElementById('login-msg').style.display = 'none';
   try {
-    const res = await fetch('/api/organizer/events?name=' + encodeURIComponent(name));
+    const res = await fetch('/api/organizer/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
     const data = await res.json();
-    if (!data.success) throw new Error(data.error || 'Failed to load');
-    if (!data.events || !data.events.length) {
-      showToast('No events found for "' + name + '". Check your name spelling.', 'warning');
-      btn.disabled = false; btn.textContent = ' Access My Events';
-      return;
-    }
+    if (!data.success) throw new Error(data.error || 'Login failed');
+    sessionStorage.setItem('org_token', data.token);
+    sessionStorage.setItem('org_name', data.name);
+    sessionStorage.setItem('org_email', data.email);
+    await loadDashboard(data.token, data.name);
+  } catch(e) {
+    showLoginMsg(e.message || 'Login failed', 'error');
+    btn.disabled = false; btn.textContent = '🔐 Sign In';
+  }
+}
+
+async function loadDashboard(token, name) {
+  try {
+    const res = await fetch('/api/organizer/events', { headers: { 'Authorization': 'Bearer ' + token } });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || 'Failed to load events');
     orgName = name;
-    orgEvents = data.events;
-    sessionStorage.setItem('org_name', name);
+    orgEvents = data.events || [];
     document.getElementById('login-section').style.display = 'none';
     document.getElementById('dash-section').style.display = '';
     document.getElementById('nav-right').style.display = '';
     document.getElementById('nav-organizer-name').textContent = ' ' + name;
     renderDashboard();
   } catch(e) {
-    showToast(e.message || 'Login failed', 'error');
-    btn.disabled = false; btn.textContent = ' Access My Events';
+    sessionStorage.removeItem('org_token');
+    sessionStorage.removeItem('org_name');
+    sessionStorage.removeItem('org_email');
+    showLoginMsg(e.message || 'Session expired. Please log in again.', 'error');
+    const btn = document.getElementById('login-btn');
+    btn.disabled = false; btn.textContent = '🔐 Sign In';
   }
 }
 
 function logout() {
   orgName = ''; orgEvents = []; allTickets = []; currentViewEvent = null;
+  sessionStorage.removeItem('org_token');
   sessionStorage.removeItem('org_name');
+  sessionStorage.removeItem('org_email');
   document.getElementById('login-section').style.display = '';
   document.getElementById('dash-section').style.display = 'none';
   document.getElementById('nav-right').style.display = 'none';
-  document.getElementById('org-name-input').value = '';
+  document.getElementById('org-email-input').value = '';
+  document.getElementById('org-pass-input').value = '';
+  document.getElementById('login-msg').style.display = 'none';
 }
 
 function renderDashboard() {
@@ -599,10 +635,10 @@ function orgScanFrame() {
 
 //  Init 
 (function() {
-  const saved = sessionStorage.getItem('org_name');
-  if (saved) {
-    document.getElementById('org-name-input').value = saved;
-    doLogin();
+  const token = sessionStorage.getItem('org_token');
+  const name = sessionStorage.getItem('org_name');
+  if (token && name) {
+    loadDashboard(token, name);
   }
 })();
 </script>

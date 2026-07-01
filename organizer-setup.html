@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Set Up Your Organizer Account — BConnect</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#1e3a8a;--primary-light:#1e40af;--danger:#dc2626;--gray-200:#e5e7eb;--gray-400:#9ca3af;--gray-500:#6b7280;--gray-700:#374151;--gray-900:#111827;--white:#fff}
+body{font-family:Inter,system-ui,-apple-system,sans-serif;background:linear-gradient(135deg,#040a14 0%,#0d1835 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.card{background:#fff;border-radius:24px;padding:44px 40px;width:100%;max-width:440px;box-shadow:0 24px 80px rgba(0,0,0,.35)}
+.logo{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:28px}
+.logo-mark{width:40px;height:40px;background:linear-gradient(135deg,#1e3a8a,#1e40af);border-radius:11px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:1rem}
+.logo-name{font-size:1.25rem;font-weight:800;color:#1e3a8a}
+.card-icon{font-size:2.5rem;text-align:center;margin-bottom:10px}
+.card-title{font-size:1.45rem;font-weight:800;text-align:center;color:var(--gray-900);margin-bottom:6px}
+.card-sub{font-size:.88rem;color:var(--gray-500);text-align:center;margin-bottom:28px;line-height:1.6}
+.field-label{font-size:.8rem;font-weight:700;color:var(--gray-700);margin-bottom:6px;display:block}
+.field{width:100%;padding:13px 16px;border:2px solid var(--gray-200);border-radius:12px;font-size:.95rem;font-family:inherit;outline:none;transition:border-color .2s;margin-bottom:16px}
+.field:focus{border-color:var(--primary)}
+.field.error{border-color:var(--danger)}
+.strength-bar{height:4px;border-radius:4px;background:#e5e7eb;margin-top:-12px;margin-bottom:16px;overflow:hidden}
+.strength-fill{height:100%;width:0;border-radius:4px;transition:width .3s,background .3s}
+.hint{font-size:.75rem;color:var(--gray-400);margin-top:-10px;margin-bottom:14px}
+.btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:800;cursor:pointer;transition:all .2s;font-family:inherit}
+.btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(30,58,138,.4)}
+.btn:disabled{background:var(--gray-400);cursor:not-allowed;transform:none;box-shadow:none}
+.msg{padding:12px 16px;border-radius:10px;font-size:.88rem;font-weight:600;text-align:center;margin-bottom:16px;display:none}
+.msg.error{background:#fee2e2;color:#b91c1c;display:block}
+.msg.success{background:#dcfce7;color:#15803d;display:block}
+.expired-wrap{text-align:center;padding:16px 0}
+.expired-icon{font-size:3rem;margin-bottom:12px}
+.expired-title{font-size:1.2rem;font-weight:800;color:var(--gray-900);margin-bottom:8px}
+.expired-sub{font-size:.88rem;color:var(--gray-500);line-height:1.6}
+</style>
+</head>
+<body>
+
+<div class="card" id="main-card">
+  <div class="logo">
+    <div class="logo-mark">B</div>
+    <div class="logo-name">BConnect</div>
+  </div>
+
+  <!-- Loading state -->
+  <div id="loading-state">
+    <div class="card-icon">⏳</div>
+    <div class="card-title">Verifying link…</div>
+    <div class="card-sub">Please wait while we verify your setup link.</div>
+  </div>
+
+  <!-- Expired / invalid state -->
+  <div id="invalid-state" style="display:none">
+    <div class="expired-wrap">
+      <div class="expired-icon">🔒</div>
+      <div class="expired-title">Link Expired or Invalid</div>
+      <div class="expired-sub">This setup link has already been used or has expired (links are valid for 7 days).<br><br>Please contact the BConnect admin to resend your setup email.</div>
+    </div>
+  </div>
+
+  <!-- Setup form -->
+  <div id="setup-form" style="display:none">
+    <div class="card-icon">🎟</div>
+    <div class="card-title">Welcome, <span id="organizer-name-display"></span>!</div>
+    <div class="card-sub">Set a password to activate your Organizer Dashboard. You'll use your email + this password to log in.</div>
+
+    <div id="msg-box" class="msg"></div>
+
+    <label class="field-label">Password</label>
+    <input class="field" id="pw-input" type="password" placeholder="Choose a strong password" autocomplete="new-password"
+      oninput="checkStrength(this.value)" onkeydown="if(event.key==='Enter')document.getElementById('pw2-input').focus()">
+    <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
+    <span class="hint" id="strength-hint">At least 6 characters</span>
+
+    <label class="field-label">Confirm Password</label>
+    <input class="field" id="pw2-input" type="password" placeholder="Repeat your password" autocomplete="new-password"
+      onkeydown="if(event.key==='Enter')submitSetup()">
+
+    <button class="btn" id="setup-btn" onclick="submitSetup()">🔐 Activate My Dashboard</button>
+  </div>
+
+  <!-- Success state -->
+  <div id="success-state" style="display:none">
+    <div class="card-icon">🎉</div>
+    <div class="card-title">Account Activated!</div>
+    <div class="card-sub">Your organizer dashboard is ready. Redirecting you now…</div>
+  </div>
+</div>
+
+<script>
+const params = new URLSearchParams(location.search);
+const setupToken = params.get('token') || '';
+let orgName = '';
+
+async function init() {
+  if (!setupToken) {
+    showInvalid();
+    return;
+  }
+  try {
+    const res = await fetch('/api/organizer/verify-setup-token?token=' + encodeURIComponent(setupToken));
+    const data = await res.json();
+    if (!data.success) {
+      showInvalid();
+    } else {
+      orgName = data.name;
+      document.getElementById('organizer-name-display').textContent = data.name;
+      document.getElementById('loading-state').style.display = 'none';
+      document.getElementById('setup-form').style.display = '';
+    }
+  } catch(e) {
+    showInvalid();
+  }
+}
+
+function showInvalid() {
+  document.getElementById('loading-state').style.display = 'none';
+  document.getElementById('invalid-state').style.display = '';
+}
+
+function checkStrength(val) {
+  const fill = document.getElementById('strength-fill');
+  const hint = document.getElementById('strength-hint');
+  if (val.length === 0) { fill.style.width = '0'; fill.style.background = '#e5e7eb'; hint.textContent = 'At least 6 characters'; return; }
+  let score = 0;
+  if (val.length >= 6) score++;
+  if (val.length >= 10) score++;
+  if (/[A-Z]/.test(val)) score++;
+  if (/[0-9]/.test(val)) score++;
+  if (/[^A-Za-z0-9]/.test(val)) score++;
+  const map = [[20,'#dc2626','Too short'],[40,'#f97316','Weak'],[60,'#eab308','Fair'],[80,'#22c55e','Good'],[100,'#15803d','Strong']];
+  const [w,c,t] = map[Math.min(score,4)];
+  fill.style.width = w + '%';
+  fill.style.background = c;
+  hint.textContent = t;
+  hint.style.color = c;
+}
+
+async function submitSetup() {
+  const pw = document.getElementById('pw-input').value;
+  const pw2 = document.getElementById('pw2-input').value;
+  const msg = document.getElementById('msg-box');
+  const btn = document.getElementById('setup-btn');
+
+  msg.className = 'msg';
+
+  if (pw.length < 6) { showMsg('Password must be at least 6 characters', 'error'); document.getElementById('pw-input').focus(); return; }
+  if (pw !== pw2) { showMsg('Passwords do not match', 'error'); document.getElementById('pw2-input').focus(); return; }
+
+  btn.disabled = true; btn.textContent = '⏳ Activating…';
+  try {
+    const res = await fetch('/api/organizer/setup-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: setupToken, password: pw })
+    });
+    const data = await res.json();
+    if (!data.success) {
+      showMsg(data.error || 'Setup failed', 'error');
+      btn.disabled = false; btn.textContent = '🔐 Activate My Dashboard';
+      return;
+    }
+    sessionStorage.setItem('org_token', data.token);
+    sessionStorage.setItem('org_name', data.name);
+    sessionStorage.setItem('org_email', data.email);
+    document.getElementById('setup-form').style.display = 'none';
+    document.getElementById('success-state').style.display = '';
+    setTimeout(() => { window.location.href = 'organizer-dashboard.html'; }, 1800);
+  } catch(e) {
+    showMsg('Network error. Please try again.', 'error');
+    btn.disabled = false; btn.textContent = '🔐 Activate My Dashboard';
+  }
+}
+
+function showMsg(text, type) {
+  const msg = document.getElementById('msg-box');
+  msg.textContent = text;
+  msg.className = 'msg ' + type;
+}
+
+init();
+</script>
+</body>
+</html>

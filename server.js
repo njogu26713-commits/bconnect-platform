@@ -10206,10 +10206,94 @@ app.put('/api/tickets/mark-used/:code', async (req, res) => {
   }
 });
 
-// GET /api/organizer/events?name=... — get events by organizer name
+// GET /api/organizer/verify-setup-token — validate a setup token (used by setup page before showing form)
+app.get('/api/organizer/verify-setup-token', async (req, res) => {
+  try {
+    if (!db) return res.status(500).json({ error: 'DB not connected' });
+    const { token } = req.query;
+    if (!token) return res.status(400).json({ error: 'Token required' });
+    const account = await db.collection('organizer_accounts').findOne({ setup_token: token });
+    if (!account) return res.status(400).json({ success: false, error: 'Invalid or expired link' });
+    if (account.token_expires && new Date() > new Date(account.token_expires)) {
+      return res.status(400).json({ success: false, error: 'Link expired' });
+    }
+    return res.json({ success: true, name: account.name, email: account.email });
+  } catch (err) {
+    return res.status(500).json({ error: 'Failed to verify token' });
+  }
+});
+
+// POST /api/organizer/setup-password — first-time password setup via email token
+app.post('/api/organizer/setup-password', async (req, res) => {
+  try {
+    if (!db) return res.status(500).json({ error: 'DB not connected' });
+    const { token, password } = req.body;
+    if (!token || !password || password.length < 6) {
+      return res.status(400).json({ error: 'Token and password (min 6 chars) are required' });
+    }
+    const account = await db.collection('organizer_accounts').findOne({ setup_token: token });
+    if (!account) return res.status(400).json({ error: 'Invalid or expired setup link' });
+    if (account.token_expires && new Date() > new Date(account.token_expires)) {
+      return res.status(400).json({ error: 'Setup link has expired. Contact admin to resend.' });
+    }
+    const hash = await bcrypt.hash(password, 10);
+    await db.collection('organizer_accounts').updateOne(
+      { _id: account._id },
+      { $set: { password_hash: hash, active: true, setup_token: null, token_expires: null, updated_at: new Date() } }
+    );
+    const jwtSecret = process.env.JWT_SECRET || 'bconnect_default_secret';
+    const token_jwt = jwt.sign({ id: account._id.toString(), email: account.email, role: 'organizer' }, jwtSecret, { expiresIn: '30d' });
+    return res.json({ success: true, token: token_jwt, name: account.name, email: account.email });
+  } catch (err) {
+    console.error('Organizer setup error:', err);
+    return res.status(500).json({ error: 'Failed to set up account' });
+  }
+});
+
+// POST /api/organizer/login — email + password login
+app.post('/api/organizer/login', async (req, res) => {
+  try {
+    if (!db) return res.status(500).json({ error: 'DB not connected' });
+    const { email, password } = req.body;
+    if (!email || !password) return res.status(400).json({ error: 'Email and password are required' });
+    const account = await db.collection('organizer_accounts').findOne({ email: email.toLowerCase().trim() });
+    if (!account || !account.active || !account.password_hash) {
+      return res.status(401).json({ error: 'Account not found or not yet activated. Check your email for the setup link.' });
+    }
+    const valid = await bcrypt.compare(password, account.password_hash);
+    if (!valid) return res.status(401).json({ error: 'Incorrect password' });
+    const jwtSecret = process.env.JWT_SECRET || 'bconnect_default_secret';
+    const token = jwt.sign({ id: account._id.toString(), email: account.email, role: 'organizer' }, jwtSecret, { expiresIn: '30d' });
+    return res.json({ success: true, token, name: account.name, email: account.email });
+  } catch (err) {
+    console.error('Organizer login error:', err);
+    return res.status(500).json({ error: 'Login failed' });
+  }
+});
+
+// GET /api/organizer/events — get events for authenticated organizer (JWT) or by name (legacy)
 app.get('/api/organizer/events', async (req, res) => {
   try {
     if (!db) return res.json({ success: true, events: [] });
+
+    // JWT-based auth
+    const authHeader = req.headers['authorization'];
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      try {
+        const jwtSecret = process.env.JWT_SECRET || 'bconnect_default_secret';
+        const payload = jwt.verify(authHeader.slice(7), jwtSecret);
+        const account = await db.collection('organizer_accounts').findOne({ email: payload.email });
+        if (!account) return res.status(401).json({ error: 'Organizer account not found' });
+        const events = await db.collection('events')
+          .find({ organizer: { $regex: new RegExp('^' + account.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$', 'i') } })
+          .sort({ event_date: 1 }).toArray();
+        return res.json({ success: true, events, organizer: { name: account.name, email: account.email } });
+      } catch (_) {
+        return res.status(401).json({ error: 'Invalid or expired session. Please log in again.' });
+      }
+    }
+
+    // Legacy: name-based (kept for backward compat)
     const name = (req.query.name || '').trim();
     if (!name) return res.json({ success: true, events: [] });
     const events = await db.collection('events')
@@ -10572,6 +10656,32 @@ app.put('/api/admin/event-submissions/:id/approve', async (req, res) => {
       { _id: new ObjectId(req.params.id) },
       { $set: { status: 'approved', event_id: result.insertedId, updated_at: new Date() } }
     );
+
+    // Create / refresh organizer account and send setup email
+    try {
+      const { organizerApprovalEmail, sendEmail } = require('./email');
+      const orgEmail = (sub.organizer_email || '').toLowerCase().trim();
+      const orgName = (sub.organizer_name || 'Organizer').trim();
+      if (orgEmail) {
+        const setupToken = crypto.randomBytes(32).toString('hex');
+        const tokenExpiry = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+        await db.collection('organizer_accounts').updateOne(
+          { email: orgEmail },
+          {
+            $set: { name: orgName, setup_token: setupToken, token_expires: tokenExpiry, updated_at: new Date() },
+            $setOnInsert: { email: orgEmail, password_hash: null, active: false, created_at: new Date() }
+          },
+          { upsert: true }
+        );
+        const baseUrl = process.env.APP_URL || `https://${process.env.REPLIT_DEV_DOMAIN || 'localhost:5000'}`;
+        const setupUrl = `${baseUrl}/organizer-setup.html?token=${setupToken}`;
+        const { text, html } = organizerApprovalEmail(orgName, sub.title, setupUrl);
+        await sendEmail(orgEmail, '🎉 Your Event Is Live — Set Up Your Organizer Dashboard', text, html);
+      }
+    } catch (emailErr) {
+      console.error('[organizer-approval] Email/account setup failed:', emailErr.message);
+    }
+
     return res.json({ success: true, eventId: result.insertedId });
   } catch (err) {
     return res.status(500).json({ error: 'Failed to approve submission' });
