@@ -716,8 +716,12 @@ tbody tr:last-child td { border-bottom: none; }
           <input class="form-input" id="fPrice" type="number" min="0" placeholder="e.g. 5000">
         </div>
         <div class="form-group">
-          <label class="form-label">Location</label>
-          <input class="form-input" id="fLocation" placeholder="e.g. Nairobi, CBD">
+          <label class="form-label">Location <span style="font-size:11px;color:#6b7280;font-weight:400">— helps buyers near you find this listing</span></label>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <input class="form-input" id="fLocation" list="ke-locations-list" placeholder="e.g. Westlands, Nairobi" autocomplete="off" style="flex:1;margin:0;">
+            <button type="button" onclick="detectSellerLocation('fLocation')" title="Detect my location" style="display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#2d53b8,#1e40af);color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">📍 Detect</button>
+          </div>
+          <div id="fLocationHint" style="font-size:11px;color:#059669;margin-top:4px;display:none;"></div>
         </div>
       </div>
 
@@ -1168,8 +1172,11 @@ tbody tr:last-child td { border-bottom: none; }
         <input class="form-input" id="modalPrice" type="number" min="0">
       </div>
       <div class="form-group">
-        <label class="form-label">Location</label>
-        <input class="form-input" id="modalLocation">
+        <label class="form-label">Location <span style="font-size:11px;color:#6b7280;font-weight:400">— helps buyers near you find this listing</span></label>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <input class="form-input" id="modalLocation" list="ke-locations-list" autocomplete="off" style="flex:1;margin:0;">
+          <button type="button" onclick="detectSellerLocation('modalLocation')" title="Detect my location" style="display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#2d53b8,#1e40af);color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">📍 Detect</button>
+        </div>
       </div>
     </div>
     <div class="form-group">
@@ -3789,5 +3796,73 @@ async function aiTranslateDesc(fieldId) {
 </script>
 <script src="dialogs.js"></script>
 <script src="shared-layout.js?v=7"></script>
+
+<!-- Kenyan location datalist -->
+<datalist id="ke-locations-list">
+  <option value="Westlands, Nairobi"><option value="Parklands, Nairobi"><option value="Karen, Nairobi">
+  <option value="Lavington, Nairobi"><option value="Kilimani, Nairobi"><option value="Kilimani, Nairobi">
+  <option value="Kileleshwa, Nairobi"><option value="Riverside, Nairobi"><option value="Upperhill, Nairobi">
+  <option value="Ngong Road, Nairobi"><option value="Langata, Nairobi"><option value="South B, Nairobi">
+  <option value="South C, Nairobi"><option value="Nairobi CBD"><option value="Industrial Area, Nairobi">
+  <option value="Eastleigh, Nairobi"><option value="Githurai, Nairobi"><option value="Kasarani, Nairobi">
+  <option value="Roysambu, Nairobi"><option value="Ruaraka, Nairobi"><option value="Zimmerman, Nairobi">
+  <option value="Kahawa West, Nairobi"><option value="Kahawa Wendani, Nairobi"><option value="Mwiki, Nairobi">
+  <option value="Ruiru, Kiambu"><option value="Juja, Kiambu"><option value="Thika, Kiambu">
+  <option value="Kiambu Town"><option value="Limuru, Kiambu"><option value="Tigoni, Kiambu">
+  <option value="Ndenderu, Kiambu"><option value="Kikuyu, Kiambu"><option value="Rongai, Kajiado">
+  <option value="Kitengela, Kajiado"><option value="Athi River, Machakos"><option value="Mlolongo, Machakos">
+  <option value="Syokimau, Machakos"><option value="Machakos Town"><option value="Mombasa CBD">
+  <option value="Nyali, Mombasa"><option value="Bamburi, Mombasa"><option value="Mtwapa, Kilifi">
+  <option value="Kilifi Town"><option value="Malindi, Kilifi"><option value="Diani, Kwale">
+  <option value="Nakuru CBD"><option value="Ngata, Nakuru"><option value="Gilgil, Nakuru">
+  <option value="Kisumu CBD"><option value="Mamboleo, Kisumu"><option value="Kondele, Kisumu">
+  <option value="Nyahururu, Laikipia"><option value="Nanyuki, Laikipia"><option value="Meru Town">
+  <option value="Embu Town"><option value="Eldoret CBD"><option value="Huruma, Eldoret">
+  <option value="Kapseret, Uasin Gishu"><option value="Kakamega Town"><option value="Webuye, Bungoma">
+  <option value="Bungoma Town"><option value="Kisii Town"><option value="Nyamira Town">
+  <option value="Homabay Town"><option value="Migori Town"><option value="Garissa Town">
+  <option value="Isiolo Town"><option value="Mandera Town"><option value="Wajir Town">
+  <option value="Marsabit Town"><option value="Lodwar, Turkana"><option value="Kajiado Town">
+</datalist>
+
+<script>
+async function detectSellerLocation(inputId) {
+  const input = document.getElementById(inputId);
+  const hintId = inputId === 'fLocation' ? 'fLocationHint' : null;
+  const hint = hintId ? document.getElementById(hintId) : null;
+  const btn = input && input.nextElementSibling;
+
+  if (!navigator.geolocation) {
+    alert('Your browser does not support location detection. Please type your area manually.');
+    return;
+  }
+
+  if (btn) { btn.textContent = '⏳'; btn.disabled = true; }
+  if (hint) { hint.style.display = 'none'; }
+
+  navigator.geolocation.getCurrentPosition(async function(pos) {
+    try {
+      const lat = pos.coords.latitude, lon = pos.coords.longitude;
+      const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`, {
+        headers: { 'Accept-Language': 'en' }
+      });
+      const d = await r.json();
+      const addr = d.address || {};
+      const area = addr.suburb || addr.neighbourhood || addr.village || addr.town || addr.city_district || addr.county || addr.city || '';
+      const county = addr.state || addr.county || '';
+      const location = area && county ? `${area}, ${county}` : (area || county || 'Nairobi');
+      input.value = location;
+      if (hint) { hint.textContent = '✓ Location detected! Buyers near ' + area + ' will see your listing.'; hint.style.display = 'block'; }
+    } catch(e) {
+      alert('Could not detect location. Please type your area manually.');
+    } finally {
+      if (btn) { btn.textContent = '📍 Detect'; btn.disabled = false; }
+    }
+  }, function() {
+    alert('Location access was denied. Please type your area manually, e.g. "Westlands, Nairobi".');
+    if (btn) { btn.textContent = '📍 Detect'; btn.disabled = false; }
+  }, { timeout: 8000 });
+}
+</script>
 </body>
 </html>
