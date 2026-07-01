@@ -8144,7 +8144,7 @@ app.post('/api/landlord/properties/:id/tenants/:tenantId/approve', verifyToken, 
       const propCode    = property.code || property.propertyCode || '';
       if (tenantEmail) {
         const subject = `You've been approved — Welcome to ${propName}!`;
-        const text = `Hi ${tenantName},\n\nGreat news! Your join request for "${propName}"${propLoc ? ' in ' + propLoc : ''} has been approved by your landlord.\n\nLog in to your BConnect Tenant Dashboard to pay rent, track payments, and chat with your landlord.\n\nhttps://bconnect.replit.app/tenant.html\n\nBConnect Team`;
+        const text = `Hi ${tenantName},\n\nGreat news! Your join request for "${propName}"${propLoc ? ' in ' + propLoc : ''} has been approved by your landlord.\n\nLog in to your BConnect Tenant Dashboard to pay rent, track payments, and chat with your landlord.\n\nhttps://bconnect.replit.app/tenant-dashboard.html\n\nBConnect Team`;
         const html = `<div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:24px;">
           <div style="background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:1px solid #a7f3d0;border-radius:14px;padding:22px 24px;margin-bottom:24px;text-align:center;">
             <div style="font-size:40px;margin-bottom:10px;">🎉</div>
@@ -8157,7 +8157,7 @@ app.post('/api/landlord/properties/:id/tenants/:tenantId/approve', verifyToken, 
             ${propLoc ? `<div style="font-size:13px;color:#64748b;margin-top:2px;">📍 ${propLoc}</div>` : ''}
             ${propCode ? `<div style="font-size:13px;color:#64748b;margin-top:2px;">Code: <strong style="font-family:monospace;letter-spacing:2px;">${propCode}</strong></div>` : ''}
           </div>
-          <a href="https://bconnect.replit.app/tenant.html" style="display:block;text-align:center;background:#0f172a;color:#fff;text-decoration:none;padding:13px 24px;border-radius:8px;font-weight:700;font-size:14px;margin-bottom:20px;">Open Tenant Dashboard</a>
+          <a href="https://bconnect.replit.app/tenant-dashboard.html" style="display:block;text-align:center;background:#0f172a;color:#fff;text-decoration:none;padding:13px 24px;border-radius:8px;font-weight:700;font-size:14px;margin-bottom:20px;">Open Tenant Dashboard</a>
           <p style="color:#94a3b8;font-size:12px;text-align:center;">BConnect · Tenant Approvals</p>
         </div>`;
         sendEmail(tenantEmail, subject, text, html);

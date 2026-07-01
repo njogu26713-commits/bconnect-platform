@@ -239,7 +239,7 @@ function depositConfirmationEmail(name, order) {
         <li>Your landlord will confirm and your tenancy will be activated</li>
       </ol>
     </div>` : ''}
-    <a class="btn" href="https://bconnect.replit.app/tenant.html?code=${encodeURIComponent(propertyCode || '')}"> Link Property Now</a>
+    <a class="btn" href="https://bconnect.replit.app/tenant-dashboard.html?code=${encodeURIComponent(propertyCode || '')}"> Link Property Now</a>
     <p style="font-size:13px;color:#6b7280;text-align:center;margin-top:16px;">Keep this email as proof of payment.</p>
   `);
   return { text, html };

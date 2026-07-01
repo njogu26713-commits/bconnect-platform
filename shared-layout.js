@@ -284,7 +284,7 @@
           '<a href="services.html">Services</a>' +
           '<a href="housing.html">Housing &amp; Rentals</a>' +
           '<a href="landlord.html">For Landlords</a>' +
-          '<a href="tenant.html">For Tenants</a>' +
+          '<a href="tenant-dashboard.html">For Tenants</a>' +
         '</div>' +
         '<div>' +
           '<h4>Company</h4>' +

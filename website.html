@@ -3177,7 +3177,7 @@
         const map = {
           seller:    { icon:'🏪', title:'You have a Seller account', sub:'Manage your listings, orders and earnings', url:'seller-dashboard.html' },
           landlord:  { icon:'🏠', title:'You have a Landlord account', sub:'Manage your properties and tenants', url:'landlord-dashboard.html' },
-          tenant:    { icon:'🔑', title:'You have a Tenant account', sub:'Pay rent, track payments and chat with your landlord', url:'tenant.html' },
+          tenant:    { icon:'🔑', title:'You have a Tenant account', sub:'Pay rent, track payments and chat with your landlord', url:'tenant-dashboard.html' },
           organizer: { icon:'🎪', title:'You have an Organizer account', sub:'Manage your events and ticket sales', url:'organizer-dashboard.html' }
         };
         if (!map[role]) return;
@@ -3338,7 +3338,7 @@
         card.style.cursor = 'pointer';
         card.addEventListener('click', function() {
           if (i === 0) openModal('dashboard-picker-modal');
-          else if (i === 1) navigateTo('tenant.html');
+          else if (i === 1) navigateTo('tenant-dashboard.html');
           else if (i === 2) navigateTo('payrent.html');
           else if (i === 3) navigateTo('orders.html');
         });

@@ -681,7 +681,7 @@
                 localStorage.setItem('tenantName',   p.name);
                 localStorage.setItem('landlordName', p.name);
               }
-              // Sync tenant_data used by tenant.html
+              // Sync tenant_data used by tenant-dashboard.html
               var td = {};
               try { td = JSON.parse(localStorage.getItem('tenant_data') || '{}'); } catch(_) {}
               td.fullName = p.name || td.fullName;
