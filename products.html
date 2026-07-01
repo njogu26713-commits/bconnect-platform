@@ -2056,6 +2056,15 @@ function attachBcLoader(wrap, url) {
     const img = document.createElement('img');
     img.alt   = '';
     img.style.cssText = 'opacity:0;transition:none;';
+
+    // Guard against display-level failures (cache miss, CDN decode error,
+    // expiring signed URLs, etc.) that bypass the probe — never show a broken icon.
+    img.onerror = () => {
+      img.remove();
+      revealed = false; // allow showPlaceholder's guard to pass
+      showPlaceholder();
+    };
+
     wrap.appendChild(img);
     img.src = src; // already cached by new Image() probe
 
@@ -2124,7 +2133,9 @@ function attachBcLoader(wrap, url) {
 }
 
 function buildCard(p, idx) {
-  const img      = p.image_url || p.imageUrl || (p.images && p.images[0]) || p.image || FALLBACK_IMG;
+  // Raw URL — intentionally not falling back to FALLBACK_IMG here;
+  // attachBcLoader handles missing / broken URLs without ever showing a broken icon.
+  const rawUrl   = p.image_url || p.imageUrl || (p.images && p.images[0]) || p.image || '';
   const title    = p.title || p.name || 'Product';
   const price    = p.price || p.rate || 0;
   const location = p.location || p.city || 'Nairobi, Kenya';
@@ -2135,9 +2146,9 @@ function buildCard(p, idx) {
   const card = document.createElement('div');
   card.className = 'p-card cat-product';
   card.style.animationDelay = (idx * 0.05) + 's';
+  // No <img> in the wrap — attachBcLoader injects it only after the image is fully loaded
   card.innerHTML = `
     <div class="p-card-img-wrap">
-      <img src="${img}" alt="${title}" loading="lazy">
       <span class="p-card-badge badge-product">Product</span>
       ${p.video_url ? '<span class="p-card-video-badge"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> Watch Video</span>' : ''}
     </div>
@@ -2155,8 +2166,8 @@ function buildCard(p, idx) {
       </div>
     </div>`;
 
-  // Attach the BConnect arc loader to the product image
-  attachBcLoader(card.querySelector('.p-card-img-wrap img'));
+  // Preload image in the background; inject <img> only after it's ready
+  attachBcLoader(card.querySelector('.p-card-img-wrap'), rawUrl);
 
   card.querySelector('.p-card-cta').addEventListener('click', e => {
     e.stopPropagation();
