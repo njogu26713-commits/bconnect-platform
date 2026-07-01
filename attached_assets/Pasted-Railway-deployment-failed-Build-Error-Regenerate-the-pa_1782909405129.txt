@@ -1,0 +1,42 @@
+Railway deployment failed — Build Error
+
+Regenerate the package-lock.json by running "rm package-lock.json && npm install" locally and committing the updated file. The lockfile was generated inside Replit and contains resolved URLs pointing to Replit's internal package registry (package-firewall.replit.local), which is unreachable from Railway. When npm ci tries to download packages from those URLs, it fails and crashes with "Exit handler never called!".
+
+Repository: https://github.com/njogu26713-commits/bconnect-platform
+Branch: main · Commit: ae164d6 — initial commit
+Deployment ID: 608ff8a8-3ac8-4d9c-846e-eb78e96dfca9
+Service ID: da3c41dd-5370-45cd-a29c-d6cd11e126a1
+Environment ID: cf702f90-e2e0-4ed8-bc9d-af1506a90ff0
+
+---
+
+## Problem
+The build fails at the npm ci step with `npm error Exit handler never called!` and exit code 1. The build ran for ~4 minutes with no npm output before crashing. Builder: RAILPACK, failure stage: BUILD_IMAGE.
+
+Build log error:
+```
+npm error Exit handler never called!
+npm error This is an error with npm itself. Please report this error at:
+npm error   <https://github.com/npm/cli/issues>
+Build Failed: build daemon returned an error < failed to solve: process "npm ci" did not complete successfully: exit code: 1 >
+```
+
+No config file is present — all settings come from auto-detection.
+
+## Diagnosis
+The package-lock.json was generated inside Replit's environment. Many of its `resolved` fields point to `http://package-firewall.replit.local/npm/...`, which is Replit's internal package proxy. This hostname is only resolvable within Replit's infrastructure. When Railway's builder runs `npm ci`, it attempts to download packages from these URLs, fails to resolve the hostname, and eventually crashes with a generic npm error.
+
+Evidence from the lockfile:
+```json
+"resolved": "http://package-firewall.replit.local/npm/@borewit/text-codec/-/text-codec-0.2.2.tgz"
+```
+
+These URLs must be replaced with standard `https://registry.npmjs.org/...` URLs.
+
+## Fix
+1. **File:** `package-lock.json`
+2. **Current content:** The lockfile contains hundreds of entries with `"resolved": "http://package-firewall.replit.local/npm/..."` URLs.
+3. **Required change:** Delete `package-lock.json` and regenerate it by running `npm install` in a standard environment (local machine, GitHub Codespace, or any environment with access to the public npm registry). This will produce a lockfile with `"resolved": "https://registry.npmjs.org/..."` URLs.
+4. **Why this fixes it:** `npm ci` uses the exact `resolved` URLs from the lockfile to download packages. Replacing the Replit-internal URLs with public npm registry URLs allows Railway's builder to successfully download all dependencies.
+
+**Note:** This fix cannot be implemented by a code agent because it requires running `npm install` to regenerate the lockfile. The user must do this manually.
