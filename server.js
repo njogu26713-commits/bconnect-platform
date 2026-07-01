@@ -14,7 +14,34 @@ const os = require('os');
 const { sendEmail, passwordResetEmail, paymentReceiptEmail, bookingConfirmationEmail, landlordPaymentAlertEmail, tenantJoinRequestEmail, welcomeEmail, emailVerificationEmail, depositConfirmationEmail } = require('./email');
 dns.setServers(['8.8.8.8', '1.1.1.1']);
 const OpenAI = require('openai');
+const cloudinaryPkg = require('cloudinary');
+const cloudinary = cloudinaryPkg.v2;
 dotenv.config({ override: true });
+
+// Cloudinary setup — only active when all three env vars are present
+const CLOUDINARY_ENABLED = !!(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET);
+if (CLOUDINARY_ENABLED) {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key:    process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+    secure: true
+  });
+  console.log('[OK] Cloudinary configured — uploads will use Cloudinary CDN');
+} else {
+  console.log('[INFO] Cloudinary not configured — image uploads will use MongoDB GridFS');
+}
+
+// Helper: upload a buffer to Cloudinary and return { url, thumbUrl }
+async function uploadToCloudinary(buffer, options = {}) {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: 'bconnect', ...options },
+      (err, result) => { if (err) reject(err); else resolve(result); }
+    );
+    stream.end(buffer);
+  });
+}
 
 const {
   MPESA_CONSUMER_KEY,
@@ -10228,7 +10255,6 @@ const listingUpload = multer({
 app.post('/api/upload/listing-image', listingUpload.single('image'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ success: false, error: 'No image file received' });
-    if (!db) return res.status(503).json({ success: false, error: 'Database not connected' });
 
     const pipeline = sharp(req.file.buffer);
     const [mainBuf, thumbBuf] = await Promise.all([
@@ -10236,6 +10262,15 @@ app.post('/api/upload/listing-image', listingUpload.single('image'), async (req,
       pipeline.clone().resize({ width: 400,  height: 400,  fit: 'cover', position: 'centre' }).jpeg({ quality: 78 }).toBuffer()
     ]);
 
+    if (CLOUDINARY_ENABLED) {
+      const [main, thumb] = await Promise.all([
+        uploadToCloudinary(mainBuf, { resource_type: 'image', format: 'jpg' }),
+        uploadToCloudinary(thumbBuf, { resource_type: 'image', format: 'jpg' })
+      ]);
+      return res.json({ success: true, url: main.secure_url, thumbUrl: thumb.secure_url });
+    }
+
+    if (!db) return res.status(503).json({ success: false, error: 'Database not connected and Cloudinary not configured' });
     const bucket = new GridFSBucket(db, { bucketName: 'uploads' });
     const base = 'listing-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
 
@@ -10268,7 +10303,13 @@ const listingVideoUpload = multer({
 app.post('/api/upload/listing-video', listingVideoUpload.single('video'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ success: false, error: 'No video file received' });
-    if (!db) return res.status(503).json({ success: false, error: 'Database not connected' });
+
+    if (CLOUDINARY_ENABLED) {
+      const result = await uploadToCloudinary(req.file.buffer, { resource_type: 'video', folder: 'bconnect/videos' });
+      return res.json({ success: true, url: result.secure_url });
+    }
+
+    if (!db) return res.status(503).json({ success: false, error: 'Database not connected and Cloudinary not configured' });
     const ext = path.extname(req.file.originalname) || '.mp4';
     const filename = 'listing-video-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + ext;
     const bucket = new GridFSBucket(db, { bucketName: 'uploads' });
