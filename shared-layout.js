@@ -111,7 +111,7 @@
             if (lt) {
               window.location.href = 'landlord-dashboard.html';
             } else {
-              window.location.href = 'landlord-login.html';
+              window.location.href = 'login.html';
             }
           });
         }
