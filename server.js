@@ -10151,6 +10151,39 @@ app.get('/api/admin/tickets', async (req, res) => {
   }
 });
 
+// GET /api/tickets/lookup?q= — find tickets by email or phone
+app.get('/api/tickets/lookup', async (req, res) => {
+  try {
+    if (!db) return res.status(500).json({ error: 'DB not connected' });
+    const q = (req.query.q || '').trim();
+    if (!q) return res.status(400).json({ error: 'Search query required' });
+    const isPhone = /^[\d\s+\-()]{7,}$/.test(q);
+    const query = isPhone
+      ? { buyer_phone: { $regex: q.replace(/\s+/g, '').replace(/^\+254/, '0') } }
+      : { buyer_email: { $regex: new RegExp('^' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$', 'i') } };
+    const tickets = await db.collection('tickets').find(query).sort({ created_at: -1 }).limit(50).toArray();
+    const result = [];
+    for (const t of tickets) {
+      let event_date = null, venue = null, category = null;
+      if (t.event_id) {
+        const ev = await db.collection('events').findOne({ _id: t.event_id }, { projection: { event_date: 1, venue: 1, location: 1, category: 1 } });
+        if (ev) { event_date = ev.event_date; venue = ev.venue || ev.location; category = ev.category; }
+      }
+      result.push({
+        ticket_code: t.ticket_code, event_title: t.event_title || '—',
+        event_date, venue, category, quantity: t.quantity || 1,
+        buyer_name: t.buyer_name || 'Guest', buyer_email: t.buyer_email || '',
+        total_amount: t.total_amount || 0, status: t.status || 'confirmed',
+        created_at: t.created_at
+      });
+    }
+    return res.json({ success: true, tickets: result });
+  } catch (err) {
+    console.error('Ticket lookup error:', err);
+    return res.status(500).json({ error: 'Failed to look up tickets' });
+  }
+});
+
 // GET /api/tickets/verify/:code — verify a ticket by code (public, for staff scanners)
 app.get('/api/tickets/verify/:code', async (req, res) => {
   try {

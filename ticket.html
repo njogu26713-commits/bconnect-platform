@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Tickets — BConnect</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#0f1e3d;--navy-light:#162d6e;--amber:#f5a623;--amber-dark:#d4891a;
+  --white:#fff;--cream:#e8e4dc;--cream-dim:#b8b4ac;
+  --navy-border:rgba(255,255,255,.1);--success:#059669;--danger:#dc2626
+}
+body{font-family:Inter,system-ui,-apple-system,sans-serif;background:#f4f6fb;min-height:100vh;color:#111827}
+
+/* ── TOP BAR ── */
+.top-bar{background:linear-gradient(135deg,var(--navy),var(--navy-light));padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+.top-bar-brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--white)}
+.top-bar-logo{width:36px;height:36px;background:rgba(255,255,255,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.95rem;color:var(--white);border:1.5px solid rgba(255,255,255,.2)}
+.top-bar-name{font-weight:800;font-size:1.1rem}
+.top-bar-back{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.75);text-decoration:none;font-size:.85rem;font-weight:600;transition:color .2s}
+.top-bar-back:hover{color:var(--white)}
+
+/* ── PAGE LAYOUT ── */
+.page{max-width:700px;margin:0 auto;padding:32px 16px 80px}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,var(--navy),var(--navy-light));border-radius:20px;padding:36px 32px;text-align:center;margin-bottom:28px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(245,166,35,.08) 0%,transparent 70%);pointer-events:none}
+.hero-icon{font-size:2.8rem;margin-bottom:10px;position:relative;z-index:1}
+.hero-title{font-size:1.8rem;font-weight:800;color:var(--white);margin-bottom:6px;position:relative;z-index:1}
+.hero-sub{font-size:.9rem;color:var(--cream-dim);line-height:1.6;position:relative;z-index:1}
+
+/* ── SEARCH BOX ── */
+.search-card{background:#fff;border-radius:18px;padding:28px;box-shadow:0 4px 24px rgba(0,0,0,.07);margin-bottom:24px}
+.search-label{font-size:.8rem;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;display:block}
+.search-tabs{display:flex;gap:8px;margin-bottom:20px}
+.s-tab{flex:1;padding:9px;border:2px solid #e5e7eb;border-radius:10px;background:#fff;font-size:.82rem;font-weight:700;cursor:pointer;color:#6b7280;transition:all .2s;font-family:inherit;text-align:center}
+.s-tab.active{border-color:var(--navy-light);background:#eff3ff;color:var(--navy)}
+.search-row{display:flex;gap:10px}
+.search-input{flex:1;padding:13px 16px;border:2px solid #e5e7eb;border-radius:12px;font-size:.95rem;font-family:inherit;outline:none;transition:border-color .2s;color:#111}
+.search-input:focus{border-color:var(--navy-light)}
+.search-btn{padding:13px 22px;background:linear-gradient(135deg,var(--navy),var(--navy-light));color:#fff;border:none;border-radius:12px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;white-space:nowrap}
+.search-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(22,45,110,.4)}
+.search-btn:disabled{background:#9ca3af;cursor:not-allowed;transform:none;box-shadow:none}
+.search-hint{font-size:.78rem;color:#9ca3af;margin-top:10px;line-height:1.5}
+
+/* ── LOADING ── */
+.loading{text-align:center;padding:40px 20px;color:#9ca3af}
+.spinner{width:36px;height:36px;border:3px solid #e5e7eb;border-top-color:var(--navy);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:50px 20px}
+.empty-icon{font-size:3.5rem;margin-bottom:14px}
+.empty-title{font-size:1.1rem;font-weight:700;color:#374151;margin-bottom:6px}
+.empty-sub{font-size:.88rem;color:#9ca3af;line-height:1.6}
+
+/* ── TICKET CARD ── */
+.ticket-card{background:#fff;border-radius:20px;box-shadow:0 4px 24px rgba(0,0,0,.08);margin-bottom:20px;overflow:hidden;border:2px solid transparent;transition:border-color .2s}
+.ticket-card.used{border-color:#fde68a;background:#fffbeb}
+.ticket-header{background:linear-gradient(135deg,var(--navy),var(--navy-light));padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.ticket-header-left{flex:1;min-width:0}
+.ticket-cat{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);margin-bottom:4px}
+.ticket-event{font-size:1.1rem;font-weight:800;color:var(--white);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ticket-status-badge{flex-shrink:0;padding:5px 12px;border-radius:9999px;font-size:.7rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.badge-confirmed{background:#dcfce7;color:#15803d}
+.badge-used{background:#fef3c7;color:#92400e}
+
+.ticket-body{padding:20px 24px}
+.ticket-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.ticket-meta-item{}
+.meta-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#9ca3af;margin-bottom:3px}
+.meta-val{font-size:.9rem;font-weight:700;color:#111827}
+
+/* ── DIVIDER (perforated) ── */
+.ticket-divider{display:flex;align-items:center;margin:0 -24px 20px;position:relative}
+.ticket-divider::before{content:'';position:absolute;left:0;right:0;top:50%;border-top:2px dashed #e5e7eb}
+.divider-circle{width:28px;height:28px;border-radius:50%;background:#f4f6fb;border:2px dashed #e5e7eb;flex-shrink:0;z-index:1}
+.divider-circle.left{margin-left:-14px}
+.divider-circle.right{margin-left:auto;margin-right:-14px}
+
+/* ── QR SECTION ── */
+.qr-section{display:flex;flex-direction:column;align-items:center;gap:12px}
+.qr-wrap{background:#f0fdf4;border:2px solid #bbf7d0;border-radius:16px;padding:20px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.qr-wrap canvas{border-radius:8px}
+.ticket-code-display{font-family:'Courier New',monospace;font-size:1rem;font-weight:800;color:#166534;letter-spacing:3px;background:#dcfce7;padding:8px 18px;border-radius:9999px}
+.ticket-code-display.used-code{color:#92400e;background:#fef3c7}
+.qr-actions{display:flex;gap:10px;width:100%}
+.btn-dl{flex:1;padding:11px;background:linear-gradient(135deg,var(--navy),var(--navy-light));color:#fff;border:none;border-radius:11px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-dl:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(22,45,110,.35)}
+.btn-share{flex:1;padding:11px;background:#fff;border:2px solid #e5e7eb;color:#374151;border-radius:11px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-share:hover{border-color:var(--navy);color:var(--navy)}
+.used-watermark{font-size:.72rem;font-weight:700;color:#92400e;background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:6px 14px;margin-top:4px;text-align:center}
+
+/* ── AMOUNT ROW ── */
+.ticket-amount-row{display:flex;align-items:center;justify-content:space-between;background:#f9fafb;border-radius:10px;padding:12px 16px;margin-top:16px}
+.amount-label{font-size:.8rem;color:#6b7280;font-weight:600}
+.amount-val{font-size:1.15rem;font-weight:800;color:var(--navy)}
+
+/* ── RESULTS HEADER ── */
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.results-count{font-size:.88rem;font-weight:700;color:#6b7280}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);padding:12px 24px;border-radius:12px;font-size:.88rem;font-weight:700;z-index:99999;transition:transform .35s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;box-shadow:0 6px 20px rgba(0,0,0,.2);pointer-events:none;font-family:inherit}
+
+@media(max-width:600px){
+  .hero{padding:28px 20px}
+  .hero-title{font-size:1.45rem}
+  .ticket-meta-grid{grid-template-columns:1fr}
+  .search-row{flex-direction:column}
+  .search-btn{width:100%}
+  .qr-actions{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <a href="/" class="top-bar-brand">
+    <div class="top-bar-logo">B</div>
+    <div class="top-bar-name">BConnect</div>
+  </a>
+  <a href="events.html" class="top-bar-back">
+    ← Back to Events
+  </a>
+</div>
+
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-icon">🎟</div>
+    <div class="hero-title">My Tickets</div>
+    <div class="hero-sub">Look up your event tickets by ticket code, email address, or phone number.</div>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-card">
+    <div class="search-tabs">
+      <button class="s-tab active" id="tab-code" onclick="switchTab('code')">🔑 Ticket Code</button>
+      <button class="s-tab" id="tab-email" onclick="switchTab('email')">📧 Email / Phone</button>
+    </div>
+
+    <div id="pane-code">
+      <span class="search-label">Enter your ticket code</span>
+      <div class="search-row">
+        <input class="search-input" id="code-input" type="text" placeholder="e.g. TKT-AB12CD34" autocomplete="off" spellcheck="false"
+          style="text-transform:uppercase;letter-spacing:1px"
+          oninput="this.value=this.value.toUpperCase()"
+          onkeydown="if(event.key==='Enter')lookupByCode()">
+        <button class="search-btn" id="code-btn" onclick="lookupByCode()">Look Up</button>
+      </div>
+      <div class="search-hint">Your ticket code was emailed to you after purchase. It starts with <strong>TKT-</strong></div>
+    </div>
+
+    <div id="pane-email" style="display:none">
+      <span class="search-label">Enter your email or M-Pesa phone</span>
+      <div class="search-row">
+        <input class="search-input" id="email-input" type="text" placeholder="email@example.com or 07XXXXXXXX" autocomplete="off"
+          onkeydown="if(event.key==='Enter')lookupByContact()">
+        <button class="search-btn" id="email-btn" onclick="lookupByContact()">Find Tickets</button>
+      </div>
+      <div class="search-hint">We'll find all tickets linked to your email or phone number.</div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results-area"></div>
+
+</div>
+
+<div id="toast"></div>
+
+<script>
+let currentTab = 'code';
+let renderedTickets = [];
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('tab-code').classList.toggle('active', tab === 'code');
+  document.getElementById('tab-email').classList.toggle('active', tab === 'email');
+  document.getElementById('pane-code').style.display = tab === 'code' ? '' : 'none';
+  document.getElementById('pane-email').style.display = tab === 'email' ? '' : 'none';
+  document.getElementById('results-area').innerHTML = '';
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  const bg = { error:'#dc2626', success:'#059669', warning:'#d97706', info:'#2563eb' };
+  t.style.background = bg[type] || bg.info; t.style.color = '#fff';
+  t.textContent = msg; t.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(t._tmr); t._tmr = setTimeout(() => { t.style.transform = 'translateX(-50%) translateY(120px)'; }, 4000);
+}
+
+function setLoading(show) {
+  document.getElementById('results-area').innerHTML = show
+    ? `<div class="loading"><div class="spinner"></div><div>Looking up your tickets…</div></div>` : '';
+}
+
+function fmtDate(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleDateString('en-KE', { weekday:'short', day:'numeric', month:'short', year:'numeric' });
+}
+function fmtTime(d) {
+  if (!d) return '';
+  return new Date(d).toLocaleTimeString('en-KE', { hour:'2-digit', minute:'2-digit', hour12:true });
+}
+function fmtAmt(n) {
+  if (!n || n === 0) return 'FREE';
+  return 'Ksh ' + Number(n).toLocaleString('en-KE');
+}
+
+async function lookupByCode() {
+  const code = (document.getElementById('code-input').value || '').trim().toUpperCase();
+  if (!code) { showToast('Please enter a ticket code', 'warning'); document.getElementById('code-input').focus(); return; }
+  const btn = document.getElementById('code-btn');
+  btn.disabled = true; btn.textContent = 'Looking up…';
+  setLoading(true);
+  try {
+    const res = await fetch('/api/tickets/verify/' + encodeURIComponent(code));
+    const data = await res.json();
+    if (!data.valid) {
+      renderEmpty('Ticket not found', data.error || 'No ticket matches that code. Check the code and try again.');
+    } else {
+      renderTickets([data.ticket]);
+    }
+  } catch(e) {
+    renderEmpty('Network error', 'Could not reach the server. Please try again.');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Look Up';
+  }
+}
+
+async function lookupByContact() {
+  const val = (document.getElementById('email-input').value || '').trim();
+  if (!val) { showToast('Please enter your email or phone', 'warning'); document.getElementById('email-input').focus(); return; }
+  const btn = document.getElementById('email-btn');
+  btn.disabled = true; btn.textContent = 'Searching…';
+  setLoading(true);
+  try {
+    const res = await fetch('/api/tickets/lookup?q=' + encodeURIComponent(val));
+    const data = await res.json();
+    if (!data.success || !data.tickets || !data.tickets.length) {
+      renderEmpty('No tickets found', 'We couldn\'t find any tickets linked to "' + val + '". Try a different email or phone, or use your ticket code.');
+    } else {
+      renderTickets(data.tickets);
+    }
+  } catch(e) {
+    renderEmpty('Network error', 'Could not reach the server. Please try again.');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Find Tickets';
+  }
+}
+
+function renderEmpty(title, sub) {
+  document.getElementById('results-area').innerHTML = `
+    <div class="empty">
+      <div class="empty-icon">🔍</div>
+      <div class="empty-title">${title}</div>
+      <div class="empty-sub">${sub}</div>
+    </div>`;
+}
+
+function renderTickets(tickets) {
+  renderedTickets = tickets;
+  const area = document.getElementById('results-area');
+  if (!tickets.length) { renderEmpty('No tickets found', 'No tickets matched your search.'); return; }
+
+  let html = '';
+  if (tickets.length > 1) {
+    html += `<div class="results-header"><span class="results-count">${tickets.length} ticket${tickets.length > 1 ? 's' : ''} found</span></div>`;
+  }
+  tickets.forEach((t, i) => {
+    const isUsed = t.status === 'used';
+    const code = t.ticket_code || t.ticketCode || '';
+    const qty = t.quantity || 1;
+    const amt = t.total_amount !== undefined ? t.total_amount : (t.amount || 0);
+    html += `
+    <div class="ticket-card${isUsed ? ' used' : ''}">
+      <div class="ticket-header">
+        <div class="ticket-header-left">
+          <div class="ticket-cat">${(t.category || 'EVENT').toUpperCase()}</div>
+          <div class="ticket-event">${t.event_title || 'Event Ticket'}</div>
+        </div>
+        <span class="ticket-status-badge ${isUsed ? 'badge-used' : 'badge-confirmed'}">${isUsed ? '✓ Used' : '● Confirmed'}</span>
+      </div>
+      <div class="ticket-body">
+        <div class="ticket-meta-grid">
+          <div class="ticket-meta-item"><div class="meta-label">Date</div><div class="meta-val">${fmtDate(t.event_date)}</div></div>
+          <div class="ticket-meta-item"><div class="meta-label">Time</div><div class="meta-val">${fmtTime(t.event_date) || '—'}</div></div>
+          <div class="ticket-meta-item"><div class="meta-label">Venue</div><div class="meta-val">${t.venue || '—'}</div></div>
+          <div class="ticket-meta-item"><div class="meta-label">Quantity</div><div class="meta-val">${qty} ticket${qty > 1 ? 's' : ''}</div></div>
+          <div class="ticket-meta-item"><div class="meta-label">Name</div><div class="meta-val">${t.buyer_name || '—'}</div></div>
+          <div class="ticket-meta-item"><div class="meta-label">Booked</div><div class="meta-val">${fmtDate(t.created_at || t.date)}</div></div>
+        </div>
+
+        <div class="ticket-divider">
+          <div class="divider-circle left"></div>
+          <div class="divider-circle right"></div>
+        </div>
+
+        <div class="qr-section">
+          <div class="qr-wrap">
+            <canvas id="qr-${i}" width="160" height="160"></canvas>
+            <div class="ticket-code-display${isUsed ? ' used-code' : ''}">${code}</div>
+            ${isUsed ? `<div class="used-watermark">⚠ This ticket has already been scanned at the gate</div>` : ''}
+          </div>
+          <div class="qr-actions">
+            <button class="btn-dl" onclick="downloadQR(${i}, '${code}')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download QR
+            </button>
+            <button class="btn-share" onclick="shareTicket('${code}', '${(t.event_title||'').replace(/'/g,"\\'")}')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              Share
+            </button>
+          </div>
+        </div>
+
+        <div class="ticket-amount-row">
+          <span class="amount-label">Total Paid</span>
+          <span class="amount-val">${fmtAmt(amt)}</span>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  area.innerHTML = html;
+
+  // Generate QR codes
+  tickets.forEach((t, i) => {
+    const code = t.ticket_code || t.ticketCode || '';
+    if (!code) return;
+    const canvas = document.getElementById('qr-' + i);
+    if (canvas && window.QRCode) {
+      const isUsed = t.status === 'used';
+      QRCode.toCanvas(canvas, code, {
+        width: 160, margin: 1,
+        color: { dark: isUsed ? '#92400e' : '#0f1e3d', light: isUsed ? '#fef3c7' : '#f0fdf4' }
+      }, err => { if (err) console.warn('QR error', err); });
+    }
+  });
+}
+
+function downloadQR(i, code) {
+  const canvas = document.getElementById('qr-' + i);
+  if (!canvas) return;
+  const link = document.createElement('a');
+  link.download = (code || 'ticket') + '-QR.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+async function shareTicket(code, eventTitle) {
+  const text = `🎟 My ticket for "${eventTitle}"\nTicket Code: ${code}\nVerify at: ${location.origin}/ticket.html?code=${encodeURIComponent(code)}`;
+  if (navigator.share) {
+    try { await navigator.share({ title: 'BConnect Ticket', text }); return; } catch(e) {}
+  }
+  try { await navigator.clipboard.writeText(text); showToast('Ticket details copied to clipboard!', 'success'); } catch(e) { showToast('Could not share ticket.', 'error'); }
+}
+
+// Auto-lookup from URL ?code=
+(function init() {
+  const params = new URLSearchParams(location.search);
+  const code = params.get('code');
+  if (code) {
+    document.getElementById('code-input').value = code.toUpperCase();
+    lookupByCode();
+  }
+})();
+</script>
+
+<script src="shared-layout.js?v=7"></script>
+</body>
+</html>
