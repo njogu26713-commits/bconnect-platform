@@ -1,0 +1,6 @@
+node_modules/
+.env
+uploads/
+whatsapp-bot/auth_info/
+*.log
+.cache/
