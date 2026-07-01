@@ -3,247 +3,351 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>bConnect – Events & Tickets</title>
+<title>BConnect – Events & Tickets</title>
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --primary:#1e3a8a;--primary-light:#1e40af;--teal:#0d9488;
-  --amber:#1e3a8a;--red:#ef4444;--white:#fff;
-  --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;
-  --gray-400:#9ca3af;--gray-500:#6b7280;--gray-700:#374151;--gray-900:#111827;
-  --shadow-sm:0 1px 4px rgba(0,0,0,.07);--shadow-md:0 4px 16px rgba(0,0,0,.10);--shadow-lg:0 12px 32px rgba(0,0,0,.15);
+  --navy:#080f1e;
+  --navy-mid:#0d1835;
+  --navy-light:#162040;
+  --navy-border:rgba(255,255,255,0.08);
+  --navy-border-hover:rgba(255,255,255,0.18);
+  --white:#ffffff;
+  --cream:#f1f5f9;
+  --cream-dim:#94a3b8;
+  --amber:#f5a623;
+  --amber-dark:#d4891a;
+  --green:#22c55e;
+  --green-dim:#166534;
+  --red:#ef4444;
+  --shadow-sm:0 1px 4px rgba(0,0,0,.35);
+  --shadow-md:0 4px 16px rgba(0,0,0,.45);
+  --shadow-lg:0 12px 40px rgba(0,0,0,.6);
 }
-body{font-family:'Inter',-apple-system,sans-serif;background:#ffffff;min-height:100vh;color:var(--gray-900)}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--navy);min-height:100vh;color:var(--cream)}
 
-/*  HERO BANNER  */
+/* HERO */
 .hero{
-  background:linear-gradient(135deg,#0d1f4e 0%,#162d6e 40%,#1e3a8a 100%);
-  color:#fff;padding:48px 24px 36px;text-align:center;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#040a14 0%,#080f1e 45%,#0d1835 100%);
+  color:var(--white);padding:52px 24px 40px;text-align:center;position:relative;overflow:hidden;
+  border-bottom:1px solid var(--navy-border);
 }
 .hero::before{
   content:'';position:absolute;inset:0;
-  background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%, rgba(245,166,35,0.06) 0%, transparent 70%);
+  pointer-events:none;
 }
-.hero-inner{position:relative;z-index:1;max-width:700px;margin:0 auto}
-.hero-tag{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:9999px;padding:.3rem .9rem;font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:1rem}
-.hero h1{font-size:2.4rem;font-weight:800;margin-bottom:.6rem;line-height:1.2}
-.hero p{font-size:1.05rem;opacity:.85;margin-bottom:1.5rem}
+.hero-inner{position:relative;z-index:1;max-width:720px;margin:0 auto}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.25);border-radius:9999px;padding:.3rem 1rem;font-size:.75rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:1.1rem;color:var(--amber)}
+.hero h1{font-size:2.5rem;font-weight:800;margin-bottom:.6rem;line-height:1.18;color:var(--white)}
+.hero h1 span{color:var(--amber)}
+.hero p{font-size:1rem;color:var(--cream-dim);margin-bottom:1.75rem;line-height:1.6}
 .hero-search{display:flex;gap:.6rem;max-width:500px;margin:0 auto}
-.hero-search input{flex:1;padding:.75rem 1.1rem;border-radius:12px;border:none;font-size:.95rem;outline:none;font-family:inherit}
-.hero-search button{padding:.75rem 1.4rem;background:var(--amber);color:#fff;border:none;border-radius:12px;font-size:.9rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .2s}
-.hero-search button:hover{background:#162d6e;transform:translateY(-1px)}
+.hero-search input{
+  flex:1;padding:.8rem 1.2rem;border-radius:12px;border:1.5px solid var(--navy-border);
+  background:rgba(255,255,255,.06);color:var(--white);font-size:.95rem;outline:none;
+  font-family:inherit;transition:border-color .2s;
+}
+.hero-search input::placeholder{color:var(--cream-dim)}
+.hero-search input:focus{border-color:rgba(245,166,35,.4);background:rgba(255,255,255,.09)}
+.hero-search button{
+  padding:.8rem 1.4rem;background:var(--amber);color:var(--navy);border:none;border-radius:12px;
+  font-size:.9rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .2s;font-family:inherit;
+}
+.hero-search button:hover{background:var(--amber-dark);transform:translateY(-1px)}
+.submit-event-btn{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:rgba(255,255,255,.07);color:var(--cream);
+  border:1.5px solid var(--navy-border-hover);border-radius:10px;
+  padding:.55rem 1.2rem;font-size:.83rem;font-weight:700;cursor:pointer;
+  font-family:inherit;transition:all .2s;text-decoration:none;margin-left:.5rem;
+}
+.submit-event-btn:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.3);transform:translateY(-1px)}
 
-/*  LAYOUT  */
+/* LAYOUT */
 .page-layout{display:flex;min-height:calc(100vh - 57px)}
-.sidebar{width:220px;flex-shrink:0;background:var(--white);border-right:1px solid var(--gray-200);padding:1.25rem .75rem;position:sticky;top:57px;height:calc(100vh - 57px);overflow-y:auto}
-.sidebar-title{font-size:.7rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.06em;padding:.5rem .75rem 1rem}
-.sidebar-item{display:flex;align-items:center;gap:.75rem;padding:.7rem .9rem;border-radius:.75rem;font-size:.88rem;font-weight:600;color:var(--gray-700);cursor:pointer;transition:all .2s;margin-bottom:.15rem;background:none;border:none;width:100%;text-align:left}
-.sidebar-item:hover{background:var(--gray-100);color:var(--primary)}
-.sidebar-item.active{background:#dbeafe;color:var(--primary)}
-.sidebar-item span.icon{font-size:1.1rem}
-hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
+.sidebar{
+  width:224px;flex-shrink:0;background:var(--navy-mid);
+  border-right:1px solid var(--navy-border);
+  padding:1.25rem .75rem;position:sticky;top:57px;
+  height:calc(100vh - 57px);overflow-y:auto;
+}
+.sidebar-title{font-size:.68rem;font-weight:700;color:var(--cream-dim);text-transform:uppercase;letter-spacing:.07em;padding:.5rem .75rem .85rem}
+.sidebar-item{
+  display:flex;align-items:center;gap:.7rem;padding:.65rem .9rem;border-radius:.75rem;
+  font-size:.85rem;font-weight:600;color:var(--cream-dim);cursor:pointer;transition:all .2s;
+  margin-bottom:.12rem;background:none;border:none;width:100%;text-align:left;font-family:inherit;
+}
+.sidebar-item:hover{background:rgba(255,255,255,.06);color:var(--cream)}
+.sidebar-item.active{background:rgba(245,166,35,.12);color:var(--amber);border:1px solid rgba(245,166,35,.2)}
+.sidebar-item svg{flex-shrink:0;opacity:.7}
+.sidebar-item.active svg{opacity:1}
+hr.sdiv{border:none;border-top:1px solid var(--navy-border);margin:.75rem .5rem}
 .main{flex:1;padding:1.75rem 2rem;min-width:0}
 
-/*  FILTER BAR  */
-.filter-bar{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1.5rem}
-.filter-btn{padding:.5rem 1.1rem;border-radius:9999px;border:1.5px solid var(--gray-200);background:var(--white);font-size:.83rem;font-weight:600;color:var(--gray-700);cursor:pointer;transition:all .2s}
-.filter-btn:hover{border-color:var(--primary);color:var(--primary)}
-.filter-btn.active{background:var(--primary);border-color:var(--primary);color:var(--white)}
+/* FILTER BAR */
+.filter-bar{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.filter-btn{
+  padding:.45rem 1rem;border-radius:9999px;
+  border:1.5px solid var(--navy-border);background:var(--navy-mid);
+  font-size:.82rem;font-weight:600;color:var(--cream-dim);cursor:pointer;transition:all .2s;
+  font-family:inherit;
+}
+.filter-btn:hover{border-color:var(--navy-border-hover);color:var(--cream)}
+.filter-btn.active{background:var(--amber);border-color:var(--amber);color:var(--navy)}
 
-/*  SECTION HEADER  */
+/* SECTION HEADER */
 .sec-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}
-.sec-title{font-size:1.3rem;font-weight:800;color:var(--gray-900)}
-.count-pill{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:var(--white);padding:.35rem .9rem;border-radius:9999px;font-size:.78rem;font-weight:700}
+.sec-title{font-size:1.25rem;font-weight:800;color:var(--white)}
+.count-pill{background:rgba(245,166,35,.15);border:1px solid rgba(245,166,35,.25);color:var(--amber);padding:.3rem .85rem;border-radius:9999px;font-size:.78rem;font-weight:700}
+.sec-submit-btn{
+  display:inline-flex;align-items:center;gap:.45rem;
+  background:rgba(255,255,255,.07);border:1.5px solid var(--navy-border-hover);
+  color:var(--cream);border-radius:.65rem;padding:.42rem .9rem;font-size:.78rem;font-weight:700;
+  cursor:pointer;font-family:inherit;transition:all .2s;
+}
+.sec-submit-btn:hover{background:rgba(255,255,255,.12);transform:translateY(-1px)}
 
-/*  EVENT CARDS  */
+/* EVENT CARDS */
 .events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem}
-.e-card{background:var(--white);border-radius:1.25rem;box-shadow:var(--shadow-sm);overflow:hidden;cursor:pointer;border:1.5px solid transparent;transition:transform .25s,box-shadow .25s,border-color .25s;position:relative}
-.e-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:var(--primary)}
-.e-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;z-index:2;background:linear-gradient(90deg,#1e3a8a,#1e40af)}
+.e-card{
+  background:var(--navy-mid);border-radius:1.25rem;overflow:hidden;cursor:pointer;
+  border:1.5px solid var(--navy-border);transition:transform .25s,box-shadow .25s,border-color .25s;
+  position:relative;
+}
+.e-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:rgba(245,166,35,.3)}
+.e-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;z-index:2;background:linear-gradient(90deg,var(--amber),#f0b429)}
 .e-card-img-wrap{position:relative;overflow:hidden;height:180px}
 .e-card-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
 .e-card:hover .e-card-img-wrap img{transform:scale(1.06)}
-.e-badge{position:absolute;top:.5rem;left:.5rem;z-index:3;background:var(--primary);color:#fff;font-size:.6rem;font-weight:700;padding:.2rem .5rem;border-radius:9999px;text-transform:uppercase;letter-spacing:.04em}
-.e-date-chip{position:absolute;bottom:.5rem;right:.5rem;z-index:3;background:rgba(0,0,0,.72);color:#fff;font-size:.68rem;font-weight:700;padding:.22rem .55rem;border-radius:.45rem;backdrop-filter:blur(4px)}
-.e-card-body{padding:.7rem .9rem .85rem}
-.e-card-title{font-size:.9rem;font-weight:800;color:var(--gray-900);margin-bottom:.3rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.e-card-meta{display:flex;gap:.5rem;font-size:.74rem;color:var(--gray-500);margin-bottom:.5rem;flex-wrap:wrap}
-.e-card-meta span{display:flex;align-items:center;gap:.2rem}
-.e-card-row{display:flex;justify-content:space-between;align-items:center;margin-top:.45rem}
-.e-card-price{font-size:.95rem;font-weight:800;color:var(--primary)}
-.e-card-price.free{color:#059669}
-.e-card-cta{background:var(--primary);color:#fff;border:none;padding:.3rem .75rem;border-radius:.55rem;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .2s}
-.e-card-cta:hover{background:#162d6e;transform:scale(1.05)}
-.e-card-cta.sold{background:var(--gray-400);cursor:not-allowed}
-.tickets-left{font-size:.7rem;color:var(--gray-500);margin-top:.3rem}
-.tickets-left.low{color:#dc2626;font-weight:700}
-.e-days-chip{display:inline-flex;align-items:center;background:#fef3c7;color:#0d1f4e;font-size:.68rem;font-weight:700;padding:.18rem .5rem;border-radius:9999px;border:1px solid #fde68a}
-.e-days-chip.ended{background:#fee2e2;color:#991b1b;border-color:#fca5a5}
-.e-share-btn{position:absolute;top:.5rem;right:.5rem;z-index:4;background:rgba(255,255,255,.92);border:none;border-radius:50%;width:2.1rem;height:2.1rem;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.9rem;box-shadow:0 2px 8px rgba(0,0,0,.18);transition:all .2s;backdrop-filter:blur(6px)}
-.e-share-btn:hover{background:#fff;transform:scale(1.12);box-shadow:0 4px 14px rgba(0,0,0,.22)}
-.share-panel{position:fixed;background:#fff;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.18);padding:8px;z-index:99999;display:flex;flex-direction:column;gap:4px;min-width:190px;animation:mIn .2s cubic-bezier(.34,1.56,.64,1)}
-.spi{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:9px;border:none;background:none;font-size:.85rem;font-weight:600;cursor:pointer;width:100%;text-align:left;font-family:inherit;color:#374151;transition:background .15s}
-.spi:hover{background:#f3f4f6}
-.modal-share-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
-.share-modal-btn{flex:1;min-width:80px;padding:10px 10px;border:none;border-radius:10px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s}
-.share-modal-btn:hover{transform:translateY(-1px);filter:brightness(1.08)}
-
-/*  SKELETON  */
-.skeleton-card{background:var(--white);border-radius:1.25rem;height:300px;animation:pulse 1.5s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
-
-/*  EMPTY  */
-.empty-state{text-align:center;padding:4rem 2rem;color:var(--gray-400)}
-.empty-state .ei{font-size:3.5rem;margin-bottom:1rem}
-.empty-state h3{font-size:1.1rem;font-weight:700;color:var(--gray-700);margin-bottom:.5rem}
-
-/*  MODAL  */
-.modal-overlay{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1rem}
-.modal-overlay.open{display:flex}
-.modal-box{background:var(--white);border-radius:1.5rem;width:100%;max-width:780px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.3);position:relative;animation:mIn .3s cubic-bezier(.34,1.56,.64,1)}
-@keyframes mIn{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
-.modal-close{position:absolute;top:1rem;right:1rem;z-index:10;background:var(--gray-100);border:none;border-radius:50%;width:2.2rem;height:2.2rem;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
-.modal-close:hover{background:var(--gray-200)}
-.modal-inner{display:flex;gap:2rem;padding:2rem}
-.modal-img-col{width:42%;flex-shrink:0}
-.modal-main-img{width:100%;border-radius:1rem;object-fit:cover;aspect-ratio:4/3;background:var(--gray-100)}
-@media(max-width:640px){.modal-main-img{max-height:220px;object-fit:contain;aspect-ratio:unset}.modal-inner{padding:1rem;gap:1rem}}
-.modal-details{flex:1;min-width:0}
-.detail-badge{display:inline-block;padding:.3rem .8rem;border-radius:9999px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.75rem}
-.detail-title{font-size:1.5rem;font-weight:800;color:var(--gray-900);margin-bottom:.5rem;line-height:1.3}
-.detail-info{display:flex;flex-direction:column;gap:.55rem;margin-bottom:1rem}
-.detail-info-row{display:flex;align-items:flex-start;gap:.6rem;font-size:.88rem;color:var(--gray-700)}
-.detail-info-row .lbl{font-weight:700;min-width:70px;color:var(--gray-900)}
-.detail-desc{font-family:Inter,system-ui,-apple-system,sans-serif;font-size:.92rem;font-weight:600;color:var(--gray-700);line-height:1.8;margin-bottom:1.2rem;white-space:pre-wrap;word-break:break-word}
-.ticket-box{background:linear-gradient(135deg,#dbeafe,#f5f3ff);border:1.5px solid #93c5fd;border-radius:1rem;padding:1.2rem;margin-bottom:1rem}
-.ticket-price-big{font-size:2rem;font-weight:800;color:var(--primary);margin-bottom:.25rem}
-.ticket-price-big.free{color:#059669}
-.ticket-avail{font-size:.82rem;color:var(--gray-500);margin-bottom:.9rem}
-.ticket-avail.low{color:#dc2626;font-weight:700}
-.ticket-qty-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.85rem}
-.qty-btn{background:var(--white);border:1.5px solid var(--gray-200);border-radius:.5rem;width:2rem;height:2rem;font-size:1.1rem;font-weight:700;cursor:pointer;transition:border-color .2s;display:flex;align-items:center;justify-content:center}
-.qty-btn:hover{border-color:var(--primary)}
-.qty-display{font-size:1.1rem;font-weight:800;min-width:24px;text-align:center}
-.btn-buy{width:100%;padding:1rem;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:.9rem;font-size:1rem;font-weight:800;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(30,58,138,.35)}
-.btn-buy:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(30,58,138,.4)}
-.btn-buy:disabled{background:var(--gray-400);cursor:not-allowed;box-shadow:none;transform:none}
-
-/*  MPESA SPINNER  */
-.mpesa-spinner{width:18px;height:18px;border:2.5px solid #dbeafe;border-top-color:#1e3a8a;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/*  SUCCESS TICKET  */
-.ticket-success{background:linear-gradient(135deg,#dcfce7,#f0fdf4);border:1.5px solid #86efac;border-radius:1rem;padding:1.5rem;text-align:center;display:none}
-.ticket-success h3{color:#15803d;font-size:1.1rem;font-weight:800;margin-bottom:.5rem}
-.ticket-success p{color:#166534;font-size:.88rem}
-.ticket-code{font-size:1.3rem;font-weight:800;letter-spacing:.15em;color:#166534;background:#bbf7d0;padding:.5rem 1.2rem;border-radius:.6rem;display:inline-block;margin:.75rem 0}
-
-/*  ORGANIZER CHIP  */
-.e-organizer{display:flex;align-items:center;gap:.3rem;font-size:.72rem;color:var(--gray-500);font-weight:600;margin-top:.35rem;overflow:hidden}
-.e-organizer svg{flex-shrink:0;opacity:.7}
+.e-badge{
+  position:absolute;top:.5rem;left:.5rem;z-index:3;
+  background:rgba(8,15,30,.75);border:1px solid rgba(255,255,255,.15);
+  backdrop-filter:blur(6px);color:var(--cream);
+  font-size:.6rem;font-weight:700;padding:.22rem .55rem;border-radius:9999px;
+  text-transform:uppercase;letter-spacing:.05em;
+}
+.e-date-chip{
+  position:absolute;bottom:.5rem;right:.5rem;z-index:3;
+  background:rgba(8,15,30,.8);border:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(6px);color:var(--cream);
+  font-size:.67rem;font-weight:700;padding:.22rem .55rem;border-radius:.45rem;
+}
+.e-card-body{padding:.75rem .95rem .9rem}
+.e-card-title{font-size:.9rem;font-weight:800;color:var(--white);margin-bottom:.3rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.e-card-meta{display:flex;gap:.5rem;font-size:.73rem;color:var(--cream-dim);margin-bottom:.5rem;flex-wrap:wrap}
+.e-card-meta span{display:flex;align-items:center;gap:.25rem}
+.e-card-row{display:flex;justify-content:space-between;align-items:center;margin-top:.5rem}
+.e-card-price{font-size:.95rem;font-weight:800;color:var(--amber)}
+.e-card-price.free{color:var(--green)}
+.e-card-cta{
+  background:var(--amber);color:var(--navy);border:none;
+  padding:.32rem .8rem;border-radius:.55rem;font-size:.72rem;font-weight:700;
+  cursor:pointer;transition:all .2s;font-family:inherit;
+}
+.e-card-cta:hover{background:var(--amber-dark);transform:scale(1.05)}
+.e-card-cta.sold{background:rgba(255,255,255,.12);color:var(--cream-dim);cursor:not-allowed}
+.tickets-left{font-size:.7rem;color:var(--cream-dim);margin-top:.3rem}
+.tickets-left.low{color:#f87171;font-weight:700}
+.e-days-chip{display:inline-flex;align-items:center;background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);color:var(--amber);font-size:.67rem;font-weight:700;padding:.18rem .5rem;border-radius:9999px}
+.e-days-chip.ended{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.25);color:#f87171}
+.e-share-btn{
+  position:absolute;top:.5rem;right:.5rem;z-index:4;
+  background:rgba(8,15,30,.75);backdrop-filter:blur(6px);
+  border:1px solid rgba(255,255,255,.15);border-radius:50%;
+  width:2.1rem;height:2.1rem;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--cream);transition:all .2s;
+}
+.e-share-btn:hover{background:rgba(245,166,35,.2);border-color:rgba(245,166,35,.4);transform:scale(1.12)}
+.e-organizer{display:flex;align-items:center;gap:.3rem;font-size:.72rem;color:var(--cream-dim);font-weight:600;margin-top:.35rem;overflow:hidden}
+.e-organizer svg{flex-shrink:0;opacity:.6}
 .e-organizer span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-/*  SUBMIT EVENT BUTTON  */
-.submit-event-btn{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.18);color:#fff;border:1.5px solid rgba(255,255,255,.35);border-radius:10px;padding:.55rem 1.2rem;font-size:.83rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;backdrop-filter:blur(4px);text-decoration:none;margin-left:.6rem}
-.submit-event-btn:hover{background:rgba(255,255,255,.28);border-color:rgba(255,255,255,.55);transform:translateY(-1px)}
-.sidebar-submit-btn{display:flex;align-items:center;gap:.7rem;width:100%;margin-top:.5rem;padding:.75rem .9rem;border-radius:.75rem;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;color:#fff;background:linear-gradient(135deg,var(--primary),var(--primary-light));border:none;transition:all .2s;box-shadow:0 3px 12px rgba(30,58,138,.3)}
-.sidebar-submit-btn:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(30,58,138,.4)}
-.sec-submit-btn{display:inline-flex;align-items:center;gap:.5rem;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:.65rem;padding:.45rem 1rem;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;box-shadow:0 2px 8px rgba(30,58,138,.25)}
-.sec-submit-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(30,58,138,.4)}
+/* SHARE PANEL */
+.share-panel{position:fixed;background:var(--navy-light);border:1px solid var(--navy-border-hover);border-radius:14px;box-shadow:var(--shadow-lg);padding:8px;z-index:99999;display:flex;flex-direction:column;gap:4px;min-width:200px;animation:mIn .2s cubic-bezier(.34,1.56,.64,1)}
+.spi{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:9px;border:none;background:none;font-size:.85rem;font-weight:600;cursor:pointer;width:100%;text-align:left;font-family:inherit;color:var(--cream);transition:background .15s}
+.spi:hover{background:rgba(255,255,255,.07)}
+.modal-share-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.share-modal-btn{flex:1;min-width:80px;padding:10px;border:none;border-radius:10px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s}
+.share-modal-btn:hover{transform:translateY(-1px);filter:brightness(1.08)}
 
-/*  SUBMIT EVENT MODAL  */
-.submit-modal-overlay{display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;padding:0}
+/* SKELETON */
+.skeleton-card{background:var(--navy-mid);border-radius:1.25rem;height:300px;animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* EMPTY */
+.empty-state{text-align:center;padding:4rem 2rem;color:var(--cream-dim)}
+.empty-state .ei{display:flex;justify-content:center;margin-bottom:1rem;opacity:.4}
+.empty-state h3{font-size:1.1rem;font-weight:700;color:var(--cream);margin-bottom:.5rem}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal-box{background:var(--navy-mid);border:1px solid var(--navy-border);border-radius:1.5rem;width:100%;max-width:780px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);position:relative;animation:mIn .3s cubic-bezier(.34,1.56,.64,1)}
+@keyframes mIn{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-close{
+  position:absolute;top:1rem;right:1rem;z-index:10;
+  background:rgba(255,255,255,.08);border:1px solid var(--navy-border);
+  border-radius:50%;width:2.2rem;height:2.2rem;
+  color:var(--cream-dim);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;
+}
+.modal-close:hover{background:rgba(255,255,255,.14);color:var(--white)}
+.modal-inner{display:flex;gap:2rem;padding:2rem}
+.modal-img-col{width:42%;flex-shrink:0}
+.modal-main-img{width:100%;border-radius:1rem;object-fit:cover;aspect-ratio:4/3;background:var(--navy-light)}
+@media(max-width:640px){.modal-main-img{max-height:220px;object-fit:contain;aspect-ratio:unset}.modal-inner{padding:1rem;gap:1rem}}
+.modal-details{flex:1;min-width:0}
+.detail-badge{display:inline-block;padding:.28rem .8rem;border-radius:9999px;background:rgba(245,166,35,.15);border:1px solid rgba(245,166,35,.3);color:var(--amber);font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem}
+.detail-title{font-size:1.5rem;font-weight:800;color:var(--white);margin-bottom:.5rem;line-height:1.3}
+.detail-info{display:flex;flex-direction:column;gap:.55rem;margin-bottom:1rem}
+.detail-info-row{display:flex;align-items:flex-start;gap:.6rem;font-size:.87rem;color:var(--cream-dim)}
+.detail-info-row .lbl{font-weight:700;min-width:62px;color:var(--cream);display:flex;align-items:center;gap:5px;flex-shrink:0}
+.detail-desc{font-size:.9rem;color:var(--cream-dim);line-height:1.8;margin-bottom:1.2rem;white-space:pre-wrap;word-break:break-word}
+
+/* TICKET BOX */
+.ticket-box{background:rgba(255,255,255,.04);border:1.5px solid var(--navy-border);border-radius:1rem;padding:1.2rem;margin-bottom:1rem}
+.ticket-price-big{font-size:2rem;font-weight:800;color:var(--amber);margin-bottom:.25rem}
+.ticket-price-big.free{color:var(--green)}
+.ticket-avail{font-size:.82rem;color:var(--cream-dim);margin-bottom:.9rem}
+.ticket-avail.low{color:#f87171;font-weight:700}
+.ticket-qty-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.85rem}
+.qty-btn{
+  background:rgba(255,255,255,.07);border:1.5px solid var(--navy-border);
+  border-radius:.5rem;width:2rem;height:2rem;font-size:1.1rem;font-weight:700;
+  cursor:pointer;transition:border-color .2s;display:flex;align-items:center;justify-content:center;
+  color:var(--cream);font-family:inherit;
+}
+.qty-btn:hover{border-color:var(--amber);color:var(--amber)}
+.qty-display{font-size:1.1rem;font-weight:800;min-width:24px;text-align:center;color:var(--white)}
+.btn-buy{
+  width:100%;padding:1rem;
+  background:linear-gradient(135deg,var(--amber),var(--amber-dark));
+  color:var(--navy);border:none;border-radius:.9rem;font-size:1rem;font-weight:800;
+  cursor:pointer;transition:all .2s;font-family:inherit;
+  box-shadow:0 4px 16px rgba(245,166,35,.3);
+}
+.btn-buy:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(245,166,35,.4)}
+.btn-buy:disabled{background:rgba(255,255,255,.12);color:var(--cream-dim);cursor:not-allowed;box-shadow:none;transform:none}
+
+/* MPESA SPINNER */
+.mpesa-spinner{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.15);border-top-color:var(--amber);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* SUCCESS TICKET */
+.ticket-success{background:rgba(34,197,94,.07);border:1.5px solid rgba(34,197,94,.25);border-radius:1rem;padding:1.5rem;text-align:center;display:none}
+.ticket-success h3{color:var(--green);font-size:1.1rem;font-weight:800;margin-bottom:.5rem}
+.ticket-success p{color:var(--cream-dim);font-size:.88rem}
+.ticket-code{font-size:1.3rem;font-weight:800;letter-spacing:.15em;color:var(--green);background:rgba(34,197,94,.1);padding:.5rem 1.2rem;border-radius:.6rem;display:inline-block;margin:.75rem 0}
+
+/* SIDEBAR SUBMIT */
+.sidebar-submit-btn{
+  display:flex;align-items:center;gap:.7rem;width:100%;margin-top:.5rem;
+  padding:.75rem .9rem;border-radius:.75rem;font-size:.83rem;font-weight:700;
+  cursor:pointer;font-family:inherit;color:var(--navy);
+  background:linear-gradient(135deg,var(--amber),var(--amber-dark));
+  border:none;transition:all .2s;box-shadow:0 3px 12px rgba(245,166,35,.25);
+}
+.sidebar-submit-btn:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(245,166,35,.35)}
+
+/* FEATURES STRIP */
+.features-strip{
+  display:flex;justify-content:center;flex-wrap:wrap;gap:1rem;padding:1.5rem 2rem;
+  background:var(--navy-mid);border-top:1px solid var(--navy-border);margin-top:1rem;
+}
+.feat{
+  display:flex;align-items:center;gap:.5rem;font-size:.84rem;font-weight:600;
+  color:var(--cream-dim);padding:.6rem 1.1rem;
+  background:rgba(255,255,255,.04);border-radius:.75rem;border:1px solid var(--navy-border);
+}
+.feat svg{opacity:.7;color:var(--amber)}
+
+/* SUBMIT EVENT MODAL */
+.submit-modal-overlay{display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);align-items:flex-end;justify-content:center;padding:0}
 .submit-modal-overlay.open{display:flex}
-.submit-modal-sheet{background:#fff;border-radius:22px 22px 0 0;width:100%;max-width:640px;max-height:92vh;overflow-y:auto;box-shadow:0 -8px 40px rgba(0,0,0,.2);animation:sheetUp .28s cubic-bezier(.34,1.2,.64,1);padding:0 0 24px}
+.submit-modal-sheet{background:var(--navy-mid);border-radius:22px 22px 0 0;border-top:1px solid var(--navy-border);width:100%;max-width:640px;max-height:92vh;overflow-y:auto;box-shadow:0 -8px 40px rgba(0,0,0,.5);animation:sheetUp .28s cubic-bezier(.34,1.2,.64,1);padding:0 0 24px}
 @keyframes sheetUp{from{transform:translateY(60px);opacity:0}to{transform:none;opacity:1}}
-.sm-handle{width:36px;height:4px;background:#e5e7eb;border-radius:99px;margin:14px auto 0}
-.sm-header{padding:18px 24px 14px;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;justify-content:space-between}
-.sm-header h3{font-size:1.05rem;font-weight:800;color:var(--gray-900);display:flex;align-items:center;gap:8px}
-.sm-close{background:var(--gray-100);border:none;border-radius:50%;width:32px;height:32px;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--gray-500);transition:background .2s}
-.sm-close:hover{background:var(--gray-200)}
+.sm-handle{width:36px;height:4px;background:rgba(255,255,255,.15);border-radius:99px;margin:14px auto 0}
+.sm-header{padding:18px 24px 14px;border-bottom:1px solid var(--navy-border);display:flex;align-items:center;justify-content:space-between}
+.sm-header h3{font-size:1.05rem;font-weight:800;color:var(--white);display:flex;align-items:center;gap:8px}
+.sm-close{background:rgba(255,255,255,.07);border:1px solid var(--navy-border);border-radius:50%;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--cream-dim);transition:all .2s}
+.sm-close:hover{background:rgba(255,255,255,.12);color:var(--cream)}
 .sm-body{padding:20px 24px 0}
-.sm-info-box{background:#dbeafe;border:1.5px solid #93c5fd;border-radius:12px;padding:12px 14px;margin-bottom:18px;display:flex;gap:10px;align-items:flex-start}
-.sm-info-box p{font-size:.82rem;color:#5b21b6;line-height:1.5;margin:0}
+.sm-info-box{background:rgba(245,166,35,.07);border:1.5px solid rgba(245,166,35,.2);border-radius:12px;padding:12px 14px;margin-bottom:18px;display:flex;gap:10px;align-items:flex-start}
+.sm-info-box p{font-size:.82rem;color:var(--cream-dim);line-height:1.5;margin:0}
 .sm-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .sm-group{margin-bottom:14px}
-.sm-group label{display:block;font-size:.78rem;font-weight:700;color:var(--gray-700);margin-bottom:5px}
-.sm-field{display:block;width:100%;padding:10px 13px;border:1.5px solid var(--gray-200);border-radius:9px;font-size:.88rem;font-family:inherit;color:var(--gray-900);background:#fafafa;transition:border-color .15s}
-.sm-field:focus{outline:none;border-color:var(--primary);background:#fff}
-.sm-field::placeholder{color:#9ca3af}
+.sm-group label{display:block;font-size:.78rem;font-weight:700;color:var(--cream-dim);margin-bottom:5px}
+.sm-field{display:block;width:100%;padding:10px 13px;border:1.5px solid var(--navy-border);border-radius:9px;font-size:.88rem;font-family:inherit;color:var(--cream);background:rgba(255,255,255,.05);transition:border-color .15s}
+.sm-field:focus{outline:none;border-color:rgba(245,166,35,.4);background:rgba(255,255,255,.07)}
+.sm-field::placeholder{color:var(--cream-dim)}
 .sm-field.sm-textarea{min-height:80px;resize:vertical}
-.sm-select{display:block;width:100%;padding:10px 13px;border:1.5px solid var(--gray-200);border-radius:9px;font-size:.88rem;font-family:inherit;color:var(--gray-900);background:#fafafa;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");background-position:right .6rem center;background-repeat:no-repeat;background-size:1.4em;padding-right:2.2rem;transition:border-color .15s}
-.sm-select:focus{outline:none;border-color:var(--primary)}
-.sm-divider{border:none;border-top:1px solid var(--gray-100);margin:18px 0 14px}
-.sm-section-lbl{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gray-400);margin-bottom:12px}
+.sm-select{display:block;width:100%;padding:10px 13px;border:1.5px solid var(--navy-border);border-radius:9px;font-size:.88rem;font-family:inherit;color:var(--cream);background:rgba(255,255,255,.05);appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");background-position:right .6rem center;background-repeat:no-repeat;background-size:1.4em;padding-right:2.2rem;transition:border-color .15s}
+.sm-select:focus{outline:none;border-color:rgba(245,166,35,.4)}
+.sm-select option{background:var(--navy-mid);color:var(--cream)}
+.sm-divider{border:none;border-top:1px solid var(--navy-border);margin:18px 0 14px}
+.sm-section-lbl{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--cream-dim);margin-bottom:12px}
 .sm-actions{display:flex;gap:10px;padding:14px 24px 0}
-.sm-actions .btn-cancel{flex:0 0 auto;padding:11px 20px;border-radius:9px;border:1.5px solid var(--gray-200);background:#fff;font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit;color:var(--gray-700);transition:all .2s}
-.sm-actions .btn-cancel:hover{border-color:var(--gray-400)}
-.sm-actions .btn-submit{flex:1;padding:12px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;font-size:.9rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s;box-shadow:0 3px 12px rgba(30,58,138,.3);display:flex;align-items:center;justify-content:center;gap:7px}
-.sm-actions .btn-submit:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(30,58,138,.4)}
-.sm-actions .btn-submit:disabled{background:#93c5fd;cursor:not-allowed;transform:none;box-shadow:none}
+.sm-actions .btn-cancel{flex:0 0 auto;padding:11px 20px;border-radius:9px;border:1.5px solid var(--navy-border);background:rgba(255,255,255,.05);font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit;color:var(--cream-dim);transition:all .2s}
+.sm-actions .btn-cancel:hover{border-color:var(--navy-border-hover);color:var(--cream)}
+.sm-actions .btn-submit{flex:1;padding:12px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--amber),var(--amber-dark));color:var(--navy);font-size:.9rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s;box-shadow:0 3px 12px rgba(245,166,35,.25);display:flex;align-items:center;justify-content:center;gap:7px}
+.sm-actions .btn-submit:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(245,166,35,.35)}
+.sm-actions .btn-submit:disabled{background:rgba(255,255,255,.1);color:var(--cream-dim);cursor:not-allowed;transform:none;box-shadow:none}
 .submit-success-box{display:none;text-align:center;padding:32px 24px}
-.submit-success-box h3{font-size:1.1rem;font-weight:800;color:#059669;margin-bottom:8px}
-.submit-success-box p{font-size:.88rem;color:var(--gray-500);line-height:1.5}
+.submit-success-box h3{font-size:1.1rem;font-weight:800;color:var(--green);margin-bottom:8px}
+.submit-success-box p{font-size:.88rem;color:var(--cream-dim);line-height:1.5}
 
-/*  FEATURES STRIP  */
-.features-strip{display:flex;justify-content:center;flex-wrap:wrap;gap:1rem;padding:1.5rem 2rem;background:var(--white);border-top:1px solid var(--gray-200);margin-top:1rem}
-.feat{display:flex;align-items:center;gap:.5rem;font-size:.85rem;font-weight:700;color:var(--gray-700);padding:.6rem 1.2rem;background:#ffffff;border-radius:.75rem;border:1px solid var(--gray-200)}
-
+/* MOBILE NAV */
 @media(max-width:768px){
   .sidebar{display:none}
   .main{padding:1rem}
-  .hero h1{font-size:1.7rem}
+  .hero h1{font-size:1.75rem}
   .modal-inner{flex-direction:column}
   .modal-img-col{width:100%}
-  body { padding-bottom: 72px; }
-  .mob-nav-bar { display:block; }
+  body{padding-bottom:72px}
+  .mob-nav-bar{display:block}
 }
+.mob-nav-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--navy-mid);border-top:1px solid var(--navy-border);z-index:300;padding:6px 0 env(safe-area-inset-bottom,0)}
+.mob-nav-bar-inner{display:flex;justify-content:space-around}
+.mob-nav-a{display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--cream-dim);font-size:10px;font-weight:600;text-decoration:none;padding:6px 8px;flex:1;font-family:Inter,system-ui,-apple-system,sans-serif;transition:color .15s}
+.mob-nav-a.active{color:var(--amber)}
+.mob-nav-a.active svg{stroke:var(--amber) !important}
+.mob-nav-a svg{stroke:var(--cream-dim)}
 
-/* MOBILE BOTTOM NAV */
-.mob-nav-bar { display:none; position:fixed; bottom:0; left:0; right:0; background:#fff; border-top:1px solid #e5e7eb; z-index:300; padding:6px 0 env(safe-area-inset-bottom,0); }
-.mob-nav-bar-inner { display:flex; justify-content:space-around; }
-.mob-nav-a { display:flex; flex-direction:column; align-items:center; gap:2px; color:#6b7280; font-size:10px; font-weight:600; text-decoration:none; padding:6px 8px; flex:1; font-family:Inter,system-ui,-apple-system,sans-serif; transition:color .15s; }
-.mob-nav-a.active { color:#1e3a8a; }
-.mob-nav-a.active svg { stroke:#1e3a8a !important; }
-.mob-nav-a svg { stroke:#6b7280; }
+/* SKELETON (branded) */
+@keyframes bc-shimmer{0%{left:-100%}100%{left:200%}}
+.bc-sk{background:rgba(255,255,255,.06);border-radius:6px}
+.bc-skel{
+  background:var(--navy-mid);border-radius:1.25rem;overflow:hidden;
+  position:relative;border:1.5px solid var(--navy-border);
+}
+.bc-skel::after{
+  content:'';position:absolute;top:0;left:-100%;
+  width:55%;height:100%;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.04) 50%,transparent 100%);
+  animation:bc-shimmer 1.7s ease-in-out infinite;z-index:9;pointer-events:none;
+}
+.bc-skel::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;z-index:10;background:linear-gradient(90deg,var(--amber),var(--amber-dark))}
+.bc-skel-img-wrap{position:relative;width:100%;min-height:180px;overflow:hidden}
+.bc-skel-img-fill{position:absolute;inset:0;border-radius:0}
+.bc-skel-logo{position:absolute;top:6px;right:6px;width:48px;height:48px;object-fit:contain;z-index:12;pointer-events:none;opacity:.1;filter:grayscale(1)}
+.bc-skel-pill{position:absolute;top:8px;left:8px;width:48px;height:17px;border-radius:999px;z-index:11}
+.bc-skel-date{position:absolute;bottom:8px;right:8px;width:70px;height:20px;border-radius:6px;z-index:11}
+.bc-skel-body{padding:.75rem .9rem .85rem}
+.bc-skel-title{width:80%;height:14px;border-radius:5px;margin-bottom:.4rem}
+.bc-skel-sub{width:55%;height:11px;border-radius:4px;margin-bottom:.28rem}
+.bc-skel-price-row{display:flex;justify-content:space-between;align-items:center;margin-top:.4rem}
+.bc-skel-price{width:76px;height:16px;border-radius:5px}
+.bc-skel-cta{height:27px;border-radius:7px;width:80px}
 
-/* ══ BConnect Branded Skeleton — Event Cards ══ */
-@keyframes bc-shimmer { 0%{left:-100%} 100%{left:200%} }
-.bc-sk { background:#eef0f3; border-radius:6px; }
-.bc-skel {
-  background:#fff; border-radius:1.25rem; overflow:hidden;
-  position:relative; border:1.5px solid #f1f5f9;
-  box-shadow:0 1px 8px rgba(0,0,0,.05);
+/* MPESA phone input */
+.mpesa-input{
+  width:100%;padding:10px 12px;border:1.5px solid var(--navy-border);border-radius:10px;
+  font-size:.95rem;outline:none;box-sizing:border-box;
+  background:rgba(255,255,255,.05);color:var(--cream);font-family:inherit;
 }
-.bc-skel::after {
-  content:''; position:absolute; top:0; left:-100%;
-  width:55%; height:100%;
-  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.62) 50%,transparent 100%);
-  animation:bc-shimmer 1.7s ease-in-out infinite;
-  z-index:9; pointer-events:none;
-}
-.bc-skel::before {
-  content:''; position:absolute; top:0; left:0; right:0; height:4px; z-index:10;
-  background:linear-gradient(90deg,#1e3a8a,#1e40af);
-}
-.bc-skel-img-wrap { position:relative; width:100%; min-height:180px; overflow:hidden; }
-.bc-skel-img-fill { position:absolute; inset:0; border-radius:0; }
-.bc-skel-logo {
-  position:absolute; top:6px; right:6px; width:48px; height:48px;
-  object-fit:contain; z-index:12; pointer-events:none;
-  opacity:.2; filter:grayscale(1);
-}
-.bc-skel-pill  { position:absolute; top:8px; left:8px; width:48px; height:17px; border-radius:999px; z-index:11; }
-.bc-skel-date  { position:absolute; bottom:8px; right:8px; width:70px; height:20px; border-radius:6px; z-index:11; }
-.bc-skel-body  { padding:.75rem .9rem .85rem; }
-.bc-skel-title { width:80%; height:14px; border-radius:5px; margin-bottom:.4rem; }
-.bc-skel-sub   { width:55%; height:11px; border-radius:4px; margin-bottom:.28rem; }
-.bc-skel-price-row {
-  display:flex; justify-content:space-between; align-items:center; margin-top:.4rem;
-}
-.bc-skel-price { width:76px; height:16px; border-radius:5px; }
-.bc-skel-cta   { height:27px; border-radius:7px; width:80px; }
+.mpesa-input::placeholder{color:var(--cream-dim)}
+.mpesa-input:focus{border-color:rgba(245,166,35,.4)}
 </style>
 <link rel="stylesheet" href="/theme.css">
 </head>
@@ -252,8 +356,11 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
 
 <div class="hero">
   <div class="hero-inner">
-    <div class="hero-tag"> Events & Tickets</div>
-    <h1>Discover Amazing Events</h1>
+    <div class="hero-tag">
+      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4"/><path d="M2 13v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6"/><path d="M12 12h.01"/><path d="M7 12h.01"/><path d="M17 12h.01"/></svg>
+      Events &amp; Tickets
+    </div>
+    <h1>Discover <span>Amazing Events</span></h1>
     <p>Concerts, sports, tech meetups, food festivals &amp; more — book your tickets instantly.</p>
     <div style="display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:.75rem;max-width:580px;margin:0 auto">
       <div class="hero-search" style="margin:0;flex:1;min-width:280px">
@@ -264,7 +371,7 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Submit Event
       </button>
-      <a href="organizer-dashboard.html" class="submit-event-btn" style="background:rgba(249,115,22,.25);border-color:rgba(249,115,22,.6);text-decoration:none">
+      <a href="organizer-dashboard.html" class="submit-event-btn" style="text-decoration:none">
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         Organizer Login
       </a>
@@ -276,28 +383,28 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
   <aside class="sidebar">
     <div class="sidebar-title">Browse by Type</div>
     <ul style="list-style:none">
-      <li><button class="sidebar-item active" onclick="setFilter('',this)"><span class="icon"></span> All Events</button></li>
-      <li><button class="sidebar-item" onclick="setFilter('concert',this)"><span class="icon"></span> Concerts</button></li>
-      <li><button class="sidebar-item" onclick="setFilter('sports',this)"><span class="icon"></span> Sports</button></li>
-      <li><button class="sidebar-item" onclick="setFilter('tech',this)"><span class="icon"></span> Tech & Business</button></li>
-      <li><button class="sidebar-item" onclick="setFilter('food',this)"><span class="icon"></span> Food & Drinks</button></li>
-      <li><button class="sidebar-item" onclick="setFilter('arts',this)"><span class="icon"></span> Arts & Culture</button></li>
-      <li><button class="sidebar-item" onclick="setFilter('fashion',this)"><span class="icon"></span> Fashion</button></li>
-      <li><button class="sidebar-item" onclick="setFilter('comedy',this)"><span class="icon"></span> Comedy</button></li>
-      <li><button class="sidebar-item" onclick="setFilter('other',this)"><span class="icon"></span> Other</button></li>
+      <li><button class="sidebar-item active" onclick="setFilter('',this)"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> All Events</button></li>
+      <li><button class="sidebar-item" onclick="setFilter('concert',this)"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg> Concerts</button></li>
+      <li><button class="sidebar-item" onclick="setFilter('sports',this)"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93 19.07 19.07"/></svg> Sports</button></li>
+      <li><button class="sidebar-item" onclick="setFilter('tech',this)"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/></svg> Tech &amp; Business</button></li>
+      <li><button class="sidebar-item" onclick="setFilter('food',this)"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg> Food &amp; Drinks</button></li>
+      <li><button class="sidebar-item" onclick="setFilter('arts',this)"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/></svg> Arts &amp; Culture</button></li>
+      <li><button class="sidebar-item" onclick="setFilter('fashion',this)"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg> Fashion</button></li>
+      <li><button class="sidebar-item" onclick="setFilter('comedy',this)"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 13s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Comedy</button></li>
+      <li><button class="sidebar-item" onclick="setFilter('other',this)"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Other</button></li>
     </ul>
     <hr class="sdiv">
     <div class="sidebar-title">Filter</div>
     <ul style="list-style:none">
-      <li><button class="sidebar-item" onclick="setFreeFilter(this)"><span class="icon"></span> Free Events</button></li>
-      <li><button class="sidebar-item" onclick="clearFilters(this)"><span class="icon"></span> Clear Filters</button></li>
+      <li><button class="sidebar-item" onclick="setFreeFilter(this)"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Free Events</button></li>
+      <li><button class="sidebar-item" onclick="clearFilters(this)"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Clear Filters</button></li>
     </ul>
     <hr class="sdiv">
     <button class="sidebar-submit-btn" onclick="openSubmitModal()">
       <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
       Submit Your Event
     </button>
-    <a href="organizer-dashboard.html" style="display:flex;align-items:center;gap:8px;margin-top:10px;padding:11px 14px;background:linear-gradient(135deg,#1e3a8a,#2d53b8);color:#fff;border-radius:10px;font-size:.83rem;font-weight:700;text-decoration:none;transition:opacity .2s" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
+    <a href="organizer-dashboard.html" style="display:flex;align-items:center;gap:8px;margin-top:10px;padding:11px 14px;background:rgba(255,255,255,.06);border:1px solid var(--navy-border);color:var(--cream);border-radius:10px;font-size:.83rem;font-weight:700;text-decoration:none;transition:all .2s" onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'">
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       Organizer Login
     </a>
@@ -306,13 +413,13 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
   <main class="main">
     <div class="filter-bar" id="filterBar">
       <button class="filter-btn active" onclick="setFilter('',this)">All</button>
-      <button class="filter-btn" onclick="setFilter('concert',this)"> Concerts</button>
-      <button class="filter-btn" onclick="setFilter('sports',this)"> Sports</button>
-      <button class="filter-btn" onclick="setFilter('tech',this)"> Tech</button>
-      <button class="filter-btn" onclick="setFilter('food',this)"> Food</button>
-      <button class="filter-btn" onclick="setFilter('arts',this)"> Arts</button>
-      <button class="filter-btn" onclick="setFilter('fashion',this)"> Fashion</button>
-      <button class="filter-btn" onclick="setFilter('comedy',this)"> Comedy</button>
+      <button class="filter-btn" onclick="setFilter('concert',this)">Concerts</button>
+      <button class="filter-btn" onclick="setFilter('sports',this)">Sports</button>
+      <button class="filter-btn" onclick="setFilter('tech',this)">Tech</button>
+      <button class="filter-btn" onclick="setFilter('food',this)">Food</button>
+      <button class="filter-btn" onclick="setFilter('arts',this)">Arts</button>
+      <button class="filter-btn" onclick="setFilter('fashion',this)">Fashion</button>
+      <button class="filter-btn" onclick="setFilter('comedy',this)">Comedy</button>
     </div>
 
     <div class="sec-header">
@@ -338,16 +445,18 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
 </div>
 
 <div class="features-strip">
-  <div class="feat"> Secure Booking</div>
-  <div class="feat"> Instant Tickets</div>
-  <div class="feat"> Nairobi & Beyond</div>
-  <div class="feat"> Easy Payment</div>
+  <div class="feat"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Secure Booking</div>
+  <div class="feat"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Instant Tickets</div>
+  <div class="feat"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> Nairobi &amp; Beyond</div>
+  <div class="feat"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Easy Payment</div>
 </div>
 
-<!--  EVENT DETAIL + TICKET MODAL  -->
+<!-- EVENT DETAIL + TICKET MODAL -->
 <div class="modal-overlay" id="event-modal" onclick="closeEventModal()">
   <div class="modal-box" onclick="event.stopPropagation()">
-    <button class="modal-close" onclick="closeEventModal()"></button>
+    <button class="modal-close" onclick="closeEventModal()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
     <div class="modal-inner">
       <div class="modal-img-col">
         <img class="modal-main-img" id="modal-img" src="" alt="">
@@ -356,16 +465,40 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
         <span class="detail-badge" id="modal-badge">EVENT</span>
         <h2 class="detail-title" id="modal-title">Event Name</h2>
         <div class="detail-info">
-          <div class="detail-info-row"><span class="lbl"> Date</span><span id="modal-date">—</span></div>
-          <div class="detail-info-row"><span class="lbl">⏰ Time</span><span id="modal-time">—</span></div>
-          <div class="detail-info-row"><span class="lbl"> Venue</span><span id="modal-venue">—</span></div>
-          <div class="detail-info-row"><span class="lbl"> City</span><span id="modal-location">—</span></div>
-          <div class="detail-info-row"><span class="lbl"> By</span><span id="modal-organizer">—</span></div>
+          <div class="detail-info-row">
+            <span class="lbl"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Date</span>
+            <span id="modal-date">—</span>
+          </div>
+          <div class="detail-info-row">
+            <span class="lbl"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Time</span>
+            <span id="modal-time">—</span>
+          </div>
+          <div class="detail-info-row">
+            <span class="lbl"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> Venue</span>
+            <span id="modal-venue">—</span>
+          </div>
+          <div class="detail-info-row">
+            <span class="lbl"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg> City</span>
+            <span id="modal-location">—</span>
+          </div>
+          <div class="detail-info-row">
+            <span class="lbl"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> By</span>
+            <span id="modal-organizer">—</span>
+          </div>
         </div>
         <div class="modal-share-row" id="modal-share-row">
-          <button class="share-modal-btn" style="background:#25d366;color:#fff" onclick="modalShareWhatsApp()"> WhatsApp</button>
-          <button class="share-modal-btn" style="background:#000;color:#fff" onclick="modalShareTwitter()"> Twitter / X</button>
-          <button class="share-modal-btn" style="background:#dbeafe;color:#162d6e" onclick="modalCopyLink()"> Copy Link</button>
+          <button class="share-modal-btn" style="background:#25d366;color:#fff" onclick="modalShareWhatsApp()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            WhatsApp
+          </button>
+          <button class="share-modal-btn" style="background:#1a1a2e;color:#fff;border:1px solid rgba(255,255,255,.15)" onclick="modalShareTwitter()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+            Twitter / X
+          </button>
+          <button class="share-modal-btn" style="background:rgba(255,255,255,.08);color:var(--cream);border:1px solid var(--navy-border)" onclick="modalCopyLink()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            Copy Link
+          </button>
         </div>
         <p class="detail-desc" id="modal-desc"></p>
 
@@ -376,45 +509,56 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
             <button class="qty-btn" onclick="changeQty(-1)">−</button>
             <span class="qty-display" id="qty-display">1</span>
             <button class="qty-btn" onclick="changeQty(1)">+</button>
-            <span style="font-size:.82rem;color:var(--gray-500)" id="qty-total-label">= Ksh 0</span>
+            <span style="font-size:.82rem;color:var(--cream-dim)" id="qty-total-label">= Ksh 0</span>
           </div>
           <div id="mpesa-phone-wrap" style="display:none;margin:.6rem 0">
-            <label style="font-size:.78rem;font-weight:600;color:var(--gray-600);display:block;margin-bottom:4px"> M-Pesa Phone Number</label>
-            <input id="mpesa-phone" type="tel" placeholder="e.g. 0712 345678"
-              style="width:100%;padding:10px 12px;border:1.5px solid #d1d5db;border-radius:10px;font-size:.95rem;outline:none;box-sizing:border-box"
-              onfocus="this.style.borderColor='#1e3a8a'" onblur="this.style.borderColor='#d1d5db'">
-            <p style="font-size:.72rem;color:var(--gray-400);margin:4px 0 0">You will receive an M-Pesa prompt on this number</p>
+            <label style="font-size:.78rem;font-weight:600;color:var(--cream-dim);display:flex;align-items:center;gap:5px;margin-bottom:6px">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+              M-Pesa Phone Number
+            </label>
+            <input id="mpesa-phone" type="tel" placeholder="e.g. 0712 345678" class="mpesa-input"
+              onfocus="this.style.borderColor='rgba(245,166,35,.4)'" onblur="this.style.borderColor='var(--navy-border)'">
+            <p style="font-size:.72rem;color:var(--cream-dim);margin:4px 0 0">You will receive an M-Pesa prompt on this number</p>
           </div>
-          <button class="btn-buy" id="btn-buy" onclick="buyTicket()"> Get Tickets</button>
+          <button class="btn-buy" id="btn-buy" onclick="buyTicket()">
+            Get Tickets
+          </button>
         </div>
 
         <div id="mpesa-waiting" style="display:none;text-align:center;padding:1.5rem 0">
-          <div style="font-size:2.2rem;margin-bottom:.5rem"></div>
-          <h3 style="margin:0 0 .4rem;color:#1e293b">Check your phone!</h3>
-          <p style="font-size:.88rem;color:#64748b;margin:0 0 1rem">An M-Pesa payment request has been sent. Enter your PIN to complete the booking.</p>
-          <div style="display:flex;align-items:center;justify-content:center;gap:8px;color:#1e3a8a;font-size:.85rem;font-weight:600">
+          <div style="display:flex;justify-content:center;margin-bottom:.75rem">
+            <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          </div>
+          <h3 style="margin:0 0 .4rem;color:var(--white)">Check your phone!</h3>
+          <p style="font-size:.88rem;color:var(--cream-dim);margin:0 0 1rem">An M-Pesa payment request has been sent. Enter your PIN to complete the booking.</p>
+          <div style="display:flex;align-items:center;justify-content:center;gap:8px;color:var(--amber);font-size:.85rem;font-weight:600">
             <div class="mpesa-spinner"></div>
             <span id="mpesa-status-text">Waiting for payment…</span>
           </div>
-          <button onclick="cancelMpesaWait()" style="margin-top:1rem;background:none;border:none;color:#9ca3af;font-size:.8rem;cursor:pointer;text-decoration:underline">Cancel</button>
+          <button onclick="cancelMpesaWait()" style="margin-top:1rem;background:none;border:none;color:var(--cream-dim);font-size:.8rem;cursor:pointer;text-decoration:underline;font-family:inherit">Cancel</button>
         </div>
 
         <div class="ticket-success" id="ticket-success">
-          <div style="font-size:2.5rem;margin-bottom:.5rem"></div>
+          <div style="display:flex;justify-content:center;margin-bottom:.6rem">
+            <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
           <h3>Tickets Booked!</h3>
           <div class="ticket-code" id="ticket-code">TKT-000000</div>
-
-          <!-- QR code -->
           <div style="margin:.9rem auto 0;display:flex;flex-direction:column;align-items:center;gap:.5rem">
-            <canvas id="ticket-qr" style="border-radius:10px;border:3px solid #86efac;display:block"></canvas>
-            <p style="font-size:.72rem;color:#15803d;font-weight:600;margin:0">Scan at the venue entrance</p>
+            <canvas id="ticket-qr" style="border-radius:10px;border:3px solid rgba(34,197,94,.3);display:block"></canvas>
+            <p style="font-size:.72rem;color:var(--green);font-weight:600;margin:0">Scan at the venue entrance</p>
           </div>
-
           <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-top:.9rem">
-            <button onclick="downloadTicketQR()" style="display:inline-flex;align-items:center;gap:6px;background:#15803d;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:.82rem;font-weight:700;cursor:pointer"> Save QR</button>
-            <a id="verify-ticket-link" href="/verify-ticket.html" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#dbeafe;color:#162d6e;border-radius:8px;padding:8px 16px;font-size:.82rem;font-weight:700;text-decoration:none"> View Details</a>
+            <button onclick="downloadTicketQR()" style="display:inline-flex;align-items:center;gap:6px;background:var(--green-dim);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Save QR
+            </button>
+            <a id="verify-ticket-link" href="/verify-ticket.html" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:rgba(245,166,35,.12);color:var(--amber);border:1px solid rgba(245,166,35,.25);border-radius:8px;padding:8px 16px;font-size:.82rem;font-weight:700;text-decoration:none">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              View Details
+            </a>
           </div>
-          <p style="margin-top:.7rem">Show this QR code at the venue entrance.</p>
+          <p style="margin-top:.7rem;color:var(--cream-dim);font-size:.82rem">Show this QR code at the venue entrance.</p>
         </div>
       </div>
     </div>
@@ -427,33 +571,30 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
     <div class="sm-handle"></div>
     <div class="sm-header">
       <h3>
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg>
         Submit Your Event
       </h3>
       <button class="sm-close" onclick="closeSubmitModal()">
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
-
-    <!-- Success State -->
     <div class="submit-success-box" id="submit-success-box">
-      <div style="font-size:3rem;margin-bottom:12px">🎉</div>
+      <div style="display:flex;justify-content:center;margin-bottom:14px">
+        <svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      </div>
       <h3>Event Submitted for Review!</h3>
       <p>Our team will review your event and publish it within 24 hours. You'll be contacted via the email you provided.</p>
-      <button onclick="closeSubmitModal()" style="margin-top:20px;padding:11px 28px;background:linear-gradient(135deg,#1e3a8a,#1e40af);color:#fff;border:none;border-radius:9px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit">Done</button>
+      <button onclick="closeSubmitModal()" style="margin-top:20px;padding:11px 28px;background:linear-gradient(135deg,var(--amber),var(--amber-dark));color:var(--navy);border:none;border-radius:9px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit">Done</button>
     </div>
-
-    <!-- Form State -->
     <div id="submit-form-body">
       <div class="sm-body">
         <div class="sm-info-box">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           <p>Submit your event for admin review. Once approved, it will appear live on the events page. Fill in as much detail as possible.</p>
         </div>
-
         <div class="sm-section-lbl">Event Details</div>
         <div class="sm-group">
-          <label>Event Title <span style="color:#ef4444">*</span></label>
+          <label>Event Title <span style="color:#f87171">*</span></label>
           <input type="text" id="sm-title" class="sm-field" placeholder="e.g. Nairobi Jazz Night 2025" maxlength="120">
         </div>
         <div class="sm-group">
@@ -462,7 +603,7 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
         </div>
         <div class="sm-grid">
           <div class="sm-group">
-            <label>Date & Time <span style="color:#ef4444">*</span></label>
+            <label>Date &amp; Time <span style="color:#f87171">*</span></label>
             <input type="datetime-local" id="sm-date" class="sm-field">
           </div>
           <div class="sm-group">
@@ -471,9 +612,9 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
               <option value="Other">Other</option>
               <option value="Concert">Concert</option>
               <option value="Sports">Sports</option>
-              <option value="Tech">Tech & Business</option>
-              <option value="Food">Food & Drinks</option>
-              <option value="Arts">Arts & Culture</option>
+              <option value="Tech">Tech &amp; Business</option>
+              <option value="Food">Food &amp; Drinks</option>
+              <option value="Arts">Arts &amp; Culture</option>
               <option value="Fashion">Fashion</option>
               <option value="Comedy">Comedy</option>
             </select>
@@ -503,16 +644,15 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
           <label>Event Image URL (optional)</label>
           <input type="url" id="sm-image" class="sm-field" placeholder="https://example.com/image.jpg">
         </div>
-
         <hr class="sm-divider">
         <div class="sm-section-lbl">Organizer / Contact Info</div>
         <div class="sm-group">
-          <label>Your Name / Organization <span style="color:#ef4444">*</span></label>
+          <label>Your Name / Organization <span style="color:#f87171">*</span></label>
           <input type="text" id="sm-org-name" class="sm-field" placeholder="e.g. Nairobi Events Co.">
         </div>
         <div class="sm-grid">
           <div class="sm-group">
-            <label>Email Address <span style="color:#ef4444">*</span></label>
+            <label>Email Address <span style="color:#f87171">*</span></label>
             <input type="email" id="sm-org-email" class="sm-field" placeholder="organizer@email.com">
           </div>
           <div class="sm-group">
@@ -521,7 +661,6 @@ hr.sdiv{border:none;border-top:1px solid var(--gray-200);margin:.75rem .5rem}
           </div>
         </div>
       </div>
-
       <div class="sm-actions">
         <button class="btn-cancel" onclick="closeSubmitModal()">Cancel</button>
         <button class="btn-submit" id="sm-submit-btn" onclick="submitEvent()">
@@ -544,10 +683,10 @@ function showToast(msg, type) {
   if (!t) {
     t = document.createElement('div');
     t.id = 'ev-toast';
-    t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);padding:13px 24px;border-radius:14px;font-size:.9rem;font-weight:700;z-index:99999;transition:transform .35s cubic-bezier(.34,1.56,.64,1);white-space:pre-wrap;box-shadow:0 8px 24px rgba(0,0,0,.2);max-width:90vw;text-align:center;pointer-events:none;font-family:inherit';
+    t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);padding:13px 24px;border-radius:14px;font-size:.9rem;font-weight:700;z-index:99999;transition:transform .35s cubic-bezier(.34,1.56,.64,1);white-space:pre-wrap;box-shadow:0 8px 24px rgba(0,0,0,.4);max-width:90vw;text-align:center;pointer-events:none;font-family:inherit';
     document.body.appendChild(t);
   }
-  const bg = { error:'#dc2626', success:'#059669', warning:'#162d6e', info:'#2563eb' };
+  const bg = { error:'#dc2626', success:'#059669', warning:'#d4891a', info:'#2563eb' };
   t.style.background = bg[type] || bg.error;
   t.style.color = '#fff';
   t.textContent = msg;
@@ -578,7 +717,6 @@ function fmtPrice(n) {
   return 'Ksh ' + parseInt(n).toLocaleString();
 }
 
-
 function getFiltered() {
   return allEvents.filter(ev => {
     const catMatch = !activeFilter || (ev.category||'').toLowerCase().includes(activeFilter);
@@ -591,7 +729,7 @@ function renderEvents(list) {
   const grid = document.getElementById('events-grid');
   document.getElementById('event-count').textContent = `${list.length} event${list.length !== 1 ? 's' : ''}`;
   if (!list.length) {
-    grid.innerHTML = '<div class="empty-state"><div class="ei"></div><h3>No events found</h3><p>Check back soon for upcoming events.</p></div>';
+    grid.innerHTML = '<div class="empty-state"><div class="ei"><svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4"/><path d="M2 13v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6"/><path d="M12 12h.01"/></svg></div><h3>No events found</h3><p>Check back soon for upcoming events.</p></div>';
     return;
   }
   grid.innerHTML = list.map(ev => {
@@ -615,7 +753,7 @@ function renderEvents(list) {
           <img src="${img}" alt="${ev.title||'Event'}" onerror="this.src='${FALLBACK_IMG}'">
           <span class="e-badge">${cat}</span>
           <span class="e-date-chip">${fmtDate(ev.event_date)}</span>
-          <button class="e-share-btn" title="Share Event" onclick="event.stopPropagation();showSharePanel('${eid}',event)">↗</button>
+          <button class="e-share-btn" title="Share Event" onclick="event.stopPropagation();showSharePanel('${eid}',event)"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
         </div>
         <div class="e-card-body">
           <div class="e-card-title">${ev.title||'Untitled Event'}</div>
@@ -627,9 +765,9 @@ function renderEvents(list) {
           ${ev.organizer ? `<div class="e-organizer"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>By ${ev.organizer}</span></div>` : ''}
           <div class="e-card-row">
             <span class="e-card-price${isFree?' free':''}">${price}</span>
-            <button class="e-card-cta${sold?' sold':''}" onclick="event.stopPropagation();openEvent('${eid}')">${sold ? 'Sold Out' : ' Get Tickets'}</button>
+            <button class="e-card-cta${sold?' sold':''}" onclick="event.stopPropagation();openEvent('${eid}')">${sold ? 'Sold Out' : 'Get Tickets'}</button>
           </div>
-          ${ticketsLeft !== null ? `<div class="tickets-left${isLow?' low':''}">${sold ? 'No tickets left' : isLow ? ` Only ${ticketsLeft} left!` : `${ticketsLeft} tickets available`}</div>` : ''}
+          ${ticketsLeft !== null ? `<div class="tickets-left${isLow?' low':''}">${sold ? 'No tickets left' : isLow ? `Only ${ticketsLeft} left!` : `${ticketsLeft} tickets available`}</div>` : ''}
         </div>
       </div>`;
   }).join('');
@@ -663,12 +801,12 @@ function openEvent(id) {
   const isLow = ticketsLeft !== null && ticketsLeft <= 10 && !sold;
 
   const availEl = document.getElementById('modal-avail');
-  availEl.textContent = sold ? 'Sold out' : ticketsLeft !== null ? (isLow ? ` Only ${ticketsLeft} tickets left!` : `${ticketsLeft} tickets available`) : 'Tickets available';
+  availEl.textContent = sold ? 'Sold out' : ticketsLeft !== null ? (isLow ? `Only ${ticketsLeft} tickets left!` : `${ticketsLeft} tickets available`) : 'Tickets available';
   availEl.className = 'ticket-avail' + (isLow ? ' low' : '');
 
   const buyBtn = document.getElementById('btn-buy');
   buyBtn.disabled = sold;
-  buyBtn.textContent = sold ? ' Sold Out' : ' Get Tickets';
+  buyBtn.textContent = sold ? 'Sold Out' : 'Get Tickets';
 
   document.getElementById('qty-display').textContent = 1;
   updateQtyTotal();
@@ -697,7 +835,7 @@ function cancelMpesaWait() {
   document.getElementById('ticket-box').style.display = 'block';
   const btn = document.getElementById('btn-buy');
   btn.disabled = false;
-  btn.textContent = ' Get Tickets';
+  btn.textContent = 'Get Tickets';
 }
 
 function closeEventModal() {
@@ -808,12 +946,12 @@ async function buyTicket() {
 
   if (isFree) {
     btn.disabled = true;
-    btn.textContent = '⏳ Booking…';
+    btn.textContent = 'Booking…';
     try {
       const data = await confirmTicket('');
       if (data.success) { showTicketSuccess(data.ticket_code); }
-      else { showToast(data.error || 'Booking failed. Please try again.', 'error'); btn.disabled = false; btn.textContent = ' Get Tickets'; }
-    } catch(e) { showToast('Network error. Please try again.', 'error'); btn.disabled = false; btn.textContent = ' Get Tickets'; }
+      else { showToast(data.error || 'Booking failed. Please try again.', 'error'); btn.disabled = false; btn.textContent = 'Get Tickets'; }
+    } catch(e) { showToast('Network error. Please try again.', 'error'); btn.disabled = false; btn.textContent = 'Get Tickets'; }
     return;
   }
 
@@ -821,7 +959,7 @@ async function buyTicket() {
   if (!phone) { showToast('Please enter your M-Pesa phone number to pay.', 'warning'); document.getElementById('mpesa-phone').focus(); return; }
 
   btn.disabled = true;
-  btn.textContent = '⏳ Sending M-Pesa prompt…';
+  btn.textContent = 'Sending M-Pesa prompt…';
 
   try {
     const stkResp = await fetch('/stk-push', {
@@ -833,7 +971,7 @@ async function buyTicket() {
 
     if (!stkResp.ok || stkData.error) {
       btn.disabled = false;
-      btn.textContent = ' Get Tickets';
+      btn.textContent = 'Get Tickets';
       showToast('M-Pesa error: ' + (stkData.error || 'Could not send payment request. Try again.'), 'error');
       return;
     }
@@ -850,7 +988,7 @@ async function buyTicket() {
 
     if (_mpesaCancelled) return;
 
-    document.getElementById('mpesa-status-text').textContent = ' Payment confirmed! Issuing ticket…';
+    document.getElementById('mpesa-status-text').textContent = 'Payment confirmed! Issuing ticket…';
     const ticketData = await confirmTicket(phone);
     if (ticketData.success) {
       showTicketSuccess(ticketData.ticket_code);
@@ -858,7 +996,7 @@ async function buyTicket() {
       document.getElementById('mpesa-waiting').style.display = 'none';
       document.getElementById('ticket-box').style.display = 'block';
       btn.disabled = false;
-      btn.textContent = ' Get Tickets';
+      btn.textContent = 'Get Tickets';
       showToast(ticketData.error || 'Payment received but ticket issue failed. Contact support.', 'error');
     }
   } catch(e) {
@@ -866,7 +1004,7 @@ async function buyTicket() {
     document.getElementById('mpesa-waiting').style.display = 'none';
     document.getElementById('ticket-box').style.display = 'block';
     btn.disabled = false;
-    btn.textContent = ' Get Tickets';
+    btn.textContent = 'Get Tickets';
     showToast(e.message || 'An error occurred. Please try again.', 'error');
   }
 }
@@ -910,7 +1048,6 @@ function handleHeroSearch(q) {
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeEventModal(); });
 window.addEventListener('popstate', () => { closeEventModal(); });
 
-//  Share helpers 
 function _buildShareData(ev) {
   if (!ev) return null;
   const eid = ev._id || ev.id || '';
@@ -918,8 +1055,8 @@ function _buildShareData(ev) {
   const date = fmtDate(ev.event_date);
   const venue = ev.venue || ev.location || 'TBA';
   const price = !ev.ticket_price || ev.ticket_price === 0 ? 'FREE' : 'Ksh ' + parseInt(ev.ticket_price).toLocaleString();
-  const waMsg  = ` *${ev.title}*\n ${date}\n ${venue}\n ${price}\n\nBook on bConnect  ${url}`;
-  const tweet  = ` ${ev.title} — ${date} at ${venue}. ${price} tickets. Book now: ${url} via @bConnect`;
+  const waMsg  = `*${ev.title}*\n${date}\n${venue}\n${price}\n\nBook on BConnect: ${url}`;
+  const tweet  = `${ev.title} — ${date} at ${venue}. ${price} tickets. Book now: ${url} via @bConnect`;
   return { url, waMsg, tweet };
 }
 
@@ -935,9 +1072,9 @@ function showSharePanel(eid, e) {
   const py = Math.min(e.clientY + 8, window.innerHeight - 150);
   panel.style.cssText = `top:${py}px;left:${px}px`;
   panel.innerHTML = `
-    <button class="spi" onclick="_copyLink('${url}')"> Copy Link</button>
-    <button class="spi" onclick="window.open('https://wa.me/?text='+encodeURIComponent(${JSON.stringify(waMsg)}),'_blank')"> Share on WhatsApp</button>
-    <button class="spi" onclick="window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(${JSON.stringify(tweet)}),'_blank')"> Share on Twitter / X</button>`;
+    <button class="spi" onclick="_copyLink('${url}')">Copy Link</button>
+    <button class="spi" onclick="window.open('https://wa.me/?text='+encodeURIComponent(${JSON.stringify(waMsg)}),'_blank')">Share on WhatsApp</button>
+    <button class="spi" onclick="window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(${JSON.stringify(tweet)}),'_blank')">Share on Twitter / X</button>`;
   document.body.appendChild(panel);
   setTimeout(() => {
     document.addEventListener('click', function rm() {
@@ -949,7 +1086,7 @@ function showSharePanel(eid, e) {
 
 function _copyLink(url) {
   document.getElementById('ev-share-panel')?.remove();
-  navigator.clipboard?.writeText(url).then(() => showToast(' Link copied!', 'success'))
+  navigator.clipboard?.writeText(url).then(() => showToast('Link copied!', 'success'))
     .catch(() => showToast('Link: ' + url, 'info'));
 }
 
@@ -969,7 +1106,6 @@ function modalCopyLink() {
   _copyLink(url);
 }
 
-//  Deep-link: open event from URL 
 function skelCards(n) {
   return Array.from({length:n}, (_,i) => `
     <div class="bc-skel" style="animation-delay:${i*0.1}s">
@@ -1006,13 +1142,12 @@ async function loadEvents() {
     }
   } catch(e) {
     document.getElementById('event-count').textContent = 'Error';
-    document.getElementById('events-grid').innerHTML = '<div class="empty-state"><div class="ei"></div><h3>Failed to load events</h3><p>Please try again later.</p></div>';
+    document.getElementById('events-grid').innerHTML = '<div class="empty-state"><div class="ei"><svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><h3>Failed to load events</h3><p>Please try again later.</p></div>';
   }
 }
 
 loadEvents();
 
-// ═══════ SUBMIT EVENT MODAL ═══════
 function openSubmitModal() {
   document.getElementById('submit-success-box').style.display = 'none';
   document.getElementById('submit-form-body').style.display = 'block';
@@ -1071,7 +1206,6 @@ async function submitEvent() {
       updateLocalRole('organizer');
       document.getElementById('submit-form-body').style.display = 'none';
       document.getElementById('submit-success-box').style.display = 'block';
-      // Clear form
       ['sm-title','sm-desc','sm-venue','sm-location','sm-price','sm-tickets','sm-image','sm-org-name','sm-org-email','sm-org-phone','sm-date'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = '';
@@ -1100,7 +1234,6 @@ function updateLocalRole(newRole) {
 }
 </script>
 
-<!-- MOBILE BOTTOM NAV -->
 <nav class="mob-nav-bar">
   <div class="mob-nav-bar-inner">
     <a class="mob-nav-a" href="website.html">
@@ -1116,15 +1249,14 @@ function updateLocalRole(newRole) {
       Housing
     </a>
     <a class="mob-nav-a active" href="events.html">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9V5a2 2 0 012-2h16a2 2 0 012 2v4"/><path d="M2 13v6a2 2 0 002 2h16a2 2 0 002-2v-6"/></svg>
       Events
     </a>
-    <a class="mob-nav-a" href="login.html">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      Account
+    <a class="mob-nav-a" href="services.html">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M5.34 17.66l-1.41 1.41M2 12h2M20 12h2M17.66 5.34l1.41-1.41M4.93 19.07l1.41-1.41M12 2v2M12 20v2"/></svg>
+      Services
     </a>
   </div>
 </nav>
-<script src="profile-widget.js"></script>
 </body>
 </html>
