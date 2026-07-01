@@ -1,0 +1,82 @@
+[stage-0 6/8] RUN --mount=type=cache,id=s/da3c41dd-5370-45cd-a29c-d6cd11e126a1-/root/npm,target=/root/.npm npm ci
+
+npm warn config production Use `--omit=dev` instead.
+
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: '@whiskeysockets/baileys@7.0.0-rc13',
+npm warn EBADENGINE   required: { node: '>=20.0.0' },
+npm warn EBADENGINE   current: { node: 'v18.20.5', npm: '10.8.2' }
+npm warn EBADENGINE }
+
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'bson@7.2.0',
+npm warn EBADENGINE   required: { node: '>=20.19.0' },
+npm warn EBADENGINE   current: { node: 'v18.20.5', npm: '10.8.2' }
+npm warn EBADENGINE }
+
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'file-type@21.3.4',
+npm warn EBADENGINE   required: { node: '>=20' },
+npm warn EBADENGINE   current: { node: 'v18.20.5', npm: '10.8.2' }
+npm warn EBADENGINE }
+
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'hashery@1.5.1',
+npm warn EBADENGINE   required: { node: '>=20' },
+npm warn EBADENGINE   current: { node: 'v18.20.5', npm: '10.8.2' }
+npm warn EBADENGINE }
+
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'lru-cache@11.5.1',
+npm warn EBADENGINE   required: { node: '20 || >=22' },
+npm warn EBADENGINE   current: { node: 'v18.20.5', npm: '10.8.2' }
+npm warn EBADENGINE }
+
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'mongodb@7.4.0',
+npm warn EBADENGINE   required: { node: '>=20.19.0' },
+npm warn EBADENGINE   current: { node: 'v18.20.5', npm: '10.8.2' }
+npm warn EBADENGINE }
+
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'mongodb-connection-string-url@7.0.1',
+npm warn EBADENGINE   required: { node: '>=20.19.0' },
+npm warn EBADENGINE   current: { node: 'v18.20.5', npm: '10.8.2' }
+npm warn EBADENGINE }
+
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'p-queue@9.3.0',
+npm warn EBADENGINE   required: { node: '>=20' },
+npm warn EBADENGINE   current: { node: 'v18.20.5', npm: '10.8.2' }
+npm warn EBADENGINE }
+
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'p-timeout@7.0.1',
+npm warn EBADENGINE   required: { node: '>=20' },
+npm warn EBADENGINE   current: { node: 'v18.20.5', npm: '10.8.2' }
+npm warn EBADENGINE }
+
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'qified@0.10.1',
+npm warn EBADENGINE   required: { node: '>=20' },
+npm warn EBADENGINE   current: { node: 'v18.20.5', npm: '10.8.2' }
+npm warn EBADENGINE }
+
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'thread-stream@4.2.0',
+npm warn EBADENGINE   required: { node: '>=20' },
+npm warn EBADENGINE   current: { node: 'v18.20.5', npm: '10.8.2' }
+npm warn EBADENGINE }
+
+npm error code 1
+
+npm error path /app/node_modules/@whiskeysockets/baileys
+npm error command failed
+
+npm error command sh -c node ./engine-requirements.js
+
+npm error ❌ This package requires Node.js 20+ to run reliably.
+npm error    You are using Node.js 18.20.5.
+npm error    Please upgrade to Node.js 20+ to proceed.
+
+npm error A complete log of this run can be found in: /root/.npm/_logs/2026-07-01T13_20_50_033Z-debug-0.log
