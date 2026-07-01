@@ -228,6 +228,41 @@ body {
   .features { grid-template-columns: 1fr; }
   .steps { grid-template-columns: 1fr; }
 }
+
+/* ── MOBILE BOTTOM NAV ──────────────────────────────────────────── */
+.mob-nav {
+  display: none;
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 300;
+  background: #fff;
+  border-top: 1px solid rgba(30,58,138,.10);
+  padding: 6px 0 env(safe-area-inset-bottom, 0);
+  box-shadow: 0 -4px 20px rgba(0,0,0,.07);
+}
+.mob-nav-inner {
+  display: flex; justify-content: space-around; align-items: flex-end;
+}
+.mn-a {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  color: #6b7280; font-size: 10px; font-weight: 600; text-decoration: none;
+  padding: 6px 8px; flex: 1; transition: color .15s;
+}
+.mn-a:hover, .mn-a.active { color: #1e3a8a; }
+.mn-cta {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  color: #1e3a8a; font-size: 10px; font-weight: 700; text-decoration: none;
+  padding: 4px 8px; flex: 1;
+}
+.mn-cta-icon {
+  background: linear-gradient(135deg, #1e3a8a 0%, #2d53b8 100%);
+  border-radius: 50%; width: 46px; height: 46px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; box-shadow: 0 4px 14px rgba(30,58,138,.40);
+  margin-top: -18px; flex-shrink: 0;
+}
+@media (max-width: 640px) {
+  .mob-nav { display: block; }
+  .page { padding-bottom: 96px; }
+}
 </style>
 <link rel="stylesheet" href="/theme.css">
 </head>
@@ -467,6 +502,39 @@ body {
   </section>
 
 </div>
+
+<nav class="mob-nav" aria-label="Mobile navigation">
+  <div class="mob-nav-inner">
+
+    <a class="mn-a" href="website.html">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Home
+    </a>
+
+    <a class="mn-a" href="housing.html">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/><path d="M8 7V5a2 2 0 0 0-4 0v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9.5" y1="14.5" x2="14.5" y2="14.5"/></svg>
+      Housing
+    </a>
+
+    <a class="mn-cta" href="landlord-dashboard.html">
+      <span class="mn-cta-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      </span>
+      Dashboard
+    </a>
+
+    <a class="mn-a" href="tenant.html">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Tenants
+    </a>
+
+    <a class="mn-a" href="login.html">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Account
+    </a>
+
+  </div>
+</nav>
 
 <script src="/shared-layout.js?v=8"></script>
 </body>

@@ -105,6 +105,35 @@ html,body{height:100%;font-family:'Inter',system-ui,sans-serif;color:var(--ink);
 .section{display:none;}
 .section.active{display:block;}
 
+/* ── AUTH SCREEN BOTTOM NAV (inside #authWrap so it hides with it) ── */
+.auth-mob-nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:50;
+  background:#fff;border-top:1px solid var(--border);
+  padding:6px 0 env(safe-area-inset-bottom,0);
+  box-shadow:0 -4px 20px rgba(0,0,0,.07);
+}
+.auth-mob-nav-inner{display:flex;justify-content:space-around;align-items:flex-end;}
+.amn-a{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  color:var(--muted);font-size:10px;font-weight:600;text-decoration:none;
+  padding:6px 8px;flex:1;transition:color .15s;
+  border:none;background:none;cursor:pointer;font-family:inherit;
+}
+.amn-a:hover{color:var(--teal);}
+.amn-cta{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  color:var(--teal);font-size:10px;font-weight:700;
+  padding:4px 8px;flex:1;border:none;background:none;cursor:pointer;font-family:inherit;
+}
+.amn-cta-icon{
+  background:linear-gradient(135deg,var(--teal),#1e3a8a);
+  border-radius:50%;width:46px;height:46px;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;box-shadow:0 4px 14px rgba(13,148,136,.4);
+  margin-top:-18px;flex-shrink:0;
+}
+@media(min-width:641px){.auth-mob-nav{display:none;}}
+
 /* BOTTOM NAV */
 .bottom-nav{
   position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);
@@ -510,6 +539,40 @@ html,body{height:100%;font-family:'Inter',system-ui,sans-serif;color:var(--ink);
       </div>
     </div>
   </div>
+
+  <!-- SITE NAV (auth state only — hidden when app becomes visible) -->
+  <nav class="auth-mob-nav" aria-label="Mobile navigation">
+    <div class="auth-mob-nav-inner">
+
+      <a class="amn-a" href="website.html">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Home
+      </a>
+
+      <a class="amn-a" href="products.html">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        Shop
+      </a>
+
+      <button class="amn-cta" onclick="show('sLogin')">
+        <span class="amn-cta-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        </span>
+        Sign In
+      </button>
+
+      <a class="amn-a" href="housing.html">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Housing
+      </a>
+
+      <a class="amn-a" href="landlord.html">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        Landlord
+      </a>
+
+    </div>
+  </nav>
 
 </div><!-- /authWrap -->
 
