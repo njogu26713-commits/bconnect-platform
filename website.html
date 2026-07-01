@@ -559,16 +559,14 @@
       transition: transform 0.2s, box-shadow 0.2s;
       background: #f8fafc;
       display: flex; flex-direction: column;
-      aspect-ratio: 1 / 1;
     }
     .mc-card:hover { transform: translateY(-5px); box-shadow: 0 16px 40px rgba(0,0,0,0.22); }
     .mc-card-img {
       width: 100%;
-      flex: 1;
+      aspect-ratio: 1 / 1;
       position: relative;
-      background: #f0f4ff;
+      background: #f8fafc;
       overflow: hidden;
-      min-height: 0;
     }
     .mc-card-img img {
       width: 100%; height: 100%; object-fit: contain;
@@ -2094,7 +2092,7 @@
 
     /* Desktop (≥769px) — reduce carousel image size */
     @media (min-width: 769px) {
-      .mc-card { aspect-ratio: 1 / 1; max-height: 320px; }
+      .mc-card { max-width: 320px; }
       .feat-card-img-wrap img { height: 140px; }
     }
 
@@ -2866,7 +2864,7 @@
         card.style.cssText = 'background:transparent;';
         card.onclick = () => { if (link && link !== '#') window.location.href = link; };
         card.innerHTML = `
-          <div class="mc-card-img" style="position:relative;height:100%;">
+          <div class="mc-card-img">
             <img src="${img}" alt="${s.title}" loading="lazy" style="width:100%;height:100%;object-fit:contain;display:block;background:#f8fafc;">
             ${countdown}
             <div style="position:absolute;bottom:0;left:0;right:0;padding:1.8rem 0.75rem 0.6rem;background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 100%);">
@@ -2886,7 +2884,7 @@
         card.style.cssText = 'background:transparent;';
         card.onclick = () => navigateTo('products.html');
         card.innerHTML = `
-          <div class="mc-card-img" style="position:relative;height:100%;">
+          <div class="mc-card-img">
             <img src="${img}" alt="${title}" loading="lazy" style="width:100%;height:100%;object-fit:contain;display:block;background:#f8fafc;">
             <div style="position:absolute;bottom:0;left:0;right:0;padding:1.8rem 0.75rem 0.6rem;background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 100%);">
               <div style="color:#fef9c3;font-size:0.9rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 4px rgba(0,0,0,.4);">${title}</div>
