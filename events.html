@@ -44,6 +44,14 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);min-heigh
 .hero h1{font-size:2.5rem;font-weight:800;margin-bottom:.6rem;line-height:1.18;color:var(--white)}
 .hero h1 span{color:var(--amber)}
 .hero p{font-size:1rem;color:var(--cream-dim);margin-bottom:1.75rem;line-height:1.6}
+/* Scrolling ticker inside hero */
+.ev-ticker-wrap{overflow:hidden;width:100%;margin-bottom:1.75rem;padding:.25rem 0;border-top:1px solid rgba(245,166,35,.15);border-bottom:1px solid rgba(245,166,35,.15)}
+.ev-ticker-track{display:inline-flex;align-items:center;white-space:nowrap;animation:ev-ticker 20s linear infinite}
+.ev-ticker-track:hover{animation-play-state:paused}
+.ev-ticker-item{font-size:.95rem;font-weight:700;color:var(--white);padding:0 2.5rem;letter-spacing:.01em}
+.ev-ticker-item.highlight{color:var(--amber)}
+.ev-ticker-sep{color:var(--amber);font-size:.7rem;flex-shrink:0}
+@keyframes ev-ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .hero-search{display:flex;gap:.6rem;max-width:500px;margin:0 auto}
 .hero-search input{
   flex:1;padding:.8rem 1.2rem;border-radius:12px;border:1.5px solid var(--navy-border);
@@ -363,12 +371,22 @@ hr.sdiv{border:none;border-top:1px solid var(--navy-border);margin:.75rem .5rem}
 
 <div class="hero">
   <div class="hero-inner">
-    <div class="hero-tag">
-      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4"/><path d="M2 13v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6"/><path d="M12 12h.01"/><path d="M7 12h.01"/><path d="M17 12h.01"/></svg>
-      Events &amp; Tickets
+    <div class="ev-ticker-wrap">
+      <div class="ev-ticker-track">
+        <span class="ev-ticker-item highlight">🎟 Events &amp; Tickets</span>
+        <span class="ev-ticker-sep">✦</span>
+        <span class="ev-ticker-item">Discover Amazing Events</span>
+        <span class="ev-ticker-sep">✦</span>
+        <span class="ev-ticker-item">Concerts, sports, tech meetups, food festivals &amp; more — book your tickets instantly.</span>
+        <span class="ev-ticker-sep">✦</span>
+        <span class="ev-ticker-item highlight">🎟 Events &amp; Tickets</span>
+        <span class="ev-ticker-sep">✦</span>
+        <span class="ev-ticker-item">Discover Amazing Events</span>
+        <span class="ev-ticker-sep">✦</span>
+        <span class="ev-ticker-item">Concerts, sports, tech meetups, food festivals &amp; more — book your tickets instantly.</span>
+        <span class="ev-ticker-sep">✦</span>
+      </div>
     </div>
-    <h1>Discover <span>Amazing Events</span></h1>
-    <p>Concerts, sports, tech meetups, food festivals &amp; more — book your tickets instantly.</p>
     <div style="display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:.75rem;max-width:580px;margin:0 auto">
       <div class="hero-search" style="margin:0;flex:1;min-width:280px">
         <input type="text" id="heroSearch" placeholder="Search events, venues, cities..." oninput="handleHeroSearch(this.value)">
