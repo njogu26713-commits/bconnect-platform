@@ -63,12 +63,24 @@
 .pm-cancel-poll:hover{border-color:#dc2626;color:#dc2626}
 
 /* Login gate */
-#pm-login-gate{display:none;padding:36px 24px;text-align:center}
-.pm-login-icon{font-size:3rem;margin-bottom:12px}
-.pm-login-gate-title{font-size:1.15rem;font-weight:800;color:#0f172a;margin-bottom:6px}
-.pm-login-gate-sub{color:#64748b;font-size:.85rem;margin-bottom:24px;line-height:1.55}
+#pm-login-gate{display:none;padding:22px 24px}
+.pm-lg-icon-wrap{display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+.pm-lg-icon-circle{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0f1e3d,#1e3fa8);display:flex;align-items:center;justify-content:center;font-size:2rem;box-shadow:0 8px 24px rgba(22,45,110,.35)}
+.pm-lg-title{font-size:1.15rem;font-weight:800;color:#0f172a;margin-bottom:6px;text-align:center}
+.pm-lg-sub{color:#64748b;font-size:.85rem;margin-bottom:22px;line-height:1.6;text-align:center}
+.pm-lg-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:16px 18px;margin-bottom:18px}
+.pm-lg-card-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #e2e8f0}
+.pm-lg-card-row:last-child{border-bottom:none;padding-bottom:0}
+.pm-lg-card-row span:first-child{font-size:1.1rem;flex-shrink:0}
+.pm-lg-card-text{font-size:.8rem;color:#374151;font-weight:600}
 .pm-btn-login{width:100%;padding:15px;background:linear-gradient(135deg,#0f1e3d,#1e3fa8);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;letter-spacing:.04em;transition:all .2s;margin-bottom:10px}
 .pm-btn-login:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(22,45,110,.4)}
+.pm-lg-divider{text-align:center;font-size:.78rem;color:#94a3b8;margin:4px 0 10px;position:relative}
+.pm-lg-divider::before,.pm-lg-divider::after{content:'';position:absolute;top:50%;width:42%;height:1px;background:#e2e8f0}
+.pm-lg-divider::before{left:0}.pm-lg-divider::after{right:0}
+.pm-btn-register{width:100%;padding:13px;background:#fff;color:#0f1e3d;border:2px solid #162d6e;border-radius:12px;font-size:.92rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;margin-bottom:10px}
+.pm-btn-register:hover{background:#f0f4ff}
+.pm-lg-hint{text-align:center;font-size:.73rem;color:#94a3b8;line-height:1.5}
 
 /* Receipt */
 #pm-receipt{display:none;padding:28px 24px}
@@ -130,11 +142,20 @@
 
     <!-- Login gate -->
     <div id="pm-login-gate">
-      <div class="pm-login-icon">🔐</div>
-      <div class="pm-login-gate-title">Log in to continue</div>
-      <div class="pm-login-gate-sub">You need an account to complete this purchase.<br>It only takes a moment to sign in.</div>
-      <button class="pm-btn-login" id="pm-login-btn">Log in to Continue →</button>
-      <button class="pm-btn-cancel" id="pm-login-cancel-btn">Maybe later</button>
+      <div class="pm-lg-icon-wrap">
+        <div class="pm-lg-icon-circle">🔐</div>
+      </div>
+      <div class="pm-lg-title">Sign in to continue</div>
+      <div class="pm-lg-sub">You need an account to complete this purchase. It only takes a moment.</div>
+      <div class="pm-lg-card">
+        <div class="pm-lg-card-row"><span>✅</span><span class="pm-lg-card-text">Secure checkout protected by M-Pesa</span></div>
+        <div class="pm-lg-card-row"><span>📦</span><span class="pm-lg-card-text">Track your orders in real time</span></div>
+        <div class="pm-lg-card-row"><span>🔔</span><span class="pm-lg-card-text">Get SMS & WhatsApp updates on delivery</span></div>
+      </div>
+      <button class="pm-btn-login" id="pm-login-btn">Sign In to Continue →</button>
+      <div class="pm-lg-divider">or</div>
+      <button class="pm-btn-register" id="pm-register-btn">Create a Free Account</button>
+      <p class="pm-lg-hint">By continuing you agree to our Terms of Service and Privacy Policy.</p>
     </div>
 
     <!-- Receipt -->
@@ -522,13 +543,16 @@
   document.addEventListener('click', function(e) {
     if (e.target.id === 'pm-close')          closeModal();
     if (e.target.id === 'pm-cancel-btn')     closeModal();
-    if (e.target.id === 'pm-login-cancel-btn') closeModal();
     if (e.target.id === 'pm-cancel-poll-btn'){ _cancelled = true; _processing = false; document.getElementById('pm-close').disabled = false; showSection('pm-form'); }
     if (e.target.id === 'pm-pay-btn')        doPayment();
     if (e.target.id === 'pm-done-btn')       closeModal();
     if (e.target.id === 'pm-login-btn') {
       sessionStorage.setItem('bc_redirect', _loginReturnTo || location.href);
       location.href = 'login.html';
+    }
+    if (e.target.id === 'pm-register-btn') {
+      sessionStorage.setItem('bc_redirect', _loginReturnTo || location.href);
+      location.href = 'register.html';
     }
     if (e.target.id === 'pm-overlay' && e.target === e.currentTarget) closeModal();
   });
@@ -554,8 +578,8 @@
     _loginReturnTo = returnTo || location.href;
     _processing = false;
     _cancelled  = false;
-    document.getElementById('pm-header-title').textContent = 'Login Required';
-    document.getElementById('pm-header-sub').textContent   = 'Sign in to continue';
+    document.getElementById('pm-header-title').textContent = 'Account Required';
+    document.getElementById('pm-header-sub').textContent   = 'Sign in or register to proceed';
     document.getElementById('pm-close').disabled = false;
     showSection('pm-login-gate');
     ov().classList.add('open');
@@ -571,8 +595,8 @@
     // ── Auth gate: show login prompt instead of payment form ─────────────
     if (!getToken()) {
       _loginReturnTo = _params.returnTo || location.href;
-      document.getElementById('pm-header-title').textContent = 'Login Required';
-      document.getElementById('pm-header-sub').textContent   = 'Sign in to continue';
+      document.getElementById('pm-header-title').textContent = 'Account Required';
+      document.getElementById('pm-header-sub').textContent   = 'Sign in or register to proceed';
       document.getElementById('pm-close').disabled = false;
       showSection('pm-login-gate');
       ov().classList.add('open');
