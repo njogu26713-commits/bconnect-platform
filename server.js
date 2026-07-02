@@ -5630,7 +5630,12 @@ app.post('/api/auth/login', async (req, res) => {
         { _id: user._id },
         { $set: { twofa_login_code: twoFaCode, twofa_login_expires: twoFaExpires } }
       );
-      return res.json({ requires2FA: true, pendingUserId: user._id.toString(), code: twoFaCode });
+      // Send code via SMS — never expose it in the HTTP response
+      if (SMS_ENABLED && user.phone) {
+        sendSMS(user.phone, `BConnect login code: ${twoFaCode}\nValid 10 min. Never share this code.`).catch(e => console.warn('[SMS] 2FA send failed:', e.message));
+      }
+      const maskedPhone = user.phone ? user.phone.replace(/(\+?\d{3})\d+(\d{3})/, '$1***$2') : null;
+      return res.json({ requires2FA: true, pendingUserId: user._id.toString(), maskedPhone });
     }
 
     // Generate JWT token
