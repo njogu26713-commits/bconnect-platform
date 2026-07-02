@@ -10751,6 +10751,68 @@ app.get('/api/admin/users-list', async (req, res) => {
   }
 });
 
+// ── SMS ENDPOINTS ────────────────────────────────────────────────────────────
+
+/**
+ * POST /api/send-sms
+ * Send an SMS via Africa's Talking.
+ * Body: { phone: "+2547XXXXXXXX", message: "Hello!" }
+ * The API key lives server-side only — never exposed to the frontend.
+ */
+app.post('/api/send-sms', async (req, res) => {
+  try {
+    // Guard: feature not configured
+    if (!SMS_ENABLED) {
+      return res.status(503).json({
+        success: false,
+        error: 'SMS service is not configured. Set AT_USERNAME and AT_API_KEY secrets.'
+      });
+    }
+
+    const { phone, message } = req.body;
+
+    // Basic input validation
+    if (!phone || !message) {
+      return res.status(400).json({ success: false, error: 'Both "phone" and "message" are required.' });
+    }
+    if (typeof message !== 'string' || !message.trim()) {
+      return res.status(400).json({ success: false, error: 'Message must be a non-empty string.' });
+    }
+
+    // Delegate to the reusable sendSMS utility (handles normalisation + AT call)
+    const result = await sendSMS(phone, message);
+
+    if (result.success) {
+      console.log(`[SMS] /api/send-sms → sent to ${phone} (messageId: ${result.messageId})`);
+      return res.json({ success: true, messageId: result.messageId, phone: result.phone });
+    } else {
+      console.warn(`[SMS] /api/send-sms → failed for ${phone}: ${result.error}`);
+      return res.status(400).json({ success: false, error: result.error });
+    }
+  } catch (err) {
+    console.error('[SMS] Unexpected error in /api/send-sms:', err.message || err);
+    return res.status(500).json({ success: false, error: 'Internal server error while sending SMS.' });
+  }
+});
+
+/**
+ * GET /api/send-sms/test?phone=+2547XXXXXXXX
+ * Quick smoke-test route — sends a test SMS to the given number.
+ * Remove or restrict this in production.
+ */
+app.get('/api/send-sms/test', async (req, res) => {
+  if (!SMS_ENABLED) {
+    return res.status(503).json({ success: false, error: 'SMS not configured.' });
+  }
+  const phone = (req.query.phone || '').trim();
+  if (!phone) {
+    return res.status(400).json({ success: false, error: 'Provide ?phone=+2547XXXXXXXX in the URL.' });
+  }
+  const message = `BConnect SMS test — ${new Date().toLocaleTimeString('en-KE')}. If you received this, SMS is working!`;
+  const result = await sendSMS(phone, message);
+  return res.status(result.success ? 200 : 400).json(result);
+});
+
 // ── AUTO-CLEANUP: delete unverified accounts whose token expired > 7 days ago ──
 function scheduleUnverifiedCleanup() {
   async function runCleanup() {
