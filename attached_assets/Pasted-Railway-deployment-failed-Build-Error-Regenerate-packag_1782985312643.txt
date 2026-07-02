@@ -1,0 +1,45 @@
+Railway deployment failed — Build Error
+
+Regenerate package-lock.json outside of Replit by deleting it and running npm install locally or in a GitHub Codespace. The build fails because the lockfile was generated inside Replit and contains resolved URLs pointing to http://package-firewall.replit.local, which is unreachable from Railway. When npm ci tries to download packages from those URLs, it crashes with "Exit handler never called!".
+
+Repository: https://github.com/njogu26713-commits/bconnect-platform
+Branch: main · Commit: 574ab2b — Improve login security by sending two-factor codes via SMS
+
+Fixes the /api/auth/login endpoint to send 2FA codes via SMS instead of returning them in the response, enhancing security.
+
+Replit-Commit-Author: Agent
+Replit-Commit-Session-Id: ed60d70d-4771-4e70-ab94-8af2f81eba6b
+Replit-Commit-Checkpoint-Type: full_checkpoint
+Replit-Commit-Event-Id: 57355813-adcd-49de-8424-445722623380
+Replit-Commit-Screenshot-Url: https://storage.googleapis.com/screenshot-production-us-central1/04526795-6176-46bd-b4c4-f49e51b3dd99/ed60d70d-4771-4e70-ab94-8af2f81eba6b/56qnWZX
+Replit-Helium-Checkpoint-Created: true
+Deployment ID: 39af7dad-064b-4ce1-ba43-f2d9a4874574
+Service ID: da3c41dd-5370-45cd-a29c-d6cd11e126a1
+Environment ID: cf702f90-e2e0-4ed8-bc9d-af1506a90ff0
+
+---
+
+## Problem
+The Nixpacks build fails at the npm ci step with "npm error Exit handler never called!" (exit code 1). The SNAPSHOT_CODE stage succeeded; BUILD_IMAGE failed. No deploy logs exist because the build never completed.
+
+Relevant build log lines:
+```
+npm error Exit handler never called!
+npm error This is an error with npm itself. Please report this error at:
+npm error   <https://github.com/npm/cli/issues>
+Build Failed: build daemon returned an error < failed to solve: process "/bin/bash -ol pipefail -c npm ci" did not complete successfully: exit code: 1 >
+```
+
+## Diagnosis
+The package-lock.json was generated inside Replit's development environment, which routes npm traffic through an internal package proxy at http://package-firewall.replit.local. The lockfile stores these internal URLs as the `resolved` field for many packages. When Railway's build environment runs `npm ci`, it reads these URLs and attempts to download packages from http://package-firewall.replit.local/npm/..., which is unreachable outside Replit. npm hangs waiting for responses, eventually times out, and crashes with the "Exit handler never called!" error.
+
+Affected packages include (non-exhaustive): `@hapi/address`, `@hapi/formula`, `@hapi/hoek` (v11), `@hapi/pinpoint`, `@hapi/tlds`, `@hapi/topo`, `@standard-schema/spec`, `africastalking`, and sub-dependencies of africastalking (`axios@1.13.5`, `dotenv@17.2.4`, `lodash@4.17.23`, `proxy-from-env@1.1.0`).
+
+The triggering commit (574ab2b) only modified server.js and did not introduce this issue. The lockfile has contained Replit-internal URLs since the initial commit. A previous successful deployment (7beb6af8) succeeded because Railway's npm build cache still held the packages, avoiding the need to fetch from the unreachable URLs.
+
+## Fix
+1. **File:** `package-lock.json` (at repo root)
+2. **Action:** Delete the file entirely and regenerate it by running `npm install` in an environment outside of Replit (e.g., locally, in a GitHub Codespace, or in a CI pipeline). This will produce a lockfile where all `resolved` URLs point to `https://registry.npmjs.org/...`.
+3. **Why:** `npm ci` strictly uses the `resolved` URLs from the lockfile. The current URLs point to Replit's internal proxy, which is inaccessible from Railway. Regenerating the lockfile outside Replit ensures all URLs point to the public npm registry.
+
+Note: This fix requires running `npm install` to regenerate the lockfile and cannot be done by editing the file as text. The autoFixable flag is false because a command must be executed.

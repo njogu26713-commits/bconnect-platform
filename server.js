@@ -61,6 +61,12 @@ const {
   EMAIL_PASS
 } = process.env;
 
+// Warn loudly if insecure JWT_SECRET default is used in production
+if (NODE_ENV === 'production' && JWT_SECRET === 'your_secret_key_change_in_production') {
+  console.error('[SECURITY] JWT_SECRET is using an insecure default value in production! Set the JWT_SECRET environment variable immediately.');
+  process.exit(1);
+}
+
 const missingOptionalEnv = [
   ['MPESA_CONSUMER_KEY', MPESA_CONSUMER_KEY],
   ['MPESA_CONSUMER_SECRET', MPESA_CONSUMER_SECRET],
@@ -80,9 +86,14 @@ app.set('trust proxy', 1);
 // Secure CORS Configuration
 const corsOptions = {
   origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, server-to-server)
+    if (!origin) return callback(null, true);
     const allowedOrigins = ALLOWED_ORIGINS.split(',').map(o => o.trim());
-    // Allow all origins for development
-    callback(null, true);
+    if (NODE_ENV === 'development' || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS: origin '${origin}' not allowed`));
+    }
   },
   credentials: true,
   optionsSuccessStatus: 200,
@@ -372,7 +383,7 @@ if (WHATSAPP_BOT_ENABLED) {
 }
 
 // GET /api/admin/whatsapp-qr — returns QR code data URL for scanning
-app.get('/api/admin/whatsapp-qr', (req, res) => {
+app.get('/api/admin/whatsapp-qr', requireAuth, requireAdmin, (req, res) => {
   if (!WHATSAPP_BOT_ENABLED || !waBot) {
     return res.json({ success: false, botEnabled: false, connected: false });
   }
@@ -381,7 +392,7 @@ app.get('/api/admin/whatsapp-qr', (req, res) => {
 });
 
 // POST /api/admin/whatsapp-disconnect — logout current session and clear auth for re-pairing
-app.post('/api/admin/whatsapp-disconnect', async (req, res) => {
+app.post('/api/admin/whatsapp-disconnect', requireAuth, requireAdmin, async (req, res) => {
   if (!WHATSAPP_BOT_ENABLED || !waBot) {
     return res.json({ success: false, error: 'Bot not enabled' });
   }
@@ -394,7 +405,7 @@ app.post('/api/admin/whatsapp-disconnect', async (req, res) => {
 });
 
 // POST /api/admin/whatsapp-reconnect — restart connection keeping existing session
-app.post('/api/admin/whatsapp-reconnect', async (req, res) => {
+app.post('/api/admin/whatsapp-reconnect', requireAuth, requireAdmin, async (req, res) => {
   if (!WHATSAPP_BOT_ENABLED || !waBot) {
     return res.json({ success: false, error: 'Bot not enabled' });
   }
@@ -407,7 +418,7 @@ app.post('/api/admin/whatsapp-reconnect', async (req, res) => {
 });
 
 // POST /api/admin/whatsapp-refresh-code — request a fresh pairing code from WhatsApp
-app.post('/api/admin/whatsapp-refresh-code', async (req, res) => {
+app.post('/api/admin/whatsapp-refresh-code', requireAuth, requireAdmin, async (req, res) => {
   if (!WHATSAPP_BOT_ENABLED || !waBot) {
     return res.json({ success: false, error: 'Bot not enabled' });
   }
@@ -566,7 +577,7 @@ const verifyToken = (req, res, next) => {
 };
 
 // Middleware to verify user authentication and role
-const requireAuth = async (req, res, next) => {
+async function requireAuth(req, res, next) {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -591,7 +602,23 @@ const requireAuth = async (req, res, next) => {
     console.error('Auth middleware error:', error);
     return res.status(401).json({ error: 'Authentication error' });
   }
-};
+}
+
+// Middleware to verify admin role (must be used after requireAuth)
+function requireAdmin(req, res, next) {
+  if (!req.user || req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Admin access required' });
+  }
+  next();
+}
+
+// Protect all /api/admin/* routes — must be authenticated and have admin role.
+// Exception: POST /api/admin/setup is protected by ADMIN_SETUP_KEY alone so a
+// first admin can be created before any admin account exists.
+app.use('/api/admin', (req, res, next) => {
+  if (req.path === '/setup' && req.method === 'POST') return next();
+  requireAuth(req, res, () => requireAdmin(req, res, next));
+});
 
 // Tenant-specific auth middleware — checks tenants first, then profiles (unified login)
 const requireTenantAuth = async (req, res, next) => {
@@ -1115,12 +1142,14 @@ app.get('/api/health', async (_req, res) => {
 });
 
 
-// Direct admin access — auto-login page for admin use
+// Direct admin access — development convenience only; disabled in production
 app.get('/admin-access', async (req, res) => {
+  if (NODE_ENV === 'production') return res.status(404).send('Not found');
   try {
     if (!db) return res.status(500).send('Database not connected');
     const { key } = req.query;
-    const ACCESS_KEY = process.env.ADMIN_SETUP_KEY || 'bconnect-admin-setup-2024';
+    const ACCESS_KEY = process.env.ADMIN_SETUP_KEY;
+    if (!ACCESS_KEY) return res.status(403).send('Access denied — ADMIN_SETUP_KEY not configured');
     if (key !== ACCESS_KEY) return res.status(403).send('Access denied');
 
     const admin = await db.collection('profiles').findOne({ email: 'githinjibrian49@gmail.com' });
@@ -1239,7 +1268,8 @@ app.post('/api/admin/setup', async (req, res) => {
     const { email, password, fullName, secretKey } = req.body;
 
     // Require a setup secret key to prevent abuse
-    const SETUP_KEY = process.env.ADMIN_SETUP_KEY || 'bconnect-admin-setup-2024';
+    const SETUP_KEY = process.env.ADMIN_SETUP_KEY;
+    if (!SETUP_KEY) return res.status(403).json({ error: 'Admin setup is disabled — ADMIN_SETUP_KEY not configured' });
     if (secretKey !== SETUP_KEY) {
       return res.status(403).json({ error: 'Invalid setup key' });
     }
@@ -10307,8 +10337,7 @@ app.post('/api/organizer/setup-password', async (req, res) => {
       { _id: account._id },
       { $set: { password_hash: hash, active: true, setup_token: null, token_expires: null, updated_at: new Date() } }
     );
-    const jwtSecret = process.env.JWT_SECRET || 'bconnect_default_secret';
-    const token_jwt = jwt.sign({ id: account._id.toString(), email: account.email, role: 'organizer' }, jwtSecret, { expiresIn: '30d' });
+    const token_jwt = jwt.sign({ id: account._id.toString(), email: account.email, role: 'organizer' }, JWT_SECRET, { expiresIn: '30d' });
     return res.json({ success: true, token: token_jwt, name: account.name, email: account.email });
   } catch (err) {
     console.error('Organizer setup error:', err);
@@ -10328,8 +10357,7 @@ app.post('/api/organizer/login', async (req, res) => {
     }
     const valid = await bcrypt.compare(password, account.password_hash);
     if (!valid) return res.status(401).json({ error: 'Incorrect password' });
-    const jwtSecret = process.env.JWT_SECRET || 'bconnect_default_secret';
-    const token = jwt.sign({ id: account._id.toString(), email: account.email, role: 'organizer' }, jwtSecret, { expiresIn: '30d' });
+    const token = jwt.sign({ id: account._id.toString(), email: account.email, role: 'organizer' }, JWT_SECRET, { expiresIn: '30d' });
     return res.json({ success: true, token, name: account.name, email: account.email });
   } catch (err) {
     console.error('Organizer login error:', err);
@@ -10346,8 +10374,7 @@ app.get('/api/organizer/events', async (req, res) => {
     const authHeader = req.headers['authorization'];
     if (authHeader && authHeader.startsWith('Bearer ')) {
       try {
-        const jwtSecret = process.env.JWT_SECRET || 'bconnect_default_secret';
-        const payload = jwt.verify(authHeader.slice(7), jwtSecret);
+        const payload = jwt.verify(authHeader.slice(7), JWT_SECRET);
         const account = await db.collection('organizer_accounts').findOne({ email: payload.email });
         if (!account) return res.status(401).json({ error: 'Organizer account not found' });
         const events = await db.collection('events')
