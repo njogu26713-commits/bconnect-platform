@@ -12,6 +12,8 @@ const { Readable } = require('stream');
 const dns = require('dns');
 const os = require('os');
 const { sendEmail, passwordResetEmail, paymentReceiptEmail, bookingConfirmationEmail, landlordPaymentAlertEmail, tenantJoinRequestEmail, welcomeEmail, emailVerificationEmail, depositConfirmationEmail } = require('./email');
+// Africa's Talking SMS — only active when AT_USERNAME + AT_API_KEY secrets are set
+const { sendSMS, SMS_ENABLED } = require('./sms');
 dns.setServers(['8.8.8.8', '1.1.1.1']);
 const OpenAI = require('openai');
 const cloudinaryPkg = require('cloudinary');
