@@ -942,6 +942,16 @@ async function updateOrderStatus(orderId, status, callbackData) {
             created_at: new Date()
           });
 
+          // SMS confirmation to buyer — fire-and-forget, never block the callback
+          if (SMS_ENABLED) {
+            const buyerPhone = orderData.phone || (userData && userData.phone) || '';
+            if (buyerPhone) {
+              const fmtAmt = 'KES ' + Number(orderData.amount).toLocaleString('en-KE');
+              const smsBody = `BConnect: Payment of ${fmtAmt} for "${orderData.item}" confirmed ✓\nRef: ${orderId}\nThank you!`;
+              sendSMS(buyerPhone, smsBody).catch(e => console.warn('[SMS] Order confirm failed:', e.message));
+            }
+          }
+
           // Send receipt email with PDF — skip if already sent by stk-push for this order
           if (userData.email && !orderData.receipt_email_sent) {
             const receiptData = {
@@ -9043,6 +9053,14 @@ app.post('/api/tenant/pay-rent', verifyToken, async (req, res) => {
       console.error('Rent receipt email error:', emailErr.message);
     }
 
+    // SMS confirmation to tenant — fire-and-forget
+    if (SMS_ENABLED && tenantPhone) {
+      const fmtAmt = 'KES ' + Number(parsedAmount).toLocaleString('en-KE');
+      const propName = tenantProperty.propertyName || tenantProperty.address || 'your property';
+      const smsBody = `BConnect: Rent payment of ${fmtAmt} for ${propName} confirmed ✓\nRef: ${paymentData.reference}\nThank you!`;
+      sendSMS(tenantPhone, smsBody).catch(e => console.warn('[SMS] Rent confirm failed:', e.message));
+    }
+
     return res.status(201).json({
       success: true,
       message: 'Payment completed successfully',
@@ -10051,6 +10069,14 @@ app.post('/api/events/:id/buy-ticket', async (req, res) => {
     const newSold = (event.tickets_sold || 0) + qty;
     if (event.tickets_available && newSold >= event.tickets_available) {
       await db.collection('events').updateOne({ _id: event._id }, { $set: { status: 'sold_out' } });
+    }
+
+    // SMS ticket confirmation to buyer — fire-and-forget
+    if (SMS_ENABLED && ticketDoc.buyer_phone) {
+      const eventDate = event.event_date ? new Date(event.event_date).toLocaleDateString('en-KE', { weekday:'short', day:'numeric', month:'short' }) : '';
+      const venue = event.venue || event.location || '';
+      const smsBody = `BConnect Ticket ✓\nEvent: ${event.title}${eventDate ? '\nDate: ' + eventDate : ''}${venue ? '\nVenue: ' + venue : ''}\nCode: ${ticketCode}\nPresent this code at the gate.`;
+      sendSMS(ticketDoc.buyer_phone, smsBody).catch(e => console.warn('[SMS] Ticket confirm failed:', e.message));
     }
 
     return res.json({ success: true, ticket_code: ticketCode, ticket: ticketDoc });
