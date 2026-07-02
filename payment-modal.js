@@ -62,6 +62,14 @@
 .pm-cancel-poll{margin-top:18px;background:none;border:1px solid #e2e8f0;border-radius:10px;padding:9px 20px;font-size:.82rem;color:#64748b;cursor:pointer;font-family:inherit;transition:all .2s}
 .pm-cancel-poll:hover{border-color:#dc2626;color:#dc2626}
 
+/* Login gate */
+#pm-login-gate{display:none;padding:36px 24px;text-align:center}
+.pm-login-icon{font-size:3rem;margin-bottom:12px}
+.pm-login-gate-title{font-size:1.15rem;font-weight:800;color:#0f172a;margin-bottom:6px}
+.pm-login-gate-sub{color:#64748b;font-size:.85rem;margin-bottom:24px;line-height:1.55}
+.pm-btn-login{width:100%;padding:15px;background:linear-gradient(135deg,#0f1e3d,#1e3fa8);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;letter-spacing:.04em;transition:all .2s;margin-bottom:10px}
+.pm-btn-login:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(22,45,110,.4)}
+
 /* Receipt */
 #pm-receipt{display:none;padding:28px 24px}
 .pm-receipt-icon{font-size:3.2rem;text-align:center;margin-bottom:10px}
@@ -120,6 +128,15 @@
       <button class="pm-cancel-poll" id="pm-cancel-poll-btn">Cancel</button>
     </div>
 
+    <!-- Login gate -->
+    <div id="pm-login-gate">
+      <div class="pm-login-icon">🔐</div>
+      <div class="pm-login-gate-title">Log in to continue</div>
+      <div class="pm-login-gate-sub">You need an account to complete this purchase.<br>It only takes a moment to sign in.</div>
+      <button class="pm-btn-login" id="pm-login-btn">Log in to Continue →</button>
+      <button class="pm-btn-cancel" id="pm-login-cancel-btn">Maybe later</button>
+    </div>
+
     <!-- Receipt -->
     <div id="pm-receipt">
       <div class="pm-receipt-icon">✅</div>
@@ -139,11 +156,12 @@
   }
 
   // ── Internal state ────────────────────────────────────────────────────────
-  let _params   = {};
-  let _payData  = {};
-  let _pollTimer  = null;
-  let _cancelled  = false;
-  let _processing = false;
+  let _params       = {};
+  let _payData      = {};
+  let _pollTimer    = null;
+  let _cancelled    = false;
+  let _processing   = false;
+  let _loginReturnTo = '';
 
   // ── DOM refs ──────────────────────────────────────────────────────────────
   const ov        = () => document.getElementById('pm-overlay');
@@ -165,7 +183,7 @@
   }
 
   function showSection(id) {
-    ['pm-form','pm-processing','pm-receipt'].forEach(s => {
+    ['pm-form','pm-processing','pm-receipt','pm-login-gate'].forEach(s => {
       const el = document.getElementById(s);
       if (el) el.style.display = s === id ? '' : 'none';
     });
@@ -504,9 +522,14 @@
   document.addEventListener('click', function(e) {
     if (e.target.id === 'pm-close')          closeModal();
     if (e.target.id === 'pm-cancel-btn')     closeModal();
+    if (e.target.id === 'pm-login-cancel-btn') closeModal();
     if (e.target.id === 'pm-cancel-poll-btn'){ _cancelled = true; _processing = false; document.getElementById('pm-close').disabled = false; showSection('pm-form'); }
     if (e.target.id === 'pm-pay-btn')        doPayment();
     if (e.target.id === 'pm-done-btn')       closeModal();
+    if (e.target.id === 'pm-login-btn') {
+      sessionStorage.setItem('bc_redirect', _loginReturnTo || location.href);
+      location.href = 'login.html';
+    }
     if (e.target.id === 'pm-overlay' && e.target === e.currentTarget) closeModal();
   });
 
@@ -525,11 +548,37 @@
   });
 
   // ── Public API ────────────────────────────────────────────────────────────
+
+  // Show only the login gate (no payment context needed)
+  window.openLoginGateModal = function(returnTo) {
+    _loginReturnTo = returnTo || location.href;
+    _processing = false;
+    _cancelled  = false;
+    document.getElementById('pm-header-title').textContent = 'Login Required';
+    document.getElementById('pm-header-sub').textContent   = 'Sign in to continue';
+    document.getElementById('pm-close').disabled = false;
+    showSection('pm-login-gate');
+    ov().classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
+
   window.openPaymentModal = function(params) {
     _params     = params || {};
     _payData    = buildPayData(_params);
     _processing = false;
     _cancelled  = false;
+
+    // ── Auth gate: show login prompt instead of payment form ─────────────
+    if (!getToken()) {
+      _loginReturnTo = _params.returnTo || location.href;
+      document.getElementById('pm-header-title').textContent = 'Login Required';
+      document.getElementById('pm-header-sub').textContent   = 'Sign in to continue';
+      document.getElementById('pm-close').disabled = false;
+      showSection('pm-login-gate');
+      ov().classList.add('open');
+      document.body.style.overflow = 'hidden';
+      return;
+    }
 
     // Populate UI
     document.getElementById('pm-header-title').textContent =

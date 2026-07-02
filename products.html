@@ -2787,8 +2787,7 @@ window._currentModalItem = null;
 function requireAuth() {
   const token = localStorage.getItem('token') || localStorage.getItem('authToken') || localStorage.getItem('tenantToken') || localStorage.getItem('landlordToken');
   if (!token) {
-    sessionStorage.setItem('bc_redirect', window.location.href);
-    window.location.href = 'login.html';
+    if (typeof openLoginGateModal === 'function') openLoginGateModal(location.href);
     return false;
   }
   return true;
