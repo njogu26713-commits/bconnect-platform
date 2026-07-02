@@ -63,7 +63,6 @@
 .pm-cancel-poll:hover{border-color:#dc2626;color:#dc2626}
 
 /* Login gate */
-#pm-login-gate{display:none}
 #pm-lg-body{padding:22px 24px}
 .pm-lg-divider{text-align:center;font-size:.78rem;color:#94a3b8;margin:6px 0 10px;position:relative}
 .pm-lg-divider::before,.pm-lg-divider::after{content:'';position:absolute;top:50%;width:42%;height:1px;background:#e2e8f0}
@@ -130,7 +129,7 @@
     </div>
 
     <!-- Login gate -->
-    <div id="pm-login-gate">
+    <div id="pm-login-gate" style="display:none">
       <div id="pm-lg-body">
         <div id="pm-lg-info-rows"></div>
         <div class="pm-total-strip" id="pm-lg-total-strip">
