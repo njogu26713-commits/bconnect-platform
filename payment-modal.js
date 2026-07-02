@@ -63,24 +63,13 @@
 .pm-cancel-poll:hover{border-color:#dc2626;color:#dc2626}
 
 /* Login gate */
-#pm-login-gate{display:none;padding:22px 24px}
-.pm-lg-icon-wrap{display:flex;align-items:center;justify-content:center;margin-bottom:18px}
-.pm-lg-icon-circle{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0f1e3d,#1e3fa8);display:flex;align-items:center;justify-content:center;font-size:2rem;box-shadow:0 8px 24px rgba(22,45,110,.35)}
-.pm-lg-title{font-size:1.15rem;font-weight:800;color:#0f172a;margin-bottom:6px;text-align:center}
-.pm-lg-sub{color:#64748b;font-size:.85rem;margin-bottom:22px;line-height:1.6;text-align:center}
-.pm-lg-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:16px 18px;margin-bottom:18px}
-.pm-lg-card-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #e2e8f0}
-.pm-lg-card-row:last-child{border-bottom:none;padding-bottom:0}
-.pm-lg-card-row span:first-child{font-size:1.1rem;flex-shrink:0}
-.pm-lg-card-text{font-size:.8rem;color:#374151;font-weight:600}
-.pm-btn-login{width:100%;padding:15px;background:linear-gradient(135deg,#0f1e3d,#1e3fa8);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;letter-spacing:.04em;transition:all .2s;margin-bottom:10px}
-.pm-btn-login:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(22,45,110,.4)}
-.pm-lg-divider{text-align:center;font-size:.78rem;color:#94a3b8;margin:4px 0 10px;position:relative}
+#pm-login-gate{display:none}
+#pm-lg-body{padding:22px 24px}
+.pm-lg-divider{text-align:center;font-size:.78rem;color:#94a3b8;margin:6px 0 10px;position:relative}
 .pm-lg-divider::before,.pm-lg-divider::after{content:'';position:absolute;top:50%;width:42%;height:1px;background:#e2e8f0}
 .pm-lg-divider::before{left:0}.pm-lg-divider::after{right:0}
-.pm-btn-register{width:100%;padding:13px;background:#fff;color:#0f1e3d;border:2px solid #162d6e;border-radius:12px;font-size:.92rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;margin-bottom:10px}
+.pm-btn-register{width:100%;padding:13px;background:#fff;color:#0f1e3d;border:2px solid #162d6e;border-radius:12px;font-size:.92rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;margin-bottom:8px}
 .pm-btn-register:hover{background:#f0f4ff}
-.pm-lg-hint{text-align:center;font-size:.73rem;color:#94a3b8;line-height:1.5}
 
 /* Receipt */
 #pm-receipt{display:none;padding:28px 24px}
@@ -142,20 +131,17 @@
 
     <!-- Login gate -->
     <div id="pm-login-gate">
-      <div class="pm-lg-icon-wrap">
-        <div class="pm-lg-icon-circle">🔐</div>
+      <div id="pm-lg-body">
+        <div id="pm-lg-info-rows"></div>
+        <div class="pm-total-strip" id="pm-lg-total-strip">
+          <span class="pm-total-label">Total</span>
+          <span class="pm-total-amt" id="pm-lg-total-amt">KES 0</span>
+        </div>
+        <button class="pm-btn-pay" id="pm-login-btn">🔐 Sign In to Pay</button>
+        <div class="pm-lg-divider">or</div>
+        <button class="pm-btn-register" id="pm-register-btn">Create a Free Account</button>
+        <p class="pm-hint">Sign in to complete your secure M-Pesa payment.</p>
       </div>
-      <div class="pm-lg-title">Sign in to continue</div>
-      <div class="pm-lg-sub">You need an account to complete this purchase. It only takes a moment.</div>
-      <div class="pm-lg-card">
-        <div class="pm-lg-card-row"><span>✅</span><span class="pm-lg-card-text">Secure checkout protected by M-Pesa</span></div>
-        <div class="pm-lg-card-row"><span>📦</span><span class="pm-lg-card-text">Track your orders in real time</span></div>
-        <div class="pm-lg-card-row"><span>🔔</span><span class="pm-lg-card-text">Get SMS & WhatsApp updates on delivery</span></div>
-      </div>
-      <button class="pm-btn-login" id="pm-login-btn">Sign In to Continue →</button>
-      <div class="pm-lg-divider">or</div>
-      <button class="pm-btn-register" id="pm-register-btn">Create a Free Account</button>
-      <p class="pm-lg-hint">By continuing you agree to our Terms of Service and Privacy Policy.</p>
     </div>
 
     <!-- Receipt -->
@@ -378,14 +364,14 @@
       if (i.unitPrice != null && i.qty != null) {
         return `<div class="pm-info-row">
           <div class="pm-ci-left">
-            <span class="pm-ir-label">${esc(i.name)}</span>
+            <span class="pm-ir-label">${esc(i.name || i.label)}</span>
             <span class="pm-ci-meta">${fmtKes(i.unitPrice)}${i.qty > 1 ? ' × ' + i.qty : ''}</span>
           </div>
           <span class="pm-ir-value">${esc(i.value)}</span>
         </div>`;
       }
       return `<div class="pm-info-row">
-        <span class="pm-ir-label">${esc(i.name)}</span>
+        <span class="pm-ir-label">${esc(i.name || i.label)}</span>
         <span class="pm-ir-value">${esc(i.value)}</span>
       </div>`;
     }).join('');
@@ -573,14 +559,22 @@
 
   // ── Public API ────────────────────────────────────────────────────────────
 
-  // Show only the login gate (no payment context needed)
+  // Show only the login gate (no payment context — standalone call)
   window.openLoginGateModal = function(returnTo) {
     _loginReturnTo = returnTo || location.href;
     _processing = false;
     _cancelled  = false;
-    document.getElementById('pm-header-title').textContent = 'Account Required';
-    document.getElementById('pm-header-sub').textContent   = 'Sign in or register to proceed';
+    document.getElementById('pm-header-title').textContent = 'Sign In to Continue';
+    document.getElementById('pm-header-sub').textContent   = 'Create an account or log in to proceed';
     document.getElementById('pm-close').disabled = false;
+    // Generic info rows (no specific product)
+    document.getElementById('pm-lg-info-rows').innerHTML = renderInfoRows([
+      { name: 'Access', value: 'Full marketplace' },
+      { name: 'Benefits', value: 'Order tracking · SMS updates' },
+    ]);
+    document.getElementById('pm-lg-total-amt').textContent = '';
+    document.getElementById('pm-lg-total-strip').style.display = 'none';
+    document.getElementById('pm-login-btn').textContent = '🔐 Sign In';
     showSection('pm-login-gate');
     ov().classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -592,12 +586,24 @@
     _processing = false;
     _cancelled  = false;
 
-    // ── Auth gate: show login prompt instead of payment form ─────────────
+    // ── Auth gate: mirror the payment form but swap phone+pay for sign-in ──
     if (!getToken()) {
       _loginReturnTo = _params.returnTo || location.href;
-      document.getElementById('pm-header-title').textContent = 'Account Required';
-      document.getElementById('pm-header-sub').textContent   = 'Sign in or register to proceed';
+      // Header — same title logic as the real payment form
+      document.getElementById('pm-header-title').textContent =
+        _params.type === 'rent'      ? 'Pay Your Rent' :
+        _params.type === 'deposit'   ? 'Pay Security Deposit' :
+        _params.type === 'promotion' ? 'Promote Your Product' :
+        _params.type === 'listing'   ? 'Pay Listing Fee' :
+        _params.type === 'cart'      ? 'Checkout' :
+        'Complete Your Payment';
+      document.getElementById('pm-header-sub').textContent = _payData.label || 'Secure M-Pesa payment';
       document.getElementById('pm-close').disabled = false;
+      // Populate item rows + total (identical to payment form)
+      document.getElementById('pm-lg-info-rows').innerHTML = renderInfoRows(_payData.items);
+      document.getElementById('pm-lg-total-amt').textContent = fmtKes(_payData.amount);
+      document.getElementById('pm-lg-total-strip').style.display = '';
+      document.getElementById('pm-login-btn').textContent = '🔐 Sign In to Pay ' + fmtKes(_payData.amount);
       showSection('pm-login-gate');
       ov().classList.add('open');
       document.body.style.overflow = 'hidden';
