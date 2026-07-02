@@ -1041,13 +1041,7 @@ function buildCard(p, idx) {
     const loc     = p.location || p.address || '';
     const pCode   = p.code || '';
     const pId     = String(p._id || p.id || '');
-    window.location.href = 'payment.html?type=deposit'
-      + '&item='    + encodeURIComponent(title)
-      + '&price='   + deposit
-      + '&rent='    + price
-      + '&location='+ encodeURIComponent(loc)
-      + (pCode ? '&code=' + encodeURIComponent(pCode) : '')
-      + (pId   ? '&property_id=' + encodeURIComponent(pId) : '');
+    openPaymentModal({ type:'deposit', item:title, price:deposit, rent:price, location:loc, code:pCode, property_id:pId });
   });
   card.addEventListener('click', () => openModal(p));
   return card;
@@ -1177,17 +1171,11 @@ function openModal(p) {
   const propId   = String(p._id || p.id || '');
   document.getElementById('modal-deposit-btn').onclick = () => {
     if (!requireAuth()) return;
-    window.location.href = 'payment.html?type=deposit'
-      + '&item='    + encodeURIComponent(title)
-      + '&price='   + deposit
-      + '&rent='    + price
-      + '&location='+ encodeURIComponent(loc)
-      + (propCode ? '&code=' + encodeURIComponent(propCode) : '')
-      + (propId   ? '&property_id=' + encodeURIComponent(propId) : '');
+    openPaymentModal({ type:'deposit', item:title, price:deposit, rent:price, location:loc, code:propCode, property_id:propId });
   };
   document.getElementById('modal-view-btn').onclick = () => {
     if (!requireAuth()) return;
-    window.location.href = 'payment.html?item=' + encodeURIComponent('Viewing – ' + title) + '&price=500';
+    openPaymentModal({ type:'order', item:'Viewing – ' + title, price:500 });
   };
 
   document.getElementById('housing-modal').classList.add('open');
@@ -1235,6 +1223,7 @@ loadHousing().then(() => { checkDeepLink(allItems, openModal); startAvailPolling
 
 
 <script>document.addEventListener("DOMContentLoaded",function(){if(window.lucide)lucide.createIcons();});</script>
+<script src="payment-modal.js"></script>
 <script src="shared-layout.js?v=7"></script>
 <script src="profile-widget.js"></script>
 </body>

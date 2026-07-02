@@ -479,10 +479,7 @@ function bookNow(){
   var p = _svc;
   var title = p.title || p.name || 'Service';
   var price = p.price || p.rate || 0;
-  window.location.href = 'payment.html?type=order'
-    + '&item='     + encodeURIComponent(title)
-    + '&price='    + encodeURIComponent(price)
-    + '&returnTo=' + encodeURIComponent(location.href);
+  openPaymentModal({ type:'order', item:title, price:price, returnTo:location.href });
 }
 
 // ── Contact ───────────────────────────────────────────────────────────────────
@@ -498,6 +495,7 @@ function contactProvider(){
 }
 </script>
 
+<script src="payment-modal.js"></script>
 <script src="shared-layout.js?v=7"></script>
 </body>
 </html>

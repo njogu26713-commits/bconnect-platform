@@ -2058,7 +2058,7 @@ function proceedSelectedPlan() {
   if (window._selPlan === 'unlimited') {
     openUnlockModal();
   } else {
-    window.location.href = `payment.html?type=listing&price=${encodeURIComponent(d.price || 200)}&title=${encodeURIComponent(d.title || '')}`;
+    openPaymentModal({ type:'listing', price: d.price || 200, title: d.title || '' });
   }
 }
 
@@ -2574,14 +2574,7 @@ function goToPromotePayment() {
   const price = PROMOTE_PRICES[days];
   const productName = document.getElementById('promoteProductName').textContent;
   if (!promoteProductId) return;
-  const params = new URLSearchParams({
-    type: 'promotion',
-    productId: promoteProductId,
-    productName: productName,
-    days: days,
-    price: price
-  });
-  window.location.href = 'payment.html?' + params.toString();
+  openPaymentModal({ type:'promotion', productId: promoteProductId, productName: productName, days: days, price: price });
 }
 
 //  LOGOUT 
@@ -3795,6 +3788,7 @@ async function aiTranslateDesc(fieldId) {
 }
 </script>
 <script src="dialogs.js"></script>
+<script src="payment-modal.js"></script>
 <script src="shared-layout.js?v=7"></script>
 
 <!-- Kenyan location datalist -->

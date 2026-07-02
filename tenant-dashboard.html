@@ -1513,8 +1513,7 @@ function proceedToPayment(){
     amount=v;
   }
   if(!amount||amount<1){toast('Invalid payment amount.','warning');return;}
-  const params=new URLSearchParams({type:'rent',propertyId:propId,propertyName:currentProp.propertyName||'Property',amount:amount,payType:_payType});
-  window.location.href='payment.html?'+params.toString();
+  openPaymentModal({ type:'rent', propertyId:propId, propertyName:currentProp.propertyName||'Property', amount:amount, payType:_payType });
 }
 
 function renderRequestsModal(){
@@ -1679,6 +1678,7 @@ function startRentCountdown(isPaid,balance,rent){
   </div>
 </nav>
 
+<script src="payment-modal.js"></script>
 <script src="shared-layout.js?v=7"></script>
 </body>
 </html>

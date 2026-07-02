@@ -318,22 +318,19 @@ function payPendingOrder(idx) {
   var orders = loadPendingOrders();
   var o = orders[idx];
   if (!o) return;
-  // Remember which pending order is being paid so payment.html can mark it
+  // Remember which pending order is being paid so the modal can mark it
   localStorage.setItem('bc_paying_order_idx', String(idx));
   if (o.source === 'cart' && o.items && o.items.length > 1) {
-    // Cart order — restore to cartItems and go to payment
+    // Cart order — restore to cartItems then open modal
     var cartItems = o.items.map(function(it) {
       return { _id: it.productId, title: it.title, unitPrice: it.price, price: it.price * it.qty, qty: it.qty, seller_id: it.sellerId };
     });
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
-    window.location.href = 'payment.html?type=cart';
+    openPaymentModal({ type:'cart' });
   } else {
     // Single product order
     var it = o.items[0] || {};
-    var params = 'item=' + encodeURIComponent(o.title) + '&price=' + (o.totalAmount || 0);
-    if (it.sellerId)  params += '&seller_id='  + encodeURIComponent(it.sellerId);
-    if (it.productId) params += '&product_id=' + encodeURIComponent(it.productId);
-    window.location.href = 'payment.html?' + params;
+    openPaymentModal({ type:'order', item: o.title, price: o.totalAmount || 0, seller_id: it.sellerId || '', product_id: it.productId || '' });
   }
 }
 
@@ -648,6 +645,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+<script src="payment-modal.js"></script>
 <script src="/shared-layout.js?v=7"></script>
 <script>document.addEventListener("DOMContentLoaded",function(){if(window.lucide)lucide.createIcons();});</script>
 </body>

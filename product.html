@@ -773,10 +773,7 @@ function buyNow(){
   var item  = buildItem();
   var total = item.price * _qty;
   var label = item.title + (item._variantLabel ? ' · ' + item._variantLabel : '') + (_qty > 1 ? ' ×' + _qty : '');
-  window.location.href = 'payment.html?type=order'
-    + '&item='     + encodeURIComponent(label)
-    + '&price='    + encodeURIComponent(total)
-    + '&returnTo=' + encodeURIComponent(location.href);
+  openPaymentModal({ type:'order', item:label, price:total, returnTo:location.href });
 }
 
 // ── Favourites ────────────────────────────────────────────────────────────────
@@ -804,6 +801,7 @@ function openAvailSheet(){
 }
 </script>
 
+<script src="payment-modal.js"></script>
 <script src="shared-layout.js?v=7"></script>
 </body>
 </html>
