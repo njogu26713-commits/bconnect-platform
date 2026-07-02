@@ -959,6 +959,16 @@ async function updateOrderStatus(orderId, status, callbackData) {
           if (buyerObjId) userData = await db.collection('profiles').findOne({ _id: buyerObjId });
         }
 
+        // SMS confirmation to buyer — fires for every completed payment (logged-in or guest)
+        if (SMS_ENABLED) {
+          const buyerPhone = orderData.phone || (userData && userData.phone) || '';
+          if (buyerPhone) {
+            const fmtAmt = 'KES ' + Number(orderData.amount).toLocaleString('en-KE');
+            const smsBody = `BConnect: Payment of ${fmtAmt} for "${orderData.item}" confirmed ✓\nRef: ${orderId}\nThank you!`;
+            sendSMS(buyerPhone, smsBody).catch(e => console.warn('[SMS] Order confirm failed:', e.message));
+          }
+        }
+
         if (userData) {
           await db.collection('notifications').insertOne({
             user_id: userData._id,
@@ -968,16 +978,6 @@ async function updateOrderStatus(orderId, status, callbackData) {
             data: { order_id: orderId, amount: orderData.amount, status: 'completed' },
             created_at: new Date()
           });
-
-          // SMS confirmation to buyer — fire-and-forget, never block the callback
-          if (SMS_ENABLED) {
-            const buyerPhone = orderData.phone || (userData && userData.phone) || '';
-            if (buyerPhone) {
-              const fmtAmt = 'KES ' + Number(orderData.amount).toLocaleString('en-KE');
-              const smsBody = `BConnect: Payment of ${fmtAmt} for "${orderData.item}" confirmed ✓\nRef: ${orderId}\nThank you!`;
-              sendSMS(buyerPhone, smsBody).catch(e => console.warn('[SMS] Order confirm failed:', e.message));
-            }
-          }
 
           // Send receipt email with PDF — skip if already sent by stk-push for this order
           if (userData.email && !orderData.receipt_email_sent) {
