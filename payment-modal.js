@@ -67,8 +67,13 @@
 .pm-lg-divider{text-align:center;font-size:.78rem;color:#94a3b8;margin:6px 0 10px;position:relative}
 .pm-lg-divider::before,.pm-lg-divider::after{content:'';position:absolute;top:50%;width:42%;height:1px;background:#e2e8f0}
 .pm-lg-divider::before{left:0}.pm-lg-divider::after{right:0}
-.pm-btn-register{width:100%;padding:13px;background:#fff;color:#0f1e3d;border:2px solid #162d6e;border-radius:12px;font-size:.92rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;margin-bottom:8px}
-.pm-btn-register:hover{background:#f0f4ff}
+.pm-btn-register{width:100%;padding:13px;background:#fff;color:#065f46;border:2px solid #059669;border-radius:12px;font-size:.92rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;margin-bottom:8px}
+.pm-btn-register:hover{background:#f0fdf4}
+/* Green theme (login gate) */
+#pm-box.pm-green #pm-header{background:linear-gradient(135deg,#065f46,#059669)}
+#pm-box.pm-green .pm-total-strip{background:linear-gradient(135deg,#065f46,#059669)}
+#pm-box.pm-green #pm-login-btn{background:linear-gradient(135deg,#065f46,#16a34a)}
+#pm-box.pm-green #pm-login-btn:hover{box-shadow:0 8px 24px rgba(5,150,105,.45)}
 
 /* Receipt */
 #pm-receipt{display:none;padding:28px 24px}
@@ -382,6 +387,7 @@
     _cancelled = true;
     if (_pollTimer) { clearTimeout(_pollTimer); _pollTimer = null; }
     ov().classList.remove('open');
+    document.getElementById('pm-box').classList.remove('pm-green');
     document.body.style.overflow = '';
   }
 
@@ -574,6 +580,7 @@
     document.getElementById('pm-lg-total-amt').textContent = '';
     document.getElementById('pm-lg-total-strip').style.display = 'none';
     document.getElementById('pm-login-btn').textContent = '🔐 Sign In';
+    document.getElementById('pm-box').classList.add('pm-green');
     showSection('pm-login-gate');
     ov().classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -603,11 +610,13 @@
       document.getElementById('pm-lg-total-amt').textContent = fmtKes(_payData.amount);
       document.getElementById('pm-lg-total-strip').style.display = '';
       document.getElementById('pm-login-btn').textContent = '🔐 Sign In to Pay ' + fmtKes(_payData.amount);
+      document.getElementById('pm-box').classList.add('pm-green');
       showSection('pm-login-gate');
       ov().classList.add('open');
       document.body.style.overflow = 'hidden';
       return;
     }
+    document.getElementById('pm-box').classList.remove('pm-green');
 
     // Populate UI
     document.getElementById('pm-header-title').textContent =
