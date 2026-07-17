@@ -4450,8 +4450,11 @@ app.post('/api/ai/chat', async (req, res) => {
       return res.status(400).json({ error: 'Message is required' });
     }
 
-    // Get platform context from database
-    const platformContext = await getPlatformContext();
+    // Get platform context + live query context from database
+    const [platformContext, queryContext] = await Promise.all([
+      getPlatformContext(),
+      getQueryContext(message, userId)
+    ]);
 
     // Build conversation history string for context
     const historyStr = Array.isArray(history) && history.length > 0
@@ -4640,6 +4643,7 @@ LIVE PLATFORM DATA
 
 ${platformContext}
 
+${queryContext ? `LIVE DATABASE RESULTS FOR THIS QUERY:\n${queryContext}\n\nIMPORTANT: Use the LIVE DATABASE RESULTS above to answer this question. Quote real titles, prices, and locations from that data. Never invent listings or prices.` : ''}
 
 HOW TO BEHAVE
 
@@ -5410,6 +5414,111 @@ app.post('/api/ai/config-suggestion', async (req, res) => {
 });
 
 // Helper function to get platform context for AI
+async function getQueryContext(message, userId) {
+  if (!db) return '';
+  const msg = message.toLowerCase();
+  const parts = [];
+
+  try {
+    // --- Extract price ceiling ---
+    const priceRe = /(?:under|below|less\s+than|max(?:imum)?|within|at\s+most)\s*(?:ksh?\.?\s*)?(\d[\d,]*)|(\d[\d,]+)\s*(?:ksh?|kes|shillings?)/i;
+    const priceMatch = msg.match(priceRe);
+    const maxPrice = priceMatch ? parseInt((priceMatch[1] || priceMatch[2]).replace(/,/g, '')) : null;
+
+    // --- Extract location ---
+    const LOCS = ['nairobi','mombasa','kisumu','nakuru','eldoret','thika','kikuyu','westlands','kasarani','kitengela','ngong','karen','kilimani','parklands','ruiru','juja','kutus','kirinyaga','zimmerman','roysambu','embakasi','githurai','ndenderu','banana','limuru','athi river','machakos','kiambu','nyeri','muranga'];
+    const loc = LOCS.find(l => msg.includes(l));
+    const locFilter = loc ? { $or: [{ location: { $regex: loc, $options: 'i' } }, { city: { $regex: loc, $options: 'i' } }, { address: { $regex: loc, $options: 'i' } }] } : null;
+
+    // --- Detect intent ---
+    const housingWords = ['bedroom','bedsitter','bedsit','apartment','flat','house','rental','studio','hostel','single room','housing','1br','2br','3br','one bed','two bed','three bed'];
+    const serviceWords = ['plumber','plumbing','electrician','electrical','cleaner','cleaning','tailor','carpenter','painting','mechanic','car wash','catering','mover','gardening','fundi','repair','technician','service provider'];
+    const eventWords = ['event','ticket','concert','show','festival','party'];
+    const orderWords = ['my order','my purchase','bought','order status','payment history','receipt','did i order'];
+    const productWords = ['product','buy','laptop','phone','television','camera','charger','earphone','headphone','dress','shoe','bag','watch','sofa','bed','mattress','grocery','cosmetic','skincare','sport','baby','book','electronics','fashion','furniture'];
+
+    const isHousing  = housingWords.some(w => msg.includes(w));
+    const isService  = serviceWords.some(w => msg.includes(w));
+    const isEvent    = eventWords.some(w => msg.includes(w));
+    const isOrder    = orderWords.some(w => msg.includes(w)) && !!userId;
+    const isProduct  = !isHousing && !isService && !isEvent && productWords.some(w => msg.includes(w));
+    const isGeneral  = !isHousing && !isService && !isEvent && !isProduct && /\b(find|search|show me|list|available|any)\b/.test(msg);
+
+    // --- PRODUCTS ---
+    if (isProduct || isGeneral) {
+      const filter = { active: true };
+      if (maxPrice) filter.price = { $lte: maxPrice };
+      if (locFilter) Object.assign(filter, locFilter);
+      const kws = ['laptop','phone','tv','television','camera','charger','earphone','headphone','dress','shoe','bag','watch','sofa','bed','mattress','grocery','cosmetic','skincare'];
+      const kw = kws.find(k => msg.includes(k));
+      if (kw) filter.$or = [{ title: { $regex: kw, $options: 'i' } }, { description: { $regex: kw, $options: 'i' } }, { category: { $regex: kw, $options: 'i' } }];
+      const items = await db.collection('products').find(filter).sort({ featured: -1, created_at: -1 }).limit(8).project({ title: 1, price: 1, category: 1, location: 1 }).toArray();
+      if (items.length) {
+        parts.push('MATCHING PRODUCTS IN DATABASE:\n' + items.map((p, i) => `${i+1}. "${p.title}" — KES ${Number(p.price||0).toLocaleString('en-KE')} | ${p.category||'General'} | ${p.location||'Kenya'}`).join('\n'));
+      } else {
+        parts.push(`PRODUCT SEARCH: No products found${maxPrice ? ` under KES ${maxPrice.toLocaleString()}` : ''}${loc ? ` in ${loc}` : ''}. Tell the user honestly no listings match and suggest broader filters.`);
+      }
+    }
+
+    // --- HOUSING ---
+    if (isHousing) {
+      const filter = {};
+      if (maxPrice) filter.price = { $lte: maxPrice };
+      if (locFilter) Object.assign(filter, locFilter);
+      const typeMap = [['bedsitter','bedsitter'],['bedsit','bedsitter'],['studio','studio'],['1 bedroom','1 bedroom'],['1br','1 bedroom'],['one bed','1 bedroom'],['2 bedroom','2 bedroom'],['2br','2 bedroom'],['two bed','2 bedroom'],['3 bedroom','3 bedroom'],['3br','3 bedroom'],['hostel','hostel'],['single room','single room']];
+      const matched = typeMap.find(([w]) => msg.includes(w));
+      if (matched) filter.$or = [{ property_type: { $regex: matched[1], $options: 'i' } }, { category: { $regex: matched[1], $options: 'i' } }, { title: { $regex: matched[1], $options: 'i' } }];
+      const items = await db.collection('properties').find(filter).sort({ created_at: -1 }).limit(8).project({ title: 1, price: 1, location: 1, property_type: 1 }).toArray();
+      if (items.length) {
+        parts.push('MATCHING HOUSING LISTINGS IN DATABASE:\n' + items.map((p, i) => `${i+1}. "${p.title}" — KES ${Number(p.price||0).toLocaleString('en-KE')}/mo | ${p.property_type||'Property'} | ${p.location||'Kenya'}`).join('\n'));
+      } else {
+        parts.push(`HOUSING SEARCH: No properties found${matched ? ` of type "${matched[1]}"` : ''}${maxPrice ? ` under KES ${maxPrice.toLocaleString()}` : ''}${loc ? ` in ${loc}` : ''}. Tell the user honestly and suggest they check the Housing page directly or adjust filters.`);
+      }
+    }
+
+    // --- SERVICES ---
+    if (isService) {
+      const filter = {};
+      if (locFilter) Object.assign(filter, locFilter);
+      const skw = ['plumb','electric','clean','tailor','carpentr','paint','mechanic','car wash','cater','mov','garden','repair'];
+      const skwMatch = skw.find(k => msg.includes(k));
+      if (skwMatch) filter.$or = [{ title: { $regex: skwMatch, $options: 'i' } }, { category: { $regex: skwMatch, $options: 'i' } }, { description: { $regex: skwMatch, $options: 'i' } }];
+      let items = await db.collection('services').find(filter).sort({ created_at: -1 }).limit(8).project({ title: 1, price: 1, category: 1, location: 1, provider_name: 1 }).toArray();
+      if (!items.length) items = await db.collection('properties').find({ ...filter, listing_type: 'service' }).limit(8).project({ title: 1, price: 1, location: 1, category: 1 }).toArray();
+      if (items.length) {
+        parts.push('MATCHING SERVICES IN DATABASE:\n' + items.map((p, i) => `${i+1}. "${p.title}"${p.provider_name ? ` by ${p.provider_name}` : ''} | ${p.category||'Service'} | ${p.location||'Kenya'}${p.price ? ` | KES ${Number(p.price).toLocaleString('en-KE')}` : ''}`).join('\n'));
+      } else {
+        parts.push(`SERVICE SEARCH: No service providers found${loc ? ` in ${loc}` : ''}. Tell the user to browse the Services page for the latest providers.`);
+      }
+    }
+
+    // --- EVENTS ---
+    if (isEvent) {
+      const items = await db.collection('events').find({ status: 'approved', date: { $gte: new Date() } }).sort({ date: 1 }).limit(6).project({ title: 1, date: 1, venue: 1, location: 1, ticket_price: 1 }).toArray();
+      if (items.length) {
+        parts.push('UPCOMING EVENTS IN DATABASE:\n' + items.map((e, i) => `${i+1}. "${e.title}" | ${new Date(e.date).toLocaleDateString('en-KE')} | ${e.venue||e.location||'TBC'} | Tickets: KES ${Number(e.ticket_price||0).toLocaleString('en-KE')}`).join('\n'));
+      } else {
+        parts.push('EVENTS: No upcoming approved events currently in the database.');
+      }
+    }
+
+    // --- USER ORDERS (authenticated only) ---
+    if (isOrder && userId) {
+      const orders = await db.collection('orders').find({ user_id: userId }).sort({ created_at: -1 }).limit(5).project({ order_id: 1, item: 1, amount: 1, status: 1, created_at: 1 }).toArray();
+      if (orders.length) {
+        parts.push("THIS USER'S RECENT ORDERS:\n" + orders.map((o, i) => `${i+1}. #${o.order_id||o._id} — ${o.item||'Item'} | KES ${Number(o.amount||0).toLocaleString('en-KE')} | ${o.status||'Pending'} | ${o.created_at ? new Date(o.created_at).toLocaleDateString('en-KE') : 'Unknown date'}`).join('\n'));
+      } else {
+        parts.push("USER ORDERS: No orders found for this account yet.");
+      }
+    }
+
+  } catch (err) {
+    console.error('[AI] getQueryContext error:', err.message);
+  }
+
+  return parts.join('\n\n');
+}
+
 async function getPlatformContext() {
   try {
     if (!db) return 'Platform data temporarily unavailable.';
