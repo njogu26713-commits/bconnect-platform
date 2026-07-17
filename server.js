@@ -1741,9 +1741,7 @@ app.post('/api/admin/users/:id/resend-verification', async (req, res) => {
       { _id: new ObjectId(id) },
       { $set: { verification_token: verificationToken, verification_token_expires: verificationExpiry } }
     );
-    const baseUrl = process.env.REPLIT_DEV_DOMAIN
-      ? `https://${process.env.REPLIT_DEV_DOMAIN}`
-      : 'http://localhost:5000';
+    const baseUrl = process.env.APP_URL || (process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : 'http://localhost:5000');
     const verifyUrl = `${baseUrl}/api/auth/verify-email?token=${verificationToken}`;
     const { text: vText, html: vHtml } = emailVerificationEmail(user.full_name, verifyUrl);
     await sendEmail(user.email, 'Verify your BConnect email', vText, vHtml);
@@ -5530,9 +5528,7 @@ app.post('/api/auth/register', async (req, res) => {
     }
 
     // Send verification email
-    const baseUrl = process.env.REPLIT_DEV_DOMAIN
-      ? `https://${process.env.REPLIT_DEV_DOMAIN}`
-      : 'http://localhost:5000';
+    const baseUrl = process.env.APP_URL || (process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : 'http://localhost:5000');
     const verifyUrl = `${baseUrl}/api/auth/verify-email?token=${verificationToken}`;
     const { text: vText, html: vHtml } = emailVerificationEmail(fullName, verifyUrl);
     sendEmail(email.toLowerCase(), 'Verify your BConnect email', vText, vHtml);
@@ -5572,9 +5568,7 @@ app.get('/api/auth/verify-email', async (req, res) => {
     const { text: wText, html: wHtml } = welcomeEmail(user.full_name, user.role);
     sendEmail(user.email, 'Welcome to BConnect!', wText, wHtml);
 
-    const baseUrl = process.env.REPLIT_DEV_DOMAIN
-      ? `https://${process.env.REPLIT_DEV_DOMAIN}`
-      : 'http://localhost:5000';
+    const baseUrl = process.env.APP_URL || (process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : 'http://localhost:5000');
     return res.send(verifyPage('Email Verified!', 'Your email has been verified successfully. You can now sign in to your BConnect account.', true, `${baseUrl}/login.html?verified=1`));
   } catch (err) {
     console.error('Email verify error:', err);
@@ -5611,9 +5605,7 @@ app.post('/api/auth/resend-verification', async (req, res) => {
       { $set: { verification_token: verificationToken, verification_token_expires: verificationExpiry } }
     );
 
-    const baseUrl = process.env.REPLIT_DEV_DOMAIN
-      ? `https://${process.env.REPLIT_DEV_DOMAIN}`
-      : 'http://localhost:5000';
+    const baseUrl = process.env.APP_URL || (process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : 'http://localhost:5000');
     const verifyUrl = `${baseUrl}/api/auth/verify-email?token=${verificationToken}`;
     const { text: vText, html: vHtml } = emailVerificationEmail(user.full_name, verifyUrl);
     await sendEmail(user.email, 'Verify your BConnect email', vText, vHtml);
@@ -5764,9 +5756,7 @@ app.post('/api/auth/forgot-password', async (req, res) => {
       { $set: { reset_token: token, reset_token_expires: expiry } }
     );
 
-    const baseUrl = process.env.REPLIT_DEV_DOMAIN
-      ? `https://${process.env.REPLIT_DEV_DOMAIN}`
-      : 'http://localhost:5000';
+    const baseUrl = process.env.APP_URL || (process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : 'http://localhost:5000');
     const resetUrl = `${baseUrl}/reset-password.html?token=${token}`;
 
     const { text, html } = passwordResetEmail(user.full_name || user.email, resetUrl);
