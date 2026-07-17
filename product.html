@@ -754,7 +754,6 @@ function buildItem(){
 
 // ── Add to cart ───────────────────────────────────────────────────────────────
 function addToCart(){
-  if (!requireAuth()) return;
   var item = buildItem();
   item.qty = _qty;
   var cart = JSON.parse(localStorage.getItem('bc_cart')||'[]');
