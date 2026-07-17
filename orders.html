@@ -187,7 +187,7 @@ a{text-decoration:none;color:inherit}
 
   <!-- PAGE HEADER -->
   <div class="page-header">
-    <h1>💳 My Payments</h1>
+    <h1>My Payments</h1>
     <p>All your payment history — products, rent, tickets, bookings and more</p>
   </div>
 
@@ -202,7 +202,7 @@ a{text-decoration:none;color:inherit}
   <div id="pending-orders-section" style="display:none">
     <div class="pending-section">
       <div class="pending-section-hdr">
-        <span style="font-size:1.3rem" id="ps-icon">📦</span>
+        <span style="font-size:1.3rem" id="ps-icon"></span>
         <h2 id="ps-title">My Orders</h2>
         <span class="ps-badge" id="ps-count" style="display:none">0</span>
       </div>
@@ -219,7 +219,7 @@ a{text-decoration:none;color:inherit}
 
   <!-- EMPTY STATE -->
   <div class="empty-state" id="empty-state" style="display:none">
-    <div class="empty-icon">💳</div>
+    <div class="empty-icon"></div>
     <h3>No payments found</h3>
     <p>Your payment history will appear here once you make a purchase or payment.</p>
     <button class="btn-shop" onclick="window.location.href='products.html'">Browse Products</button>
@@ -230,11 +230,11 @@ a{text-decoration:none;color:inherit}
 <!-- MOBILE BOTTOM NAV -->
 <nav class="mob-nav-bar">
   <div class="mob-nav-bar-inner">
-    <a class="mob-nav-a" href="website.html"><span class="mob-icon">🏠</span>Home</a>
-    <a class="mob-nav-a" href="products.html"><span class="mob-icon">🛍️</span>Browse</a>
-    <a class="mob-nav-a sell-btn" href="seller-dashboard.html"><span class="mob-icon">➕</span>Sell</a>
-    <a class="mob-nav-a active" href="orders.html"><span class="mob-icon">💳</span>Payments</a>
-    <a class="mob-nav-a" href="login.html"><span class="mob-icon">👤</span>Account</a>
+    <a class="mob-nav-a" href="website.html"><span class="mob-icon"></span>Home</a>
+    <a class="mob-nav-a" href="products.html"><span class="mob-icon"></span>Browse</a>
+    <a class="mob-nav-a sell-btn" href="seller-dashboard.html"><span class="mob-icon"></span>Sell</a>
+    <a class="mob-nav-a active" href="orders.html"><span class="mob-icon"></span>Payments</a>
+    <a class="mob-nav-a" href="login.html"><span class="mob-icon"></span>Account</a>
   </div>
 </nav>
 
@@ -262,7 +262,7 @@ function renderPendingOrders() {
 
   // Update header to reflect actual state
   if (title) title.textContent = allPaid ? 'My Orders — All Paid' : 'My Orders — Payment Pending';
-  if (icon)  icon.textContent  = allPaid ? '✅' : '📦';
+  if (icon)  icon.textContent  = '';
 
   // Only show badge when there are genuinely unpaid orders
   if (badge) {
@@ -289,7 +289,7 @@ function renderPendingOrders() {
       }).join('<br>') + '</div>';
     }
     var dateStr = o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-KE', {day:'numeric',month:'short',year:'numeric'}) : '';
-    var sourceLabel = o.source === 'cart' ? '🛒 Cart order' : '🛍️ Direct order';
+    var sourceLabel = o.source === 'cart' ? 'Cart order' : 'Direct order';
     var oEncoded = encodeURIComponent(JSON.stringify(o));
     var actionsHtml = isPaid
       ? '<div class="porder-actions">' +
@@ -301,13 +301,13 @@ function renderPendingOrders() {
           '<button class="pbtn-del" onclick="deletePendingOrder(' + idx + ')">Remove</button>' +
         '</div>';
     return '<div class="porder-card' + (isPaid ? ' porder-card--paid' : '') + '" id="porder-' + idx + '">' +
-      '<div class="porder-icon">' + (isPaid ? '✅' : '📦') + '</div>' +
+      '<div class="porder-icon"></div>' +
       '<div class="porder-body">' +
         '<div class="porder-title">' + esc(o.title) + '</div>' +
         '<div class="porder-meta">' + sourceLabel + ' &nbsp;·&nbsp; ' + dateStr + '</div>' +
         itemsHtml +
         '<div class="porder-amount">' + fmtKes(o.totalAmount) + '</div>' +
-        (freeDelivery ? '<div class="free-del-note">🚚 Free Delivery</div>' : '') +
+        (freeDelivery ? '<div class="free-del-note">Free Delivery</div>' : '') +
       '</div>' +
       actionsHtml +
     '</div>';
@@ -351,13 +351,13 @@ var _cardStore = [];
 var CATEGORIES = ['product','service','rent','viewing','ticket','promotion','premium_listing'];
 
 var CAT_META = {
-  product:         { label:'Product Bought',         icon:'🛍️', bar:'bar-product',         ic:'icon-product',         lbl:'lbl-product' },
-  service:         { label:'Service Paid',            icon:'🔧', bar:'bar-service',          ic:'icon-service',         lbl:'lbl-service' },
-  rent:            { label:'Rent Paid',               icon:'🏠', bar:'bar-rent',             ic:'icon-rent',            lbl:'lbl-rent' },
-  viewing:         { label:'Viewing / Booking Fee',   icon:'👁️', bar:'bar-viewing',          ic:'icon-viewing',         lbl:'lbl-viewing' },
-  ticket:          { label:'Ticket Purchased',        icon:'🎟️', bar:'bar-ticket',           ic:'icon-ticket',          lbl:'lbl-ticket' },
-  promotion:       { label:'Promotion Paid',          icon:'📢', bar:'bar-promotion',        ic:'icon-promotion',       lbl:'lbl-promotion' },
-  premium_listing: { label:'Premium Listing Paid',    icon:'⭐', bar:'bar-premium_listing',  ic:'icon-premium_listing', lbl:'lbl-premium_listing' }
+  product:         { label:'Product Bought',         icon:'P',  bar:'bar-product',         ic:'icon-product',         lbl:'lbl-product' },
+  service:         { label:'Service Paid',            icon:'S',  bar:'bar-service',          ic:'icon-service',         lbl:'lbl-service' },
+  rent:            { label:'Rent Paid',               icon:'R',  bar:'bar-rent',             ic:'icon-rent',            lbl:'lbl-rent' },
+  viewing:         { label:'Viewing / Booking Fee',   icon:'V',  bar:'bar-viewing',          ic:'icon-viewing',         lbl:'lbl-viewing' },
+  ticket:          { label:'Ticket Purchased',        icon:'T',  bar:'bar-ticket',           ic:'icon-ticket',          lbl:'lbl-ticket' },
+  promotion:       { label:'Promotion Paid',          icon:'Pr', bar:'bar-promotion',        ic:'icon-promotion',       lbl:'lbl-promotion' },
+  premium_listing: { label:'Premium Listing Paid',    icon:'★',  bar:'bar-premium_listing',  ic:'icon-premium_listing', lbl:'lbl-premium_listing' }
 };
 
 var _all = [];
@@ -463,13 +463,13 @@ function buildDetails(p) {
              (p.venue ? row('Venue', p.venue) : '') +
              (evtDateStr ? row('Event Date', evtDateStr + (evtStatus ? '  <span style="color:var(--green);font-weight:700;font-size:.72rem">(' + evtStatus + ')</span>' : '')) : '') +
              row('Qty', p.quantity ? p.quantity + ' ticket' + (p.quantity > 1 ? 's' : '') : '1 ticket') +
-             (p.ticketCode ? '<div class="ticket-code">🎟️ ' + p.ticketCode + '</div>' : '');
+             (p.ticketCode ? '<div class="ticket-code">' + p.ticketCode + '</div>' : '');
 
     case 'promotion':
       var expDate = p.expiresAt ? fmtDateTime(p.expiresAt) : null;
       var promoLeft = p.expiresAt ? daysLeft(p.expiresAt) : null;
       var promoPill = promoLeft !== null
-        ? '<div class="days-pill' + (promoLeft <= 0 ? ' expired' : '') + '">📅 ' + (promoLeft > 0 ? promoLeft + ' day' + (promoLeft !== 1 ? 's' : '') + ' remaining' : 'Expired') + '</div>'
+        ? '<div class="days-pill' + (promoLeft <= 0 ? ' expired' : '') + '">' + (promoLeft > 0 ? promoLeft + ' day' + (promoLeft !== 1 ? 's' : '') + ' remaining' : 'Expired') + '</div>'
         : '';
       return row('Item Promoted', p.title || '—') +
              row('Seller', p.sellerName || '—') +
@@ -481,7 +481,7 @@ function buildDetails(p) {
       var activatedStr = p.activatedAt ? fmtDateTime(p.activatedAt) : (p.date ? fmtDateTime(p.date) : null);
       var expStr = p.expiresAt ? fmtDateTime(p.expiresAt) : null;
       var pill2 = dl2 !== null
-        ? '<div class="days-pill' + (dl2 <= 0 ? ' expired' : '') + '">⭐ ' + (dl2 > 0 ? dl2 + ' day' + (dl2 !== 1 ? 's' : '') + ' remaining' : 'Expired') + '</div>'
+        ? '<div class="days-pill' + (dl2 <= 0 ? ' expired' : '') + '">' + (dl2 > 0 ? dl2 + ' day' + (dl2 !== 1 ? 's' : '') + ' remaining' : 'Expired') + '</div>'
         : '';
       return row('Seller', p.sellerName || '—') +
              (activatedStr ? row('Activated', activatedStr) : '') +
