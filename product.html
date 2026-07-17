@@ -763,7 +763,7 @@ function addToCart(){
   else { cart.push(item); }
   localStorage.setItem('bc_cart', JSON.stringify(cart));
   if (window.updateCartBadge) window.updateCartBadge();
-  showToast('✓ Added to cart');
+  window.location.href = 'cart.html';
 }
 
 // ── Buy now ───────────────────────────────────────────────────────────────────
