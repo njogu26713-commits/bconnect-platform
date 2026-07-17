@@ -2183,7 +2183,9 @@ function closeAdminSidebar() {
 //  API 
 async function api(endpoint, opts = {}) {
   try {
-    const res = await fetch(API + endpoint, { headers: { 'Content-Type': 'application/json' }, ...opts });
+    const token = localStorage.getItem('adminToken') || localStorage.getItem('token') || '';
+    const defaultHeaders = { 'Content-Type': 'application/json', ...(token ? { 'Authorization': 'Bearer ' + token } : {}) };
+    const res = await fetch(API + endpoint, { ...opts, headers: { ...defaultHeaders, ...(opts.headers || {}) } });
     return await res.json();
   } catch (e) { console.error(endpoint, e); return null; }
 }

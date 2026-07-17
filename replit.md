@@ -48,6 +48,21 @@ The workflow `Start application` runs `PORT=5000 node server.js`.
 - `*.html` — frontend pages (index, login, admin, housing, events, orders, etc.)
 - `global.css` — shared styles
 
+## Admin dashboard
+
+Visit `/admin.html` to access the admin panel. To create the first admin account, call:
+
+```
+POST /api/admin/setup
+{ "email": "...", "password": "...", "fullName": "...", "secretKey": "<ADMIN_SETUP_KEY>" }
+```
+
+`ADMIN_SETUP_KEY` must be set as a secret. If the email already exists, it promotes that user to admin.
+
+## Known fixes
+
+- **Admin page was empty**: The `api()` helper in `admin.html` was not sending the Authorization header, causing all `/api/admin/*` calls to fail with 401/403 silently. Fixed — the token from `localStorage` is now included in every request.
+
 ## User preferences
 
 - Keep the existing HTML/CSS/JS + Node.js/Express/MongoDB stack — do not migrate or restructure without asking.
