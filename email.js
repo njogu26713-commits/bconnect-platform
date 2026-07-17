@@ -12,8 +12,11 @@ function getTransporter() {
     return null;
   }
   transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: { user: EMAIL_USER, pass: EMAIL_PASS }
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // STARTTLS — works on Railway (port 465 is often blocked)
+    auth: { user: EMAIL_USER, pass: EMAIL_PASS },
+    tls: { rejectUnauthorized: false }
   });
   transporter.verify((err) => {
     if (err) {
