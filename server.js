@@ -4643,7 +4643,7 @@ LIVE PLATFORM DATA
 
 ${platformContext}
 
-${queryContext ? `LIVE DATABASE RESULTS FOR THIS QUERY:\n${queryContext}\n\nIMPORTANT: Use the LIVE DATABASE RESULTS above to answer this question. Quote real titles, prices, and locations from that data. Never invent listings or prices.` : ''}
+${queryContext ? `CURRENT LISTINGS (use these to answer — do not mention "database" or "results" to the user, just present the information naturally):\n${queryContext}\n\nRule: Answer using only the listings above. If the list is empty, say honestly that nothing matches right now and suggest the user try different filters. Never invent listings, prices, or seller names.` : ''}
 
 HOW TO BEHAVE
 
