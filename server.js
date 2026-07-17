@@ -52,7 +52,7 @@ const {
   MPESA_PASSKEY,
   MPESA_CALLBACK_URL,
   MONGODB_URI,
-  XAI_API_KEY,
+  GROQ_API_KEY,
   JWT_SECRET = 'your_secret_key_change_in_production',
   NODE_ENV = 'development',
   PORT = 3000,
@@ -366,13 +366,13 @@ process.on('uncaughtException', (err) => {
   if (err && /Mongo|topology|connection/i.test(err.message || '')) scheduleReconnect();
 });
 
-// Initialize Grok (xAI) client
-const genAI = XAI_API_KEY ? new OpenAI({ apiKey: XAI_API_KEY, baseURL: 'https://api.x.ai/v1' }) : null;
+// Initialize Groq client (OpenAI-compatible)
+const genAI = GROQ_API_KEY ? new OpenAI({ apiKey: GROQ_API_KEY, baseURL: 'https://api.groq.com/openai/v1' }) : null;
 
-if (!XAI_API_KEY) {
-  console.log('[INFO] XAI_API_KEY not set — AI assistant endpoints disabled.');
+if (!GROQ_API_KEY) {
+  console.log('[INFO] GROQ_API_KEY not set — AI assistant endpoints disabled.');
 } else {
-  console.log('[OK] Grok AI client initialized');
+  console.log('[OK] Groq AI client initialized');
 }
 
 // ── WhatsApp Bot ────────────────────────────────────────────────────────────
@@ -436,21 +436,23 @@ app.post('/api/admin/whatsapp-refresh-code', requireAuth, requireAdmin, async (r
   }
 });
 
-// Gemini models available on the free-tier v1beta endpoint (in fallback order)
-const GEMINI_MODEL_CHAIN = [
-  'gemini-2.5-flash',
-  'gemini-2.5-flash-lite',
-  'gemini-2.0-flash',
-  'gemini-2.0-flash-lite',
+// Groq models in fallback order (fastest/cheapest first for rate-limit resilience)
+const GROQ_MODEL_CHAIN = [
+  'llama-3.3-70b-versatile',
+  'llama-3.1-8b-instant',
+  'gemma2-9b-it',
 ];
 
-// Estimated free-tier daily request quotas per model
-const GEMINI_MODEL_QUOTAS = {
-  'gemini-2.5-flash':      500,
-  'gemini-2.5-flash-lite': 1500,
-  'gemini-2.0-flash':      1500,
-  'gemini-2.0-flash-lite': 1500,
+// Approximate free-tier daily token quotas per model (requests proxy)
+const GROQ_MODEL_QUOTAS = {
+  'llama-3.3-70b-versatile': 1000,
+  'llama-3.1-8b-instant':    14400,
+  'gemma2-9b-it':            14400,
 };
+
+// Keep legacy alias so existing references still resolve
+const GEMINI_MODEL_CHAIN = GROQ_MODEL_CHAIN;
+const GEMINI_MODEL_QUOTAS = GROQ_MODEL_QUOTAS;
 
 // In-memory response cache (1-hour TTL) — avoids burning quota on identical repeat calls
 const _aiCache = new Map();
@@ -459,12 +461,12 @@ const AI_CACHE_TTL = 60 * 60 * 1000;
 // AI usage tracking — resets daily (date check on each call)
 let _aiUsage = {
   date: new Date().toISOString().slice(0, 10),
-  totalCalls: 0,       // calls to generateGeminiResponse
+  totalCalls: 0,       // calls to generateAIResponse
   cacheHits: 0,        // served from cache (no API call)
   failedCalls: 0,      // all models exhausted
   successModel: null,  // last model that responded successfully
-  models: Object.fromEntries(GEMINI_MODEL_CHAIN.map(m => [m, {
-    requests: 0,          // times this model was tried via the API
+  models: Object.fromEntries(GROQ_MODEL_CHAIN.map(m => [m, {
+    requests: 0,
     successes: 0,
     quotaExhausted: false,
     lastUsed: null,
@@ -477,22 +479,15 @@ function _aiUsageResetIfNewDay() {
     _aiUsage = {
       date: today,
       totalCalls: 0, cacheHits: 0, failedCalls: 0, successModel: null,
-      models: Object.fromEntries(GEMINI_MODEL_CHAIN.map(m => [m, {
+      models: Object.fromEntries(GROQ_MODEL_CHAIN.map(m => [m, {
         requests: 0, successes: 0, quotaExhausted: false, lastUsed: null,
       }])),
     };
   }
 }
 
-// Parse "retry in X.Xs" or "retryDelay":"Xs" from Gemini 429 bodies
-function parseRetryDelay(msg) {
-  const m = msg.match(/retry(?:ing)? in (\d+(?:\.\d+)?)\s*s/i)
-           || msg.match(/"retryDelay"\s*:\s*"(\d+(?:\.\d+)?)s"/i);
-  return m ? Math.ceil(parseFloat(m[1])) * 1000 : 15000;
-}
-
-async function generateGeminiResponse(prompt, { maxTokens = 500, temperature = 0.7 } = {}) {
-  if (!genAI) throw new Error('Gemini API key not configured.');
+async function generateAIResponse(prompt, { maxTokens = 500, temperature = 0.7 } = {}) {
+  if (!genAI) throw new Error('GROQ_API_KEY not configured.');
   _aiUsageResetIfNewDay();
   _aiUsage.totalCalls++;
 
@@ -506,19 +501,21 @@ async function generateGeminiResponse(prompt, { maxTokens = 500, temperature = 0
   }
 
   let lastErr;
-  for (const modelName of GEMINI_MODEL_CHAIN) {
+  for (const modelName of GROQ_MODEL_CHAIN) {
     const stat = _aiUsage.models[modelName] || { requests: 0, successes: 0, quotaExhausted: false, lastUsed: null };
     _aiUsage.models[modelName] = stat;
 
     for (let attempt = 0; attempt <= 1; attempt++) {
       try {
-        const model = genAI.getGenerativeModel(
-          { model: modelName, generationConfig: { maxOutputTokens: maxTokens, temperature } }
-        );
         stat.requests++;
         stat.lastUsed = new Date().toISOString();
-        const result = await model.generateContent(prompt);
-        const text = result.response.text();
+        const completion = await genAI.chat.completions.create({
+          model: modelName,
+          messages: [{ role: 'user', content: prompt }],
+          max_tokens: maxTokens,
+          temperature,
+        });
+        const text = completion.choices[0]?.message?.content || '';
         stat.successes++;
         _aiUsage.successModel = modelName;
         console.log(`[AI] ✓ ${modelName}${attempt > 0 ? ' (retry)' : ''}`);
@@ -527,23 +524,23 @@ async function generateGeminiResponse(prompt, { maxTokens = 500, temperature = 0
       } catch (err) {
         lastErr = err;
         const msg = err.message || '';
-        const is429 = msg.includes('429') || msg.includes('Too Many Requests');
-        const isDead = msg.includes('404') || msg.includes('not found') ||
-                       msg.includes('503') || msg.includes('not supported');
+        const is429 = err.status === 429 || msg.includes('429') || msg.includes('Too Many Requests') || msg.includes('rate_limit');
+        const isDead = err.status === 404 || err.status === 503 || msg.includes('not found') || msg.includes('not supported');
 
         if (!is429 && !isDead) throw err;
 
         if (is429 && attempt === 0) {
-          const delay = parseRetryDelay(msg);
-          if (delay <= 25000) {
+          const retryAfter = err.headers?.['retry-after'];
+          const delay = retryAfter ? parseInt(retryAfter) * 1000 : 10000;
+          if (delay <= 30000) {
             console.warn(`[AI] ${modelName} rate-limited — retrying in ${delay / 1000}s…`);
             await new Promise(r => setTimeout(r, delay));
             continue;
           }
           stat.quotaExhausted = true;
-          console.warn(`[AI] ${modelName} daily quota exhausted (retry in ${Math.round(delay / 1000)}s) — trying next…`);
+          console.warn(`[AI] ${modelName} quota exhausted — trying next model…`);
         } else {
-          console.warn(`[AI] ${modelName} unavailable (${is429 ? '429' : '404/503'}) — trying next…`);
+          console.warn(`[AI] ${modelName} unavailable (${err.status || 'error'}) — trying next model…`);
         }
         break;
       }
@@ -552,12 +549,14 @@ async function generateGeminiResponse(prompt, { maxTokens = 500, temperature = 0
 
   _aiUsage.failedCalls++;
   const finalErr = new Error(
-    'All Gemini models are currently unavailable. The free-tier daily quota may be exhausted. ' +
-    'Quota resets at midnight PT. To remove limits visit https://aistudio.google.com and enable billing.'
+    'All Groq models are currently unavailable or rate-limited. Please try again in a moment.'
   );
   finalErr.quotaExhausted = true;
   throw finalErr;
 }
+
+// Legacy alias — all existing call sites use this name
+const generateGeminiResponse = generateAIResponse;
 
 // JWT Token Generation
 function generateToken(userId) {
@@ -1122,10 +1121,10 @@ app.get('/api/health', async (_req, res) => {
     }
   }
 
-  // Grok AI
-  result.services.gemini = {
-    configured: Boolean(process.env.XAI_API_KEY),
-    status: process.env.XAI_API_KEY ? 'enabled' : 'not_configured'
+  // Groq AI
+  result.services.groq = {
+    configured: Boolean(process.env.GROQ_API_KEY),
+    status: process.env.GROQ_API_KEY ? 'enabled' : 'not_configured'
   };
 
   // M-Pesa
@@ -4668,7 +4667,7 @@ HOW TO BEHAVE
 USER CONTEXT: ${context || 'General user browsing BConnect marketplace'}`;
 
     if (!genAI) {
-      return res.status(503).json({ error: 'AI service not configured. Please set GEMINI_API_KEY.' });
+      return res.status(503).json({ error: 'AI service not configured. Please set GROQ_API_KEY.' });
     }
 
     const fullPrompt = `${systemPrompt}${historyStr}\n\nUser: ${message}`;
@@ -4750,7 +4749,7 @@ app.post('/api/ai/generate-email', async (req, res) => {
   try {
     const { prompt, recipients, subject } = req.body;
     if (!prompt) return res.status(400).json({ error: 'Describe the email you want to send.' });
-    if (!genAI) return res.status(503).json({ error: 'AI service not configured. Please set GEMINI_API_KEY.' });
+    if (!genAI) return res.status(503).json({ error: 'AI service not configured. Please set GROQ_API_KEY.' });
 
     const fullPrompt = `You are an expert email copywriter for BConnect — Kenya's all-in-one property rental and marketplace platform.
 
@@ -4805,7 +4804,7 @@ REQUIREMENTS:
 - Use Kenyan context where relevant (locations, currency, etc.)`;
 
     if (!genAI) {
-      return res.status(503).json({ error: 'AI service not configured. Please set GEMINI_API_KEY.' });
+      return res.status(503).json({ error: 'AI service not configured. Please set GROQ_API_KEY.' });
     }
 
     const description = (await generateGeminiResponse(prompt, { maxTokens: 200, temperature: 0.7 })).trim();
@@ -4845,7 +4844,7 @@ BConnect Categories:
 Return only the category name (services/housing/product) that best fits.`;
 
     if (!genAI) {
-      return res.status(503).json({ error: 'AI service not configured. Please set GEMINI_API_KEY.' });
+      return res.status(503).json({ error: 'AI service not configured. Please set GROQ_API_KEY.' });
     }
 
     const category = (await generateGeminiResponse(prompt, { maxTokens: 100, temperature: 0.1 })).trim().toLowerCase();
@@ -5396,7 +5395,7 @@ app.post('/api/ai/setting-helper', async (req, res) => {
     if (!genAI) return res.status(503).json({ success: false, error: 'AI not configured' });
     const { question } = req.body;
     if (!question) return res.status(400).json({ success: false, error: 'Question required' });
-    const prompt = `You are a platform configuration expert for BConnect, a Kenya-based property rental & marketplace platform using Node.js, MongoDB, M-Pesa, and Gemini AI. An admin is asking: "${question}"\n\nGive a clear, specific, actionable answer. Consider Kenya's market, M-Pesa payment patterns, and best practices for online marketplaces. Keep it under 250 words and practical.`;
+    const prompt = `You are a platform configuration expert for BConnect, a Kenya-based property rental & marketplace platform using Node.js, MongoDB, M-Pesa, and Groq AI. An admin is asking: "${question}"\n\nGive a clear, specific, actionable answer. Consider Kenya's market, M-Pesa payment patterns, and best practices for online marketplaces. Keep it under 250 words and practical.`;
     const result = await generateGeminiResponse(prompt, { maxTokens: 450 });
     return res.json({ success: true, result });
   } catch (e) { return res.status(500).json({ success: false, error: e.message }); }
@@ -10526,7 +10525,7 @@ Requirements:
 
 Return ONLY the description text, nothing else.`;
 
-    const result = await generateGeminiResponse(prompt, 'listing-description', { name, category, price });
+    const result = await generateGeminiResponse(prompt, { maxTokens: 250, temperature: 0.7 });
     if (!result) return res.status(503).json({ success: false, error: 'AI unavailable, please try again later' });
     res.json({ success: true, description: result.trim() });
   } catch (e) {
