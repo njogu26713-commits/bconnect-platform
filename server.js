@@ -849,18 +849,18 @@ app.post('/stk-push', async (req, res) => {
           const { text, html } = depositConfirmationEmail(recipientName, depositData);
           sendEmail(recipientEmail, `Deposit Confirmed — Property Code: ${property_code}`, text, html);
           db.collection('orders').updateOne({ order_id: orderId }, { $set: { receipt_email_sent: true } }).catch(() => {});
-        } else if (req.user && req.user.email) {
-          // Standard receipt email with PDF for authenticated buyers
+        } else {
+          // Standard receipt email for all buyers (authenticated or guest with buyer_email)
           const receiptData = {
             orderId,
             item: paymentItem,
             amount: parsedAmount,
             phone: normalizedPhone,
-            paymentType: 'order',
+            paymentType: payment_type || 'order',
             date: new Date()
           };
           const { text, html } = paymentReceiptEmail(recipientName, receiptData);
-          sendEmail(req.user.email, 'Payment Confirmed — BConnect Receipt', text, html);
+          sendEmail(recipientEmail, 'Payment Confirmed — BConnect Receipt', text, html);
           db.collection('orders').updateOne({ order_id: orderId }, { $set: { receipt_email_sent: true } }).catch(() => {});
         }
       } catch (emailErr) {

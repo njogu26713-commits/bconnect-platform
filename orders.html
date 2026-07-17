@@ -410,8 +410,6 @@ function buildCard(p) {
   var m = CAT_META[p.category] || CAT_META.product;
   var details = buildDetails(p);
   var footerRight = p.date ? '<span class="pay-date">' + fmtDate(p.date) + '</span>' : '';
-  var viewBtn     = '<button class="pbtn pbtn-ghost" onclick="viewReceipt(' + idx + ')">View Receipt</button>';
-  var downloadBtn = '<button class="pbtn pbtn-dl" onclick="downloadOrderReceipt(' + idx + ')">&#11015; Download</button>';
 
   return '<div class="pay-card">' +
     '<div class="pay-card-bar ' + m.bar + '"></div>' +
@@ -427,7 +425,6 @@ function buildCard(p) {
     '<div class="pay-card-footer">' +
       '<div class="pay-amount">' + (p.amount ? fmt(p.amount) : (p.category === 'viewing' ? 'Free Booking' : '')) + '</div>' +
       footerRight +
-      '<div class="pay-actions">' + viewBtn + downloadBtn + '</div>' +
     '</div>' +
   '</div>';
 }
@@ -549,47 +546,7 @@ function animateCount(id, value, isMoney) {
   requestAnimationFrame(step);
 }
 
-/* ─────────────── receipt ─────────────── */
-function buildReceiptParams(p) {
-  return new URLSearchParams({
-    type:   p.category || 'payment',
-    amount: String(p.amount || '0').replace(/[^0-9.]/g,''),
-    ref:    p.id || p.reference || '',
-    desc:   p.title || 'Payment',
-    date:   p.date || new Date().toISOString(),
-    name:   p.buyerName || p.tenantName || '',
-    phone:  p.phone || ''
-  });
-}
-
-function viewReceipt(idx) {
-  var p = _cardStore[idx];
-  if (!p) return;
-  window.open('receipt.html?' + buildReceiptParams(p).toString(), '_blank');
-}
-
-function downloadOrderReceipt(idx) {
-  var p = _cardStore[idx];
-  if (!p) return;
-  var params = buildReceiptParams(p);
-  params.set('autoDownload', '1');
-  window.open('receipt.html?' + params.toString(), '_blank');
-}
-
-function downloadPendingReceipt(oEncoded) {
-  try {
-    var o = JSON.parse(decodeURIComponent(oEncoded));
-    var params = new URLSearchParams({
-      type:   'order',
-      amount: String(o.totalAmount || 0),
-      ref:    o.paidAt ? ('BC' + new Date(o.paidAt).getTime().toString(36).toUpperCase()) : ('BC' + Date.now().toString(36).toUpperCase()),
-      desc:   o.title || 'Order',
-      date:   o.paidAt || o.createdAt || new Date().toISOString(),
-      autoDownload: '1'
-    });
-    window.open('receipt.html?' + params.toString(), '_blank');
-  } catch(e) {}
-}
+/* receipt functions removed — confirmations are sent by email */
 
 /* ─────────────── load ─────────────── */
 function loadPayments() {

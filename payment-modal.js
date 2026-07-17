@@ -258,20 +258,25 @@
 
   function redirectToReceipt(ref, extraLabel, extraVal) {
     const p = _params;
-    const phoneRaw = (document.getElementById('pm-phone') || {}).value || '';
-    const rp = new URLSearchParams({
-      type:    p.type,
-      amount:  _payData.amount,
-      ref,
-      desc:    _payData.description,
-      phone:   phoneRaw,
-      name:    getProfileField('full_name') || getProfileField('name') || '',
-      date:    new Date().toISOString(),
-      returnTo: p.returnTo || location.href
-    });
-    if (p.type === 'rent')      { rp.set('payType', p.payType || 'full'); rp.set('property', p.propertyName || ''); }
-    if (p.type === 'promotion' && extraVal) rp.set('promoEnd', extraVal);
-    location.href = 'receipt.html?' + rp.toString();
+    const amount = _payData.amount;
+    const description = _payData.description;
+    const returnTo = p.returnTo || location.href;
+    const amtFmt = 'KES ' + Number(amount).toLocaleString('en-KE');
+    // Replace page with a success screen — confirmation sent by email
+    document.body.innerHTML = `
+      <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f8fafc;font-family:sans-serif;padding:24px;">
+        <div style="background:#fff;border-radius:20px;box-shadow:0 4px 32px rgba(0,0,0,.10);padding:48px 40px;max-width:420px;width:100%;text-align:center;">
+          <div style="width:72px;height:72px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:36px;">✓</div>
+          <h2 style="margin:0 0 8px;font-size:22px;color:#15803d;font-weight:800;">Payment Successful</h2>
+          <p style="color:#6b7280;margin:0 0 28px;font-size:15px;">A confirmation receipt has been sent to your email address.</p>
+          <div style="background:#f1f5f9;border-radius:12px;padding:16px 20px;margin-bottom:28px;text-align:left;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px;"><span style="color:#6b7280;">Amount</span><span style="font-weight:700;color:#111;">${amtFmt}</span></div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px;"><span style="color:#6b7280;">Description</span><span style="font-weight:600;color:#374151;">${description || '—'}</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:14px;"><span style="color:#6b7280;">Reference</span><span style="font-family:monospace;font-weight:700;color:#111;">${ref || '—'}</span></div>
+          </div>
+          <a href="${returnTo}" style="display:block;background:#1e3a8a;color:#fff;text-decoration:none;padding:14px 24px;border-radius:10px;font-weight:700;font-size:15px;">Continue</a>
+        </div>
+      </div>`;
   }
 
   // ── Build paymentData from params ─────────────────────────────────────────
