@@ -1101,6 +1101,8 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         localStorage.setItem('tenantToken', data.token);
         localStorage.setItem('tenantId', data.tenantId || data.user.id);
         localStorage.setItem('tenantName', data.user.name);
+      } else if (role === 'admin') {
+        localStorage.setItem('adminToken', data.token);
       }
 
       showMessage('Login successful! Redirecting...', 'success');
@@ -1109,7 +1111,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
       const redirectTo = sessionStorage.getItem('bc_redirect');
       sessionStorage.removeItem('bc_redirect');
       setTimeout(() => {
-        window.location.href = redirectTo || `${API_BASE_URL}/website.html`;
+        window.location.href = redirectTo || (role === 'admin' ? `${API_BASE_URL}/admin.html` : `${API_BASE_URL}/website.html`);
       }, 1000);
     } else {
       if (data.requiresVerification) {
@@ -1194,11 +1196,13 @@ function showRegMsg(msg, type = 'error') {
             localStorage.setItem('tenantToken', data.token);
             localStorage.setItem('tenantId', data.tenantId || data.user.id);
             localStorage.setItem('tenantName', data.user.name);
+          } else if (role === 'admin') {
+            localStorage.setItem('adminToken', data.token);
           }
           showMessage('Verified! Redirecting...', 'success');
           var redirectTo = sessionStorage.getItem('bc_redirect');
           sessionStorage.removeItem('bc_redirect');
-          setTimeout(function() { window.location.href = redirectTo || (API_BASE_URL + '/website.html'); }, 900);
+          setTimeout(function() { window.location.href = redirectTo || (role === 'admin' ? API_BASE_URL + '/admin.html' : API_BASE_URL + '/website.html'); }, 900);
         } else {
           showMessage(data.error || 'Invalid code. Please try again.');
           verifyBtn.disabled = false;

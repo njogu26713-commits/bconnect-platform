@@ -6043,6 +6043,14 @@ function previewListingImg(url) {
 
 //  INIT 
 (function() {
+  // Auth guard — redirect to login if no token present
+  const token = localStorage.getItem('adminToken') || localStorage.getItem('token') || '';
+  if (!token) {
+    sessionStorage.setItem('bc_redirect', window.location.href);
+    window.location.href = '/login.html';
+    return;
+  }
+
   const hash = (location.hash || '').replace('#', '');
   const validSections = ['dashboard','users','buyers','sellers','top-sellers','tenants-mgmt','landlords','organizers','unverified','listings','services','events','properties','orders','payments','featured','slider','submissions','reports','bot','settings','withdrawals','broadcast','email-test','whatsapp-bot'];
   if (hash && validSections.includes(hash)) {
