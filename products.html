@@ -2823,7 +2823,6 @@ window.placePendingOrder = function(prod, price, qty, options) {
 
 window.addToCart = function() {
   if (!window._currentModalItem) return;
-  if (!requireAuth()) return;
 
   // Build enriched item: overlay selected variant's price, image, and label
   var item = Object.assign({}, window._currentModalItem);
