@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Setup — BConnect</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 24px; }
+  .card { background: #fff; border-radius: 20px; box-shadow: 0 4px 32px rgba(0,0,0,.10); padding: 40px; max-width: 440px; width: 100%; }
+  .logo { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; }
+  .logo-icon { width: 40px; height: 40px; background: #1e3a8a; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 18px; }
+  .logo-text { font-size: 20px; font-weight: 800; color: #1e3a8a; }
+  h1 { font-size: 22px; font-weight: 800; color: #111; margin-bottom: 6px; }
+  p.sub { font-size: 14px; color: #6b7280; margin-bottom: 28px; line-height: 1.5; }
+  label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; }
+  input { width: 100%; padding: 12px 14px; border: 1.5px solid #e5e7eb; border-radius: 10px; font-size: 15px; outline: none; transition: border-color .2s; margin-bottom: 16px; }
+  input:focus { border-color: #1e3a8a; }
+  .hint { font-size: 12px; color: #9ca3af; margin-top: -12px; margin-bottom: 16px; }
+  button { width: 100%; padding: 14px; background: #1e3a8a; color: #fff; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: background .2s; }
+  button:hover { background: #1e40af; }
+  button:disabled { background: #9ca3af; cursor: not-allowed; }
+  .msg { padding: 14px 16px; border-radius: 10px; font-size: 14px; margin-bottom: 16px; display: none; }
+  .msg.success { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+  .msg.error   { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
+  .go-admin { display: block; text-align: center; margin-top: 16px; padding: 14px; background: #15803d; color: #fff; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 15px; }
+  .warning { background: #fef9c3; border: 1px solid #fde047; border-radius: 10px; padding: 12px 16px; font-size: 13px; color: #854d0e; margin-bottom: 24px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">
+    <div class="logo-icon">B</div>
+    <div class="logo-text">BConnect</div>
+  </div>
+  <h1>Create Admin Account</h1>
+  <p class="sub">Fill in the form below to create your admin account. You only need to do this once.</p>
+
+  <div class="warning">
+    ⚠️ Make sure <strong>ADMIN_SETUP_KEY</strong> is set in your Railway environment variables before submitting.
+  </div>
+
+  <div class="msg" id="msg"></div>
+
+  <form id="setupForm">
+    <label>Full Name</label>
+    <input type="text" id="fullName" placeholder="e.g. Brian Githinji" required>
+
+    <label>Email Address</label>
+    <input type="email" id="email" placeholder="admin@example.com" required>
+
+    <label>Password</label>
+    <input type="password" id="password" placeholder="Choose a strong password" required minlength="8">
+
+    <label>Setup Secret Key</label>
+    <input type="password" id="secretKey" placeholder="Your ADMIN_SETUP_KEY value" required>
+    <p class="hint">This is the value you set for ADMIN_SETUP_KEY in Railway.</p>
+
+    <button type="submit" id="btn">Create Admin Account</button>
+  </form>
+
+  <a class="go-admin" id="goAdmin" href="/admin.html" style="display:none;">Go to Admin Dashboard →</a>
+</div>
+
+<script>
+document.getElementById('setupForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('btn');
+  const msg = document.getElementById('msg');
+  btn.disabled = true;
+  btn.textContent = 'Creating account...';
+  msg.style.display = 'none';
+
+  try {
+    const res = await fetch('/api/admin/setup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email:     document.getElementById('email').value.trim(),
+        password:  document.getElementById('password').value,
+        fullName:  document.getElementById('fullName').value.trim(),
+        secretKey: document.getElementById('secretKey').value.trim()
+      })
+    });
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      msg.className = 'msg success';
+      msg.textContent = '✓ ' + data.message + ' — you can now log in at /login.html';
+      msg.style.display = 'block';
+      // If a token was returned (new account), store it and show go-to-admin button
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('authToken', data.token);
+        localStorage.setItem('adminToken', data.token);
+        if (data.user) {
+          localStorage.setItem('user', JSON.stringify(data.user));
+          localStorage.setItem('userProfile', JSON.stringify({ name: data.user.name, email: data.user.email, role: 'admin' }));
+        }
+        document.getElementById('goAdmin').style.display = 'block';
+      } else {
+        // Promoted existing user — need to log in
+        msg.textContent += ' Go to /login.html to sign in.';
+      }
+      document.getElementById('setupForm').style.display = 'none';
+    } else {
+      msg.className = 'msg error';
+      msg.textContent = '✗ ' + (data.error || 'Setup failed. Check your secret key and try again.');
+      msg.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Create Admin Account';
+    }
+  } catch (err) {
+    msg.className = 'msg error';
+    msg.textContent = '✗ Network error — make sure the server is running and MONGODB_URI is set.';
+    msg.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Create Admin Account';
+  }
+});
+</script>
+</body>
+</html>
