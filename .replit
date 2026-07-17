@@ -31,10 +31,6 @@ args = "npm install --prefer-offline 2>&1 | tail -3 && PORT=5000 node server.js"
 waitForPort = 5000
 
 [[ports]]
-localPort = 3000
-externalPort = 3000
-
-[[ports]]
 localPort = 5000
 externalPort = 80
 
