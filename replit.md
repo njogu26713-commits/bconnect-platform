@@ -1,54 +1,53 @@
 # BConnect
 
-A full-stack marketplace and property platform built with Node.js/Express, MongoDB, and plain HTML/CSS/JS.
+All-in-one digital platform connecting people, businesses, landlords, tenants, service providers, and event organizers.
 
-## Features
+## Stack
 
-- **Marketplace** — product listings, seller dashboards, cart, orders, payments
-- **Housing / Rentals** — landlord & tenant dashboards, rent payments, property listings
-- **Events** — organiser dashboard, ticket verification
-- **AI Assistant** — Grok (xAI) powered chat (requires `XAI_API_KEY`)
-- **WhatsApp Bot** — optional Baileys-based bot (enable with `WHATSAPP_BOT_ENABLED=true`)
-- **M-Pesa Payments** — STK push (requires Safaricom sandbox/live credentials)
+- **Frontend**: Plain HTML/CSS/JS pages (no build step)
+- **Backend**: Node.js + Express (`server.js`)
+- **Database**: MongoDB Atlas (required)
+- **Image storage**: MongoDB GridFS (default) or Cloudinary (optional)
+- **Payments**: M-Pesa STK push (optional)
+- **AI assistant**: OpenAI-compatible (xAI Grok, optional)
+- **Messaging**: WhatsApp bot via Baileys (optional), Africa's Talking SMS (optional)
 
 ## How to run
 
-```
-PORT=5000 node server.js
+```bash
+npm install
+node server.js   # or: npm start
 ```
 
-The workflow `Start application` is already configured and starts on port 5000.
+The workflow `Start application` runs `PORT=5000 node server.js`.
 
 ## Required secrets
 
 | Secret | Purpose |
-|---|---|
-| `MONGODB_URI` | MongoDB Atlas connection string (required) |
-| `JWT_SECRET` | JWT signing secret (defaults to an insecure placeholder — set in production) |
+|--------|---------|
+| `MONGODB_URI` | MongoDB Atlas connection string |
+| `JWT_SECRET` | JWT signing secret for auth |
 
 ## Optional secrets
 
 | Secret | Purpose |
-|---|---|
-| `EMAIL_USER` | Gmail/SMTP username for transactional email |
-| `EMAIL_PASS` | Gmail/SMTP password or app-password |
-| `XAI_API_KEY` | xAI (Grok) API key for AI assistant |
-| `MPESA_CONSUMER_KEY` | Safaricom M-Pesa consumer key |
-| `MPESA_CONSUMER_SECRET` | Safaricom M-Pesa consumer secret |
-| `MPESA_SHORTCODE` | M-Pesa business shortcode |
-| `MPESA_PASSKEY` | M-Pesa passkey |
-| `MPESA_CALLBACK_URL` | Public callback URL for M-Pesa STK push |
+|--------|---------|
+| `EMAIL_USER` / `EMAIL_PASS` | Gmail/Nodemailer for transactional email |
+| `CLOUDINARY_CLOUD_NAME` / `CLOUDINARY_API_KEY` / `CLOUDINARY_API_SECRET` | Cloudinary CDN for images |
+| `MPESA_CONSUMER_KEY` / `MPESA_CONSUMER_SECRET` / `MPESA_SHORTCODE` / `MPESA_PASSKEY` / `MPESA_CALLBACK_URL` | M-Pesa payments |
+| `XAI_API_KEY` | AI assistant (xAI Grok) |
+| `AT_USERNAME` / `AT_API_KEY` | Africa's Talking SMS |
+| `ADMIN_SETUP_KEY` | Admin account bootstrap |
 
-## Stack
+## Key files
 
-- **Backend**: Node.js, Express
-- **Database**: MongoDB Atlas (via native driver)
-- **Auth**: JWT (`jsonwebtoken`) + bcrypt
-- **Email**: Nodemailer
-- **Payments**: M-Pesa STK push (Safaricom), auto-succeeds if keys not set
-- **AI**: xAI Grok via OpenAI-compatible SDK; Gemini as fallback
-- **File storage**: MongoDB GridFS
+- `server.js` — main Express server with all API routes
+- `email.js` — Nodemailer email helpers
+- `sms.js` — Africa's Talking SMS helper
+- `api-client.js` — frontend JS API wrapper
+- `*.html` — frontend pages (index, login, admin, housing, events, orders, etc.)
+- `global.css` — shared styles
 
 ## User preferences
 
-<!-- Add your preferences here -->
+- Keep the existing HTML/CSS/JS + Node.js/Express/MongoDB stack — do not migrate or restructure without asking.

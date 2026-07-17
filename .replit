@@ -27,7 +27,7 @@ outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "PORT=5000 node server.js"
+args = "npm install --prefer-offline 2>&1 | tail -3 && PORT=5000 node server.js"
 waitForPort = 5000
 
 [[ports]]

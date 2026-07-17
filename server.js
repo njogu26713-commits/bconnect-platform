@@ -67,13 +67,18 @@ if (NODE_ENV === 'production' && JWT_SECRET === 'your_secret_key_change_in_produ
   process.exit(1);
 }
 
+// MONGODB_URI is required — warn prominently at startup if missing
+if (!MONGODB_URI) {
+  console.warn('[WARN] MONGODB_URI is not set. All database-backed features (auth, listings, orders, payments) will return errors.');
+  console.warn('[WARN] Set the MONGODB_URI secret to a MongoDB Atlas connection string to enable full functionality.');
+}
+
 const missingOptionalEnv = [
   ['MPESA_CONSUMER_KEY', MPESA_CONSUMER_KEY],
   ['MPESA_CONSUMER_SECRET', MPESA_CONSUMER_SECRET],
   ['MPESA_SHORTCODE', MPESA_SHORTCODE],
   ['MPESA_PASSKEY', MPESA_PASSKEY],
   ['MPESA_CALLBACK_URL', MPESA_CALLBACK_URL],
-  ['MONGODB_URI', MONGODB_URI]
 ].filter(([, v]) => !v).map(([k]) => k);
 
 if (missingOptionalEnv.length) {
