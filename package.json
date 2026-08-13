@@ -14,7 +14,7 @@
     "test-api": "node test-api.js"
   },
   "dependencies": {
-    "@whiskeysockets/baileys": "^7.0.0-rc13",
+    "@whiskeysockets/baileys": "^8.0.0",
     "africastalking": "^0.7.9",
     "async-mutex": "^0.5.0",
     "axios": "^1.18.1",
