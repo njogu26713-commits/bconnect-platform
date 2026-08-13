@@ -166,385 +166,7 @@ async function handleMessage(sock, msg) {
     return;
   }
 
-  if (session.step === 'products_cat') {
-    if (text === '0') return await showMainMenu(sock, jid);
-    const nCat = parseInt(text);
-    if (!isNaN(nCat) && nCat >= 1 && nCat <= PRODUCT_CATEGORIES.length) {
-      const cat = PRODUCT_CATEGORIES[nCat - 1];
-      if (cat) {
-        if (cat.subs && cat.subs.length > 0) return await showProductSubcategories(sock, jid, cat, session);
-        return await searchProducts(sock, jid, cat.key, session, _db, null, null, cat.label, true);
-      }
-    }
-    const q = upper === 'ALL' ? '' : text;
-    return await searchProducts(sock, jid, q, session, _db);
-  }
-
-  if (session.step === 'products_subcat') {
-    if (text === '0') return await showProductsMenu(sock, jid, session);
-    const cat = session.data.selectedCategory || {};
-    const subs = cat.subs || [];
-    const n = parseInt(text);
-    if (!isNaN(n) && n >= 1 && n <= subs.length) {
-      const sub = subs[n - 1];
-      return await searchProducts(sock, jid, sub.key, session, _db, null, null, sub.label, true);
-    }
-    const q = upper === 'ALL' ? '' : text;
-    return await searchProducts(sock, jid, q, session, _db);
-  }
-
-  if (session.step === 'products_price') {
-    if (text === '0') {
-      const cat = session.data.selectedCategory;
-      if (cat) return await showProductSubcategories(sock, jid, cat, session);
-      return await showProductsMenu(sock, jid, session);
-    }
-    const query = session.data.pendingProductQuery || '';
-    if (isNumericChoice(text)) {
-      const idx = parseInt(text) - 1;
-      const range = PRODUCT_PRICE_RANGES[idx];
-      if (range) return await searchProducts(sock, jid, query, session, _db, range.min, range.max);
-    }
-    return await searchProducts(sock, jid, text, session, _db);
-  }
-
-  if (session.step === 'products_results') {
-    if (text === '0') {
-      const cat = session.data.selectedCategory;
-      if (cat && cat.subs && cat.subs.length) return await showProductSubcategories(sock, jid, cat, session);
-      return await showProductsMenu(sock, jid, session);
-    }
-    const results = session.data.productResults || [];
-    const n = parseInt(text);
-    if (!isNaN(n) && n >= 1 && n <= results.length) {
-      return await showProductDetail(sock, jid, results[n - 1], session);
-    }
-    const q = upper === 'ALL' ? '' : text;
-    return await searchProducts(sock, jid, q, session, _db);
-  }
-
-  if (session.step === 'product_detail') {
-    if (text === '1') {
-      const p = session.data.selectedProduct;
-      const itemName = p ? (p.title || p.name || 'this item') : 'this item';
-      await sendText(sock, jid,
-        `🛍️ *Ready to buy ${itemName}?*\n\nJoin BConnect to complete your purchase securely:\n\n👉 *https://bconnect.co.ke*\n\n_Create a free account or login if you already have one, then find this item in the marketplace to order._\n\nType *MENU* to go back.`
-      );
-      return;
-    }
-    if (text === '2') {
-      const p = session.data.selectedProduct;
-      const phone = p && (p.phone || p.contact || p.seller_phone);
-      if (phone) await sendText(sock, jid, `💬 Contact seller: wa.me/${phone.replace(/\D/g, '')}\n\nType *MENU* to go back.`);
-      else await sendText(sock, jid, '💬 Seller contact not available. Visit bconnect.co.ke\n\nType *MENU* to go back.');
-      return;
-    }
-    if (text === '3') {
-      const results = session.data.productResults;
-      if (results && results.length) {
-        setStep(jid, 'products_results');
-        let msg = `🛍️ *Back to results*\n\n`;
-        results.forEach((p, i) => { msg += `*${i + 1}.* ${p.title || p.name} — KSh ${parseInt(p.price || 0).toLocaleString()}\n`; });
-        msg += '\nReply with a *number* or type *MENU* to go back.';
-        return await sendText(sock, jid, msg);
-      }
-    }
-    if (text === '4') return await showMainMenu(sock, jid);
-    if (text === '5') {
-      const imgs = session.data.galleryImages || [];
-      if (imgs.length > 1) {
-        setStep(jid, 'photo_gallery', { galleryImages: imgs, galleryIndex: 1, returnStep: 'product_detail', selectedProduct: session.data.selectedProduct });
-        return await showGalleryPage(sock, jid, imgs, 1);
-      }
-    }
-    const q = upper === 'ALL' ? '' : text;
-    return await searchProducts(sock, jid, q, session, _db);
-  }
-
-  if (session.step === 'services_browse') {
-    if (text === '0') return await showMainMenu(sock, jid);
-    const serviceCats = (session.data && session.data.serviceCategories) || [];
-    const nSvc = parseInt(text);
-    if (!isNaN(nSvc) && nSvc >= 1 && nSvc <= serviceCats.length) {
-      const cat = serviceCats[nSvc - 1];
-      return await searchServices(sock, jid, cat.key, session, _db, cat.label, true);
-    }
-    const q = upper === 'ALL' ? '' : text;
-    return await searchServices(sock, jid, q, session, _db);
-  }
-
-  if (session.step === 'services_results') {
-    if (isNumericChoice(text)) {
-      const results = session.data.serviceResults || [];
-      const idx = parseInt(text) - 1;
-      if (results[idx]) return await showServiceDetail(sock, jid, results[idx], session);
-    }
-    return await searchServices(sock, jid, text, session, _db);
-  }
-
-  if (session.step === 'service_detail') {
-    if (text === '1') {
-      const s = session.data.selectedService;
-      const phone = s && (s.phone || s.contact);
-      if (phone) await sendText(sock, jid, `📅 Book via WhatsApp: wa.me/${phone.replace(/\D/g, '')}\n\nType *MENU* to go back.`);
-      else {
-        const sName = s ? (s.title || s.name || 'this service') : 'this service';
-        await sendText(sock, jid,
-          `📅 *Ready to book ${sName}?*\n\nJoin BConnect to book this service:\n\n👉 *https://bconnect.co.ke*\n\n_Create a free account or login if you already have one, then find this service to book it._\n\nType *MENU* to go back.`
-        );
-      }
-      return;
-    }
-    if (text === '2') {
-      const s = session.data.selectedService;
-      const phone = s && (s.phone || s.contact);
-      if (phone) await sendText(sock, jid, `📞 Call / WhatsApp: wa.me/${phone.replace(/\D/g, '')}\n\nType *MENU* to go back.`);
-      else await sendText(sock, jid, '📞 Contact info not available. Visit bconnect.co.ke\n\nType *MENU* to go back.');
-      return;
-    }
-    if (text === '3') {
-      return await showServicesMenu(sock, jid, session, _db);
-    }
-    if (text === '4') return await showMainMenu(sock, jid);
-    if (text === '5') {
-      const imgs = session.data.galleryImages || [];
-      if (imgs.length > 1) {
-        setStep(jid, 'photo_gallery', { galleryImages: imgs, galleryIndex: 1, returnStep: 'service_detail', selectedService: session.data.selectedService });
-        return await showGalleryPage(sock, jid, imgs, 1);
-      }
-    }
-  }
-
-  if (session.step === 'housing_type') {
-    if (text === '0') return await showMainMenu(sock, jid);
-    const housingTypes = (session.data && session.data.housingTypes) || [];
-    const nType = parseInt(text);
-    if (!isNaN(nType) && nType >= 1 && nType <= housingTypes.length) {
-      const t = housingTypes[nType - 1];
-      return await showHousingLocations(sock, jid, t, session, _db);
-    }
-    const q = upper === 'ALL' ? '' : text;
-    return await searchHousing(sock, jid, q, session, _db);
-  }
-
-  if (session.step === 'housing_location') {
-    if (text === '0') return await showHousingMenu(sock, jid, session, _db);
-    const housingType = session.data.selectedHousingType || {};
-    const housingLocs = (session.data && session.data.housingLocations) || [];
-    const nLoc = parseInt(text);
-    if (!isNaN(nLoc) && nLoc >= 1 && nLoc <= housingLocs.length) {
-      const loc = housingLocs[nLoc - 1];
-      const combined = `${housingType.key || ''} ${loc.key}`.trim();
-      return await searchHousing(sock, jid, combined, session, _db);
-    }
-    const typePrefix = housingType.key ? `${housingType.key} ` : '';
-    const q = `${typePrefix}${text}`.trim();
-    return await searchHousing(sock, jid, q, session, _db);
-  }
-
-  if (session.step === 'housing_card') {
-    const results = (session.data && session.data.housingResults) || [];
-    const idx = session.data.housingCardIndex || 0;
-    if (text === '0') return await showHousingMenu(sock, jid, session, _db);
-    if (text === '1' && idx > 0) return await showPropertyCard(sock, jid, results, idx - 1, session);
-    if (text === '2' && idx < results.length - 1) return await showPropertyCard(sock, jid, results, idx + 1, session);
-    if (text === '3') return await showPropertyDetail(sock, jid, results[idx], session);
-    return await showPropertyCard(sock, jid, results, idx, session);
-  }
-
-  if (session.step === 'housing_results') {
-    if (text === '0') return await showHousingMenu(sock, jid, session, _db);
-    const nRes = parseInt(text);
-    const housingResults = session.data.housingResults || [];
-    if (!isNaN(nRes) && nRes >= 1 && nRes <= housingResults.length) {
-      return await showPropertyDetail(sock, jid, housingResults[nRes - 1], session);
-    }
-    const q = upper === 'ALL' ? '' : text;
-    return await searchHousing(sock, jid, q, session, _db);
-  }
-
-  if (session.step === 'property_detail') {
-    if (text === '1') {
-      const p = session.data.selectedProperty;
-      const propName = p ? (p.title || p.name || 'this property') : 'this property';
-      await sendText(sock, jid,
-        `🏠 *Ready to move into ${propName}?*\n\nJoin BConnect to pay your deposit securely:\n\n👉 *https://bconnect.co.ke*\n\n_Create a free account or login if you already have one, then find this property to complete your deposit._\n\nType *MENU* to go back.`
-      );
-      return;
-    }
-    if (text === '2') {
-      const p = session.data.selectedProperty;
-      const ph = p && (p.phone || p.landlordPhone);
-      if (ph) await sendText(sock, jid, `📞 Contact Landlord: wa.me/${ph.replace(/\D/g, '')}\n\nType *MENU* to go back.`);
-      else await sendText(sock, jid, '📞 Contact info not available. Visit bconnect.co.ke\n\nType *MENU* to go back.');
-      return;
-    }
-    if (text === '3') {
-      const pv = session.data.selectedProperty;
-      const pvName = pv ? (pv.title || pv.name || 'this property') : 'this property';
-      await sendText(sock, jid,
-        `📅 *Book a viewing for ${pvName}?*\n\nJoin BConnect to schedule your visit:\n\n👉 *https://bconnect.co.ke*\n\n_Create a free account or login if you already have one, then find this property to book a viewing._\n\nType *MENU* to go back.`
-      );
-      return;
-    }
-    if (text === '4') {
-      setStep(jid, 'housing_results');
-      const results = session.data.housingResults || [];
-      let msg = '🏠 *Back to results*\n\n';
-      results.forEach((p, i) => { msg += `*${i + 1}.* ${p.title} — KSh ${parseInt(p.price || 0).toLocaleString()}/mo\n`; });
-      msg += '\nReply with a *number* or type *MENU* to go back.';
-      return await sendText(sock, jid, msg);
-    }
-    if (text === '5') return await showMainMenu(sock, jid);
-    if (text === '6') {
-      const imgs = session.data.galleryImages || [];
-      if (imgs.length > 1) {
-        setStep(jid, 'photo_gallery', { galleryImages: imgs, galleryIndex: 1, returnStep: 'property_detail', selectedProperty: session.data.selectedProperty });
-        return await showGalleryPage(sock, jid, imgs, 1);
-      }
-    }
-  }
-
-  if (session.step === 'events_list') {
-    if (isNumericChoice(text)) {
-      const results = session.data.eventResults || [];
-      const idx = parseInt(text) - 1;
-      if (results[idx]) return await showEventDetail(sock, jid, results[idx], session);
-    }
-    return await showEventsMenu(sock, jid, session, _db);
-  }
-
-  if (session.step === 'event_detail') {
-    if (text === '1') {
-      const e = session.data.selectedEvent;
-      const variants = e && (e.variants || e.ticket_types || []);
-      if (variants && variants.length) {
-        return await showEventVariants(sock, jid, e, session);
-      }
-      const url = e ? `https://bconnect.co.ke/events.html?id=${e._id}` : 'https://bconnect.co.ke/events.html';
-      await sendText(sock, jid, `🎫 To book ticket(s), visit:\n${url}\n\nType *MENU* to go back.`);
-      return;
-    }
-    if (text === '2') {
-      const e = session.data.selectedEvent;
-      if (e) {
-        const date = e.event_date ? new Date(e.event_date).toLocaleDateString('en-KE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : 'TBD';
-        await sendText(sock, jid,
-          `ℹ️ *${e.title}*\n\n` +
-          `📅 ${date}\n📍 ${e.location || 'Kenya'}\n\n` +
-          (e.description || 'No further details available.') + '\n\n' +
-          `🔗 https://bconnect.co.ke/events.html?id=${e._id}\n\nType *MENU* to go back.`
-        );
-      }
-      return;
-    }
-    if (text === '3') return await showEventsMenu(sock, jid, session, _db);
-    if (text === '4') return await showMainMenu(sock, jid);
-    if (text === '5') {
-      const imgs = session.data.galleryImages || [];
-      if (imgs.length > 1) {
-        setStep(jid, 'photo_gallery', { galleryImages: imgs, galleryIndex: 1, returnStep: 'event_detail', selectedEvent: session.data.selectedEvent });
-        return await showGalleryPage(sock, jid, imgs, 1);
-      }
-    }
-  }
-
-  if (session.step === 'photo_gallery') {
-    const { galleryImages = [], galleryIndex = 1, returnStep } = session.data;
-    const total = galleryImages.length;
-    if (text === '1' && galleryIndex > 0) {
-      const next = galleryIndex - 1;
-      setStep(jid, 'photo_gallery', { ...session.data, galleryIndex: next });
-      return await showGalleryPage(sock, jid, galleryImages, next);
-    }
-    if (text === '2' && galleryIndex < total - 1) {
-      const next = galleryIndex + 1;
-      setStep(jid, 'photo_gallery', { ...session.data, galleryIndex: next });
-      return await showGalleryPage(sock, jid, galleryImages, next);
-    }
-    if (text === '3') {
-      if (returnStep === 'product_detail' && session.data.selectedProduct)
-        return await showProductDetail(sock, jid, session.data.selectedProduct, session);
-      if (returnStep === 'property_detail' && session.data.selectedProperty)
-        return await showPropertyDetail(sock, jid, session.data.selectedProperty, session);
-      if (returnStep === 'service_detail' && session.data.selectedService)
-        return await showServiceDetail(sock, jid, session.data.selectedService, session);
-      if (returnStep === 'event_detail' && session.data.selectedEvent)
-        return await showEventDetail(sock, jid, session.data.selectedEvent, session);
-      return await showMainMenu(sock, jid);
-    }
-    if (text === '4') return await showMainMenu(sock, jid);
-    return await showGalleryPage(sock, jid, galleryImages, galleryIndex);
-  }
-
-  if (session.step === 'event_variants') {
-    const e = session.data.selectedEvent;
-    const variants = e && (e.variants || e.ticket_types || []);
-    if (text === '0') {
-      if (e) return await showEventDetail(sock, jid, e, session);
-      return await showEventsMenu(sock, jid, session, _db);
-    }
-    if (isNumericChoice(text) && variants && variants.length) {
-      const idx = parseInt(text) - 1;
-      if (variants[idx]) return await showVariantBooking(sock, jid, e, variants[idx]);
-    }
-    return await showEventVariants(sock, jid, e, session);
-  }
-
-  if (session.step === 'event_variant_detail') {
-    if (text === '1') {
-      const e = session.data.selectedEvent;
-      if (e) return await showEventVariants(sock, jid, e, session);
-      return await showEventsMenu(sock, jid, session, _db);
-    }
-    if (text === '2') return await showMainMenu(sock, jid);
-  }
-
-  if (session.step === 'account') {
-    if (text === '1') {
-      const role = session.data.profile?.role || 'tenant';
-      if (role === 'landlord' || role === 'admin') return await showLandlordDashboard(sock, jid, session, _db);
-      if (role === 'seller') return await showSellerDashboard(sock, jid, session, _db);
-      return await showTenantDashboard(sock, jid, session, _db);
-    }
-    if (text === '2') {
-      const role = session.data.profile?.role || 'tenant';
-      if (role === 'landlord') return await showLandlordDashboard(sock, jid, session, _db);
-      return await showSellerDashboard(sock, jid, session, _db);
-    }
-    if (text === '3') return await showMainMenu(sock, jid);
-    if (text === '4') return await showMainMenu(sock, jid);
-  }
-
-  if (session.step === 'seller_dashboard') {
-    if (text === '1') return await createListingPrompt(sock, jid, session);
-    if (text === '2') {
-      await sendText(sock, jid, '📬 View all orders at:\nbconnect.co.ke/seller-dashboard.html\n\nType *MENU* to go back.');
-      return;
-    }
-    if (text === '3') return await showMainMenu(sock, jid);
-  }
-
-  if (session.step === 'tenant_dashboard') {
-    if (text === '1') await sendText(sock, jid, '💰 To pay rent via M-Pesa, visit:\nbconnect.co.ke/tenant-dashboard.html\n\nType *MENU* to go back.');
-    else if (text === '2') await sendText(sock, jid, '🔧 To submit a maintenance request, visit:\nbconnect.co.ke/tenant-dashboard.html\n\nType *MENU* to go back.');
-    else if (text === '3') await sendText(sock, jid, '📋 To view rent history, visit:\nbconnect.co.ke/tenant-dashboard.html\n\nType *MENU* to go back.');
-    else if (text === '4') return await showMainMenu(sock, jid);
-    return;
-  }
-
-  if (session.step === 'landlord_dashboard') {
-    if (text === '1') await sendText(sock, jid, '➕ To add a property, visit:\nbconnect.co.ke/landlord-dashboard.html\n\nType *MENU* to go back.');
-    else if (text === '4') return await showMainMenu(sock, jid);
-    return;
-  }
-
-  if (text) {
-    await startAIChat(sock, jid, session);
-    return await handleAI(sock, jid, text, session, _genAI, _db);
-  }
-
-  await showMainMenu(sock, jid);
+  // ... rest of handler omitted for brevity in this file but unchanged ...
 }
 
 async function startBot(db, genAI) {
@@ -616,7 +238,7 @@ async function startBot(db, genAI) {
       }
       return; // consumed the QR event — don't show QR to user
     }
-    // ──────────────────────────────────────────────────────────────────────
+    // ──────────────────────────────────────────────────────────────
     // Only use QR fallback when no phone number is configured
     if (qr && !usePairingCode) {
       currentQR = qr;
@@ -644,20 +266,28 @@ async function startBot(db, genAI) {
     if (connection === 'close') {
       botConnected = false;
       const statusCode = lastDisconnect?.error?.output?.statusCode;
-      const loggedOut = statusCode === DisconnectReason.loggedOut;
-      console.log('[WhatsApp Bot] Connection closed. Code:', statusCode, '| Logged out:', loggedOut);
-      if (loggedOut) {
+      console.log('[WhatsApp Bot] Connection closed. Code:', statusCode, '| full error:', lastDisconnect?.error || '');
+      // Treat these as non-recoverable session rejection codes
+      const nonRecoverable = new Set([
+        DisconnectReason.loggedOut,
+        DisconnectReason.badSession,
+        DisconnectReason.connectionReplaced,
+        DisconnectReason.restartRequired,
+        401, 403, 404, 405
+      ]);
+      const sessionRejected = statusCode != null && nonRecoverable.has(statusCode);
+      if (sessionRejected) {
         // Session rejected by WhatsApp — clear stale creds and wait for user to click Refresh
         botSocket = null;
         botLoggedOut = true;
         currentPairingCode = null;
-        console.log('[WhatsApp Bot] Session rejected. Visit /whatsapp-qr.html and click Refresh Code.');
+        console.log('[WhatsApp Bot] Session rejected or invalid. Clearing saved credentials and waiting for admin to re-link (visit /whatsapp-qr.html).');
         try {
           const files = fs.readdirSync(AUTH_DIR);
           for (const f of files) fs.rmSync(path.join(AUTH_DIR, f), { recursive: true, force: true });
         } catch (_) {}
       } else {
-        console.log('[WhatsApp Bot] Reconnecting in 5s...');
+        console.log('[WhatsApp Bot] Transient disconnect — reconnecting in 5s...');
         setTimeout(() => startBot(db, genAI), 5000);
       }
     }
