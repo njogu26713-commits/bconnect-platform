@@ -86,8 +86,6 @@ body{font-family:'Segoe UI',sans-serif;background:#0a0f1e;min-height:100vh;displ
   </div>
   <div class="subtitle">WhatsApp Bot — Admin Panel</div>
 
-  <div id="auth-warning" style="display:none;margin:0.75rem 0;padding:.6rem;border-radius:.6rem;background:#111827;color:#fbbf24;font-weight:700">Please log in as admin — <a href="/login.html" style="color:#93c5fd;text-decoration:underline">Login</a></div>
-
   <div id="status-chip" class="status-chip waiting">
     <span class="dot pulse"></span>
     <span id="status-text">Checking status…</span>
@@ -189,29 +187,11 @@ let timer;
 let lastCode = '';
 let activePhone = '';
 
-// Helper to attach Authorization header from localStorage token
-function authHeaders(json = true) {
-  const token = localStorage.getItem('token') || localStorage.getItem('adminToken') || '';
+// Use cookie/session-based auth: send credentials with requests instead of reading localStorage
+function requestHeaders(json = true) {
   const headers = {};
   if (json) headers['Content-Type'] = 'application/json';
-  if (token) headers['Authorization'] = 'Bearer ' + token;
   return headers;
-}
-
-function ensureAuth() {
-  const token = localStorage.getItem('token') || localStorage.getItem('adminToken') || '';
-  const warn = document.getElementById('auth-warning');
-  if (!token) {
-    if (warn) warn.style.display = 'block';
-    setActionStatus('Please log in as admin — visit /login.html', true);
-    hideAll();
-    // keep loading-section visible so users see reason
-    document.getElementById('loading-section').style.display = 'block';
-    return false;
-  }
-  if (warn) warn.style.display = 'none';
-  setActionStatus('');
-  return true;
 }
 
 function hideAll() {
@@ -263,7 +243,6 @@ function switchToPairingMode() {
 }
 
 async function getCode() {
-  if (!ensureAuth()) return;
   const prefix = document.getElementById('phone-prefix').value.replace(/\D/g, '');
   const number = document.getElementById('phone-number').value.replace(/\D/g, '');
   const fullNumber = prefix + number;
@@ -282,9 +261,11 @@ async function getCode() {
   try {
     const res = await fetch('/api/admin/whatsapp-refresh-code', {
       method: 'POST',
-      headers: authHeaders(),
+      headers: requestHeaders(),
+      credentials: 'include',
       body: JSON.stringify({ phoneNumber: fullNumber })
     });
+
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       btn.disabled = false;
@@ -292,6 +273,7 @@ async function getCode() {
       setActionStatus(err.error || err.message || res.statusText || 'Request failed', true);
       return;
     }
+
     const data = await res.json();
     btn.disabled = false;
     btn.textContent = '📲 Get Pairing Code';
@@ -348,7 +330,6 @@ function showCode(code, phone) {
 }
 
 async function refreshCode() {
-  if (!ensureAuth()) return;
   const btn = document.getElementById('refresh-code-btn');
   const expEl = document.getElementById('pairing-exp');
   if (btn) { btn.disabled = true; btn.textContent = '⏳ Requesting…'; }
@@ -359,15 +340,18 @@ async function refreshCode() {
   try {
     const res = await fetch('/api/admin/whatsapp-refresh-code', {
       method: 'POST',
-      headers: authHeaders(),
+      headers: requestHeaders(),
+      credentials: 'include',
       body: JSON.stringify({ phoneNumber })
     });
+
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       if (expEl) expEl.textContent = 'Error: ' + (err.error || err.message || res.statusText);
       if (btn) { btn.disabled = false; btn.textContent = '🔄 Refresh Code'; }
       return;
     }
+
     const data = await res.json();
     if (data.success && data.pairingCode) {
       showCode(data.pairingCode, data.pairingPhone || phoneNumber);
@@ -386,14 +370,13 @@ async function refreshCode() {
 }
 
 async function waitForNewCode(btn, phoneNumber) {
-  if (!ensureAuth()) return;
   const expEl = document.getElementById('pairing-exp');
   let attempts = 0;
   const maxAttempts = 25;
   const interval = setInterval(async () => {
     attempts++;
     try {
-      const res = await fetch('/api/admin/whatsapp-qr', { headers: authHeaders(false) });
+      const res = await fetch('/api/admin/whatsapp-qr', { headers: requestHeaders(false), credentials: 'include' });
       if (!res.ok) return; // keep polling
       const data = await res.json();
       if (data.pairingCode && data.pairingCode !== lastCode) {
@@ -412,14 +395,26 @@ async function waitForNewCode(btn, phoneNumber) {
 }
 
 async function poll() {
-  if (!ensureAuth()) return;
   try {
-    const res = await fetch('/api/admin/whatsapp-qr', { headers: authHeaders(false) });
+    const res = await fetch('/api/admin/whatsapp-qr', { headers: requestHeaders(false), credentials: 'include' });
     if (!res.ok) {
+      // If unauthenticated, show a helpful message
+      if (res.status === 401 || res.status === 403) {
+        const chip = document.getElementById('status-chip');
+        chip.className = 'status-chip error';
+        chip.innerHTML = '<span class="dot"></span><span>Authentication required</span>';
+        document.getElementById('connected-section').innerHTML =
+          '<div style="color:#9ca3af;font-size:.85rem;padding:1rem;background:#0d1117;border-radius:.75rem">' +
+          'Please sign in to the admin panel (server session/cookie required).</div>';
+        document.getElementById('connected-section').style.display = 'block';
+        document.getElementById('loading-section').style.display = 'none';
+        return;
+      }
       const err = await res.json().catch(() => ({}));
-      setActionStatus(err.error || err.message || res.statusText || 'Error fetching status', true);
+      setTimeout(poll, 5000);
       return;
     }
+
     const data = await res.json();
     document.getElementById('loading-section').style.display = 'none';
     const chip = document.getElementById('status-chip');
@@ -484,7 +479,6 @@ function setActionStatus(msg, isError) {
 }
 
 async function reconnectBot() {
-  if (!ensureAuth()) return;
   const btn = document.getElementById('global-reconnect-btn');
   const unlinkBtn = document.getElementById('unlink-btn');
   const changeBtn = document.getElementById('change-number-btn');
@@ -493,15 +487,7 @@ async function reconnectBot() {
   if (changeBtn) changeBtn.disabled = true;
   setActionStatus('Restarting connection…');
   try {
-    const res = await fetch('/api/admin/whatsapp-reconnect', { method: 'POST', headers: authHeaders() });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      setActionStatus(err.error || err.message || res.statusText || 'Reconnect failed', true);
-      if (btn) { btn.disabled = false; btn.textContent = '🔄 Reconnect'; }
-      if (unlinkBtn) unlinkBtn.disabled = false;
-      if (changeBtn) changeBtn.disabled = false;
-      return;
-    }
+    const res = await fetch('/api/admin/whatsapp-reconnect', { method: 'POST', headers: requestHeaders(), credentials: 'include' });
     const data = await res.json();
     if (data.success) {
       setActionStatus('Reconnecting — checking status…');
@@ -527,7 +513,6 @@ async function reconnectBot() {
 }
 
 async function unlinkBot() {
-  if (!ensureAuth()) return;
   if (!confirm('This will fully unlink the bot from WhatsApp and clear the session. Continue?')) return;
   const btn = document.getElementById('unlink-btn');
   const reconnectBtn = document.getElementById('global-reconnect-btn');
@@ -537,11 +522,7 @@ async function unlinkBot() {
   if (changeBtn) changeBtn.disabled = true;
   setActionStatus('Unlinking bot…');
   try {
-    const res = await fetch('/api/admin/whatsapp-disconnect', { method: 'POST', headers: authHeaders() });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      setActionStatus(err.error || err.message || res.statusText || 'Unlink failed', true);
-    }
+    await fetch('/api/admin/whatsapp-disconnect', { method: 'POST', headers: requestHeaders(), credentials: 'include' });
   } catch (_) {}
   lastCode = '';
   activePhone = '';
@@ -556,11 +537,8 @@ async function unlinkBot() {
   chip.innerHTML = '<span class="dot pulse"></span><span>Bot unlinked — enter number to re-link</span>';
 }
 
-// Start only if authenticated
-if (ensureAuth()) {
-  poll();
-  setInterval(poll, 15000);
-}
+poll();
+setInterval(poll, 15000);
 </script>
 </body>
 </html>
