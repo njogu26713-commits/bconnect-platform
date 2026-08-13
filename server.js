@@ -56,7 +56,7 @@ const {
   JWT_SECRET = 'your_secret_key_change_in_production',
   NODE_ENV = 'development',
   PORT = 3000,
-  ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8000',
+  ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8000,https://bconnect-platform-production.up.railway.app',
   EMAIL_USER,
   EMAIL_PASS
 } = process.env;
