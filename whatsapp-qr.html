@@ -187,10 +187,69 @@ let timer;
 let lastCode = '';
 let activePhone = '';
 
-// Use cookie/session-based auth: send credentials with requests instead of reading localStorage
+/* =========================================================
+   JWT AUTHENTICATION
+   ========================================================= */
+
+function getAuthToken() {
+  const keys = [
+    'token',
+    'accessToken',
+    'authToken',
+    'jwt',
+    'adminToken'
+  ];
+
+  for (const key of keys) {
+    const token = localStorage.getItem(key);
+
+    if (token && token.trim()) {
+      return token.trim();
+    }
+  }
+
+  for (const key of keys) {
+    const token = sessionStorage.getItem(key);
+
+    if (token && token.trim()) {
+      return token.trim();
+    }
+  }
+
+  try {
+    const auth = JSON.parse(
+      localStorage.getItem('auth') || 'null'
+    );
+
+    if (auth) {
+      return (
+        auth.token ||
+        auth.accessToken ||
+        auth.jwt ||
+        null
+      );
+    }
+  } catch (error) {
+    console.error('Could not read auth object:', error);
+  }
+
+  return null;
+}
+
+
 function requestHeaders(json = true) {
   const headers = {};
-  if (json) headers['Content-Type'] = 'application/json';
+
+  if (json) {
+    headers['Content-Type'] = 'application/json';
+  }
+
+  const token = getAuthToken();
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
   return headers;
 }
 
