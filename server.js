@@ -49,6 +49,17 @@ function authConfigError() {
   return missing.length ? `Authentication is not configured. Add ${missing.join(' and ')} to the deployment environment.` : null;
 }
 
+function databaseErrorMessage(error) {
+  const message = String(error?.message || error || '');
+  if (/bad auth|authentication failed|ไม่ถูกต้อง|auth failed/i.test(message)) {
+    return 'Database authentication failed. Check the MongoDB username, password, database name, and URL-encode special characters in the password.';
+  }
+  if (/ENOTFOUND|timed out|ETIMEOUT|ECONNREFUSED|querySrv/i.test(message)) {
+    return 'Database connection failed. Check the MongoDB cluster hostname, network access rules, and MONGODB_URI.';
+  }
+  return 'Database service is unavailable. Check MONGODB_URI and the deployment logs.';
+}
+
 async function findUserByEmail(email, role) {
   const db = await getDb();
   const normalized = String(email || '').trim().toLowerCase();
@@ -97,7 +108,7 @@ async function loginHandler(req, res, role) {
     return res.status(result.ok ? 200 : result.status).json(result);
   } catch (error) {
     console.error('[Auth] Login failed:', error.message);
-    return res.status(503).json({ error: 'Authentication service is unavailable.' });
+    return res.status(503).json({ error: databaseErrorMessage(error) });
   }
 }
 
@@ -135,7 +146,7 @@ app.post('/api/auth/register', async (req, res) => {
     return res.status(201).json({ success: true, token: signToken(user, 'user'), user: view });
   } catch (error) {
     console.error('[Auth] Registration failed:', error.message);
-    return res.status(503).json({ success: false, error: 'Registration service is unavailable.' });
+    return res.status(503).json({ success: false, error: databaseErrorMessage(error) });
   }
 });
 
