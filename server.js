@@ -60,6 +60,10 @@ function databaseErrorMessage(error) {
   return 'Database service is unavailable. Check MONGODB_URI and the deployment logs.';
 }
 
+// Temporary rollout setting: allow users to sign in without email verification.
+// Re-enable by setting DISABLE_EMAIL_VERIFICATION=false in deployment secrets.
+const EMAIL_VERIFICATION_DISABLED = String(process.env.DISABLE_EMAIL_VERIFICATION || 'true').toLowerCase() !== 'false';
+
 async function findUserByEmail(email, role) {
   const db = await getDb();
   const normalized = String(email || '').trim().toLowerCase();
@@ -78,7 +82,7 @@ async function authenticate(email, password, role) {
   const valid = stored && await bcrypt.compare(String(password || ''), String(stored));
   if (!valid) return { ok: false, status: 401, error: 'Invalid email or password.' };
   const view = userView(found.user, found.role);
-  if (found.user.emailVerified === false || found.user.email_verified === false) {
+  if (!EMAIL_VERIFICATION_DISABLED && (found.user.emailVerified === false || found.user.email_verified === false)) {
     return { ok: false, status: 403, error: 'Please verify your email before signing in.', requiresVerification: true, email: view.email };
   }
   return { ok: true, success: true, token: signToken(found.user, found.role), user: view, role: view.role };
