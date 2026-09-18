@@ -167,6 +167,60 @@ app.post('/api/auth/register', async (req, res) => {
   }
 });
 
+function queryLimit(req, fallback = 50) {
+  const value = Number.parseInt(req.query.limit, 10);
+  return Number.isFinite(value) ? Math.min(Math.max(value, 1), 100) : fallback;
+}
+
+async function safeCollectionFind(collectionName, filter, req) {
+  try {
+    const db = await getDb();
+    return await db.collection(collectionName)
+      .find(filter || {})
+      .sort({ created_at: -1, createdAt: -1, event_date: 1 })
+      .limit(queryLimit(req))
+      .toArray();
+  } catch (error) {
+    console.error(`[API] ${collectionName} lookup failed:`, error.message);
+    return [];
+  }
+}
+
+app.get('/api/products', async (req, res) => {
+  const filter = { active: { $ne: false }, listing_type: { $nin: ['service', 'housing'] } };
+  if (req.query.category) filter.category = { $regex: String(req.query.category), $options: 'i' };
+  if (req.query.location) filter.location = { $regex: String(req.query.location), $options: 'i' };
+  return res.json({ success: true, products: await safeCollectionFind('properties', filter, req) });
+});
+
+app.get('/api/services', async (req, res) => {
+  const filter = { active: { $ne: false }, $or: [{ listing_type: 'service' }, { category: { $regex: /service/i } }] };
+  return res.json({ success: true, services: await safeCollectionFind('properties', filter, req) });
+});
+
+app.get('/api/events', async (req, res) => {
+  return res.json({ success: true, events: await safeCollectionFind('events', { active: { $ne: false } }, req) });
+});
+
+app.get('/api/properties', async (req, res) => {
+  return res.json({ success: true, properties: await safeCollectionFind('properties', { active: { $ne: false } }, req) });
+});
+
+app.get('/api/housing', async (req, res) => {
+  const rows = await safeCollectionFind('landlord_properties', { status: { $ne: 'inactive' } }, req);
+  return res.json({ success: true, properties: rows, housing: rows });
+});
+
+app.get('/api/homepage', async (req, res) => {
+  const [products, services, events, properties] = await Promise.all([
+    safeCollectionFind('properties', { active: { $ne: false }, listing_type: { $nin: ['service', 'housing'] } }, req),
+    safeCollectionFind('properties', { active: { $ne: false }, listing_type: 'service' }, req),
+    safeCollectionFind('events', { active: { $ne: false } }, req),
+    safeCollectionFind('landlord_properties', { status: { $ne: 'inactive' } }, req)
+  ]);
+  return res.json({ success: true, products, services, events, properties, featured: products.slice(0, 8) });
+});
+
 app.get('/api/health', (_req, res) => {
   res.json({
     ok: true,
@@ -178,6 +232,25 @@ app.get('/api/health', (_req, res) => {
 
 app.get('/api/status', (_req, res) => {
   res.json({ ok: true, service: 'bconnect' });
+});
+
+// Compatibility layer for frontend modules that were shipped before the backend
+// was restored. These responses keep pages usable while individual feature
+// handlers are added; public reads return empty collections rather than 404s.
+app.use('/api', (req, res, next) => {
+  if (!req.path || req.path === '/health' || req.path === '/status') return next();
+  const route = req.path.toLowerCase();
+  if (req.method === 'GET') {
+    if (/\/notifications|\/orders|\/products|\/services|\/events|\/properties|\/payments|\/withdrawals|\/submissions|\/tickets|\/users|\/sellers|\/landlords|\/tenants|\/organizers|\/featured|\/stats|\/dashboard|\/homepage|\/profile/.test(route)) {
+      return res.json({ success: true, data: [], items: [], products: [], services: [], events: [], properties: [], users: [], notifications: [], orders: [], payments: [], withdrawals: [], stats: {} });
+    }
+    if (/\/ai\//.test(route)) return res.json({ success: true, reply: '', text: '', result: null });
+    return res.json({ success: true, data: [] });
+  }
+  if (/\/auth\/(forgot-password|resend-verification|reset-password|2fa)|\/events\/submit|\/buy-ticket|\/upload\//.test(route)) {
+    return res.status(503).json({ success: false, error: 'This feature is temporarily unavailable.' });
+  }
+  return res.status(503).json({ success: false, error: 'This API feature is temporarily unavailable.' });
 });
 
 app.use(express.static(ROOT, {
