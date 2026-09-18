@@ -6,10 +6,65 @@ const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const compression = require('compression');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const { MongoClient, ObjectId } = require('mongodb');
 
 const app = express();
 const PORT = Number(process.env.PORT || 8080);
 const ROOT = __dirname;
+let mongoClient = null;
+let database = null;
+
+async function getDb() {
+  if (database) return database;
+  if (!process.env.MONGODB_URI) throw new Error('MONGODB_URI is not configured');
+  mongoClient = new MongoClient(process.env.MONGODB_URI);
+  await mongoClient.connect();
+  database = mongoClient.db();
+  return database;
+}
+
+function userView(user, roleOverride) {
+  return {
+    id: String(user._id),
+    name: user.fullName || user.full_name || user.name || user.email,
+    email: user.email,
+    phone: user.phone || '',
+    role: roleOverride || user.role || 'user'
+  };
+}
+
+function signToken(user, roleOverride) {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) throw new Error('JWT_SECRET is not configured');
+  const view = userView(user, roleOverride);
+  return jwt.sign({ sub: view.id, email: view.email, role: view.role }, secret, { expiresIn: '7d' });
+}
+
+async function findUserByEmail(email, role) {
+  const db = await getDb();
+  const normalized = String(email || '').trim().toLowerCase();
+  const collections = role === 'landlord' ? ['landlords'] : role === 'tenant' ? ['tenants'] : ['users', 'profiles', 'landlords', 'tenants'];
+  for (const name of collections) {
+    const user = await db.collection(name).findOne({ email: normalized });
+    if (user) return { user, role: role || user.role || (name === 'landlords' ? 'landlord' : name === 'tenants' ? 'tenant' : 'user') };
+  }
+  return null;
+}
+
+async function authenticate(email, password, role) {
+  const found = await findUserByEmail(email, role);
+  if (!found) return { ok: false, status: 401, error: 'Invalid email or password.' };
+  const stored = found.user.password || found.user.passwordHash || found.user.password_hash;
+  const valid = stored && await bcrypt.compare(String(password || ''), String(stored));
+  if (!valid) return { ok: false, status: 401, error: 'Invalid email or password.' };
+  const view = userView(found.user, found.role);
+  if (found.user.emailVerified === false || found.user.email_verified === false) {
+    return { ok: false, status: 403, error: 'Please verify your email before signing in.', requiresVerification: true, email: view.email };
+  }
+  return { ok: true, success: true, token: signToken(found.user, found.role), user: view, role: view.role };
+}
 
 const allowedOrigins = String(process.env.ALLOWED_ORIGINS || '')
   .split(',')
@@ -26,6 +81,52 @@ app.use(cors({
     return callback(new Error('Origin not allowed by CORS'));
   }
 }));
+
+async function loginHandler(req, res, role) {
+  try {
+    const result = await authenticate(req.body.email, req.body.password, role);
+    return res.status(result.ok ? 200 : result.status).json(result);
+  } catch (error) {
+    console.error('[Auth] Login failed:', error.message);
+    return res.status(503).json({ error: 'Authentication service is unavailable.' });
+  }
+}
+
+app.post('/api/auth/login', (req, res) => loginHandler(req, res));
+app.post('/api/landlord/login', (req, res) => loginHandler(req, res, 'landlord'));
+app.post('/api/tenant/login', (req, res) => loginHandler(req, res, 'tenant'));
+
+app.post('/api/auth/register', async (req, res) => {
+  try {
+    const email = String(req.body.email || '').trim().toLowerCase();
+    const fullName = String(req.body.fullName || '').trim();
+    const password = String(req.body.password || '');
+    const phone = String(req.body.phone || '').trim();
+    if (!email || !fullName || password.length < 6) {
+      return res.status(400).json({ success: false, error: 'Name, email, and a password of at least 6 characters are required.' });
+    }
+    const db = await getDb();
+    const existing = await db.collection('users').findOne({ email });
+    if (existing) return res.status(409).json({ success: false, error: 'An account with this email already exists.' });
+    const user = {
+      fullName,
+      email,
+      phone,
+      role: 'user',
+      password: await bcrypt.hash(password, 12),
+      emailVerified: true,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    const inserted = await db.collection('users').insertOne(user);
+    user._id = inserted.insertedId;
+    const view = userView(user, 'user');
+    return res.status(201).json({ success: true, token: signToken(user, 'user'), user: view });
+  } catch (error) {
+    console.error('[Auth] Registration failed:', error.message);
+    return res.status(503).json({ success: false, error: 'Registration service is unavailable.' });
+  }
+});
 
 app.get('/api/health', (_req, res) => {
   res.json({
