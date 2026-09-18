@@ -3,6 +3,7 @@
 const path   = require('path');
 const fs     = require('fs');
 const QRCode = require('qrcode');
+const Groq = require('groq-sdk');
 const pino   = require('pino');
 const { ObjectId } = require('mongodb');
 
@@ -22,6 +23,15 @@ const logger = pino({ level: 'silent' });
 let _sock         = null;
 let _db           = null;
 let _genAI        = null;
+const GROQ_MODELS = [
+  process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
+  'llama-3.1-8b-instant'
+];
+
+function createGroqClient() {
+  const apiKey = process.env.GROQ_API_KEY;
+  return apiKey ? new Groq({ apiKey }) : null;
+}
 let _qrData       = null;
 let _qrDataUrl    = null;
 let _connected    = false;
@@ -474,16 +484,16 @@ async function detectIntent(text) {
   }
   if (_genAI) {
     try {
-      const model  = _genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-      const resp   = await model.generateContent(
-        `Classify this message into ONE of these intents (reply with ONLY the key):
+      const result = await groqChat([
+        { role: 'system', content: 'Classify messages for a Kenyan marketplace bot. Reply with only one intent key.' },
+        { role: 'user', content: `Classify this message into ONE of these intents (reply with ONLY the key):
 prod_search_ask, prod_create_title, svc_search_ask, house_search_ask,
 events_browse, tenant_dash, landlord_dash, seller_dash, ai_chat, main
 
 Message: "${text}"
-Intent:`
-      );
-      const intent = resp.response.text().trim().split(/\s/)[0];
+Intent:` }
+      ], { max_tokens: 20, temperature: 0 });
+      const intent = result.trim().split(/\s/)[0];
       const valid  = ['prod_search_ask','prod_create_title','svc_search_ask','house_search_ask','events_browse','tenant_dash','landlord_dash','seller_dash','ai_chat','main'];
       if (valid.includes(intent)) return intent;
     } catch (_) {}
@@ -495,15 +505,35 @@ Intent:`
 async function aiReply(text) {
   if (!_genAI) return null;
   try {
-    const model = _genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-    const res   = await model.generateContent(
-      `You are BConnect Kenya's AI assistant — a helpful, friendly marketplace bot for products, services, housing, and events in Kenya. Reply concisely in 3-4 sentences.
-
-User: ${text}
-Assistant:`
-    );
-    return res.response.text().trim();
+    return await groqChat([
+      { role: 'system', content: 'You are BConnect Kenya\'s helpful marketplace assistant for products, services, housing, and events. Reply concisely in 3-4 sentences. Never invent listing availability, prices, or images.' },
+      { role: 'user', content: text }
+    ], { max_tokens: 240, temperature: 0.7 });
   } catch (_) { return null; }
+}
+
+async function groqChat(messages, options = {}) {
+  if (!_genAI?.chat?.completions?.create) return null;
+  let lastError;
+  for (const model of GROQ_MODELS) {
+    try {
+      const response = await _genAI.chat.completions.create({
+        model,
+        messages,
+        max_tokens: options.max_tokens || 300,
+        temperature: options.temperature ?? 0.3,
+        ...(options.response_format ? { response_format: options.response_format } : {})
+      });
+      return response.choices?.[0]?.message?.content?.trim() || null;
+    } catch (error) {
+      lastError = error;
+      const message = String(error.message || error);
+      if (/401|403|invalid.*key|authentication/i.test(message)) break;
+      if (!/429|rate|quota|model/i.test(message)) break;
+    }
+  }
+  if (lastError) console.warn('[WhatsApp Bot] Groq request failed:', lastError.message);
+  return null;
 }
 
 function parseAIJson(value) {
@@ -597,14 +627,14 @@ function aiCatalogItem(item, type, index, total) {
 async function aiCatalogReply(text) {
   if (!_genAI || !text) return null;
   try {
-    const model = _genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-    const planResponse = await model.generateContent(
-      `You route BConnect marketplace requests. Return ONLY valid JSON in this exact shape: ` +
-      `{"type":"product|housing|service|event|general","terms":["keyword1","keyword2"],"reply":"brief helpful response"}. ` +
-      `Choose product for items, housing for houses/rooms/rentals, service for providers, event for events/tickets. ` +
-      `Use 2-6 specific search terms from the user. Do not invent availability. User request: ${JSON.stringify(text)}`
-    );
-    const plan = parseAIJson(planResponse.response.text());
+    const planText = await groqChat([
+      { role: 'system', content: 'You route BConnect marketplace requests. Return only valid JSON, with no markdown.' },
+      { role: 'user', content:
+        `Return exactly this JSON shape: {"type":"product|housing|service|event|general","terms":["keyword1","keyword2"],"reply":"brief helpful response"}. ` +
+        `Choose product for items, housing for houses/rooms/rentals, service for providers, event for events/tickets. ` +
+        `Use 2-6 specific search terms from the user. Do not invent availability. User request: ${JSON.stringify(text)}` }
+    ], { max_tokens: 180, temperature: 0, response_format: { type: 'json_object' } });
+    const plan = parseAIJson(planText);
     if (!plan || !['product', 'housing', 'service', 'event'].includes(plan.type)) return aiReply(text);
 
     const candidates = await searchAICatalog(plan.type, plan.terms);
@@ -621,12 +651,14 @@ async function aiCatalogReply(text) {
       description: String(item.description || '').slice(0, 180),
       hasImage: !!resolveImgUrl(item)
     }));
-    const rankResponse = await model.generateContent(
-      `Select the most relevant real records for the user's request. Return ONLY JSON: ` +
-      `{"indices":[0,1],"reply":"one short explanation"}. Select at most 4 indices and never invent indices. ` +
-      `User: ${JSON.stringify(text)}\nRecords: ${JSON.stringify(compact)}`
-    );
-    const ranking = parseAIJson(rankResponse.response.text()) || {};
+    const rankText = await groqChat([
+      { role: 'system', content: 'Rank real marketplace records. Return only valid JSON, with no markdown.' },
+      { role: 'user', content:
+        `Select the most relevant real records for the user's request. Return exactly ` +
+        `{"indices":[0,1],"reply":"one short explanation"}. Select at most 4 indices and never invent indices. ` +
+        `User: ${JSON.stringify(text)}\nRecords: ${JSON.stringify(compact)}` }
+    ], { max_tokens: 180, temperature: 0, response_format: { type: 'json_object' } });
+    const ranking = parseAIJson(rankText) || {};
     const indices = Array.isArray(ranking.indices) ? ranking.indices : [0];
     const selected = [...new Set(indices)].filter(i => Number.isInteger(i) && candidates[i]).slice(0, 4);
     const records = selected.length ? selected.map(i => candidates[i]) : [candidates[0]];
@@ -1652,7 +1684,8 @@ async function connect(usePairing, phoneNumber) {
 module.exports = {
   async startBot(db, genAI) {
     _db    = db;
-    _genAI = genAI;
+    _genAI = createGroqClient() || genAI;
+    if (!_genAI) console.warn('[WhatsApp Bot] GROQ_API_KEY is not configured; AI replies are disabled.');
     await connect(false, null);
   },
 
