@@ -35,6 +35,17 @@ function userView(user, roleOverride) {
   };
 }
 
+function configuredAdminEmails() {
+  return String(process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || '')
+    .split(',')
+    .map(email => email.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+function isConfiguredAdmin(email) {
+  return configuredAdminEmails().includes(String(email || '').trim().toLowerCase());
+}
+
 function signToken(user, roleOverride) {
   const secret = process.env.JWT_SECRET;
   if (!secret) throw new Error('JWT_SECRET is not configured');
@@ -81,11 +92,12 @@ async function authenticate(email, password, role) {
   const stored = found.user.password || found.user.passwordHash || found.user.password_hash;
   const valid = stored && await bcrypt.compare(String(password || ''), String(stored));
   if (!valid) return { ok: false, status: 401, error: 'Invalid email or password.' };
-  const view = userView(found.user, found.role);
+  const effectiveRole = isConfiguredAdmin(found.user.email) ? 'admin' : found.role;
+  const view = userView(found.user, effectiveRole);
   if (!EMAIL_VERIFICATION_DISABLED && (found.user.emailVerified === false || found.user.email_verified === false)) {
     return { ok: false, status: 403, error: 'Please verify your email before signing in.', requiresVerification: true, email: view.email };
   }
-  return { ok: true, success: true, token: signToken(found.user, found.role), user: view, role: view.role };
+  return { ok: true, success: true, token: signToken(found.user, effectiveRole), user: view, role: view.role };
 }
 
 const allowedOrigins = String(process.env.ALLOWED_ORIGINS || '')
@@ -138,7 +150,7 @@ app.post('/api/auth/register', async (req, res) => {
       fullName,
       email,
       phone,
-      role: 'user',
+      role: isConfiguredAdmin(email) ? 'admin' : 'user',
       password: await bcrypt.hash(password, 12),
       emailVerified: true,
       createdAt: new Date(),
@@ -146,8 +158,9 @@ app.post('/api/auth/register', async (req, res) => {
     };
     const inserted = await db.collection('users').insertOne(user);
     user._id = inserted.insertedId;
-    const view = userView(user, 'user');
-    return res.status(201).json({ success: true, token: signToken(user, 'user'), user: view });
+    const role = user.role;
+    const view = userView(user, role);
+    return res.status(201).json({ success: true, token: signToken(user, role), user: view });
   } catch (error) {
     console.error('[Auth] Registration failed:', error.message);
     return res.status(503).json({ success: false, error: databaseErrorMessage(error) });

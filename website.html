@@ -188,6 +188,14 @@
       transition: background .2s, transform .15s;
     }
     .nav-signin-btn:hover { background: #162d6e; transform: translateY(-1px); }
+    .nav-admin-btn {
+      display: none; align-items: center; gap: .35rem;
+      padding: .45rem .8rem; border-radius: .65rem;
+      background: #fef3c7; color: #92400e; font-size: .78rem; font-weight: 800;
+      border: 1px solid #fbbf24; cursor: pointer; text-decoration: none;
+      white-space: nowrap;
+    }
+    .nav-admin-btn:hover { background: #fde68a; }
     .nav-user-pill {
       display: flex; align-items: center; gap: .5rem;
       padding: .35rem .75rem .35rem .45rem;
@@ -2223,6 +2231,9 @@
         <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
         Sign In
       </a>
+      <a id="nav-admin-control" class="nav-admin-btn" href="admin.html" title="Open Admin Control">
+        Admin Control
+      </a>
       <!-- Shown when logged IN -->
       <div id="nav-user" class="nav-user-pill" style="display:none" onclick="window.location.href='profile.html'">
         <div class="nav-avatar" id="nav-avatar">?</div>
@@ -3212,6 +3223,7 @@
       (function updateNavbar() {
         const rawToken = localStorage.getItem('auth_token') || localStorage.getItem('token') || sessionStorage.getItem('auth_token');
         const signinEl = document.getElementById('nav-signin');
+        const adminEl  = document.getElementById('nav-admin-control');
         const userEl   = document.getElementById('nav-user');
         const avatarEl = document.getElementById('nav-avatar');
         const nameEl   = document.getElementById('nav-username');
@@ -3239,18 +3251,21 @@
         }
 
         if (token) {
+          let profile = {};
           try {
-            const p = JSON.parse(localStorage.getItem('userProfile') || '{}');
-            const name = p.full_name || p.name || p.email || 'Account';
+            profile = JSON.parse(localStorage.getItem('userProfile') || localStorage.getItem('user') || '{}');
+            const name = profile.full_name || profile.name || profile.email || 'Account';
             const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
             if (avatarEl) avatarEl.textContent = initials || '👤';
             if (nameEl)   nameEl.textContent   = name.split(' ')[0];
           } catch(_) {}
           if (signinEl) signinEl.style.display = 'none';
           if (userEl)   userEl.style.display   = 'flex';
+          if (adminEl) adminEl.style.display = profile.role === 'admin' ? 'inline-flex' : 'none';
         } else {
           if (signinEl) signinEl.style.display = 'flex';
           if (userEl)   userEl.style.display   = 'none';
+          if (adminEl) adminEl.style.display = 'none';
         }
       })();
 
