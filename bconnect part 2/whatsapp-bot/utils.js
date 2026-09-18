@@ -20,6 +20,22 @@ async function sendText(sock, jid, text) {
   await sock.sendMessage(jid, { text });
 }
 
+/** Send up to three quick-reply buttons, with a plain-text fallback. */
+async function sendQuickReplies(sock, jid, text, buttons, fallbackText = text) {
+  const safeButtons = (Array.isArray(buttons) ? buttons : [])
+    .filter(button => button && button.id && button.text)
+    .slice(0, 3)
+    .map(button => ({ id: String(button.id), text: String(button.text) }));
+
+  if (!safeButtons.length) return sendText(sock, jid, fallbackText);
+  try {
+    await sock.sendMessage(jid, { text, footer: 'BConnect', buttons: safeButtons });
+  } catch (error) {
+    console.warn('[WhatsApp Bot] Quick-reply send failed; using text fallback:', error.message);
+    await sendText(sock, jid, fallbackText);
+  }
+}
+
 async function sendImage(sock, jid, url, caption = '') {
   const resolved = resolveImageUrl(url);
   if (!resolved) {
@@ -121,11 +137,19 @@ async function showGalleryPage(sock, jid, images, index) {
   }
 
   // Send navigation as a separate text message — always fully visible
-  const nav =
+  const buttons = [];
+  if (index > 0) buttons.push({ id: 'gallery_prev', text: '⬅️ Previous' });
+  if (index < total - 1) buttons.push({ id: 'gallery_next', text: '➡️ Next' });
+  buttons.push({ id: 'gallery_back', text: '🔙 Back to Listing' });
+  await sendQuickReplies(
+    sock,
+    jid,
+    `📸 Photo ${index + 1} of ${total} — choose an action:`,
+    buttons,
     (index > 0 ? `1 - ⬅️ Previous\n` : '') +
-    (index < total - 1 ? `2 - ➡️ Next\n` : '') +
-    `3 - 🔙 Back to Listing\n4 - 🏠 Main Menu`;
-  await sock.sendMessage(jid, { text: nav });
+      (index < total - 1 ? `2 - ➡️ Next\n` : '') +
+      `3 - 🔙 Back to Listing\n4 - 🏠 Main Menu`
+  );
 }
 
 function getMsgText(msg) {
@@ -134,6 +158,9 @@ function getMsgText(msg) {
     msg.message?.extendedTextMessage?.text ||
     msg.message?.imageMessage?.caption ||
     msg.message?.videoMessage?.caption ||
+    msg.message?.buttonsResponseMessage?.selectedButtonId ||
+    msg.message?.listResponseMessage?.singleSelectReply?.selectedRowId ||
+    msg.message?.templateButtonReplyMessage?.selectedId ||
     ''
   ).trim();
 }
@@ -142,4 +169,4 @@ function isImage(msg) {
   return !!msg.message?.imageMessage;
 }
 
-module.exports = { sendText, sendImage, sendImageBuffer, sendGallery, showGalleryPage, getListingImages, fmtPrice, truncate, phoneFromJid, getMsgText, isImage, resolveImageUrl };
+module.exports = { sendText, sendQuickReplies, sendImage, sendImageBuffer, sendGallery, showGalleryPage, getListingImages, fmtPrice, truncate, phoneFromJid, getMsgText, isImage, resolveImageUrl };

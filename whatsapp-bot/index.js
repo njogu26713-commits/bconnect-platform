@@ -13,7 +13,7 @@ const {
   makeCacheableSignalKeyStore,
   downloadMediaMessage,
   Browsers,
-} = require('@whiskeysockets/baileys');
+} = require('@itsliaaa/baileys');
 
 // Silent pino logger — correct interface, no output
 const logger = pino({ level: 'silent' });
@@ -71,6 +71,26 @@ Reply with a number:
 5️⃣  👤  My Dashboard
 6️⃣  🤖  AI Assistant
 0️⃣  ❓  Help & Support`;
+
+const MAIN_BUTTONS = [
+  { id: 'main_products', text: '🛍️ Products' },
+  { id: 'main_services', text: '🔧 Services' },
+  { id: 'main_housing', text: '🏠 Housing' },
+];
+const MAIN_MORE_BUTTONS = [
+  { id: 'main_events', text: '🎉 Events' },
+  { id: 'main_account', text: '👤 Dashboard' },
+  { id: 'main_ai', text: '🤖 AI Assistant' },
+];
+
+function mainMenuResponse() {
+  return {
+    messages: [
+      { text: MAIN_MENU, footer: 'BConnect', buttons: MAIN_BUTTONS },
+      { text: 'More options:', footer: 'BConnect', buttons: MAIN_MORE_BUTTONS }
+    ]
+  };
+}
 
 const PRODUCTS_MENU = `🛍️ *Products & Marketplace*
 
@@ -486,6 +506,142 @@ Assistant:`
   } catch (_) { return null; }
 }
 
+function parseAIJson(value) {
+  if (!value) return null;
+  const cleaned = String(value).replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+  try { return JSON.parse(cleaned); } catch (_) {
+    const match = cleaned.match(/\{[\s\S]*\}/);
+    try { return match ? JSON.parse(match[0]) : null; } catch (_) { return null; }
+  }
+}
+
+function aiRegex(value) {
+  return String(value || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function aiCandidateFields(type) {
+  if (type === 'product') return ['title', 'name', 'description', 'category', 'subcategory', 'location'];
+  if (type === 'housing') return ['title', 'name', 'description', 'location', 'city', 'type', 'property_type', 'propertyType', 'subcategory'];
+  if (type === 'service') return ['name', 'title', 'description', 'category', 'subcategory', 'location', 'city'];
+  return ['title', 'description', 'category', 'location', 'venue', 'city'];
+}
+
+async function searchAICatalog(type, terms) {
+  if (!_db) return [];
+  const words = (Array.isArray(terms) ? terms : [terms])
+    .map(term => String(term || '').trim())
+    .filter(term => term.length >= 2)
+    .slice(0, 8);
+  if (!words.length) return [];
+  const fields = aiCandidateFields(type);
+  const textMatch = { $or: words.flatMap(word => fields.map(field => ({ [field]: { $regex: aiRegex(word), $options: 'i' } }))) };
+  try {
+    if (type === 'product') {
+      return await _db.collection('properties').find({
+        active: true,
+        listing_type: { $nin: ['service', 'housing'] },
+        ...textMatch
+      }).sort({ created_at: -1 }).limit(12).toArray();
+    }
+    if (type === 'service') {
+      const [services, properties] = await Promise.all([
+        _db.collection('services').find({ status: { $ne: 'inactive' }, ...textMatch }).sort({ created_at: -1 }).limit(8).toArray(),
+        _db.collection('properties').find({ category: { $in: ['service', 'services'] }, ...textMatch }).sort({ created_at: -1 }).limit(8).toArray()
+      ]);
+      return [...services, ...properties].slice(0, 12);
+    }
+    if (type === 'housing') {
+      const [properties, landlordProperties] = await Promise.all([
+        _db.collection('properties').find({
+          active: true,
+          $and: [
+            { $or: [
+              { listing_type: 'housing' },
+              { category: { $regex: /^housing/i } },
+              { category: { $regex: /rental/i } }
+            ] },
+            textMatch
+          ]
+        }).sort({ created_at: -1 }).limit(8).toArray(),
+        _db.collection('landlord_properties').find({ listOnMarketplace: true, ...textMatch }).sort({ createdAt: -1 }).limit(8).toArray()
+      ]);
+      return [...properties, ...landlordProperties.map(p => ({
+        ...p, title: p.name || 'Property', price: p.rent || p.monthlyRent,
+        location: p.location || '', property_type: p.propertyType || '',
+        image_url: p.image_url || p.imageUrl || '', listing_type: 'housing'
+      }))].slice(0, 12);
+    }
+    return await _db.collection('events').find(textMatch).sort({ created_at: -1 }).limit(12).toArray();
+  } catch (error) {
+    console.warn('[WhatsApp Bot] AI catalog search failed:', error.message);
+    return [];
+  }
+}
+
+function aiCatalogItem(item, type, index, total) {
+  const title = item.title || item.name || item.type || 'BConnect listing';
+  const location = item.location || item.city || item.venue || 'Kenya';
+  const price = type === 'housing' ? `${fmtKsh(item.price || item.rent || item.monthlyRent)}/mo` :
+    (item.price ? fmtKsh(item.price) : 'Price on request');
+  const date = item.date || item.event_date ? `\n📅 ${item.date || item.event_date}` : '';
+  const caption = `${type === 'product' ? '🛍️' : type === 'housing' ? '🏠' : type === 'service' ? '🔧' : '🎉'} *${title}*\n` +
+    `💰 ${price}\n📍 ${location}${date}\n\n${String(item.description || '').slice(0, 220)}\n\n_${index + 1} of ${total}_`;
+  const image = resolveImgUrl(item);
+  return image ? { image: { url: image }, caption } : { text: caption };
+}
+
+/**
+ * Let AI decide which catalog to search and which real records are relevant.
+ * The model may rank records, but it is never allowed to invent listings.
+ */
+async function aiCatalogReply(text) {
+  if (!_genAI || !text) return null;
+  try {
+    const model = _genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+    const planResponse = await model.generateContent(
+      `You route BConnect marketplace requests. Return ONLY valid JSON in this exact shape: ` +
+      `{"type":"product|housing|service|event|general","terms":["keyword1","keyword2"],"reply":"brief helpful response"}. ` +
+      `Choose product for items, housing for houses/rooms/rentals, service for providers, event for events/tickets. ` +
+      `Use 2-6 specific search terms from the user. Do not invent availability. User request: ${JSON.stringify(text)}`
+    );
+    const plan = parseAIJson(planResponse.response.text());
+    if (!plan || !['product', 'housing', 'service', 'event'].includes(plan.type)) return aiReply(text);
+
+    const candidates = await searchAICatalog(plan.type, plan.terms);
+    if (!candidates.length) {
+      return { messages: [{ text: `🤖 I couldn't find a matching ${plan.type} listing right now. Try a different location, category, or keyword.` }] };
+    }
+
+    const compact = candidates.map((item, i) => ({
+      index: i,
+      title: item.title || item.name || item.type,
+      category: item.category || item.subcategory || item.property_type || item.propertyType,
+      location: item.location || item.city || item.venue,
+      price: item.price || item.rent || item.monthlyRent,
+      description: String(item.description || '').slice(0, 180),
+      hasImage: !!resolveImgUrl(item)
+    }));
+    const rankResponse = await model.generateContent(
+      `Select the most relevant real records for the user's request. Return ONLY JSON: ` +
+      `{"indices":[0,1],"reply":"one short explanation"}. Select at most 4 indices and never invent indices. ` +
+      `User: ${JSON.stringify(text)}\nRecords: ${JSON.stringify(compact)}`
+    );
+    const ranking = parseAIJson(rankResponse.response.text()) || {};
+    const indices = Array.isArray(ranking.indices) ? ranking.indices : [0];
+    const selected = [...new Set(indices)].filter(i => Number.isInteger(i) && candidates[i]).slice(0, 4);
+    const records = selected.length ? selected.map(i => candidates[i]) : [candidates[0]];
+    return {
+      messages: [
+        { text: `🤖 ${ranking.reply || plan.reply || 'Here are the closest matches I found:'}` },
+        ...records.map((item, i) => aiCatalogItem(item, plan.type, i, records.length))
+      ]
+    };
+  } catch (error) {
+    console.warn('[WhatsApp Bot] AI catalog reply failed:', error.message);
+    return { messages: [{ text: (await aiReply(text)) || '🤖 I could not process that request. Please try again.' }] };
+  }
+}
+
 // ── Format helpers ─────────────────────────────────────────────────────────────
 const BASE_URL = process.env.REPLIT_DEV_DOMAIN
   ? `https://${process.env.REPLIT_DEV_DOMAIN}`
@@ -708,7 +864,7 @@ async function handleMessage(jid, msg) {
   // Universal escape hatches
   if (lower === '0' || lower === 'menu' || lower === 'main' || lower === 'back') {
     resetToMain(jid);
-    return { text: MAIN_MENU };
+    return mainMenuResponse();
   }
   if (lower === 'help' || lower === '?') {
     return { text: `🙋 *BConnect Support*\n\nVisit: bconnect.replit.app/support.html\n\nType *menu* to return to the main menu.` };
@@ -717,21 +873,29 @@ async function handleMessage(jid, msg) {
   // ── MAIN ────────────────────────────────────────────────────────────────────
   if (s.state === 'main') {
     switch (lower) {
-      case '1': s.state = 'prod_menu';    return { text: PRODUCTS_MENU };
-      case '2': s.state = 'svc_menu';     return { text: SERVICES_MENU };
-      case '3': s.state = 'house_menu';   return { text: HOUSING_MENU };
-      case '4': s.state = 'events_menu';  return { text: EVENTS_MENU };
-      case '5': s.state = 'account_menu'; return { text: ACCOUNT_MENU };
+      case '1':
+      case 'main_products': s.state = 'prod_menu';    return { text: PRODUCTS_MENU };
+      case '2':
+      case 'main_services': s.state = 'svc_menu';     return { text: SERVICES_MENU };
+      case '3':
+      case 'main_housing': s.state = 'house_menu';   return { text: HOUSING_MENU };
+      case '4':
+      case 'main_events': s.state = 'events_menu';  return { text: EVENTS_MENU };
+      case '5':
+      case 'main_account': s.state = 'account_menu'; return { text: ACCOUNT_MENU };
       case '6':
+      case 'main_ai':
         s.state = 'ai_chat';
         return { text: `🤖 *AI Assistant*\n\nAsk me anything — products, housing, services, events, or anything!\n\n_(Type *menu* to exit)_` };
       default: {
+        const aiCatalog = await aiCatalogReply(text);
+        if (aiCatalog) return aiCatalog;
         const intent = await detectIntent(text);
         if (intent && intent !== 'main') {
           s.state = intent;
           return handleEntry(jid, s, msg, text);
         }
-        return { text: MAIN_MENU };
+        return mainMenuResponse();
       }
     }
   }
@@ -1289,9 +1453,9 @@ async function handleEntry(jid, s, msg, text) {
 
   // ── AI CHAT ────────────────────────────────────────────────────────────────
   if (s.state === 'ai_chat') {
-    if (!text) return { text: `🤖 Go ahead, ask me anything!\n_(Type *menu* to exit AI mode)_` };
-    const reply = await aiReply(text);
-    return { text: reply || `🤖 I'm not sure about that. Type *menu* to return to main.` };
+    if (!text) return { text: `🤖 Go ahead, ask me anything!\n_(Type *menu* to exit)_` };
+    return (await aiCatalogReply(text)) ||
+      { text: (await aiReply(text)) || `🤖 I'm not sure about that. Type *menu* to return to main.` };
   }
 
   // ── FALLBACK ───────────────────────────────────────────────────────────────
@@ -1331,6 +1495,9 @@ function extractText(msg) {
     m.extendedTextMessage?.text ||
     m.imageMessage?.caption ||
     m.videoMessage?.caption ||
+    m.buttonsResponseMessage?.selectedButtonId ||
+    m.listResponseMessage?.singleSelectReply?.selectedRowId ||
+    m.templateButtonReplyMessage?.selectedId ||
     m.buttonsResponseMessage?.selectedDisplayText ||
     m.listResponseMessage?.title ||
     ''
@@ -1436,13 +1603,27 @@ async function connect(usePairing, phoneNumber) {
         // Get response object
         const response = await handleMessage(jid, msg);
 
-        // Send — supports: { text }, { image, caption }, or { messages: [...] }
+        // Send — supports text, media, and @itsliaaa/baileys quick replies.
         async function sendOne(r) {
           if (r.image) {
             try {
               await _sock.sendMessage(jid, { image: r.image, caption: r.caption || '' });
             } catch (_) {
               await _sock.sendMessage(jid, { text: r.caption || r.text || '' });
+            }
+          } else if (Array.isArray(r.buttons) && r.buttons.length) {
+            try {
+              await _sock.sendMessage(jid, {
+                text: r.text || '',
+                footer: r.footer || 'BConnect',
+                buttons: r.buttons.slice(0, 3).map(button => ({
+                  id: String(button.id),
+                  text: String(button.text)
+                }))
+              });
+            } catch (error) {
+              console.warn('[WhatsApp Bot] Quick-reply send failed; using text fallback:', error.message);
+              await _sock.sendMessage(jid, { text: r.text || '' });
             }
           } else {
             await _sock.sendMessage(jid, { text: r.text || '' });

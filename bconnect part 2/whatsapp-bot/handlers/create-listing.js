@@ -1,7 +1,7 @@
 'use strict';
 const { sendText } = require('../utils');
 const { setStep, getSession } = require('../state');
-const { downloadMediaMessage } = require('@whiskeysockets/baileys');
+const { downloadMediaMessage } = require('@itsliaaa/baileys');
 
 async function uploadToCloudinary(buffer, filename) {
   try {

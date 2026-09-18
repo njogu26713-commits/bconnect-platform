@@ -2,19 +2,19 @@
 
 const path = require('path');
 const fs = require('fs');
-const makeWASocket = require('@whiskeysockets/baileys').default;
+const makeWASocket = require('@itsliaaa/baileys').default;
 const {
   useMultiFileAuthState,
   DisconnectReason,
   fetchLatestBaileysVersion,
   isJidGroup,
   Browsers
-} = require('@whiskeysockets/baileys');
+} = require('@itsliaaa/baileys');
 const pino = require('pino');
 const QRCode = require('qrcode');
 
 const { getSession, setStep, clearSession } = require('./state');
-const { getMsgText, isImage, sendText, showGalleryPage, phoneFromJid } = require('./utils');
+const { getMsgText, isImage, sendText, sendQuickReplies, showGalleryPage, phoneFromJid } = require('./utils');
 const { detectIntent, isNumericChoice } = require('./router');
 
 const { searchProducts, showProductDetail, showProductsMenu, showProductSubcategories, showProductPriceMenu, createListingPrompt, PRODUCT_CATEGORIES, PRODUCT_PRICE_RANGES } = require('./handlers/products');
@@ -91,7 +91,7 @@ async function refreshPairingCode(requestedPhone) {
 
 async function showMainMenu(sock, jid) {
   setStep(jid, 'main');
-  await sendText(sock, jid,
+  const menuText =
     '🏪 *Welcome to BConnect!*\n' +
     'Kenya\'s All-in-One Marketplace\n\n' +
     '*What would you like to do?*\n\n' +
@@ -104,7 +104,21 @@ async function showMainMenu(sock, jid) {
     '7️⃣  ➕ *Sell / List* — add your listing\n\n' +
     '💬 *Or just type what you need*, e.g.\n' +
     '_"house in Westlands"_  •  _"I need a plumber"_  •  _"show me phones"_\n\n' +
-    '_Type *MENU* anytime to return here._');
+    '_Type *MENU* anytime to return here._';
+  await sendQuickReplies(sock, jid, menuText, [
+    { id: 'menu_products', text: '🛍️ Products' },
+    { id: 'menu_services', text: '🔧 Services' },
+    { id: 'menu_housing', text: '🏠 Housing' }
+  ], menuText);
+  await sendQuickReplies(sock, jid, 'More BConnect options:', [
+    { id: 'menu_events', text: '🎉 Events' },
+    { id: 'menu_ai', text: '🤖 AI Assistant' },
+    { id: 'menu_account', text: '👤 My Account' }
+  ], '4️⃣ 🎉 Events\n5️⃣ 🤖 AI Assistant\n6️⃣ 👤 My Account\n7️⃣ ➕ Sell / List');
+  await sendQuickReplies(sock, jid, 'Want to list something?', [
+    { id: 'menu_sell', text: '➕ Sell / List' },
+    { id: 'menu_home', text: '🏠 Main Menu' }
+  ], '7️⃣ ➕ Sell / List\n\nType MENU anytime to return here.');
 }
 
 async function handleMessage(sock, msg) {
@@ -135,6 +149,18 @@ async function handleMessage(sock, msg) {
   }
 
   if (session.step === 'main') {
+    const buttonActions = {
+      menu_products: () => showProductsMenu(sock, jid, session),
+      menu_services: () => showServicesMenu(sock, jid, session, _db),
+      menu_housing: () => showHousingMenu(sock, jid, session, _db),
+      menu_events: () => showEventsMenu(sock, jid, session, _db),
+      menu_ai: () => startAIChat(sock, jid, session),
+      menu_account: () => showAccountMenu(sock, jid, session, _db),
+      menu_sell: () => createListingPrompt(sock, jid, session),
+      menu_home: () => showMainMenu(sock, jid)
+    };
+    if (buttonActions[text]) return await buttonActions[text]();
+
     if (isNumericChoice(text)) {
       const n = parseInt(text);
       if (n === 1) return await showProductsMenu(sock, jid, session);
