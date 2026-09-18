@@ -42,6 +42,13 @@ function signToken(user, roleOverride) {
   return jwt.sign({ sub: view.id, email: view.email, role: view.role }, secret, { expiresIn: '7d' });
 }
 
+function authConfigError() {
+  const missing = [];
+  if (!process.env.MONGODB_URI) missing.push('MONGODB_URI');
+  if (!process.env.JWT_SECRET) missing.push('JWT_SECRET');
+  return missing.length ? `Authentication is not configured. Add ${missing.join(' and ')} to the deployment environment.` : null;
+}
+
 async function findUserByEmail(email, role) {
   const db = await getDb();
   const normalized = String(email || '').trim().toLowerCase();
@@ -84,6 +91,8 @@ app.use(cors({
 
 async function loginHandler(req, res, role) {
   try {
+    const configError = authConfigError();
+    if (configError) return res.status(503).json({ error: configError });
     const result = await authenticate(req.body.email, req.body.password, role);
     return res.status(result.ok ? 200 : result.status).json(result);
   } catch (error) {
@@ -98,6 +107,8 @@ app.post('/api/tenant/login', (req, res) => loginHandler(req, res, 'tenant'));
 
 app.post('/api/auth/register', async (req, res) => {
   try {
+    const configError = authConfigError();
+    if (configError) return res.status(503).json({ success: false, error: configError });
     const email = String(req.body.email || '').trim().toLowerCase();
     const fullName = String(req.body.fullName || '').trim();
     const password = String(req.body.password || '');
